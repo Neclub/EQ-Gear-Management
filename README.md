@@ -97,12 +97,20 @@ Included when spell files are found and **Include missing spells** is enabled (G
 
 Level bands with `"count_runes": true` in config (current defaults):
 
-| Levels | Expansions | Turn-in theme |
-|--------|------------|----------------|
-| 121–125 | LS, ToB | Timeless Medallion |
-| 126–130 | SoR | Astral / Solar |
+| Levels | Expansions | Rk. III rune item |
+|--------|------------|-------------------|
+| 121–125 | LS, ToB | `{Tier} Emblem of the Forge` (LS); `Energized {Tier} Engram` (ToB) |
+| 126–130 | SoR | `{Tier} Mirrorshard of Relic` |
 
-Configure bands in `src/inventory_parser/data/spell_rune_bands.json`. Add a new block with `"count_runes": true` for future level caps without code changes.
+`{Tier}` is Minor, Lesser, Median, Greater, or Glowing (one per level; matches the Missing Runes rows). Examples: *Minor Emblem of the Forge*, *Energized Glowing Engram*, *Median Mirrorshard of Relic*.
+
+Configure bands in `src/inventory_parser/data/spell_rune_bands.json` (`turn_in_theme` = rune family shown on the Missing Runes sheet). Add a new block with `"count_runes": true` for future level caps without code changes.
+
+Official spell lists (Rank 1 vendors, Rank 2/3 turn-in items) on EQ Resource:
+
+- [Shattering of Ro (SoR)](https://sor.eqresource.com/spells.php) — levels 126–130  
+- [The Outer Brood (ToB)](https://tob.eqresource.com/spells.php) — levels 121–125  
+- [Laurion's Song (LS)](https://ls.eqresource.com/spells.php) — levels 121–125  
 
 ## GUI
 

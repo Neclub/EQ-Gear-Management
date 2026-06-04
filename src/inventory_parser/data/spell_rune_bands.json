@@ -23,7 +23,7 @@
       "level_end": 125,
       "label": "121-125",
       "expansions": ["Laurion's Song (LS)", "The Outer Brood (ToB)"],
-      "turn_in_theme": "Timeless Medallion",
+      "turn_in_theme": "Emblem of the Forge (LS); Energized Engram (ToB)",
       "count_runes": true
     },
     {
@@ -31,7 +31,7 @@
       "level_end": 130,
       "label": "126-130",
       "expansions": ["Shattering of Ro (SoR)"],
-      "turn_in_theme": "Astral / Solar",
+      "turn_in_theme": "Mirrorshard of Relic",
       "count_runes": true
     }
   ]

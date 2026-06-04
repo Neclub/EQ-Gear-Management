@@ -137,10 +137,12 @@ Every missing **Rk. III** with character, level band, level, rune tier, and spel
 
 Level bands that count runes today:
 
-| Levels | Expansions | Turn-in theme |
-|--------|------------|----------------|
-| 121–125 | Laurion's Song (LS), The Outer Brood (ToB) | Timeless Medallion |
-| 126–130 | Shattering of Ro (SoR) | Astral / Solar |
+| Levels | Expansions | Rk. III rune item |
+|--------|------------|-------------------|
+| 121–125 | Laurion's Song (LS), The Outer Brood (ToB) | `{Tier} Emblem of the Forge` (LS); `Energized {Tier} Engram` (ToB) |
+| 126–130 | Shattering of Ro (SoR) | `{Tier} Mirrorshard of Relic` |
+
+`{Tier}` = Minor, Lesser, Median, Greater, or Glowing (one per spell level).
 
 Older bands (111–120) are in config but not shown until enabled in `spell_rune_bands.json`.
 
