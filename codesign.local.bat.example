@@ -1,0 +1,17 @@
+@echo off
+REM Copy this file to codesign.local.bat (gitignored) and fill in your certificate.
+REM Requires Windows SDK signtool.exe (installed with Visual Studio Build Tools or Windows SDK).
+
+REM Option A: PFX file on disk
+set "IP_SIGN_PFX=%~dp0build\codesign.pfx"
+set "IP_SIGN_PASSWORD=your-pfx-password-here"
+
+REM Option B: Certificate already in the Windows certificate store (comment out Option A)
+REM set "IP_SIGN_PFX="
+REM set "IP_SIGN_PASSWORD="
+REM set "IP_SIGN_THUMBPRINT=YOUR_CERT_SHA1_THUMBPRINT"
+
+REM Optional overrides
+REM set "IP_SIGNTOOL=C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe"
+REM set "IP_SIGN_TIMESTAMP_URL=http://timestamp.digicert.com"
+REM set "IP_SIGN_REQUIRED=1"

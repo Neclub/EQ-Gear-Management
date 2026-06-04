@@ -1,0 +1,342 @@
+```text
+Create a modern Windows desktop application in C# using WPF and MVVM named:
+
+"EQ Achievement Tracker"
+
+Purpose:
+This application parses EverQuest achievement and collection log data and generates an Excel workbook that is easy to filter, sort, and understand.
+
+The application should focus heavily on:
+- Missing collection items
+- Achievement progression
+- Expansion tracking
+- Zone tracking
+- Character progression
+- Excel export
+
+====================================================
+TECH STACK
+====================================================
+
+Requirements:
+- Language: C#
+- UI Framework: WPF
+- Architecture: MVVM
+- Database: SQLite
+- Excel Library: ClosedXML
+- .NET Version: .NET 8
+- Use async/await where appropriate
+- Use clean project structure and separation of concerns
+
+NuGet Packages:
+- ClosedXML
+- Microsoft.Data.Sqlite
+- CommunityToolkit.Mvvm
+
+====================================================
+APPLICATION FEATURES
+====================================================
+
+MAIN FEATURES:
+1. Parse EverQuest log files
+2. Detect achievement completions
+3. Detect collection item acquisitions
+4. Track missing collection items
+5. Store parsed data in SQLite
+6. Display sortable/filterable grids
+7. Export fully formatted Excel workbook
+8. Support multiple characters
+9. Track expansion and zone progression
+10. Provide dashboard statistics
+
+====================================================
+LOG PARSING
+====================================================
+
+The parser should monitor and import EverQuest log files.
+
+Examples of achievement lines:
+
+[Tue May 26 20:41:11 2026] You have completed the achievement 'Bristlebane Opens'!
+
+Examples of collection item lines:
+
+[Tue May 26 20:45:32 2026] You have collected: Cracked Sun Idol
+
+Examples of collection completion:
+
+[Tue May 26 20:48:11 2026] You have completed the collection: Ancient Relics
+
+The parser should:
+- Extract timestamp
+- Extract character name from filename if possible
+- Detect event type
+- Normalize data
+- Store data in SQLite
+
+====================================================
+DATABASE STRUCTURE
+====================================================
+
+Create SQLite tables:
+
+Achievements
+-------------
+AchievementID
+Name
+Expansion
+Category
+Type
+
+CharacterAchievements
+---------------------
+Character
+AchievementID
+Status
+DateCompleted
+
+Collections
+-----------
+CollectionID
+Expansion
+Zone
+CollectionName
+
+CollectionItems
+---------------
+ItemID
+CollectionID
+ItemName
+
+CharacterCollectionStatus
+-------------------------
+Character
+ItemID
+Owned
+DateFound
+
+RawLogEntries
+-------------
+Timestamp
+Character
+EventType
+RawText
+
+====================================================
+UI LAYOUT
+====================================================
+
+Use a modern dark-themed WPF layout.
+
+Main Window Layout:
+
+ ---------------------------------------------------
+| Toolbar                                            |
+| [Import Logs] [Export Excel] [Refresh] [Search]   |
+ ---------------------------------------------------
+| Left Navigation | Main Content Area               |
+|                 |                                 |
+| Dashboard       | Sortable DataGrid               |
+| Missing Items   |                                 |
+| Collections     |                                 |
+| Achievements    |                                 |
+| Characters      |                                 |
+| Raw Logs        |                                 |
+ ---------------------------------------------------
+| Status Bar                                        |
+ ---------------------------------------------------
+
+====================================================
+DASHBOARD VIEW
+====================================================
+
+Display:
+- Total achievements
+- Completed achievements
+- Missing achievements
+- Total collections
+- Missing collection items
+- Completion percentages
+- Progress bars by expansion
+
+====================================================
+MISSING COLLECTIONS VIEW
+====================================================
+
+This is the MOST IMPORTANT VIEW.
+
+Display ONLY missing collection items by default.
+
+Columns:
+- Expansion
+- Zone
+- Collection
+- Missing Item
+- Total Items
+- Owned Count
+- Remaining Count
+
+Features:
+- Filtering
+- Sorting
+- Search
+- Group by expansion
+- Group by zone
+- Color coding
+
+Color rules:
+- Missing = red
+- Complete = green
+- Partial = yellow
+
+====================================================
+ACHIEVEMENTS VIEW
+====================================================
+
+Display achievement progress in a sortable grid.
+
+Columns:
+- Date
+- Character
+- Expansion
+- Category
+- Achievement Name
+- Status
+
+Allow:
+- Sorting
+- Filtering
+- Search
+- Grouping
+
+====================================================
+CHARACTER VIEW
+====================================================
+
+Show progression per character.
+
+Columns:
+- Character
+- Expansion
+- Collections Completed
+- Achievements Completed
+- Completion Percentage
+
+====================================================
+EXCEL EXPORT
+====================================================
+
+Generate a formatted XLSX workbook using ClosedXML.
+
+Workbook Tabs:
+- Summary
+- Missing Collections
+- All Collections
+- Achievements
+- Character Progress
+- Raw Import
+
+Excel Requirements:
+- Auto filters
+- Freeze top row
+- Styled headers
+- Conditional formatting
+- Progress bars
+- Excel tables
+- Auto-sized columns
+
+Conditional formatting:
+- Missing items = red
+- Completed = green
+- Partial = yellow
+
+====================================================
+SEARCH/FILTERING
+====================================================
+
+Global search bar should filter:
+- Achievement names
+- Collection names
+- Item names
+- Zones
+- Expansions
+- Characters
+
+====================================================
+ARCHITECTURE REQUIREMENTS
+====================================================
+
+Use:
+- MVVM pattern
+- Repository pattern for database access
+- Services for parsing and Excel export
+- ObservableCollections for UI binding
+- ICommand implementations for actions
+
+Project Structure:
+
+/Models
+/ViewModels
+/Views
+/Services
+/Data
+/Repositories
+/Helpers
+
+====================================================
+BONUS FEATURES
+====================================================
+
+If possible, also implement:
+- Automatic folder monitoring
+- Live parsing while EQ is running
+- Discord-friendly export text
+- Progress charts
+- Duplicate detection
+- Import/export configuration
+- Theme support
+
+====================================================
+UI STYLE
+====================================================
+
+Style should feel:
+- Modern
+- Minimal
+- Clean
+- Dark fantasy inspired
+- Optimized for large datasets
+
+Use:
+- Dark backgrounds
+- Subtle accent colors
+- Readable typography
+- Responsive DataGrids
+- Smooth spacing
+
+====================================================
+IMPORTANT REQUIREMENTS
+====================================================
+
+The app should prioritize usability for EverQuest players.
+
+The MOST important functionality is:
+- Quickly seeing what collection items are still missing
+- Filtering by expansion/zone
+- Exporting readable Excel reports
+- Tracking multiple characters
+
+Generate:
+- Full project structure
+- Core models
+- SQLite setup
+- Parsing services
+- Main window UI
+- MVVM ViewModels
+- Excel export service
+- Example styling
+- Sample parser implementation
+- Sample SQLite repository code
+
+The code should be production-quality, clean, and expandable.
+```

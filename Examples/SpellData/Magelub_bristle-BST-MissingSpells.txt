@@ -1,0 +1,337 @@
+65	Ancient: Frozen Chaos
+70	Ancient: Savage Ice
+71	Diregriffon's Bite Rk. II
+71	Focus of Amilan Rk. II
+71	Healing of Uluanes Rk. II
+71	Mammoth-Hide Guard Rk. II
+72	Fever Spike Rk. II
+72	Minohten Mending Rk. II
+72	Spiritual Vim Rk. II
+73	Bite of the Empress Rk. II
+73	Promised Mending Rk. II
+73	Unparalleled Voracity Rk. II
+74	Spiked Sleet Rk. II
+74	Spirit of Lairn Rk. II
+74	Spiritual Enlightenment Rk. II
+75	Bark at the Moon Rk. II
+75	Ruthless Ferocity Rk. II
+75	Spellbreaker's Guard Rk. II
+75	Steeltrap Jaws Rk. II
+76	Dragonscale Guard Rk. II
+76	Falrazim's Gnashing Rk. II
+76	Focus of Zott Rk. II
+76	Salve of Feldan Rk. II
+77	Bulwark of Tri'Qaras Rk. II
+77	Daria's Mending Rk. II
+77	Fever Surge Rk. II
+77	Spiritual Vivacity Rk. II
+78	Bite of the Borrower Rk. II
+78	Peerless Penchant Rk. II
+78	Promised Recovery Rk. II
+79	Growl of the Puma Rk. II
+79	Jagged Torrent Rk. II
+79	Spirit of Jeswin Rk. II
+79	Spiritual Epiphany Rk. II
+80	Harrow Rk. II
+80	Howl at the Moon Rk. II
+80	Lockfang Jaws Rk. II
+80	Spellbreaker's Bulwark Rk. II
+80	Vicious Ferocity Rk. II
+81	Focus of Yemall Rk. II
+81	Ikaav Blood Rk. II
+81	Salve of Reshan Rk. II
+82	Cadmael's Mending Rk. II
+82	Minax's Mending Rk. II
+82	Spiritual Verve Rk. II
+82	Tsetsian Endemic Rk. II
+83	Bite of the Vitrik Rk. II
+83	Friendly Pet Rk. II
+83	Promised Rejuvenation Rk. II
+83	Unrivaled Rapidity Rk. II
+84	Frigid Lance Rk. II
+84	Frozen Venom Rk. II
+84	Growl of the Jaguar Rk. II
+84	Spirit of Vaxztn Rk. II
+84	Spiritual Edification Rk. II
+85	Fellgrip Jaws Rk. II
+85	Foray Rk. II
+85	Haergen's Feralgia Rk. II
+85	Savage Ferocity Rk. II
+85	Spellbreaker's Aegis Rk. II
+85	Yowl at the Moon Rk. II
+86	Bestial Vivisection Rk. II
+86	Focus of Emiq Rk. II
+86	Neivr's Aggression Rk. II
+86	Neivr's Protection Rk. II
+86	Respite Rk. II
+86	Salve of Sevna Rk. II
+86	Spinechiller Blood Rk. II
+87	Flurry of Claws Rk. II
+87	Jorra's Mending Rk. II
+87	Sha's Reprisal Rk. II
+87	Shiverback Endemic Rk. II
+87	Spiritual Valor Rk. II
+87	Wilap's Mending Rk. II
+88	Bolstering Warder Rk. II
+88	Incomparable Velocity Rk. II
+88	Nature's Fury Rk. II
+88	Promised Wardmending Rk. II
+88	Sarsez' Bite Rk. II
+88	Spectral Rampart Rk. II
+89	Frozen Venin Rk. II
+89	Glacial Lance Rk. II
+89	Glacial Roar Rk. II
+89	Growl of the Tiger Rk. II
+89	Spirit of Kron Rk. II
+89	Spiritual Enhancement Rk. II
+90	Callous Ferocity Rk. II
+90	Deadlock Jaws Rk. II
+90	Kron's Maelstrom Rk. II
+90	Rush Rk. II
+90	Shout at the Moon Rk. II
+90	Spellbreaker's Rampart Rk. II
+90	Tuzil's Feralgia Rk. II
+91	Bestial Rending Rk. II
+91	Binaesa Blood Rk. II
+91	Focus of Klar Rk. II
+91	Mea's Aggression Rk. II
+91	Mea's Protection Rk. II
+91	Natural Collaboration Rk. II
+91	Reprieve Rk. II
+91	Salve of Yubai Rk. II
+92	Brutal Ferocity Rk. II
+92	Mending of the Izon Rk. II
+92	Silbar's Endemic Rk. II
+92	Spiritual Valiance Rk. II
+92	Tumult of Claws Rk. II
+92	Yurv's Mending Rk. II
+93	Beastwood Rampart Rk. II
+93	Empowering Warder Rk. II
+93	Exceptional Velocity Rk. II
+93	Kolos' Fury Rk. II
+93	Promised Amendment Rk. II
+93	Rotsil's Bite Rk. II
+94	Frostrift Lance Rk. II
+94	Frostrift Roar Rk. II
+94	Frozen Cyanin Rk. II
+94	Growl of the Lion Rk. II
+94	Savage Fury Rk. II
+94	Spirit of Bale Rk. II
+94	Spiritual Enrichment Rk. II
+95	Bale's Maelstrom Rk. II
+95	Barrage Rk. II
+95	Scream at the Moon Rk. II
+95	Shared Brutal Ferocity Rk. II
+95	Spellbreaker's Armor Rk. II
+95	Yahnoa's Feralgia Rk. II
+96	Asp Blood Rk. II
+96	Auspice of Shadows Rk. II
+96	Bestial Evulsing Rk. II
+96	Focus of Sanera Rk. II
+96	Monkey's Spirit Discipline Rk. II
+96	Natural Cooperation Rk. II
+96	Plakt's Aggression Rk. II
+96	Plakt's Protection Rk. II
+96	Rest Rk. II
+96	Salve of Blezon Rk. II
+97	Clamor of Claws Rk. II
+97	Fatiguing Bite Rk. II
+97	Huaene's Melioration Rk. II
+97	Jaerol's Mending Rk. II
+97	Merciless Ferocity Rk. II
+97	Natigo's Endemic Rk. II
+97	Spiritual Vindication Rk. II
+97	Withering Bite Rk. II
+98	Extraordinary Velocity Rk. II
+98	Focused Clamor of Claws Rk. II
+98	Invigorating Warder Rk. II
+98	Poantaar's Bite Rk. II
+98	Promised Amelioration Rk. II
+98	Ruaabri's Fury Rk. II
+99	Aegis of Nefori Rk. II
+99	Edoth's Chill Rk. II
+99	Frozen Carbomate Rk. II
+99	Growl of the Snow Leopard Rk. II
+99	Kromrif Lance Rk. II
+99	Kromrif Roar Rk. II
+99	Savage Rage Rk. II
+99	Spirit of Nak Rk. II
+99	Spiritual Evolution Rk. II
+99	Warder's Unity Rk. II
+100	Kesar's Feralgia Rk. II
+100	Nak's Maelstrom Rk. II
+100	Pummel Rk. II
+100	Reflexive Rending Rk. II
+100	Shared Merciless Ferocity Rk. II
+100	Spellbreaker's Ward Rk. II
+100	Spiritual Unity Rk. II
+100	Yell at the Moon Rk. II
+101	Breather Rk. II
+101	Focus of Okasi Rk. II
+101	Glistenwing Blood Rk. II
+101	Natural Affiliation Rk. II
+101	Salve of Clorith Rk. II
+101	Sekmoset's Aggression Rk. II
+101	Sekmoset's Protection Rk. II
+101	Venomous Alliance Rk. II
+102	Al`ele's Vindication Rk. II
+102	Auspice of Eternity Rk. II
+102	Hemocoraxius' Endemic Rk. II
+102	Kromtus Lance Rk. II
+102	Sabhattin's Mending Rk. II
+102	Spiritual Vivification Rk. II
+102	Tempest of Claws Rk. II
+102	Tirik's Melioration Rk. II
+103	Frozen Miasma Rk. II
+103	Kreig's Bite Rk. II
+103	Mending Warder Rk. II
+103	Promised Invigoration Rk. II
+103	Spiritual Elaboration Rk. II
+104	Aegis of Japac Rk. II
+104	Growl of the Leopard Rk. II
+104	Kirchen's Chill Rk. II
+104	Kromtus Roar Rk. II
+104	Maul Rk. II
+104	Savage Rancor Rk. II
+104	Spirit of Visoracius Rk. II
+105	Cry at the Moon Rk. II
+105	Krenk's Feralgia Rk. II
+105	Reflexive Sundering Rk. II
+105	Spellbreaker's Palisade Rk. II
+105	Stormblood's Unity Rk. II
+105	Visoracius' Maelstrom Rk. II
+106	Focus of Artikla Rk. II
+106	Hiatus Rk. II
+106	Natural Cooperation Rk. II
+106	Salve of Artikla Rk. II
+106	Virzak's Aggression Rk. II
+106	Virzak's Protection Rk. II
+107	Auspice of Esianti Rk. II
+107	Debilitating Bite Rk. II
+107	Deltro's Mending Rk. II
+107	Elkikatar's Endemic Rk. II
+107	Exhausting Bite Rk. II
+107	Frostbite Lance Rk. II
+107	Spiritual Vibrancy Rk. II
+107	Storm of Claws Rk. II
+107	Virzak's Melioration Rk. II
+108	Convivial Warder Rk. II
+108	Frozen Toxin Rk. II
+108	Mawmun's Bite Rk. II
+108	Promised Alleviation Rk. II
+108	Spiritual Empowerment Rk. II
+108	Venomous Covenant Rk. II
+109	Aegis of Zeklor Rk. II
+109	Ekron's Chill Rk. II
+109	Frostbite Roar Rk. II
+109	Growl of the Sabretooth Rk. II
+109	Mangle Rk. II
+109	Spirit of Beramos Rk. II
+110	Akalit's Feralgia Rk. II
+110	Beramos' Maelstrom Rk. II
+110	Feralist's Unity Rk. II
+110	Roar at the Moon Rk. II
+110	Spellbreaker's Keep Rk. II
+110	Venon's Vindication Rk. II
+111	Horasug's Aggression Rk. II
+111	Horasug's Protection Rk. II
+111	Ikatiar's Blood Rk. II
+111	Natural Alliance Rk. II
+111	Relax Rk. II
+111	Salve of Tobart Rk. II
+112	Auspice of Kildrukaun Rk. II
+112	Bethun's Mending Rk. III
+112	Depleting Bite Rk. III
+112	Kallis' Melioration Rk. II
+112	Maelstrom of Claws Rk. III
+112	Neemzaq's Endemic Rk. II
+112	Restless Lance Rk. II
+113	Astounding Velocity Rk. II
+113	Bloodmaw's Bite Rk. II
+113	Frozen Malignance Rk. II
+113	Promised Healing Rk. II
+113	Sympathetic Warder Rk. II
+113	Venomous Coalition Rk. II
+114	Aegis of Orfur Rk. II
+114	Batter Rk. II
+114	Endaroky's Chill Rk. II
+114	Growl of the Lioness Rk. II
+114	Reflexive Riving Rk. II
+114	Restless Roar Rk. II
+114	Spirit of Mandrikai Rk. II
+115	Bay at the Moon Rk. II
+115	Griklor's Feralgia Rk. II
+115	Ikatiar's Vindication Rk. II
+115	Reclaimer's Unity
+115	Spellbreaker's Citadel Rk. II
+115	Vkjen's Maelstrom Rk. II
+116	Akhevan Blood Rk. II
+116	Bestial Fierceness Rk. III
+116	Ecliptic Fury
+116	Night's Calming Rk. II
+116	Panthea's Aggression Rk. III
+116	Panthea's Protection Rk. III
+116	Salve of Jaegir Rk. III
+116	Symbiotic Alliance Rk. II
+117	Auspice of Valia
+117	Cissela's Melioration Rk. III
+117	Crystalline Lance Rk. III
+117	Dire Bite Rk. III
+117	Eruption of Claws Rk. III
+117	Korah's Mending Rk. III
+117	Vampyric Endemic Rk. II
+117	Wearying Bite Rk. III
+118	Frozen Blight Rk. II
+118	Promised Relief Rk. II
+118	Protective Warder Rk. II
+118	Unsurpassed Velocity Rk. II
+118	Venomous Conjunction
+118	Zelniak's Bite Rk. II
+119	Aegis of Rumblecrush Rk. II
+119	Clobber Rk. II
+119	Growl of the Clouded Leopard Rk. II
+119	Polar Roar Rk. II
+119	Spirit of Siver Rk. II
+119	Sylra Fris' Chill Rk. II
+120	Ander's Feralgia Rk. II
+120	Bellow at the Moon Rk. II
+120	Kejaan's Vindication
+120	Spellbreaker's Fortress Rk. II
+120	Va Xakra's Maelstrom Rk. II
+121	Convalesce Rk. III
+121	Focus of Skull Crusher
+121	Salve of Homer Rk. III
+121	Warder's Alliance Rk. III
+122	Auspice of Usira Rk. III
+122	Barrage of Claws Rk. III
+122	Fevered Endemic Rk. III
+122	Kindleheart's Melioration Rk. III
+122	Spiritual Valiancy
+122	Thornhost's Mending Rk. III
+123	Promised Reconstitution
+123	Sapping Bite Rk. III
+123	Vitalizing Warder
+124	Growl of Yasil Rk. III
+124	Reflexive Slashing Rk. III
+125	Monkey's Guile Discipline Rk. III
+125	Shriek at the Moon Rk. III
+125	SingleMalt's Feralgia Rk. III
+125	Spellbreaker's Synergy Rk. III
+125	Xanathan's Vindication Rk. III
+126	Focus of Aramna
+126	Hiatus V Rk. III
+126	Pack Leader's Protection Rk. III
+126	Salve of Lydora Rk. III
+127	Lydora's Melioration Rk. III
+127	Lydora's Mending Rk. III
+127	Tsetsian Endemic XII Rk. III
+128	Fatiguing Bite VI Rk. III
+128	Frigid Lance XII Rk. III
+128	Incomparable Velocity XI Rk. III
+128	Promised Mending XII
+129	Glacial Roar IX Rk. III
+129	Growl of the Panther XIV Rk. III
+129	Spirit of Irdrath Rk. III
+130	Bark at the Moon XII
+130	Shar`Drahn's Chill Rk. III
+130	Spellbreaker's Guard XI

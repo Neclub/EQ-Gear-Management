@@ -1,0 +1,500 @@
+20	Primary Anchor Gate
+20	Secondary Anchor Gate
+35	Primary Anchor Portal
+35	Secondary Anchor Portal
+40	Primary Anchor Push
+40	Secondary Anchor Push
+40	Translocate: Primary Anchor
+40	Translocate: Secondary Anchor
+60	Ancient: Destruction of Ice
+60	Ancient: Greater Concussion
+60	Teleport Primary Anchor
+60	Teleport Secondary Anchor
+65	Ancient: Strike of Chaos
+70	Ancient: Core Fire
+70	Ancient: Spear of Gelaqua
+71	Concussive Blast Rk. II
+71	Defense of Calrena Rk. II
+71	Rimelure Rk. II
+71	Shield of the Crystalwing Rk. II
+71	Tears of the Betrayed Rk. II
+71	Wildmagic Strike Rk. II
+72	Beam of Solteris Rk. II
+72	Cloudburst Strike Rk. II
+72	Impel Rk. II
+72	Leap of Sparks Rk. II
+72	Magmaraug's Presence Rk. II
+72	Patient Harvest Rk. II
+73	Ball Lightning Rk. II
+73	Cold Snap Rk. II
+73	Lavalure Rk. II
+73	Leap of Shocking Bolts Rk. II
+73	Scales of the Crystalwing Rk. II
+73	Tendrilmist Guard Rk. II
+74	Chaos Immolation Rk. II
+74	Crystalwing Ward Rk. II
+74	Flashfires Rk. II
+74	Icefall Avalanche Rk. II
+74	Volcanic Eruption Rk. II
+75	Claw of Selay Rk. II
+75	Ethereal Conflagration Rk. II
+75	Icicle Deluge Rk. II
+75	Intertwining Energy Rk. II
+75	Sothgar's Flame Rk. II
+75	Telakisz Rk. II
+76	Bulwark of Caella Rk. II
+76	Bulwark of the Crystalwing Rk. II
+76	Concussive Burst Rk. II
+76	Lure of Isaz Rk. II
+76	Phase March Rk. II
+76	Tears of the Forsaken Rk. II
+76	Wildmagic Burst Rk. II
+77	Aspect of Zomm Rk. II
+77	Cloudburst Bolts Rk. II
+77	Leap of Static Bolts Rk. II
+77	Tranquil Harvest Rk. II
+77	Vsorug's Presence Rk. II
+78	Etherroot Guard Rk. II
+78	Funnel of Frost Rk. II
+78	Laminae of the Crystalwing Rk. II
+78	Leap of Arclight Rk. II
+78	Pyrolure Rk. II
+78	Rime Snap Rk. II
+78	Rolling Lightning Rk. II
+79	Chaos Conflagration Rk. II
+79	Crystalwing Guard Rk. II
+79	Ethereal Rime Rk. II
+79	Euthanos' Flameblade Rk. II
+79	Flashflames Rk. II
+79	Glacial Collapse Rk. II
+79	Pyroclastic Eruption Rk. II
+80	Claw of Selig Rk. II
+80	Ethereal Incineration Rk. II
+80	Icicle Storm Rk. II
+80	Inizen's Fire Rk. II
+80	Netherstep Rk. II
+80	Tangleweave Energy Rk. II
+80	Telajasz Rk. II
+81	Aegis of Calrena Rk. II
+81	Concussive Flash Rk. II
+81	Nethervoid March Rk. II
+81	Shield of the Void Rk. II
+81	Tears of the Pyrilen Rk. II
+81	Voidfrost Lure Rk. II
+81	Wildmagic Blast Rk. II
+82	Cloudburst Levin Rk. II
+82	Leap of Static Jolts Rk. II
+82	Mindfreeze Rk. II
+82	Serene Harvest Rk. II
+82	Talendor's Presence Rk. II
+83	Crystallizing Circle Rk. II
+83	Flarelure Rk. II
+83	Funnel of Frigidity Rk. II
+83	Gelid Snap Rk. II
+83	Leap of Lightning Sprites Rk. II
+83	Nethermist Guard Rk. II
+83	Ribbon Lightning Rk. II
+83	Squamae of the Crystalwing Rk. II
+84	Chaos Combustion Rk. II
+84	Crystalwing Shell Rk. II
+84	Daveron's Pyroblade Rk. II
+84	Ethereal Iceblight Rk. II
+84	Flashblaze Rk. II
+84	Icesheet Cascade Rk. II
+84	Magmatic Eruption Rk. II
+84	Malediction of Havoc Rk. II
+85	Claw of Gorenaire Rk. II
+85	Ethereal Combustion Rk. II
+85	Icicle Torrent Rk. II
+85	Klixcxyk's Fire Rk. II
+85	Self-Immolation Rk. II
+85	Splash of Brimstone Rk. II
+85	Telajara Rk. II
+85	Thricewoven Energy Rk. II
+86	Aegis of Lithara Rk. II
+86	Concussive Burst Rk. II
+86	Corona Beam Rk. II
+86	Fire Vortex Rk. II
+86	Glacial Lure Rk. II
+86	Shield of Dreams Rk. II
+86	Tears of Flame Rk. II
+86	Wildmana Barrage Rk. II
+87	Brainfreeze Rk. II
+87	Cloudburst Storm Rk. II
+87	Glacial Pillar Rk. II
+87	Leap of Corposantum Rk. II
+87	Ring of Fire Rk. II
+87	Soothing Harvest Rk. II
+88	Beam of Permafrost Rk. II
+88	Dermis of the Crystalwing Rk. II
+88	Flamelure Rk. II
+88	Freezing Snap Rk. II
+88	Lightning Helix Rk. II
+88	Lightning Surge Rk. II
+88	Mana Vortex Rk. II
+88	Murkmist Guard Rk. II
+89	Blazing Pillar Rk. II
+89	Chaos Char Rk. II
+89	Crystalwing Carapace Rk. II
+89	Denunciation of Havoc Rk. II
+89	Ethereal Glaciation Rk. II
+89	Flashpyre Rk. II
+89	Glacial Cascade Rk. II
+89	Lithara's Pyroblade Rk. II
+89	Magmatic Downpour Rk. II
+90	Ethereal Inferno Rk. II
+90	Glacial Claw Rk. II
+90	Hail Torrent Rk. II
+90	Ice Vortex Rk. II
+90	Lithara's Fire Rk. II
+90	Maelstrom of Mana Rk. II
+90	Self-Annihilation Rk. II
+90	Splash of Rhyolite Rk. II
+90	Telakama Rk. II
+90	Thricewoven Electricity Rk. II
+91	Aegis of Alra Rk. II
+91	Blazing Beam Rk. II
+91	Concussive Barrage Rk. II
+91	Flame Vortex Rk. II
+91	Frigid Lure Rk. II
+91	Katelanama Rk. II
+91	Shield of Bronze Rk. II
+91	Tears of Daevan Rk. II
+91	Wildspark Barrage Rk. II
+92	Cloudburst Tempest Rk. II
+92	Ethereal Barrage Rk. II
+92	Frozen Pillar Rk. II
+92	Leap of Plasma Rk. II
+92	Placid Harvest Rk. II
+92	Ring of Flame Rk. II
+92	Thoughtfreeze Rk. II
+93	Armor of the Crystalwing Rk. II
+93	Atol's Concussive Shackles Rk. II
+93	Beam of Rime Crystals Rk. II
+93	Blazelure Rk. II
+93	Frost Snap Rk. II
+93	Lightning Swarm Rk. II
+93	Power Vortex Rk. II
+93	Shademist Guard Rk. II
+93	Staccato Lightning Rk. II
+94	Burning Pillar Rk. II
+94	Burnmaster's Pyroblade Rk. II
+94	Chaos Blaze Rk. II
+94	Crystalwing Husk Rk. II
+94	Ethereal Frost Rk. II
+94	Flashflares Rk. II
+94	Magmatic Outburst Rk. II
+94	Rime Cascade Rk. II
+94	Villification of Havoc Rk. II
+95	Claw of the Abyss Rk. II
+95	Daevan's Fire Rk. II
+95	Ethereal Blaze Rk. II
+95	Frost Torrent Rk. II
+95	Frost Vortex Rk. II
+95	Maelstrom of Power Rk. II
+95	Self-Devastation Rk. II
+95	Splash of Phenocrysts Rk. II
+95	Telanama Rk. II
+95	Thricewoven Potential Rk. II
+96	Aegis of Velishan Rk. II
+96	Claw of the Ashwing Rk. II
+96	Concussive Salvo Rk. II
+96	Depart Rk. II
+96	Incandescent Vortex Rk. II
+96	Incinerating Beam Rk. II
+96	Katelanaka Rk. II
+96	Lure of the Wastes Rk. II
+96	Shield of the Dauntless Rk. II
+96	Tears of Gosik Rk. II
+96	Wildether Barrage Rk. II
+97	Bucolic Harvest Rk. II
+97	Circle of Flame Rk. II
+97	Cloudburst Thunderbolt Rk. II
+97	Ethereal Salvo Rk. II
+97	Icebound Pillar Rk. II
+97	Leap of Static Sparks Rk. II
+97	Permeating Ether Rk. II
+97	Shield of Fate Rk. II
+97	Skullfreeze Rk. II
+98	Armor of the Stonescale Rk. II
+98	Barbed Lightning Rk. II
+98	Bleakmist Guard Rk. II
+98	Claw of the Flamewing Rk. II
+98	Ether Vortex Rk. II
+98	Flashfreeze Rk. II
+98	Frigid Beam Rk. II
+98	Lightning Squall Rk. II
+98	Magmalure Rk. II
+98	Mirror Rk. II
+98	Permeating Blaze Rk. II
+98	Permeating Ice Rk. II
+99	Bucolic Gambit Rk. II
+99	Chaos Incandescence Rk. II
+99	Ethereal Hoarfrost Rk. II
+99	Flamelocked Pillar Rk. II
+99	Flashsear Rk. II
+99	Hoarfrost Cascade Rk. II
+99	Ice Slab Rk. II
+99	Magmatic Vent Rk. II
+99	Mul's Pyroblade Rk. II
+99	Stonescale Husk Rk. II
+100	Claw of the Icewing Rk. II
+100	Ethereal Incandescence Rk. II
+100	Ethereal Weave Rk. II
+100	Gosik's Fire Rk. II
+100	Hoarfrost Vortex Rk. II
+100	Self-Destruction Rk. II
+100	Splash of Pyroxene Rk. II
+100	Tamagrist Torrent Rk. II
+100	Telanaga Rk. II
+100	Thricewoven Mana Rk. II
+101	Aegis of Satum Rk. II
+101	Claw of the Indagatori Rk. II
+101	Combusting Beam Rk. II
+101	Concussive Storm Rk. II
+101	Katelanara Rk. II
+101	Lure of the Depths Rk. II
+101	Shield of the Pellarus Rk. II
+101	Tears of Narendi Rk. II
+101	Wildflash Barrage Rk. II
+102	Cloudburst Stormstrike Rk. II
+102	Corona of Flame Rk. II
+102	Ethereal Flash Rk. II
+102	Frostbound Alliance Rk. II
+102	Leap of Stormbolts Rk. II
+102	Quiescent Harvest Rk. II
+102	Shield of Consequence Rk. II
+102	Silverstorm Pillar Rk. II
+102	Synapsefreeze Rk. II
+103	Armor of the Codex Rk. II
+103	Chaos Scintillation Rk. II
+103	Claw of the Flameweaver Rk. II
+103	Darkmist Guard Rk. II
+103	Flashrime Rk. II
+103	Forked Lightning Rk. II
+103	Funnel of the Frostdeep Rk. II
+103	Lightning Storm Rk. II
+103	Plasmalure Rk. II
+103	Shocking Vortex Rk. II
+104	Doomscale Husk Rk. II
+104	Ethereal Rimeblast Rk. II
+104	Flashchar Rk. II
+104	Ice Grinder Rk. II
+104	Magmatic Burst Rk. II
+104	Quiescent Gambit Rk. II
+104	Rimeblast Cascade Rk. II
+104	Skyblaze Pillar Rk. II
+104	Yulin's Pyroblade Rk. II
+105	Claw of the Oceanlord Rk. II
+105	Darkwater Torrent Rk. II
+105	Ethereal Fuse Rk. II
+105	Ethereal Skyblaze Rk. II
+105	Narendi's Fire Rk. II
+105	Self-Combustion Rk. II
+105	Telanara Rk. II
+105	Thricewoven Stormstrike Rk. II
+106	Aegis of the Arcron Rk. II
+106	Burning Beam Rk. II
+106	Claw of Ellarr Rk. II
+106	Concussive Volley Rk. II
+106	Katelanata Rk. II
+106	Lure of Travenro Rk. II
+106	Shield of Scales Rk. II
+106	Tears of Dragoflux Rk. II
+106	Wildflash Strike Rk. II
+107	Cloudburst Thunderbolt Rk. II
+107	Cortexfreeze Rk. II
+107	Ethereal Volley Rk. II
+107	Frostbite Pillar Rk. II
+107	Frostbound Covenant Rk. II
+107	Leap of Stormjolts Rk. II
+107	Musing Harvest Rk. II
+107	Shield of Order Rk. II
+107	Wheel of Flame Rk. II
+108	Armor of Wirn Rk. II
+108	Chaos Burn Rk. II
+108	Claw of Qunard Rk. II
+108	Divergent Lightning Rk. II
+108	Flashfrost Rk. II
+108	Funnel of Frostbite Rk. II
+108	Lightning Tempest Rk. II
+108	Lure of Qunard Rk. II
+108	Stormjolt Vortex Rk. II
+108	Torsis Guard Rk. II
+109	Arcron Husk Rk. II
+109	Ethereal Icefloe Rk. II
+109	Flashburn Rk. II
+109	Icefloe Cascade Rk. II
+109	Magmatic Explosion Rk. II
+109	Skyfire Pillar Rk. II
+109	Virnax's Pyroblade Rk. II
+110	Claw of Travenro Rk. II
+110	Dragoflux's Fire Rk. II
+110	Ethereal Skyfire Rk. II
+110	Frostbite Torrent Rk. II
+110	Musing Gambit Rk. II
+110	Telanata Rk. II
+110	Thricewoven Capacity Rk. II
+111	Aegis of the Icebound Rk. II
+111	Claw of Feshlak Rk. II
+111	Concussive Shock Rk. II
+111	Katelanaga Rk. II
+111	Lure of Restless Ice Rk. II
+111	Restless Ice Block Rk. II
+111	Scorching Beam Rk. III
+111	Shield of Restless Ice Rk. III
+111	Tears of Wildfire Rk. II
+111	Wildscorch Strike Rk. II
+112	Cloudburst Stormbolt Rk. II
+112	Ethereal Blast Rk. II
+112	Frostbound Coalition Rk. II
+112	Leap of Stormsparks Rk. II
+112	Loop of Flame Rk. II
+112	Neurofreeze Rk. II
+112	Quiet Harvest Rk. II
+112	Restless Ice Pillar Rk. II
+112	Shield of Destiny Rk. II
+113	Aegis of the Crystalwing Rk. II
+113	Chaos Inferno Rk. II
+113	Claw of Sontalak Rk. II
+113	Coldburst Rk. II
+113	Coldmist Guard Rk. II
+113	Funnel of Restless Ice Rk. II
+113	Lightning Roar Rk. II
+113	Lure of Sontalak Rk. II
+113	Spiked Lightning Rk. II
+113	Thaumaturgic Vortex Rk. II
+114	Fiery Pillar Rk. II
+114	Flashbrand Rk. II
+114	Frostscale Husk Rk. II
+114	Restless Ice Cascade Rk. II
+114	Restless Ice Comet Rk. II
+114	Ricartine's Pyroblade Rk. II
+114	Self-Incineration Rk. II
+114	Volcanic Downpour Rk. II
+115	Claw of Gozzrem Rk. II
+115	Coldburst Torrent Rk. II
+115	Dagarn's Fire Rk. II
+115	Ethereal Brand Rk. II
+115	Idyllic Gambit Rk. II
+115	Telajaga Rk. II
+115	Thricewoven Radiance Rk. II
+116	Aegis of the Umbra Rk. II
+116	Claw of Itzal Rk. II
+116	Concussive Fusillade Rk. II
+116	Ecliptic Fire
+116	Katelamara Rk. II
+116	Lure of the Cold Moon Rk. II
+116	Shield of Shadow Rk. II
+116	Tears of Night Fire Rk. II
+116	Vaporizing Beam Rk. II
+116	Wildflame Strike Rk. II
+117	Cerebrumfreeze Rk. II
+117	Cloudburst Joltstrike Rk. II
+117	Coil of Flame Rk. II
+117	Darkice Pillar Rk. II
+117	Ethereal Mortar Rk. II
+117	Frostbound Conjunction
+117	Leap of Levinsparks Rk. II
+117	Shadow Harvest Rk. II
+117	Shield of Inevitability Rk. II
+118	Branched Lightning Rk. II
+118	Chaos Whirl Rk. II
+118	Chillblast Rk. II
+118	Chillmist Guard Rk. II
+118	Claw of the Duskflame Rk. II
+118	Funnel of Umbra Ice Rk. II
+118	Lightning Maelstrom Rk. II
+118	Lure of Fyrthek Rk. II
+118	Scales of the Crystalwing Rk. II
+118	Shadebright Vortex
+119	Diabo Xi Fer's Pyroblade Rk. II
+119	Exfiltrate
+119	Flashbroil Rk. II
+119	Lunar Ice Comet Rk. II
+119	Moonflame Pillar Rk. II
+119	Moonscale Husk Rk. II
+119	Tundra Ice Cascade Rk. II
+119	Volcanic Barrage Rk. II
+120	Anodyne Gambit
+120	Claw of the Void Rk. II
+120	Ethereal Ignition Rk. II
+120	Hypothermic Torrent Rk. II
+120	Teladaja Rk. II
+120	The Diabo's Fire Rk. II
+120	Thricewoven Lunacy Rk. II
+121	Aegis of Remembrance Rk. III
+121	Claw of the Battleforged Rk. III
+121	Concussive Blast Rk. III
+121	Cremating Beam Rk. III
+121	Glacial Ice Block Rk. III
+121	Katelamaka Rk. III
+121	Lure of Winter Memories Rk. III
+121	Shield of Memories Rk. III
+121	Wildspell Strike Rk. III
+122	Cloudburst Lightningstrike Rk. III
+122	Contemplative Harvest Rk. III
+122	Ethereal Blitz Rk. III
+122	Frostbound Covariance Rk. III
+122	Gyre of Flame Rk. III
+122	Leap of Static Arcs Rk. III
+122	Rime Pillar Rk. III
+122	Shield of Inescapability Rk. III
+122	Spinalfreeze Rk. III
+123	Chaos Flare Rk. III
+123	Claw of Ingot Rk. III
+123	Coolmist Guard Rk. III
+123	Frostblast Rk. III
+123	Funnel of Uncia Rk. III
+123	Lightning Cyclone Rk. III
+123	Lure of the Arcanaforged Rk. III
+123	Mail of the Crystalwing Rk. III
+123	Ruined Relic Gate
+124	Bifurcated Lightning Rk. III
+124	Ethereal Freeze Rk. III
+124	Flashroast Rk. III
+124	Glacial Ice Cascade Rk. III
+124	Planescale Husk Rk. III
+124	Ruined Relic Portal
+124	Self-Ignition Rk. III
+124	Translocate: Ruined Relic
+124	Volcanic Burst Rk. III
+125	Claw of Ankexfen Rk. III
+125	Contemplative Gambit Rk. III
+125	Ethereal Immolation Rk. III
+125	Kindleheart's Fire Rk. III
+125	Rimeclaw Torrent Rk. III
+125	Tears of the Rescued Rk. III
+125	Teladaka Rk. III
+125	Thricewoven Effulgence Rk. III
+126	Aegis of Feish Rk. II
+126	Claw of Windshear Rk. II
+126	Concussive Blast XII Rk. II
+126	Corona Beam X Rk. II
+126	Katelaka VIII Rk. II
+126	Shielding XXIII Rk. II
+126	Wildmagic Strike XII Rk. II
+127	Cloudburst Strike XII Rk. II
+127	Ethereal Barrage VIII Rk. II
+127	Frost Pillar XIII Rk. II
+127	Harvest XIII Rk. II
+127	Mindfreeze X Rk. II
+127	Ring of Fire XI Rk. II
+127	Shield of Fate VII Rk. II
+128	Chaos Flame XIII Rk. II
+128	Cold Snap XII Rk. II
+128	Funnel of Frost XI Rk. II
+128	Lightning Helix XII Rk. II
+128	Scales of the Crystalwing XIX Rk. II
+128	Tendrilmist Guard XII Rk. II
+129	Ethereal Ice XI Rk. II
+129	Fire Pillar XIII Rk. II
+129	Flashfires XII Rk. II
+129	Glacial Cascade XII Rk. II
+129	Leap of Lightning XIV Rk. II
+129	Volcanic Eruption XIV Rk. II
+130	Claw of Tsikut Rk. II
+130	Frost Storm XVII Rk. II
+130	Tears of Ashbark Rk. II
+130	Teknaz's Fire Rk. II
+130	Telaka XIX Rk. II

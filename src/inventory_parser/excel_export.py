@@ -1,0 +1,851 @@
+"""Export crew equipped gear to Excel."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from openpyxl import Workbook
+from openpyxl.styles import Alignment, Border, PatternFill, Side
+from openpyxl.utils import get_column_letter
+from openpyxl.worksheet.hyperlink import Hyperlink
+from openpyxl.worksheet.worksheet import Worksheet
+
+from inventory_parser.crew_report import CharacterGear, CrewGearReport
+from inventory_parser.achievement_report import AchievementReport
+from inventory_parser.achievement_parser import format_expansion_label
+from inventory_parser.spell_report import SpellRuneReport
+from inventory_parser.spell_runes import load_rune_config
+from inventory_parser.excel_theme import (
+    EVOLVER_FILL,
+    FILL_HEADER,
+    FILL_ITEM_EMPTY,
+    FILL_LABEL,
+    FILL_SHEET,
+    FILL_SPELL_COUNT,
+    FILL_SPELL_DETAIL,
+    FILL_SPELL_DETAIL_ALT,
+    FONT_BLOCK_HEADER,
+    FONT_BLOCK_SUB,
+    FONT_BODY,
+    FONT_COUNT,
+    FONT_HEADER,
+    FONT_LEGEND,
+    FONT_LEGEND_TITLE,
+    FONT_LINK,
+    FONT_SECTION,
+    SHEET_BACKGROUND_COLS,
+    SHEET_BACKGROUND_ROWS,
+    spell_block_header_fill,
+    spell_tier_fill,
+)
+from inventory_parser.evolver import EVOLVER_GAP_LABEL, EVOLVER_LABEL
+from inventory_parser.gear_sets import GEAR_SETS_NEWEST_FIRST, classify_gear_set
+from inventory_parser.items import EquippedItem
+from inventory_parser.slots import SlotFilter, slot_visibility, slots_for_export
+from inventory_parser.excel_theme import GEAR_SET_FILLS
+from inventory_parser.gear_tiers import SOR_GAP_LEGEND_ROWS, UNKNOWN_TIER_LABEL
+from inventory_parser.sor_tier import sor_gap_label
+from inventory_parser.unmade_gear import UnmadeGearEntry, build_unmade_gear_report
+
+_ALIGN = Alignment(horizontal="left", vertical="center", wrap_text=True)
+_ALIGN_HEADER = Alignment(horizontal="center", vertical="center")
+_ALIGN_CENTER = Alignment(horizontal="center", vertical="center")
+_ALIGN_WRAP = Alignment(horizontal="left", vertical="center", wrap_text=True)
+_SPELL_BORDER_COLOR = "404048"
+_SPELL_BORDER = Border(
+    left=Side(style="thin", color=_SPELL_BORDER_COLOR),
+    right=Side(style="thin", color=_SPELL_BORDER_COLOR),
+    top=Side(style="thin", color=_SPELL_BORDER_COLOR),
+    bottom=Side(style="thin", color=_SPELL_BORDER_COLOR),
+)
+_COL_SLOT_WIDTH = 13.0
+_COL_VISIBILITY_WIDTH = 14.0
+_COL_ITEM_WIDTH = 48.0
+_COL_SPELL_CHAR = 16.0
+_COL_SPELL_BLOCK = 12.0
+_COL_SPELL_LEVEL = 8.0
+_COL_SPELL_RUNE = 12.0
+_COL_SPELL_NAME = _COL_ITEM_WIDTH
+_FIRST_CHAR_COL = 3
+_LEGEND_TITLE_ROW = 25
+_LEGEND_FIRST_ROW = 26
+_LEGEND_LAST_ROW = 35
+_LEGEND_LABEL_MERGE_COLS = 5  # B through F
+_SOR_LEGEND_TITLE_ROW = 25
+_SOR_LEGEND_FIRST_ROW = 26
+
+GEAR_T_LEVEL_SHEET_NAME = "Gear T-Level"
+UNMADE_GEAR_SHEET_NAME = "Unmade Gear"
+MISSING_COLLECTIONS_SHEET_NAME = "Missing Collections"
+ACHIEVEMENT_SUMMARY_SHEET_NAME = "Achievement Summary"
+RAID_ACHIEVEMENTS_SHEET_NAME = "Raid Achievements"
+
+
+def write_crew_workbook(
+    report: CrewGearReport,
+    output_path: Path,
+    *,
+    slot_filter: SlotFilter = "all",
+    spell_report: SpellRuneReport | None = None,
+    achievement_report: AchievementReport | None = None,
+) -> Path:
+    """Write crew gear workbook with item sheet and SOR gap tracking sheet."""
+    output_path = Path(output_path)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+
+    base_slots = slots_for_export(slot_filter)
+    slots_tab1 = list(base_slots)
+    slots_tab2 = _slots_for_sor_sheet(report, base_slots)
+
+    wb = Workbook()
+
+    ws_gear = wb.active
+    ws_gear.title = "Crew gear"
+    _write_crew_gear_sheet(ws_gear, report, slots_tab1)
+
+    ws_sor = wb.create_sheet(GEAR_T_LEVEL_SHEET_NAME)
+    _write_sor_gaps_sheet(ws_sor, report, slots_tab2)
+
+    if spell_report is not None:
+        ws_runes = wb.create_sheet("Missing Runes")
+        _write_missing_runes_sheet(ws_runes, report, spell_report)
+        ws_list = wb.create_sheet("Spell List")
+        _write_spell_list_sheet(ws_list, report, spell_report)
+
+    unmade_entries = build_unmade_gear_report(report)
+    if unmade_entries:
+        ws_unmade = wb.create_sheet(UNMADE_GEAR_SHEET_NAME)
+        _write_unmade_gear_sheet(ws_unmade, unmade_entries)
+
+    if achievement_report is not None:
+        if achievement_report.missing_collections:
+            ws_missing = wb.create_sheet(MISSING_COLLECTIONS_SHEET_NAME)
+            _write_missing_collections_sheet(ws_missing, achievement_report)
+        if achievement_report.summaries:
+            ws_summary = wb.create_sheet(ACHIEVEMENT_SUMMARY_SHEET_NAME)
+            _write_achievement_summary_sheet(ws_summary, achievement_report)
+        if achievement_report.raid_achievements:
+            ws_raids = wb.create_sheet(RAID_ACHIEVEMENTS_SHEET_NAME)
+            _write_raid_achievements_sheet(ws_raids, achievement_report)
+
+    return _save_with_fallback(wb, output_path)
+
+
+def _slots_for_sor_sheet(report: CrewGearReport, base_slots: tuple[str, ...]) -> tuple[str, ...]:
+    """Drop Secondary unless at least one character had it equipped on the gear sheet."""
+    slots = list(base_slots)
+    if "Secondary" in slots and not any("Secondary" in c.slots for c in report.characters):
+        slots.remove("Secondary")
+    return tuple(slots)
+
+
+def _write_crew_gear_sheet(ws: Worksheet, report: CrewGearReport, slots: tuple[str, ...]) -> None:
+    ws.sheet_properties.tabColor = "000000"
+    _fill_sheet_background(ws)
+    num_cols = _write_sheet_header(ws, report)
+    for row_idx, slot in enumerate(slots, start=2):
+        _write_slot_label_cells(ws, row_idx, slot)
+        for col in range(_FIRST_CHAR_COL, num_cols + 1):
+            char_row = report.characters[col - _FIRST_CHAR_COL]
+            item = char_row.slots.get(slot)
+            if item is None:
+                ws.cell(row_idx, col).fill = FILL_ITEM_EMPTY
+                continue
+            _write_item_cell(ws, row_idx, col, item)
+    if slots:
+        _apply_auto_filter(ws, num_cols, len(slots))
+    _write_gear_legend_on_sheet(ws)
+
+
+def _write_sor_gaps_sheet(ws: Worksheet, report: CrewGearReport, slots: tuple[str, ...]) -> None:
+    ws.sheet_properties.tabColor = "542A35"
+    _fill_sheet_background(ws)
+    num_cols = _write_sheet_header(ws, report)
+    for row_idx, slot in enumerate(slots, start=2):
+        _write_slot_label_cells(ws, row_idx, slot)
+        for col in range(_FIRST_CHAR_COL, num_cols + 1):
+            char_row = report.characters[col - _FIRST_CHAR_COL]
+            item = char_row.slots.get(slot)
+            label = sor_gap_label(
+                item.name if item else None,
+                is_evolver=item.is_evolver if item else False,
+            )
+            if label:
+                cell = ws.cell(row_idx, col, label)
+                cell.font = FONT_BODY
+                cell.alignment = _ALIGN
+                cell.fill = _fill_for_tier_code(label)
+            else:
+                ws.cell(row_idx, col).fill = FILL_ITEM_EMPTY
+    if slots:
+        _apply_auto_filter(ws, num_cols, len(slots))
+    _write_sor_legend_on_sheet(ws)
+
+
+def _write_sheet_header(ws: Worksheet, report: CrewGearReport) -> int:
+    headers = ("Slot", "Visibility", *(r.display_name for r in report.characters))
+    for col, title in enumerate(headers, start=1):
+        cell = ws.cell(1, col, title)
+        cell.font = FONT_HEADER
+        cell.alignment = _ALIGN_HEADER
+        cell.fill = FILL_HEADER
+    ws.column_dimensions["A"].width = _COL_SLOT_WIDTH
+    ws.column_dimensions["B"].width = _COL_VISIBILITY_WIDTH
+    for col in range(_FIRST_CHAR_COL, _FIRST_CHAR_COL + len(report.characters)):
+        ws.column_dimensions[ws.cell(1, col).column_letter].width = _COL_ITEM_WIDTH
+    return len(headers)
+
+
+def _write_slot_label_cells(ws: Worksheet, row_idx: int, slot: str) -> None:
+    slot_cell = ws.cell(row_idx, 1, slot)
+    slot_cell.font = FONT_BODY
+    slot_cell.alignment = _ALIGN
+    slot_cell.fill = FILL_LABEL
+    vis_cell = ws.cell(row_idx, 2, slot_visibility(slot))
+    vis_cell.font = FONT_BODY
+    vis_cell.alignment = _ALIGN
+    vis_cell.fill = FILL_LABEL
+
+
+def _fill_for_tier_code(code: str):
+    from openpyxl.styles import PatternFill
+
+    if code == EVOLVER_GAP_LABEL:
+        return EVOLVER_FILL
+    color = _TIER_CODE_FILL_COLORS.get(code)
+    if color is not None:
+        return PatternFill("solid", fgColor=color)
+    if code == UNKNOWN_TIER_LABEL:
+        return PatternFill("solid", fgColor="542A35")
+    return FILL_ITEM_EMPTY
+
+
+_TIER_CODE_FILL_COLORS: dict[str, str] = {
+    "SOR-R2": GEAR_SET_FILLS["fracture"],
+    "SOR-R1": GEAR_SET_FILLS["shattered_dominion"],
+    "TOB-R2": GEAR_SET_FILLS["rebellion"],
+    "TOB-R1": GEAR_SET_FILLS["bound"],
+    "LS-R2": GEAR_SET_FILLS["eternal_reverie"],
+    "LS-R1": GEAR_SET_FILLS["heroic_reflections"],
+    "NoS-R2": GEAR_SET_FILLS["spectral_luclinite"],
+    "NoS-R1": GEAR_SET_FILLS["spectral_luminosity"],
+    "SOR-G3": "3A3350",
+    "SOR-G2": "403850",
+    "SOR-G1": "453850",
+    "TOB-G3": "4A3848",
+    "TOB-G2": "503848",
+    "TOB-G1": "543848",
+    "LS-G3": "2E4050",
+    "LS-G2": "344850",
+    "LS-G1": "3A4850",
+    "NoS-G3": "344838",
+    "NoS-G2": "3A4838",
+    "NoS-G1": "404838",
+    "ANI27": "2A4555",
+}
+
+
+def _fill_sheet_background(
+    ws: Worksheet,
+    *,
+    max_row: int | None = None,
+    max_col: int = SHEET_BACKGROUND_COLS,
+) -> None:
+    rows = max_row if max_row is not None else SHEET_BACKGROUND_ROWS
+    for row in range(1, rows + 1):
+        for col in range(1, max_col + 1):
+            ws.cell(row, col).fill = FILL_SHEET
+
+
+def _spell_list_last_row(entry_count: int) -> int:
+    """Last row on Spell List: banner, header, entries, spacer, footer note."""
+    return 6 + entry_count
+
+
+def _fill_for_equipped_item(item: EquippedItem):
+    gear_set = classify_gear_set(item.name)
+    if gear_set is not None:
+        return gear_set.fill
+    if item.is_evolver:
+        return EVOLVER_FILL
+    return FILL_ITEM_EMPTY
+
+
+def _write_item_cell(ws: Worksheet, row_idx: int, col: int, item: EquippedItem) -> None:
+    cell = ws.cell(row_idx, col, item.name)
+    cell.alignment = _ALIGN
+    cell.fill = _fill_for_equipped_item(item)
+    url = item.eqresource_url
+    cell.font = FONT_LINK if url else FONT_BODY
+    if url:
+        cell.hyperlink = Hyperlink(ref=cell.coordinate, target=url)
+
+
+def _write_gear_legend_on_sheet(ws: Worksheet) -> None:
+    title = ws.cell(_LEGEND_TITLE_ROW, 1, "Gear sets (newest to oldest)")
+    title.font = FONT_LEGEND_TITLE
+    title.fill = FILL_HEADER
+    title.alignment = _ALIGN
+    ws.merge_cells(
+        start_row=_LEGEND_TITLE_ROW,
+        start_column=1,
+        end_row=_LEGEND_TITLE_ROW,
+        end_column=_LEGEND_LABEL_MERGE_COLS,
+    )
+    for col in range(1, _LEGEND_LABEL_MERGE_COLS + 1):
+        ws.cell(_LEGEND_TITLE_ROW, col).fill = FILL_HEADER
+
+    legend_rows = ((EVOLVER_FILL, EVOLVER_LABEL), *((g.fill, g.label) for g in GEAR_SETS_NEWEST_FIRST))
+    expected = _LEGEND_LAST_ROW - _LEGEND_FIRST_ROW + 1
+    if len(legend_rows) != expected:
+        raise ValueError(
+            f"Expected {expected} legend rows for A{_LEGEND_FIRST_ROW}:A{_LEGEND_LAST_ROW}, "
+            f"got {len(legend_rows)}"
+        )
+
+    for offset, (fill, label_text) in enumerate(legend_rows):
+        row = _LEGEND_FIRST_ROW + offset
+        ws.cell(row, 1).fill = fill
+        label = ws.cell(row, 2, label_text)
+        label.font = FONT_LEGEND
+        label.fill = FILL_LABEL
+        label.alignment = _ALIGN
+        ws.merge_cells(
+            start_row=row,
+            start_column=2,
+            end_row=row,
+            end_column=_LEGEND_LABEL_MERGE_COLS,
+        )
+        for col in range(2, _LEGEND_LABEL_MERGE_COLS + 1):
+            ws.cell(row, col).fill = FILL_LABEL
+
+
+def _write_sor_legend_on_sheet(ws: Worksheet) -> None:
+    title = ws.cell(_SOR_LEGEND_TITLE_ROW, 1, "Gear tier codes")
+    title.font = FONT_LEGEND_TITLE
+    title.fill = FILL_HEADER
+    title.alignment = _ALIGN
+    ws.merge_cells(
+        start_row=_SOR_LEGEND_TITLE_ROW,
+        start_column=1,
+        end_row=_SOR_LEGEND_TITLE_ROW,
+        end_column=_LEGEND_LABEL_MERGE_COLS,
+    )
+    for col in range(1, _LEGEND_LABEL_MERGE_COLS + 1):
+        ws.cell(_SOR_LEGEND_TITLE_ROW, col).fill = FILL_HEADER
+
+    for offset, (code, desc) in enumerate(SOR_GAP_LEGEND_ROWS):
+        row = _SOR_LEGEND_FIRST_ROW + offset
+        code_cell = ws.cell(row, 1, code or "")
+        code_cell.font = FONT_BODY
+        code_cell.alignment = _ALIGN
+        code_cell.fill = _fill_for_tier_code(code) if code else FILL_ITEM_EMPTY
+        label = ws.cell(row, 2, desc)
+        label.font = FONT_LEGEND
+        label.fill = FILL_LABEL
+        label.alignment = _ALIGN
+        ws.merge_cells(
+            start_row=row,
+            start_column=2,
+            end_row=row,
+            end_column=_LEGEND_LABEL_MERGE_COLS,
+        )
+        for col in range(2, _LEGEND_LABEL_MERGE_COLS + 1):
+            ws.cell(row, col).fill = FILL_LABEL
+
+
+def _apply_auto_filter(ws: Worksheet, num_cols: int, num_slot_rows: int) -> None:
+    last_col = get_column_letter(num_cols)
+    last_row = 1 + num_slot_rows
+    ws.auto_filter.ref = f"A1:{last_col}{last_row}"
+
+
+def _apply_spell_cell_border(ws: Worksheet, row: int, col: int) -> None:
+    ws.cell(row, col).border = _SPELL_BORDER
+
+
+def _apply_spell_table_borders(
+    ws: Worksheet, min_row: int, max_row: int, min_col: int, max_col: int
+) -> None:
+    for r in range(min_row, max_row + 1):
+        for c in range(min_col, max_col + 1):
+            _apply_spell_cell_border(ws, r, c)
+
+
+def _merge_spell_row(
+    ws: Worksheet, row: int, min_col: int, max_col: int, fill: PatternFill | None = None
+) -> None:
+    if max_col <= min_col:
+        return
+    ws.merge_cells(
+        start_row=row,
+        start_column=min_col,
+        end_row=row,
+        end_column=max_col,
+    )
+    if fill is None:
+        return
+    for col in range(min_col, max_col + 1):
+        ws.cell(row, col).fill = fill
+
+
+def _write_spell_summary_section(
+    ws: Worksheet,
+    *,
+    start_row: int,
+    block,
+    tiers: tuple[str, ...],
+    characters: list[CharacterGear],
+    spell_report: SpellRuneReport,
+) -> int:
+    """Rune count matrix for one level block; returns next free row."""
+    summary_cols = max(2, 1 + len(characters))
+    last_col = summary_cols
+    block_fill = spell_block_header_fill(block.label)
+    expansions = ", ".join(block.expansions)
+
+    title = ws.cell(start_row, 1, f"Levels {block.label}")
+    title.font = FONT_BLOCK_HEADER
+    title.fill = block_fill
+    title.alignment = _ALIGN_WRAP
+    sub = ws.cell(start_row + 1, 1, f"{expansions} · {block.turn_in_theme}")
+    sub.font = FONT_BLOCK_SUB
+    sub.fill = block_fill
+    sub.alignment = _ALIGN_WRAP
+    _merge_spell_row(ws, start_row, 1, last_col, block_fill)
+    _merge_spell_row(ws, start_row + 1, 1, last_col, block_fill)
+    ws.row_dimensions[start_row].height = 20
+    ws.row_dimensions[start_row + 1].height = 18
+
+    header_row = start_row + 2
+    label_cell = ws.cell(header_row, 1, "Rune tier")
+    label_cell.font = FONT_HEADER
+    label_cell.fill = FILL_HEADER
+    label_cell.alignment = _ALIGN_HEADER
+    for col, char in enumerate(characters, start=2):
+        c = ws.cell(header_row, col, char.display_name)
+        c.font = FONT_HEADER
+        c.fill = FILL_HEADER
+        c.alignment = _ALIGN_HEADER
+    _apply_spell_table_borders(ws, header_row, header_row, 1, last_col)
+
+    row = header_row + 1
+    for tier in tiers:
+        tier_fill = spell_tier_fill(tier)
+        tier_cell = ws.cell(row, 1, tier)
+        tier_cell.font = FONT_BODY
+        tier_cell.fill = tier_fill
+        tier_cell.alignment = _ALIGN
+        for col, char in enumerate(characters, start=2):
+            count = spell_report.counts_by_persona.get(char.persona_key, {}).get(block.label, {}).get(
+                tier, 0
+            )
+            cell = ws.cell(row, col, count if count else "")
+            cell.alignment = _ALIGN_CENTER
+            if count:
+                cell.font = FONT_COUNT
+                cell.fill = FILL_SPELL_COUNT
+            else:
+                cell.font = FONT_BODY
+                cell.fill = FILL_ITEM_EMPTY
+        _apply_spell_table_borders(ws, row, row, 1, last_col)
+        row += 1
+
+    return row + 1
+
+
+def _spell_characters(crew: CrewGearReport, spell_report: SpellRuneReport) -> list[CharacterGear]:
+    personas = crew.spell_characters if crew.spell_characters else crew.characters
+    if spell_report.persona_keys:
+        by_persona = {c.persona_key: c for c in personas}
+        return [by_persona[pk] for pk in spell_report.persona_keys if pk in by_persona]
+    return list(personas)
+
+
+def _write_spell_sheet_banner(
+    ws: Worksheet,
+    *,
+    title: str,
+    subtitle: str,
+    merge_cols: int,
+) -> int:
+    """Title + subtitle rows; returns the next free row."""
+    row = 1
+    title_cell = ws.cell(row, 1, title)
+    title_cell.font = FONT_SECTION
+    title_cell.fill = FILL_HEADER
+    title_cell.alignment = _ALIGN
+    sub_cell = ws.cell(row + 1, 1, subtitle)
+    sub_cell.font = FONT_LEGEND
+    sub_cell.fill = FILL_HEADER
+    sub_cell.alignment = _ALIGN
+    _merge_spell_row(ws, row, 1, merge_cols, FILL_HEADER)
+    _merge_spell_row(ws, row + 1, 1, merge_cols, FILL_HEADER)
+    ws.row_dimensions[row].height = 24
+    return row + 3
+
+
+def _write_missing_runes_sheet(
+    ws: Worksheet,
+    crew: CrewGearReport,
+    spell_report: SpellRuneReport,
+) -> None:
+    ws.sheet_properties.tabColor = "5C4688"
+    _fill_sheet_background(ws)
+    config = load_rune_config()
+    tiers = config.tiers
+    characters = _spell_characters(crew, spell_report)
+    summary_cols = max(2, 1 + len(characters))
+
+    row = _write_spell_sheet_banner(
+        ws,
+        title="Missing Runes",
+        subtitle="Rank III runes still needed per character · counts by level band",
+        merge_cols=summary_cols,
+    )
+
+    for block in spell_report.blocks:
+        row = _write_spell_summary_section(
+            ws,
+            start_row=row,
+            block=block,
+            tiers=tiers,
+            characters=characters,
+            spell_report=spell_report,
+        )
+
+    note = ws.cell(
+        row,
+        1,
+        "Counts are missing Rk. III spells only. Rune tier = turn-in type (Minor → Glowing). "
+        "See Spell List tab for individual spells.",
+    )
+    note.font = FONT_LEGEND
+    note.fill = FILL_SHEET
+    note.alignment = _ALIGN_WRAP
+    _merge_spell_row(ws, row, 1, summary_cols)
+
+    ws.column_dimensions["A"].width = 14.0
+    for col in range(2, 2 + len(characters)):
+        ws.column_dimensions[get_column_letter(col)].width = 11.0
+
+
+def _write_spell_list_sheet(
+    ws: Worksheet,
+    crew: CrewGearReport,
+    spell_report: SpellRuneReport,
+) -> None:
+    ws.sheet_properties.tabColor = "3D4A6E"
+    last_row = _spell_list_last_row(len(spell_report.entries))
+    _fill_sheet_background(ws, max_row=last_row)
+
+    row = _write_spell_sheet_banner(
+        ws,
+        title="Spell List",
+        subtitle="Every missing Rank III spell from /outputfile missingspells",
+        merge_cols=5,
+    )
+
+    detail_headers = ("Character", "Levels", "Level", "Rune", "Spell")
+    for col, header in enumerate(detail_headers, start=1):
+        cell = ws.cell(row, col, header)
+        cell.font = FONT_HEADER
+        cell.fill = FILL_HEADER
+        cell.alignment = _ALIGN_HEADER
+    detail_header_row = row
+    _apply_spell_table_borders(ws, detail_header_row, detail_header_row, 1, 5)
+    row += 1
+
+    prev_display_name: str | None = None
+    stripe = 0
+    for entry in spell_report.entries:
+        if entry.display_name != prev_display_name:
+            stripe = 1 - stripe
+            prev_display_name = entry.display_name
+        row_fill = FILL_SPELL_DETAIL_ALT if stripe else FILL_SPELL_DETAIL
+        block_fill = spell_block_header_fill(entry.block_label)
+
+        char_cell = ws.cell(row, 1, entry.display_name)
+        char_cell.font = FONT_BODY
+        char_cell.alignment = _ALIGN
+        char_cell.fill = row_fill
+
+        block_cell = ws.cell(row, 2, entry.block_label)
+        block_cell.font = FONT_BODY
+        block_cell.alignment = _ALIGN_CENTER
+        block_cell.fill = block_fill
+
+        level_cell = ws.cell(row, 3, entry.level)
+        level_cell.font = FONT_BODY
+        level_cell.alignment = _ALIGN_CENTER
+        level_cell.fill = row_fill
+
+        rune_cell = ws.cell(row, 4, entry.rune_tier)
+        rune_cell.font = FONT_BODY
+        rune_cell.alignment = _ALIGN_CENTER
+        rune_cell.fill = spell_tier_fill(entry.rune_tier)
+
+        spell_cell = ws.cell(row, 5, entry.spell_name)
+        spell_cell.font = FONT_BODY
+        spell_cell.alignment = _ALIGN
+        spell_cell.fill = row_fill
+
+        _apply_spell_table_borders(ws, row, row, 1, 5)
+        row += 1
+
+    if spell_report.entries:
+        last_detail_row = row - 1
+        ws.auto_filter.ref = f"A{detail_header_row}:E{last_detail_row}"
+        ws.freeze_panes = ws.cell(detail_header_row + 1, 1).coordinate
+
+    row += 1
+    note = ws.cell(
+        row,
+        1,
+        "Only Rank III lines are listed. Rune tier matches spell level within each band. "
+        "Add blocks in spell_rune_bands.json for future level caps.",
+    )
+    note.font = FONT_LEGEND
+    note.fill = FILL_SHEET
+    note.alignment = _ALIGN_WRAP
+    _merge_spell_row(ws, row, 1, 5, FILL_SHEET)
+
+    for col in range(6, SHEET_BACKGROUND_COLS + 1):
+        ws.cell(row, col).fill = FILL_SHEET
+
+    ws.column_dimensions["A"].width = _COL_SPELL_CHAR
+    ws.column_dimensions["B"].width = _COL_SPELL_BLOCK
+    ws.column_dimensions["C"].width = _COL_SPELL_LEVEL
+    ws.column_dimensions["D"].width = _COL_SPELL_RUNE
+    ws.column_dimensions["E"].width = _COL_SPELL_NAME
+
+
+def _write_unmade_gear_sheet(ws: Worksheet, entries: list[UnmadeGearEntry]) -> None:
+    ws.sheet_properties.tabColor = "4A5A38"
+    last_row = 2 + len(entries)
+    _fill_sheet_background(ws, max_row=max(last_row, SHEET_BACKGROUND_ROWS))
+
+    headers = (
+        "Character",
+        "Item",
+        "Count",
+        "Bag Location",
+        "Expansion",
+        "Material",
+        "Target Slot",
+        "Equipped Tier",
+        "Notes",
+    )
+    for col, header in enumerate(headers, start=1):
+        cell = ws.cell(1, col, header)
+        cell.font = FONT_HEADER
+        cell.fill = FILL_HEADER
+        cell.alignment = _ALIGN_HEADER
+
+    for row_idx, entry in enumerate(entries, start=2):
+        values = (
+            entry.display_name,
+            entry.item_name,
+            entry.count,
+            entry.bag_location,
+            entry.expansion,
+            entry.material,
+            entry.target_slot or "",
+            entry.equipped_tier,
+            entry.notes,
+        )
+        for col, value in enumerate(values, start=1):
+            cell = ws.cell(row_idx, col, value)
+            cell.font = FONT_BODY
+            cell.fill = FILL_SPELL_DETAIL if row_idx % 2 == 0 else FILL_SPELL_DETAIL_ALT
+            cell.alignment = _ALIGN if col != 3 else _ALIGN_CENTER
+
+        item_cell = ws.cell(row_idx, 2)
+        url = (
+            f"https://items.eqresource.com/items.php?id={entry.item_id}"
+            if entry.item_id > 0
+            else None
+        )
+        if url:
+            item_cell.font = FONT_LINK
+            item_cell.hyperlink = Hyperlink(ref=item_cell.coordinate, target=url)
+
+        tier_cell = ws.cell(row_idx, 8)
+        if entry.equipped_tier:
+            tier_cell.fill = _fill_for_tier_code(entry.equipped_tier)
+
+    if entries:
+        ws.auto_filter.ref = f"A1:I{1 + len(entries)}"
+        ws.freeze_panes = ws.cell(2, 1).coordinate
+
+    ws.column_dimensions["A"].width = _COL_SPELL_CHAR
+    ws.column_dimensions["B"].width = _COL_ITEM_WIDTH
+    ws.column_dimensions["C"].width = 8.0
+    ws.column_dimensions["D"].width = 18.0
+    ws.column_dimensions["E"].width = 10.0
+    ws.column_dimensions["F"].width = 10.0
+    ws.column_dimensions["G"].width = 14.0
+    ws.column_dimensions["H"].width = 14.0
+    ws.column_dimensions["I"].width = 24.0
+
+
+def _write_missing_collections_sheet(ws: Worksheet, report: AchievementReport) -> None:
+    ws.sheet_properties.tabColor = "5A4A38"
+    entries = report.missing_collections
+    last_row = 1 + len(entries)
+    _fill_sheet_background(ws, max_row=max(last_row, SHEET_BACKGROUND_ROWS))
+
+    headers = (
+        "Character",
+        "Expansion",
+        "Zone",
+        "Collection",
+        "Missing Item",
+        "Progress",
+        "Char Has",
+        "Total",
+    )
+    for col, header in enumerate(headers, start=1):
+        cell = ws.cell(1, col, header)
+        cell.font = FONT_HEADER
+        cell.fill = FILL_HEADER
+        cell.alignment = _ALIGN_HEADER
+
+    for row_idx, entry in enumerate(entries, start=2):
+        values = (
+            entry.character,
+            format_expansion_label(entry.expansion),
+            entry.zone,
+            entry.collection,
+            entry.missing_item,
+            entry.progress,
+            entry.char_has,
+            entry.total,
+        )
+        row_fill = FILL_SPELL_DETAIL if row_idx % 2 == 0 else FILL_SPELL_DETAIL_ALT
+        for col, value in enumerate(values, start=1):
+            cell = ws.cell(row_idx, col, value)
+            cell.font = FONT_BODY
+            cell.fill = row_fill
+            cell.alignment = _ALIGN if col not in (6, 8) else _ALIGN_CENTER
+
+    if entries:
+        ws.auto_filter.ref = f"A1:H{1 + len(entries)}"
+        ws.freeze_panes = ws.cell(2, 1).coordinate
+
+    ws.column_dimensions["A"].width = _COL_SPELL_CHAR
+    ws.column_dimensions["B"].width = 18.0
+    ws.column_dimensions["C"].width = 22.0
+    ws.column_dimensions["D"].width = 28.0
+    ws.column_dimensions["E"].width = _COL_ITEM_WIDTH
+    ws.column_dimensions["F"].width = 10.0
+    ws.column_dimensions["G"].width = 8.0
+    ws.column_dimensions["H"].width = 8.0
+
+
+def _write_achievement_summary_sheet(ws: Worksheet, report: AchievementReport) -> None:
+    ws.sheet_properties.tabColor = "384A5A"
+    entries = report.summaries
+    last_row = 1 + len(entries)
+    _fill_sheet_background(ws, max_row=max(last_row, SHEET_BACKGROUND_ROWS))
+
+    headers = (
+        "Character",
+        "Section",
+        "Completed",
+        "Incomplete",
+        "Total",
+        "Completion %",
+    )
+    for col, header in enumerate(headers, start=1):
+        cell = ws.cell(1, col, header)
+        cell.font = FONT_HEADER
+        cell.fill = FILL_HEADER
+        cell.alignment = _ALIGN_HEADER
+
+    for row_idx, entry in enumerate(entries, start=2):
+        values = (
+            entry.character,
+            format_expansion_label(entry.section),
+            entry.completed,
+            entry.incomplete,
+            entry.total,
+            entry.completion_pct,
+        )
+        row_fill = FILL_SPELL_DETAIL if row_idx % 2 == 0 else FILL_SPELL_DETAIL_ALT
+        for col, value in enumerate(values, start=1):
+            cell = ws.cell(row_idx, col, value)
+            cell.font = FONT_BODY
+            cell.fill = row_fill
+            cell.alignment = _ALIGN if col <= 2 else _ALIGN_CENTER
+
+    if entries:
+        ws.auto_filter.ref = f"A1:F{1 + len(entries)}"
+        ws.freeze_panes = ws.cell(2, 1).coordinate
+
+    ws.column_dimensions["A"].width = _COL_SPELL_CHAR
+    ws.column_dimensions["B"].width = 22.0
+    ws.column_dimensions["C"].width = 12.0
+    ws.column_dimensions["D"].width = 12.0
+    ws.column_dimensions["E"].width = 10.0
+    ws.column_dimensions["F"].width = 14.0
+
+
+def _write_raid_achievements_sheet(ws: Worksheet, report: AchievementReport) -> None:
+    ws.sheet_properties.tabColor = "5A384A"
+    entries = report.raid_achievements
+    last_row = 1 + len(entries)
+    _fill_sheet_background(ws, max_row=max(last_row, SHEET_BACKGROUND_ROWS))
+
+    headers = (
+        "Character",
+        "Expansion",
+        "Raid",
+        "Objective",
+    )
+    for col, header in enumerate(headers, start=1):
+        cell = ws.cell(1, col, header)
+        cell.font = FONT_HEADER
+        cell.fill = FILL_HEADER
+        cell.alignment = _ALIGN_HEADER
+
+    for row_idx, entry in enumerate(entries, start=2):
+        values = (
+            entry.character,
+            format_expansion_label(entry.expansion),
+            entry.raid,
+            entry.objective,
+        )
+        row_fill = FILL_SPELL_DETAIL if row_idx % 2 == 0 else FILL_SPELL_DETAIL_ALT
+        for col, value in enumerate(values, start=1):
+            cell = ws.cell(row_idx, col, value)
+            cell.font = FONT_BODY
+            cell.fill = row_fill
+            cell.alignment = _ALIGN
+
+    if entries:
+        ws.auto_filter.ref = f"A1:D{1 + len(entries)}"
+        ws.freeze_panes = ws.cell(2, 1).coordinate
+
+    ws.column_dimensions["A"].width = _COL_SPELL_CHAR
+    ws.column_dimensions["B"].width = 22.0
+    ws.column_dimensions["C"].width = _COL_ITEM_WIDTH
+    ws.column_dimensions["D"].width = _COL_ITEM_WIDTH
+
+
+def _save_with_fallback(wb: Workbook, target: Path) -> Path:
+    try:
+        wb.save(target)
+        return target
+    except PermissionError:
+        stem = target.stem
+        suffix = target.suffix
+        parent = target.parent
+        for n in range(1, 100):
+            alt = parent / f"{stem}_{n}{suffix}"
+            try:
+                wb.save(alt)
+                return alt
+            except PermissionError:
+                continue
+        raise

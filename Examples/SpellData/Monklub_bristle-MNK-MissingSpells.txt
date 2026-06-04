@@ -1,0 +1,146 @@
+65	Ancient: Phantom Chaos
+71	Phantom Silhouette Rk. II
+72	Impenetrable Discipline Rk. II
+72	Second Wind Rk. II
+73	Echo of Misdirection Rk. II
+74	Clawstriker's Flurry Rk. II
+74	Scaledfist Discipline Rk. II
+75	Moment of Calm Rk. II
+76	Shimmering Silhouette Rk. II
+77	Astral Projection Rk. II
+77	Third Wind Rk. II
+78	Echo of Deception Rk. II
+79	Crystalpalm Discipline Rk. II
+79	Wheel of Fists Rk. II
+80	Delay Death Rk. II
+80	Moment of Tranquility Rk. II
+81	Calanin's Synergy Rk. II
+81	Phantom Apparition Rk. II
+82	Chrono Projection Rk. II
+82	Fourth Wind Rk. II
+83	Echo of Distraction Rk. II
+83	Vigorous Shuriken Rk. II
+84	Punch Through Rk. II
+84	Whorl of Fists Rk. II
+85	Defer Death Rk. II
+85	Moment of Placidity Rk. II
+86	Dreamwalker's Synergy Rk. II
+86	Phantasmal Apparition Rk. II
+86	Respite Rk. II
+87	Cloud of Fists Rk. II
+87	Fifth Wind Rk. II
+88	Echo of Confusion Rk. II
+88	Ironfist Discipline Rk. II
+89	Jab Through Rk. II
+89	Six-Step Pattern Rk. II
+89	Void Body Rk. II
+90	Deny Death Rk. II
+90	Five Breaths Rk. II
+90	Heel of Kai Rk. II
+90	Intercepting Fist Rk. II
+91	Reprieve Rk. II
+91	Veiled Apparition Rk. II
+91	Veilwalker's Synergy Rk. II
+92	Sixth Wind Rk. II
+92	Tiger's Balance Rk. II
+92	Void Step Rk. II
+93	Crane Stance Rk. II
+93	Echo of Obfuscation Rk. II
+93	Inner Rejuvenation Rk. II
+94	Diamondpalm Discipline Rk. II
+94	Seven-Step Pattern Rk. II
+94	Veiled Body Rk. II
+95	Decry Death Rk. II
+95	Heel of Kojai Rk. II
+95	Six Breaths Rk. II
+96	Shaded Apparition Rk. II
+96	Shadewalker's Synergy Rk. II
+96	Sting of the Wasp Rk. II
+97	Eagle's Balance Rk. II
+97	Seventh Wind Rk. II
+97	Swift Reflexes Rk. II
+97	Technique of the Crimson Fist Rk. II
+98	Echo of Prevarication Rk. II
+98	Reflex Rk. II
+99	Contraforce Discipline Rk. II
+99	Eight-Step Pattern Rk. II
+99	Zalikor's Fang Rk. II
+100	Forestall Death Rk. II
+100	Phantom Partisan Rk. II
+100	Protection of the Shadewalker Rk. II
+100	Seven Breaths Rk. II
+101	Darkened Apparition
+101	Dichotomic Form
+101	Doomwalker's Synergy
+102	Doomwalker's Alliance
+102	Dragon's Balance
+102	Nimble Reflexes
+103	Curse of the Thirteen Fingers
+103	Echo of Deceit
+104	Strike Through
+104	Torrent of Fists Rk. III
+105	Eight Breaths
+105	Phantom Pummeling
+105	Refuse Death
+106	Ash-Clouded Apparition
+106	Dissident Form
+106	Firewalker's Synergy
+106	Hiatus
+106	Sting of the Scorpikis
+107	Firewalker's Covenant
+107	Rapid Reflexes
+107	Technique of the Celestial Fist
+107	Tiger's Poise
+108	Curse of Fourteen Fists
+108	Echo of Duplicity
+108	Nine Breaths
+109	Counterstrike Discipline
+109	Hoshkar's Fang
+110	Firestorm of Fists
+110	Reject Death
+111	Composite Form
+111	Frostblurred Apparition
+111	Icewalker's Synergy
+111	Relax
+112	Decisive Reflexes
+112	Eagle's Poise
+112	Heron Stance Rk. III
+112	Icewalker's Coalition
+113	Breath of Tranquility
+113	Curse of Fifteen Strikes
+113	Echo of Disorientation
+114	Icewalker's Precision Strike Rk. III
+114	Zlexak's Fang Rk. III
+115	Barrage of Fists
+115	Phantom Fisticuffs
+115	Rescind Death
+116	Bloodwalker's Synergy Rk. III
+116	Dreamwhisper Apparition Rk. III
+116	Ecliptic Form
+116	Night's Calming
+116	Sting of the Netherbian
+117	Bloodwalker's Conjunction
+117	Disciplined Reflexes
+117	Dragon's Poise
+118	Breath of Stillness
+118	Curse of Sixteen Shadows
+118	Echo of Flinching
+119	Counterblow Discipline
+119	Perforate
+119	Technique of the Lunar Fist
+120	Buffeting of Fists
+120	Repeal Death
+122	Storied Reflexes Rk. III
+123	Echo of Diversion
+125	Defy Death
+125	Phantom Afterimage
+126	Hiatus V Rk. III
+126	Lifewalker's Synergy Rk. III
+126	Phantom Wind XVIII
+127	Swift Reflexes VII Rk. III
+128	Echo of Misdirection XII Rk. III
+128	Sting of the Spider Rk. III
+129	Counterforce Discipline V Rk. III
+129	Technique of the Shattering Fist Rk. III
+130	Delay Death XI Rk. III
+130	Wheel of Fists XII Rk. III

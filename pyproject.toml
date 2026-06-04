@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "inventory-parser"
+dynamic = ["version"]
+description = "EverQuest multi-character inventory dumps to equipped-gear Excel"
+requires-python = ">=3.10"
+dependencies = [
+    "openpyxl>=3.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[project.scripts]
+inventory-parser = "inventory_parser.cli:main"
+inventory-parser-gui = "inventory_parser.gui:main"
+
+[tool.setuptools.dynamic]
+version = { attr = "inventory_parser.__version__" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+inventory_parser = ["data/*.json", "data/*.html"]
+"inventory_parser.data" = ["*.json", "*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

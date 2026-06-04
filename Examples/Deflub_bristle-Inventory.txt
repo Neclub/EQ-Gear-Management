@@ -1,0 +1,3368 @@
+Location	Name	ID	Count	Slots
+Charm	Defender's Charm of Rebellion	173940	1	6
+Charm-Slot1	Empty	0	0	0
+Charm-Slot2	Glittering Token of Horror	173174	1	6
+Charm-Slot3	Bioluminescent Cave Stone	173371	1	6
+Charm-Slot4	Shard of Unbound Fate	165985	1	6
+Ear	Adroit Earring of Eternal Reverie	171916	1	6
+Ear-Slot1	Empty	0	0	0
+Ear-Slot2	Rift-Touched Cereous Bar	175172	1	6
+Ear-Slot3	Unparalleled Finesse Gem of Distant Echoes	166898	1	6
+Head	Exarch Helm of Rebellion	173818	1	6
+Head-Slot1	Rift-Touched Cereous Bar	175172	1	6
+Head-Slot2	Violet Edged Rose	171369	1	6
+Head-Slot3	Extra Planar Potential Shard	148442	1	6
+Head-Slot4	Empty	0	0	0
+Face	Yearning Restored Mask of the Vortex	168096	1	6
+Face-Slot2	Empty	0	0	0
+Face-Slot3	Empty	0	0	0
+Face-Slot4	Protector's Gem of Uprising	173574	1	6
+Face-Slot5	Acolyte's Attacker of Legacies Lost	153882	1	6
+Face-Slot6	Silver Ventral Defense of Jubilation	109573	1	6
+Ear	Blooded Righteous Protector's Earring of Rallos	164474	1	6
+Ear-Slot1	Eye of Life	129883	1	6
+Ear-Slot2	Rift-Touched Cereous Bar	175172	1	6
+Ear-Slot3	Acrobat's Gem of Uprising	173572	1	6
+Ear-Slot4	Acolyte's Attacker of the Harbinger	169780	1	6
+Ear-Slot5	Silver Enhancement of Jubilation	109579	1	6
+Ear-Slot6	Rallos Zek Devotee's Defense	164540	1	6
+Neck	Radiant Protector's Collar of Legacies Lost	151480	1	6
+Neck-Slot1	Ruby of Offense	111801	1	6
+Neck-Slot2	Divine Medallion	164196	1	6
+Neck-Slot3	Mist-Filled Vial	175369	1	6
+Neck-Slot4	Acolyte's Enhancement of Legacies Lost	153891	1	6
+Neck-Slot5	Devotee's Attacker of the Harbinger	169791	1	6
+Neck-Slot6	Acolyte's Fortification of Legacies Lost	151490	1	6
+Shoulders	Guardian's Pauldrons of Rebellion	173923	1	6
+Shoulders-Slot1	Empty	0	0	0
+Shoulders-Slot2	Master's Curio	163995	1	6
+Shoulders-Slot3	Overbound Zerk	175368	1	6
+Arms	Exarch Vambraces of Eternal Reverie	171819	1	6
+Arms-Slot1	Rift-Touched Cereous Bar	175172	1	6
+Arms-Slot2	Phantasmal Luclinite Gem of Vigor	169570	1	6
+Arms-Slot3	Extra Planar Potential Shard	148442	1	6
+Arms-Slot4	Empty	0	0	0
+Back	Benighted Protector's Cloak of the Selenelion	139383	1	6
+Back-Slot1	Empty	0	0	0
+Back-Slot2	Mythic Charm	151234	1	6
+Back-Slot3	Gem of Chaos	167371	1	6
+Back-Slot4	Acolyte's Enhancement of the Selenelion	109568	1	6
+Back-Slot5	Rallos Zek Devotee's Fortification	164528	1	6
+Back-Slot6	Devotee's Fortification of the Selenelion	169190	1	6
+Wrist	Exarch Bracer of Rebellion	173815	1	6
+Wrist-Slot1	Arcane Gem of Artfulness	175174	1	6
+Wrist-Slot2	Gnoll Skull Fragment	175167	1	6
+Wrist-Slot3	Extra Planar Potential Shard	148442	1	6
+Wrist-Slot4	Empty	0	0	0
+Wrist	Exarch Bracer of Eternal Reverie	171815	1	6
+Wrist-Slot1	Arcane Gem of Artfulness	175174	1	6
+Wrist-Slot2	Steadfast Shadow Gem	173169	1	6
+Wrist-Slot3	Extra Planar Potential Shard	148442	1	6
+Wrist-Slot4	Empty	0	0	0
+Range	Short Bow of Rebellion	173970	1	6
+Range-Slot1	Shard of Verdicts	110399	1	6
+Range-Slot2	Blademaster's Writ	94410	1	6
+Range-Slot3	Arcane Gem of Artfulness	175174	1	6
+Range-Slot4	Joy of the Dancer	175169	1	6
+Range-Slot5	Empty	0	0	0
+Hands	Exarch Gauntlets of the Bound	173616	1	6
+Hands-Slot1	Glittering Token of Sorrow	173176	1	6
+Hands-Slot2	Humongous Corrupted Pincer	169369	1	6
+Hands-Slot3	Extra Planar Potential Shard	148442	1	6
+Hands-Slot4	Empty	0	0	0
+Primary	Greatsword of Rebellion	173964	1	6
+Primary-Slot1	Black Diamond of Crippling	42073	1	6
+Primary-Slot2	Reactive Sharpened Gem of the Shackled	151787	1	6
+Primary-Slot3	Empty	0	0	0
+Secondary	Empty	0	0	0
+Fingers	Harbinger's Fine Protector Ring of Vengeance	168075	1	6
+Fingers-Slot1	Luminous Restless Ice	164604	1	6
+Fingers-Slot2	Defiant Claw	151793	1	6
+Fingers-Slot3	Performer's Lucky Charm	169371	1	6
+Fingers-Slot4	Acolyte's Fortification of the Harbinger	169774	1	6
+Fingers-Slot5	Acolyte's Fortification of the Selenelion	169186	1	6
+Fingers-Slot6	Devotee's Fortification of the Harbinger	169778	1	6
+Fingers	Guardian's Ring of Resonant Fracture	175932	1	6
+Fingers-Slot1	Emerald of Abjuration	111796	1	6
+Fingers-Slot2	Immovable Green Gem	173378	1	6
+Fingers-Slot3	Defender's Gem of Unraveling Order	175571	1	6
+Chest	Exarch Breastplate of Rebellion	173821	1	6
+Chest-Slot1	Blazing Icon of Solusek Ro	175376	1	6
+Chest-Slot2	Gleaming Emblem of the Overseer	173369	1	6
+Chest-Slot3	Extra Planar Potential Shard	148442	1	6
+Chest-Slot4	Empty	0	0	0
+Legs	Exarch Greaves of the Bound	173620	1	6
+Legs-Slot1	Flowing Gem of Uprising	173580	1	6
+Legs-Slot2	Ungerminated Spore	173167	1	6
+Legs-Slot3	Extra Planar Potential Shard	148442	1	6
+Legs-Slot4	Empty	0	0	0
+Feet	Exarch Boots of Rebellion	173817	1	6
+Feet-Slot1	Glittering Token of Horror	173174	1	6
+Feet-Slot2	Hardened Glowing Diamond	171371	1	6
+Feet-Slot3	Extra Planar Potential Shard	148442	1	6
+Feet-Slot4	Empty	0	0	0
+Waist	Vigorous Belt of Eternal Reverie	171935	1	6
+Waist-Slot1	Empty	0	0	0
+Waist-Slot2	Nimble Gem of Uprising	173579	1	6
+Waist-Slot3	Phantasmal Luclinite Gem of Security	169573	1	6
+Power Source	Gleaming Silver Protector Source	111667	1	6
+Ammo	Empty	0	0	0
+General 1	Shik'Nar Carapace Crate	169971	1	46
+General 1-Slot1	Qwalla's Casserole Delight	159834	3	6
+General 1-Slot2	Water Flask	13006	780	6
+General 1-Slot3	Emberquartz Flecked Gormar Venom	159942	1	6
+General 1-Slot4	Opulent Earring of the Contracted	170992	1	6
+General 1-Slot5	Sealed Riven Arcana Conjuror Source	175193	1	6
+General 1-Slot6	Master Baker Trophy	95013	1	6
+General 1-Slot6-Slot1	Empty	0	0	0
+General 1-Slot7	War Sword of Eternal Reverie	171951	1	6
+General 1-Slot7-Slot1	Empty	0	0	0
+General 1-Slot7-Slot2	Empty	0	0	0
+General 1-Slot8	Tower Shield of Eternal Reverie	171941	1	6
+General 1-Slot8-Slot1	Empty	0	0	0
+General 1-Slot8-Slot2	Empty	0	0	0
+General 1-Slot8-Slot3	Empty	0	0	0
+General 1-Slot8-Slot4	Empty	0	0	0
+General 1-Slot9	Maul of Eternal Reverie	171962	1	6
+General 1-Slot9-Slot1	Empty	0	0	0
+General 1-Slot9-Slot2	Empty	0	0	0
+General 1-Slot9-Slot3	Empty	0	0	0
+General 1-Slot10	Dairy Spoon	9727	1	6
+General 1-Slot11	Molten Rock Clump	172067	1	6
+General 1-Slot12	Invictus Warmaker	171750	1	6
+General 1-Slot12-Slot1	Empty	0	0	0
+General 1-Slot12-Slot2	Empty	0	0	0
+General 1-Slot13	Empty	0	0	0
+General 1-Slot14	Sealed Riven Arcana Protector Source	175191	41	6
+General 1-Slot15	Broadsword of Eternal Reverie	171950	1	6
+General 1-Slot15-Slot1	Empty	0	0	0
+General 1-Slot15-Slot2	Empty	0	0	0
+General 1-Slot16	Pliers	152401	1	6
+General 1-Slot17	Votive of The Great Shell	175179	1	6
+General 1-Slot18	Sewing Needle	10064	1	6
+General 1-Slot19	Riven Arcana Powder	170841	54	6
+General 1-Slot20	Emberquartz Slayer Source	171189	1	6
+General 1-Slot21	Cloudy Potion	14514	19	6
+General 1-Slot22	Jewelers Glass	95833	1	6
+General 1-Slot23	Arcana Imbued Taipan Venom	170882	51	6
+General 1-Slot24	Opulent Earring of the Contracted	170992	1	6
+General 1-Slot25	Maul of Rebellion	173962	1	6
+General 1-Slot25-Slot1	Empty	0	0	0
+General 1-Slot25-Slot2	Empty	0	0	0
+General 1-Slot25-Slot3	Empty	0	0	0
+General 1-Slot26	Smithy Hammer	10489	1	6
+General 1-Slot27	Complimentary Bottle of Adventure	51780	1	6
+General 1-Slot28	Votive of The Great Shell	175179	1	6
+General 1-Slot29	Unraveling Focus of Fortitude	170818	1	6
+General 1-Slot30	Empty	0	0	0
+General 1-Slot31	Candlemaker's Lesser Wax Seal	177651	19	6
+General 1-Slot32	Empty	0	0	0
+General 1-Slot33	Candlemaker's Greater Wax Seal	177653	4	6
+General 1-Slot34	Candlemaker's Glowing Wax Seal	177654	3	6
+General 1-Slot35	Empty	0	0	0
+General 1-Slot36	Diminished Shattered Dominion Head Armor	175991	1	2
+General 1-Slot36-Slot1	Empty	0	0	0
+General 1-Slot36-Slot2	Empty	0	0	0
+General 1-Slot37	Candlemaker's Minor Wax Seal	177650	5	6
+General 1-Slot38	Empty	0	0	0
+General 1-Slot39	Empty	0	0	0
+General 1-Slot40	Candlemaker's Median Wax Seal	177652	5	6
+General 1-Slot41	Reflective Emberquartz Ore	154757	24	6
+General 1-Slot42	Bone Saw	173750	1	6
+General 1-Slot42-Slot1	Empty	0	0	0
+General 1-Slot42-Slot2	Empty	0	0	0
+General 1-Slot43	Thornwoven Glaive	175761	1	6
+General 1-Slot43-Slot1	Empty	0	0	0
+General 1-Slot43-Slot2	Empty	0	0	0
+General 1-Slot43-Slot3	Empty	0	0	0
+General 1-Slot44	Inert Greater Engram	170293	1	6
+General 1-Slot45	Windstone of Virtue	175372	1	6
+General 1-Slot46	Lapis Lazuli	10016	91	6
+General 2	Nightslayer's Chest	164562	1	48
+General 2-Slot1	Hooked Knife of Memoryforged Desolation	170010	1	6
+General 2-Slot1-Slot1	Empty	0	0	0
+General 2-Slot1-Slot2	Empty	0	0	0
+General 2-Slot2	Vigorous Belt of Memoryforged Desolation	169996	1	6
+General 2-Slot2-Slot1	Empty	0	0	0
+General 2-Slot2-Slot2	Empty	0	0	0
+General 2-Slot2-Slot3	Empty	0	0	0
+General 2-Slot3	Melted Spectacles of the Delusional	175117	1	6
+General 2-Slot3-Slot1	Empty	0	0	0
+General 2-Slot3-Slot2	Empty	0	0	0
+General 2-Slot3-Slot3	Empty	0	0	0
+General 2-Slot4	Intricate Aureate War Bow	173767	1	6
+General 2-Slot4-Slot1	Empty	0	0	0
+General 2-Slot4-Slot2	Empty	0	0	0
+General 2-Slot4-Slot3	Empty	0	0	0
+General 2-Slot4-Slot4	Empty	0	0	0
+General 2-Slot4-Slot5	Empty	0	0	0
+General 2-Slot5	Diminished Broken Accord Wrist Armor	175974	1	2
+General 2-Slot5-Slot1	Empty	0	0	0
+General 2-Slot5-Slot2	Empty	0	0	0
+General 2-Slot6	Mask of the Nerite	175118	1	6
+General 2-Slot6-Slot1	Empty	0	0	0
+General 2-Slot6-Slot2	Empty	0	0	0
+General 2-Slot6-Slot3	Empty	0	0	0
+General 2-Slot7	Stormslayer's Rucksack	153977	1	46
+General 2-Slot7-Slot1	Empty	0	0	0
+General 2-Slot7-Slot2	Empty	0	0	0
+General 2-Slot7-Slot3	Empty	0	0	0
+General 2-Slot7-Slot4	Empty	0	0	0
+General 2-Slot7-Slot5	Empty	0	0	0
+General 2-Slot7-Slot6	Empty	0	0	0
+General 2-Slot7-Slot7	Empty	0	0	0
+General 2-Slot7-Slot8	Empty	0	0	0
+General 2-Slot7-Slot9	Empty	0	0	0
+General 2-Slot7-Slot10	Empty	0	0	0
+General 2-Slot7-Slot11	Empty	0	0	0
+General 2-Slot7-Slot12	Empty	0	0	0
+General 2-Slot7-Slot13	Empty	0	0	0
+General 2-Slot7-Slot14	Empty	0	0	0
+General 2-Slot7-Slot15	Empty	0	0	0
+General 2-Slot7-Slot16	Empty	0	0	0
+General 2-Slot7-Slot17	Empty	0	0	0
+General 2-Slot7-Slot18	Empty	0	0	0
+General 2-Slot7-Slot19	Empty	0	0	0
+General 2-Slot7-Slot20	Empty	0	0	0
+General 2-Slot7-Slot21	Empty	0	0	0
+General 2-Slot7-Slot22	Empty	0	0	0
+General 2-Slot7-Slot23	Empty	0	0	0
+General 2-Slot7-Slot24	Empty	0	0	0
+General 2-Slot7-Slot25	Empty	0	0	0
+General 2-Slot7-Slot26	Empty	0	0	0
+General 2-Slot7-Slot27	Empty	0	0	0
+General 2-Slot7-Slot28	Empty	0	0	0
+General 2-Slot7-Slot29	Empty	0	0	0
+General 2-Slot7-Slot30	Empty	0	0	0
+General 2-Slot7-Slot31	Empty	0	0	0
+General 2-Slot7-Slot32	Empty	0	0	0
+General 2-Slot7-Slot33	Empty	0	0	0
+General 2-Slot7-Slot34	Empty	0	0	0
+General 2-Slot7-Slot35	Empty	0	0	0
+General 2-Slot7-Slot36	Empty	0	0	0
+General 2-Slot7-Slot37	Empty	0	0	0
+General 2-Slot7-Slot38	Empty	0	0	0
+General 2-Slot7-Slot39	Empty	0	0	0
+General 2-Slot7-Slot40	Empty	0	0	0
+General 2-Slot7-Slot41	Empty	0	0	0
+General 2-Slot7-Slot42	Empty	0	0	0
+General 2-Slot7-Slot43	Empty	0	0	0
+General 2-Slot7-Slot44	Empty	0	0	0
+General 2-Slot7-Slot45	Empty	0	0	0
+General 2-Slot7-Slot46	Empty	0	0	0
+General 2-Slot8	Trinket of the Fire Snail	175168	1	6
+General 2-Slot9	Silver Ring of Adroitness	111666	1	6
+General 2-Slot9-Slot1	Empty	0	0	0
+General 2-Slot9-Slot2	Empty	0	0	0
+General 2-Slot9-Slot3	Empty	0	0	0
+General 2-Slot10	Sealed Riven Arcana Wayfarer Source	175192	4	6
+General 2-Slot11	Echo of Mastery	110394	1	6
+General 2-Slot12	Phantasmal Luclinite Gem of Adroitness	169571	1	6
+General 2-Slot13	Steadfast Gem of Uprising	173581	1	6
+General 2-Slot14	Voidstone Ore Powder	170311	76	6
+General 2-Slot15	Tumbler's Balancing Orb	173376	1	6
+General 2-Slot16	Scale Ore	45891	37	6
+General 2-Slot17	Lesser Mirrorshard of Relic	177656	1	6
+General 2-Slot18	Maestro's Baton Ornament	113593	1	6
+General 2-Slot19	Empty	0	0	0
+General 2-Slot20	Empty	0	0	0
+General 2-Slot21	Empty	0	0	0
+General 2-Slot22	Empty	0	0	0
+General 2-Slot23	Empty	0	0	0
+General 2-Slot24	Empty	0	0	0
+General 2-Slot25	Empty	0	0	0
+General 2-Slot26	Empty	0	0	0
+General 2-Slot27	Empty	0	0	0
+General 2-Slot28	Empty	0	0	0
+General 2-Slot29	Empty	0	0	0
+General 2-Slot30	Empty	0	0	0
+General 2-Slot31	Mask of Blind Vengeance	175317	1	6
+General 2-Slot31-Slot1	Empty	0	0	0
+General 2-Slot31-Slot2	Empty	0	0	0
+General 2-Slot31-Slot3	Empty	0	0	0
+General 2-Slot32	Venerable Claymore of the Stormstomper	175362	1	6
+General 2-Slot32-Slot1	Empty	0	0	0
+General 2-Slot32-Slot2	Empty	0	0	0
+General 2-Slot32-Slot3	Empty	0	0	0
+General 2-Slot33	Ao's Broken Idol	175330	1	6
+General 2-Slot33-Slot1	Empty	0	0	0
+General 2-Slot33-Slot2	Empty	0	0	0
+General 2-Slot33-Slot3	Empty	0	0	0
+General 2-Slot34	Deprecator, the Waraxe	175345	1	6
+General 2-Slot34-Slot1	Empty	0	0	0
+General 2-Slot34-Slot2	Empty	0	0	0
+General 2-Slot35	Fossilized Belt of Maiming	175335	1	6
+General 2-Slot35-Slot1	Empty	0	0	0
+General 2-Slot35-Slot2	Empty	0	0	0
+General 2-Slot35-Slot3	Empty	0	0	0
+General 2-Slot36	Scepter of The Ruined Wind	175347	1	6
+General 2-Slot36-Slot1	Empty	0	0	0
+General 2-Slot36-Slot2	Empty	0	0	0
+General 2-Slot37	Empty	0	0	0
+General 2-Slot38	Empty	0	0	0
+General 2-Slot39	Empty	0	0	0
+General 2-Slot40	Empty	0	0	0
+General 2-Slot41	Empty	0	0	0
+General 2-Slot42	Empty	0	0	0
+General 2-Slot43	Empty	0	0	0
+General 2-Slot44	Empty	0	0	0
+General 2-Slot45	Empty	0	0	0
+General 2-Slot46	Empty	0	0	0
+General 2-Slot47	Empty	0	0	0
+General 2-Slot48	Votive of The Great Shell	175179	1	6
+General 3	Shadow Slayer's Chest	168039	1	46
+General 3-Slot1	Uncanny Ambrosial Water	170835	4	6
+General 3-Slot2	Shard of Unbound Fate	165985	1	6
+General 3-Slot3	Shard of Unbound Fate	165985	1	6
+General 3-Slot4	Shard of Unbound Fate	165985	1	6
+General 3-Slot5	Empty	0	0	0
+General 3-Slot6	Empty	0	0	0
+General 3-Slot7	Empty	0	0	0
+General 3-Slot8	Adroit Cloak of Unbound Radiance	172356	1	6
+General 3-Slot8-Slot1	Empty	0	0	0
+General 3-Slot8-Slot2	Empty	0	0	0
+General 3-Slot8-Slot3	Empty	0	0	0
+General 3-Slot9	Adroit Idol of Unbound Radiance	172359	1	6
+General 3-Slot9-Slot1	Empty	0	0	0
+General 3-Slot9-Slot2	Empty	0	0	0
+General 3-Slot9-Slot3	Empty	0	0	0
+General 3-Slot10	Fighting Staff of Unbound Radiance	172391	1	6
+General 3-Slot10-Slot1	Empty	0	0	0
+General 3-Slot10-Slot2	Empty	0	0	0
+General 3-Slot10-Slot3	Empty	0	0	0
+General 3-Slot11	Arcane Staff of Unbound Radiance	172393	1	6
+General 3-Slot11-Slot1	Empty	0	0	0
+General 3-Slot11-Slot2	Empty	0	0	0
+General 3-Slot11-Slot3	Empty	0	0	0
+General 3-Slot11-Slot4	Empty	0	0	0
+General 3-Slot11-Slot5	Empty	0	0	0
+General 3-Slot12	Halberd of Unbound Radiance	172392	1	6
+General 3-Slot12-Slot1	Empty	0	0	0
+General 3-Slot12-Slot2	Empty	0	0	0
+General 3-Slot12-Slot3	Empty	0	0	0
+General 3-Slot12-Slot4	Empty	0	0	0
+General 3-Slot12-Slot5	Empty	0	0	0
+General 3-Slot13	Diminished Broken Accord Hands Armor	175975	1	2
+General 3-Slot13-Slot1	Empty	0	0	0
+General 3-Slot13-Slot2	Empty	0	0	0
+General 3-Slot14	Fractured Arcane Chain Hands Ornament	172407	1	6
+General 3-Slot15	Fractured Arcane Chain Legs Ornament	172408	1	6
+General 3-Slot16	Fractured Arcane Plate Helm Ornament	172396	1	6
+General 3-Slot17	Fractured Arcane Cloth Robe Ornament	172424	1	6
+General 3-Slot18	Fractured Arcane Leather Wrist Ornament	172413	1	6
+General 3-Slot19	Tower Shield of Memoryforged Desolation	170002	1	6
+General 3-Slot19-Slot1	Empty	0	0	0
+General 3-Slot19-Slot2	Empty	0	0	0
+General 3-Slot19-Slot3	Empty	0	0	0
+General 3-Slot19-Slot4	Empty	0	0	0
+General 3-Slot20	Diminished Broken Accord Arms Armor	175978	1	2
+General 3-Slot20-Slot1	Empty	0	0	0
+General 3-Slot20-Slot2	Empty	0	0	0
+General 3-Slot21	Empty	0	0	0
+General 3-Slot22	Opulent Necklace of the Contracted	170993	1	6
+General 3-Slot23	Diminished Broken Accord Wrist Armor	175974	1	2
+General 3-Slot23-Slot1	Empty	0	0	0
+General 3-Slot23-Slot2	Empty	0	0	0
+General 3-Slot24	Empty	0	0	0
+General 3-Slot25	Riven Arcana Imbued Timber	170826	49	6
+General 3-Slot26	Riven Arcana Lumber	170840	229	6
+General 3-Slot27	Planing Tool	8086	1	6
+General 3-Slot28	Enchanted Honed Riven Arcana	170844	1	6
+General 3-Slot29	Chelsith Crippler Ornament	106083	1	6
+General 3-Slot30	Chelsith Crippler Ornament	106083	1	6
+General 3-Slot31	Empty	0	0	0
+General 3-Slot32	Empty	0	0	0
+General 3-Slot33	Cleaning Solution	152466	66	6
+General 3-Slot34	Riven Arcana Crystal	170823	49	6
+General 3-Slot35	Heroic Backpack of the Adventurer	135987	1	40
+General 3-Slot35-Slot1	Empty	0	0	0
+General 3-Slot35-Slot2	Empty	0	0	0
+General 3-Slot35-Slot3	Empty	0	0	0
+General 3-Slot35-Slot4	Empty	0	0	0
+General 3-Slot35-Slot5	Empty	0	0	0
+General 3-Slot35-Slot6	Empty	0	0	0
+General 3-Slot35-Slot7	Empty	0	0	0
+General 3-Slot35-Slot8	Empty	0	0	0
+General 3-Slot35-Slot9	Empty	0	0	0
+General 3-Slot35-Slot10	Empty	0	0	0
+General 3-Slot35-Slot11	Empty	0	0	0
+General 3-Slot35-Slot12	Empty	0	0	0
+General 3-Slot35-Slot13	Empty	0	0	0
+General 3-Slot35-Slot14	Empty	0	0	0
+General 3-Slot35-Slot15	Empty	0	0	0
+General 3-Slot35-Slot16	Empty	0	0	0
+General 3-Slot35-Slot17	Empty	0	0	0
+General 3-Slot35-Slot18	Empty	0	0	0
+General 3-Slot35-Slot19	Empty	0	0	0
+General 3-Slot35-Slot20	Empty	0	0	0
+General 3-Slot35-Slot21	Empty	0	0	0
+General 3-Slot35-Slot22	Empty	0	0	0
+General 3-Slot35-Slot23	Empty	0	0	0
+General 3-Slot35-Slot24	Empty	0	0	0
+General 3-Slot35-Slot25	Empty	0	0	0
+General 3-Slot35-Slot26	Empty	0	0	0
+General 3-Slot35-Slot27	Empty	0	0	0
+General 3-Slot35-Slot28	Empty	0	0	0
+General 3-Slot35-Slot29	Empty	0	0	0
+General 3-Slot35-Slot30	Empty	0	0	0
+General 3-Slot35-Slot31	Empty	0	0	0
+General 3-Slot35-Slot32	Empty	0	0	0
+General 3-Slot35-Slot33	Empty	0	0	0
+General 3-Slot35-Slot34	Empty	0	0	0
+General 3-Slot35-Slot35	Empty	0	0	0
+General 3-Slot35-Slot36	Empty	0	0	0
+General 3-Slot35-Slot37	Empty	0	0	0
+General 3-Slot35-Slot38	Empty	0	0	0
+General 3-Slot35-Slot39	Empty	0	0	0
+General 3-Slot35-Slot40	Empty	0	0	0
+General 3-Slot36	Heroic Backpack of the Adventurer	135987	1	40
+General 3-Slot36-Slot1	Empty	0	0	0
+General 3-Slot36-Slot2	Empty	0	0	0
+General 3-Slot36-Slot3	Empty	0	0	0
+General 3-Slot36-Slot4	Empty	0	0	0
+General 3-Slot36-Slot5	Empty	0	0	0
+General 3-Slot36-Slot6	Empty	0	0	0
+General 3-Slot36-Slot7	Empty	0	0	0
+General 3-Slot36-Slot8	Empty	0	0	0
+General 3-Slot36-Slot9	Empty	0	0	0
+General 3-Slot36-Slot10	Empty	0	0	0
+General 3-Slot36-Slot11	Empty	0	0	0
+General 3-Slot36-Slot12	Empty	0	0	0
+General 3-Slot36-Slot13	Empty	0	0	0
+General 3-Slot36-Slot14	Empty	0	0	0
+General 3-Slot36-Slot15	Empty	0	0	0
+General 3-Slot36-Slot16	Empty	0	0	0
+General 3-Slot36-Slot17	Empty	0	0	0
+General 3-Slot36-Slot18	Empty	0	0	0
+General 3-Slot36-Slot19	Empty	0	0	0
+General 3-Slot36-Slot20	Empty	0	0	0
+General 3-Slot36-Slot21	Empty	0	0	0
+General 3-Slot36-Slot22	Empty	0	0	0
+General 3-Slot36-Slot23	Empty	0	0	0
+General 3-Slot36-Slot24	Empty	0	0	0
+General 3-Slot36-Slot25	Empty	0	0	0
+General 3-Slot36-Slot26	Empty	0	0	0
+General 3-Slot36-Slot27	Empty	0	0	0
+General 3-Slot36-Slot28	Empty	0	0	0
+General 3-Slot36-Slot29	Empty	0	0	0
+General 3-Slot36-Slot30	Empty	0	0	0
+General 3-Slot36-Slot31	Empty	0	0	0
+General 3-Slot36-Slot32	Empty	0	0	0
+General 3-Slot36-Slot33	Empty	0	0	0
+General 3-Slot36-Slot34	Empty	0	0	0
+General 3-Slot36-Slot35	Empty	0	0	0
+General 3-Slot36-Slot36	Empty	0	0	0
+General 3-Slot36-Slot37	Empty	0	0	0
+General 3-Slot36-Slot38	Empty	0	0	0
+General 3-Slot36-Slot39	Empty	0	0	0
+General 3-Slot36-Slot40	Empty	0	0	0
+General 3-Slot37	Empty	0	0	0
+General 3-Slot38	Empty	0	0	0
+General 3-Slot39	Empty	0	0	0
+General 3-Slot40	Empty	0	0	0
+General 3-Slot41	Empty	0	0	0
+General 3-Slot42	Arcana Imbued Choresine Sample	170883	40	6
+General 3-Slot43	Potion of Harvest	40606	10	6
+General 3-Slot44	Potion of Healing	40607	10	6
+General 3-Slot45	Class XXI Augmentation Distiller	47021	37	6
+General 3-Slot46	Empty	0	0	0
+General 4	Mythslayer's Backpack	151240	1	46
+General 4-Slot1	Legionnaire Gauntlets of Eternal Reverie	171802	1	6
+General 4-Slot1-Slot1	Empty	0	0	0
+General 4-Slot1-Slot2	Empty	0	0	0
+General 4-Slot1-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot1-Slot4	Empty	0	0	0
+General 4-Slot2	Misty Thicket Picnic	9662	112	6
+General 4-Slot3	Legionnaire Gauntlets of the Bound	173602	1	6
+General 4-Slot3-Slot1	Empty	0	0	0
+General 4-Slot3-Slot2	Empty	0	0	0
+General 4-Slot3-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot3-Slot4	Empty	0	0	0
+General 4-Slot4	Legionnaire Breastplate of Eternal Reverie	171807	1	6
+General 4-Slot4-Slot1	Empty	0	0	0
+General 4-Slot4-Slot2	Empty	0	0	0
+General 4-Slot4-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot4-Slot4	Empty	0	0	0
+General 4-Slot5	Empty	0	0	0
+General 4-Slot6	Decorative Aegis of Shar Vahl	169742	1	6
+General 4-Slot6-Slot1	Empty	0	0	0
+General 4-Slot6-Slot2	Empty	0	0	0
+General 4-Slot6-Slot3	Empty	0	0	0
+General 4-Slot6-Slot4	Empty	0	0	0
+General 4-Slot7	Band of Delirious Rambling	171133	1	6
+General 4-Slot7-Slot1	Empty	0	0	0
+General 4-Slot7-Slot2	Empty	0	0	0
+General 4-Slot7-Slot3	Empty	0	0	0
+General 4-Slot8	Phantasmal Luclinite Ring of Adroitness	169534	1	6
+General 4-Slot8-Slot1	Empty	0	0	0
+General 4-Slot8-Slot2	Empty	0	0	0
+General 4-Slot8-Slot3	Empty	0	0	0
+General 4-Slot9	Feline Skinned Girdle	151393	1	6
+General 4-Slot9-Slot1	Empty	0	0	0
+General 4-Slot9-Slot2	Draconic Proficiency	151437	1	6
+General 4-Slot9-Slot3	Empty	0	0	0
+General 4-Slot10	Golden Rogue's Belt	148933	1	6
+General 4-Slot10-Slot1	Empty	0	0	0
+General 4-Slot10-Slot2	Empty	0	0	0
+General 4-Slot10-Slot3	Empty	0	0	0
+General 4-Slot11	Spectral Luclinite Soulrender Vambraces	169833	1	6
+General 4-Slot11-Slot1	Empty	0	0	0
+General 4-Slot11-Slot2	Empty	0	0	0
+General 4-Slot11-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot11-Slot4	Empty	0	0	0
+General 4-Slot12	Spectral Luclinite Legionnaire Helm	169804	1	6
+General 4-Slot12-Slot1	Empty	0	0	0
+General 4-Slot12-Slot2	Empty	0	0	0
+General 4-Slot12-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot12-Slot4	Empty	0	0	0
+General 4-Slot13	Legionnaire Vambraces of Heroic Reflections	171605	1	6
+General 4-Slot13-Slot1	Empty	0	0	0
+General 4-Slot13-Slot2	Empty	0	0	0
+General 4-Slot13-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot13-Slot4	Empty	0	0	0
+General 4-Slot14	Spectral Luclinite Legionnaire Bracer	169801	1	6
+General 4-Slot14-Slot1	Empty	0	0	0
+General 4-Slot14-Slot2	Empty	0	0	0
+General 4-Slot14-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot14-Slot4	Empty	0	0	0
+General 4-Slot15	Comrade's Cincture of Calamity	171336	1	6
+General 4-Slot15-Slot1	Empty	0	0	0
+General 4-Slot15-Slot2	Empty	0	0	0
+General 4-Slot15-Slot3	Empty	0	0	0
+General 4-Slot16	Gallant Focus of Heroism	151984	1	6
+General 4-Slot17	Vision of Insight	110398	1	6
+General 4-Slot18	Legionnaire Vambraces of Eternal Reverie	171805	1	6
+General 4-Slot18-Slot1	Empty	0	0	0
+General 4-Slot18-Slot2	Empty	0	0	0
+General 4-Slot18-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot18-Slot4	Empty	0	0	0
+General 4-Slot19	Legionnaire Helm of the Bound	173604	1	6
+General 4-Slot19-Slot1	Empty	0	0	0
+General 4-Slot19-Slot2	Empty	0	0	0
+General 4-Slot19-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot19-Slot4	Empty	0	0	0
+General 4-Slot20	Legionnaire Bracer of the Bound	173601	1	6
+General 4-Slot20-Slot1	Empty	0	0	0
+General 4-Slot20-Slot2	Empty	0	0	0
+General 4-Slot20-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot20-Slot4	Empty	0	0	0
+General 4-Slot21	Legionnaire Bracer of the Bound	173601	1	6
+General 4-Slot21-Slot1	Empty	0	0	0
+General 4-Slot21-Slot2	Empty	0	0	0
+General 4-Slot21-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot21-Slot4	Empty	0	0	0
+General 4-Slot22	Legionnaire Boots of Eternal Reverie	171803	1	6
+General 4-Slot22-Slot1	Empty	0	0	0
+General 4-Slot22-Slot2	Empty	0	0	0
+General 4-Slot22-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot22-Slot4	Empty	0	0	0
+General 4-Slot23	Legionnaire Helm of Rebellion	173804	1	6
+General 4-Slot23-Slot1	Empty	0	0	0
+General 4-Slot23-Slot2	Empty	0	0	0
+General 4-Slot23-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot23-Slot4	Empty	0	0	0
+General 4-Slot24	Legionnaire Breastplate of Rebellion	173807	1	6
+General 4-Slot24-Slot1	Empty	0	0	0
+General 4-Slot24-Slot2	Empty	0	0	0
+General 4-Slot24-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot24-Slot4	Empty	0	0	0
+General 4-Slot25	Emberquartz Slayer Source	171189	1	6
+General 4-Slot26	Acolyte's Focus of Legacies Lost	151485	4	6
+General 4-Slot27	Legionnaire Greaves of Rebellion	173806	1	6
+General 4-Slot27-Slot1	Empty	0	0	0
+General 4-Slot27-Slot2	Empty	0	0	0
+General 4-Slot27-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot27-Slot4	Empty	0	0	0
+General 4-Slot28	Fresh Meat	81128	12	6
+General 4-Slot29	Gallant Focus of Fortitude	151983	1	6
+General 4-Slot30	Gallant Focus of Fortitude	151983	1	6
+General 4-Slot31	Sapphire	10034	13	6
+General 4-Slot32	Uncut Demantoid	37851	34	6
+General 4-Slot33	Spectral Luclinite War Sword	169951	1	6
+General 4-Slot33-Slot1	Empty	0	0	0
+General 4-Slot33-Slot2	Empty	0	0	0
+General 4-Slot34	Reflective Emberquartz Crystal	154758	35	6
+General 4-Slot35	Great Sword of Perpetual Reverie	171564	1	6
+General 4-Slot35-Slot1	Empty	0	0	0
+General 4-Slot35-Slot2	Empty	0	0	0
+General 4-Slot35-Slot3	Empty	0	0	0
+General 4-Slot36	Spectral Luclinite Two Headed Spear	169964	1	6
+General 4-Slot36-Slot1	Empty	0	0	0
+General 4-Slot36-Slot2	Reactive Phantasmal Luclinite Gem of Devastation	164569	1	6
+General 4-Slot36-Slot3	Empty	0	0	0
+General 4-Slot37	Luclinite Ensanguined Tower Shield	167541	1	6
+General 4-Slot37-Slot1	Empty	0	0	0
+General 4-Slot37-Slot2	Empty	0	0	0
+General 4-Slot37-Slot3	Empty	0	0	0
+General 4-Slot37-Slot4	Empty	0	0	0
+General 4-Slot38	Phantasmal Luclinite Tower Shield	169541	1	6
+General 4-Slot38-Slot1	Empty	0	0	0
+General 4-Slot38-Slot2	Empty	0	0	0
+General 4-Slot38-Slot3	Empty	0	0	0
+General 4-Slot38-Slot4	Empty	0	0	0
+General 4-Slot39	Luclinite Coagulated War Sword	167951	1	6
+General 4-Slot39-Slot1	Empty	0	0	0
+General 4-Slot39-Slot2	Empty	0	0	0
+General 4-Slot40	Phantasmal Luclinite Two Headed Spear	169564	1	6
+General 4-Slot40-Slot1	Empty	0	0	0
+General 4-Slot40-Slot2	Empty	0	0	0
+General 4-Slot40-Slot3	Empty	0	0	0
+General 4-Slot41	Reactive Fretful Pricker	153966	1	6
+General 4-Slot42	Empty	0	0	0
+General 4-Slot43	Legionnaire Bracer of Eternal Reverie	171801	1	6
+General 4-Slot43-Slot1	Empty	0	0	0
+General 4-Slot43-Slot2	Empty	0	0	0
+General 4-Slot43-Slot3	Extra Planar Potential Shard	148442	1	6
+General 4-Slot43-Slot4	Empty	0	0	0
+General 4-Slot44	Guardian's Argent Mask	111661	1	6
+General 4-Slot44-Slot1	Empty	0	0	0
+General 4-Slot44-Slot2	Empty	0	0	0
+General 4-Slot44-Slot3	Empty	0	0	0
+General 4-Slot45	Phantasmal Luclinite Necklace of Security	169521	1	6
+General 4-Slot45-Slot1	Empty	0	0	0
+General 4-Slot45-Slot2	Empty	0	0	0
+General 4-Slot45-Slot3	Empty	0	0	0
+General 4-Slot46	Crippling Waistwraps of the Gate	169735	1	6
+General 4-Slot46-Slot1	Empty	0	0	0
+General 4-Slot46-Slot2	Empty	0	0	0
+General 4-Slot46-Slot3	Empty	0	0	0
+General 5	Mythslayer's Chest	151224	1	50
+General 5-Slot1	Diminished Broken Accord Head Armor	175977	1	2
+General 5-Slot1-Slot1	Empty	0	0	0
+General 5-Slot1-Slot2	Empty	0	0	0
+General 5-Slot2	Diminished Broken Accord Wrist Armor	175974	1	2
+General 5-Slot2-Slot1	Empty	0	0	0
+General 5-Slot2-Slot2	Empty	0	0	0
+General 5-Slot3	Diminished Broken Accord Hands Armor	175975	1	2
+General 5-Slot3-Slot1	Empty	0	0	0
+General 5-Slot3-Slot2	Empty	0	0	0
+General 5-Slot4	Diminished Broken Accord Feet Armor	175976	1	2
+General 5-Slot4-Slot1	Empty	0	0	0
+General 5-Slot4-Slot2	Empty	0	0	0
+General 5-Slot5	Diminished Broken Accord Head Armor	175977	1	2
+General 5-Slot5-Slot1	Empty	0	0	0
+General 5-Slot5-Slot2	Empty	0	0	0
+General 5-Slot6	Diminished Broken Accord Chest Armor	175980	1	2
+General 5-Slot6-Slot1	Empty	0	0	0
+General 5-Slot6-Slot2	Empty	0	0	0
+General 5-Slot7	Cured Spiral Insignia	175113	1	6
+General 5-Slot7-Slot1	Empty	0	0	0
+General 5-Slot7-Slot2	Empty	0	0	0
+General 5-Slot7-Slot3	Empty	0	0	0
+General 5-Slot8	Diminished Broken Accord Legs Armor	175979	1	2
+General 5-Slot8-Slot1	Empty	0	0	0
+General 5-Slot8-Slot2	Empty	0	0	0
+General 5-Slot9	Diminished Broken Accord Head Armor	175977	1	2
+General 5-Slot9-Slot1	Empty	0	0	0
+General 5-Slot9-Slot2	Empty	0	0	0
+General 5-Slot10	Empty	0	0	0
+General 5-Slot11	Face Plate Mark II	175119	1	6
+General 5-Slot11-Slot1	Empty	0	0	0
+General 5-Slot11-Slot2	Empty	0	0	0
+General 5-Slot11-Slot3	Empty	0	0	0
+General 5-Slot12	Melted Spectacles of the Delusional	175117	1	6
+General 5-Slot12-Slot1	Empty	0	0	0
+General 5-Slot12-Slot2	Empty	0	0	0
+General 5-Slot12-Slot3	Empty	0	0	0
+General 5-Slot13	Face Plate Mark II	175119	1	6
+General 5-Slot13-Slot1	Empty	0	0	0
+General 5-Slot13-Slot2	Empty	0	0	0
+General 5-Slot13-Slot3	Empty	0	0	0
+General 5-Slot14	Diminished Broken Accord Chest Armor	175980	1	2
+General 5-Slot14-Slot1	Empty	0	0	0
+General 5-Slot14-Slot2	Empty	0	0	0
+General 5-Slot15	Cured Spiral Insignia	175113	1	6
+General 5-Slot15-Slot1	Empty	0	0	0
+General 5-Slot15-Slot2	Empty	0	0	0
+General 5-Slot15-Slot3	Empty	0	0	0
+General 5-Slot16	Cinder Cloak of Conflict	175128	1	6
+General 5-Slot16-Slot1	Empty	0	0	0
+General 5-Slot16-Slot2	Empty	0	0	0
+General 5-Slot16-Slot3	Empty	0	0	0
+General 5-Slot17	Firestorm Captain's Honor	175114	1	6
+General 5-Slot17-Slot1	Empty	0	0	0
+General 5-Slot17-Slot2	Empty	0	0	0
+General 5-Slot17-Slot3	Empty	0	0	0
+General 5-Slot18	Diminished Broken Accord Legs Armor	175979	1	2
+General 5-Slot18-Slot1	Empty	0	0	0
+General 5-Slot18-Slot2	Empty	0	0	0
+General 5-Slot19	Diminished Broken Accord Hands Armor	175975	1	2
+General 5-Slot19-Slot1	Empty	0	0	0
+General 5-Slot19-Slot2	Empty	0	0	0
+General 5-Slot20	Melted Spectacles of the Delusional	175117	1	6
+General 5-Slot20-Slot1	Empty	0	0	0
+General 5-Slot20-Slot2	Empty	0	0	0
+General 5-Slot20-Slot3	Empty	0	0	0
+General 5-Slot21	Underbulk Phylactery	175131	1	6
+General 5-Slot21-Slot1	Empty	0	0	0
+General 5-Slot21-Slot2	Empty	0	0	0
+General 5-Slot21-Slot3	Empty	0	0	0
+General 5-Slot22	Wax Wedding Band	175132	1	6
+General 5-Slot22-Slot1	Empty	0	0	0
+General 5-Slot22-Slot2	Empty	0	0	0
+General 5-Slot22-Slot3	Empty	0	0	0
+General 5-Slot23	The Everbark Scourge	175151	1	6
+General 5-Slot23-Slot1	Empty	0	0	0
+General 5-Slot23-Slot2	Empty	0	0	0
+General 5-Slot24	Halbert of the Lave Dweller	175159	1	6
+General 5-Slot24-Slot1	Empty	0	0	0
+General 5-Slot24-Slot2	Empty	0	0	0
+General 5-Slot24-Slot3	Empty	0	0	0
+General 5-Slot25	Diminished Broken Accord Wrist Armor	175974	1	2
+General 5-Slot25-Slot1	Empty	0	0	0
+General 5-Slot25-Slot2	Empty	0	0	0
+General 5-Slot26	Eternal Sylvan Stiletto	175154	1	6
+General 5-Slot26-Slot1	Empty	0	0	0
+General 5-Slot26-Slot2	Empty	0	0	0
+General 5-Slot27	Diminished Broken Accord Hands Armor	175975	1	2
+General 5-Slot27-Slot1	Empty	0	0	0
+General 5-Slot27-Slot2	Empty	0	0	0
+General 5-Slot28	Opulent Belt of the Contracted	170995	1	6
+General 5-Slot29	Nightglow, Divine Sword of the Deranged	175160	1	6
+General 5-Slot29-Slot1	Empty	0	0	0
+General 5-Slot29-Slot2	Empty	0	0	0
+General 5-Slot29-Slot3	Empty	0	0	0
+General 5-Slot30	Polished Femur Maul	175355	1	6
+General 5-Slot30-Slot1	Empty	0	0	0
+General 5-Slot30-Slot2	Empty	0	0	0
+General 5-Slot31	Luminous Mantle of Infinity	175125	1	6
+General 5-Slot31-Slot1	Empty	0	0	0
+General 5-Slot31-Slot2	Empty	0	0	0
+General 5-Slot31-Slot3	Empty	0	0	0
+General 5-Slot32	Enduring Cinder of Below	175139	1	6
+General 5-Slot32-Slot1	Empty	0	0	0
+General 5-Slot32-Slot2	Empty	0	0	0
+General 5-Slot32-Slot3	Empty	0	0	0
+General 5-Slot32-Slot4	Empty	0	0	0
+General 5-Slot33	Empty	0	0	0
+General 5-Slot34	Empty	0	0	0
+General 5-Slot35	Empty	0	0	0
+General 5-Slot36	Empty	0	0	0
+General 5-Slot37	Carnelian Rutilated Quartz	172007	2	6
+General 5-Slot38	Empty	0	0	0
+General 5-Slot39	Empty	0	0	0
+General 5-Slot40	Echo of Mastery	110394	1	6
+General 5-Slot41	Velium Dagger	30207	1	6
+General 5-Slot41-Slot1	Empty	0	0	0
+General 5-Slot41-Slot2	Empty	0	0	0
+General 5-Slot42	Reactive Striking Gem of Perpetual Reverie	151230	1	6
+General 5-Slot43	Tooth Fang Earring	167167	1	6
+General 5-Slot44	Covariant Engram	170289	1	6
+General 5-Slot45	Covariant Engram	170289	1	6
+General 5-Slot46	Grandiose Necklace of the Contracted	161699	1	6
+General 5-Slot47	Spectral Luclinite Tower Shield	169941	1	6
+General 5-Slot47-Slot1	Empty	0	0	0
+General 5-Slot47-Slot2	Empty	0	0	0
+General 5-Slot47-Slot3	Empty	0	0	0
+General 5-Slot47-Slot4	Empty	0	0	0
+General 5-Slot48	Fading Memory Bardiche	151576	1	2
+General 5-Slot48-Slot1	Empty	0	0	0
+General 5-Slot48-Slot2	Empty	0	0	0
+General 5-Slot49	Wand of Everlasting Water	26764	1	6
+General 5-Slot49-Slot1	Empty	0	0	0
+General 5-Slot50	Grandiose Necklace of the Contracted	161699	1	6
+General 6	Scale Seeker's Backpack	151796	1	48
+General 6-Slot1	Adroit Amice of Eternal Reverie	171925	1	6
+General 6-Slot1-Slot1	Irae Faycite Shard: Dire Rebuke	159544	1	6
+General 6-Slot1-Slot2	Empty	0	0	0
+General 6-Slot1-Slot3	Polished Sardonyx of Lunacy	171166	1	6
+General 6-Slot2	Security Charm of Eternal Reverie	171940	1	6
+General 6-Slot2-Slot1	Irae Faycite Shard: Spear of Lazam	159541	1	6
+General 6-Slot2-Slot2	Rapidious Sun Shaving	171174	1	6
+General 6-Slot2-Slot3	Empty	0	0	0
+General 6-Slot2-Slot4	Empty	0	0	0
+General 6-Slot3	Rapidious Sun Shaving	171174	1	6
+General 6-Slot4	Riding Bow of Eternal Reverie	171969	1	6
+General 6-Slot4-Slot1	Empty	0	0	0
+General 6-Slot4-Slot2	Empty	0	0	0
+General 6-Slot4-Slot3	Empty	0	0	0
+General 6-Slot4-Slot4	Empty	0	0	0
+General 6-Slot4-Slot5	Empty	0	0	0
+General 6-Slot5	Great Sword of Eternal Reverie	171964	1	6
+General 6-Slot5-Slot1	Empty	0	0	0
+General 6-Slot5-Slot2	Empty	0	0	0
+General 6-Slot5-Slot3	Soultrapper Ornament	111851	1	6
+General 6-Slot6	Adroit Ring of Eternal Reverie	171934	1	6
+General 6-Slot6-Slot1	Irae Faycite Shard: Touch of Flariton	159542	1	6
+General 6-Slot6-Slot2	Phantasmal Luclinite Stone of Resilience	169580	1	6
+General 6-Slot6-Slot3	Empty	0	0	0
+General 6-Slot7	Empty	0	0	0
+General 6-Slot8	Empty	0	0	0
+General 6-Slot9	Empty	0	0	0
+General 6-Slot10	Empty	0	0	0
+General 6-Slot11	Empty	0	0	0
+General 6-Slot12	Sprung Fingercuff	171732	1	6
+General 6-Slot12-Slot1	Empty	0	0	0
+General 6-Slot12-Slot2	Empty	0	0	0
+General 6-Slot12-Slot3	Empty	0	0	0
+General 6-Slot13	Empty	0	0	0
+General 6-Slot14	Merope's Gem of Heliacal Rising	169174	1	6
+General 6-Slot15	Empty	0	0	0
+General 6-Slot16	Empty	0	0	0
+General 6-Slot17	Empty	0	0	0
+General 6-Slot18	Metamorph: Chromatic Songwing	113594	1	6
+General 6-Slot19	Empty	0	0	0
+General 6-Slot20	Empty	0	0	0
+General 6-Slot21	Arcana Imbued Nigriventer Venom	170879	81	6
+General 6-Slot22	Arcana Imbued Mamba Venom	170880	58	6
+General 6-Slot23	Steel Ingot	81985	85	6
+General 6-Slot24	Empty	0	0	0
+General 6-Slot25	Empty	0	0	0
+General 6-Slot26	Gleaming Silver Protector Source	111667	1	6
+General 6-Slot27	Empty	0	0	0
+General 6-Slot28	Steely Stone of Buckling	171179	1	6
+General 6-Slot29	Luclinite Ensanguined Gem of Adroitness	167571	1	6
+General 6-Slot30	Empty	0	0	0
+General 6-Slot31	Merope's Gem of Heliacal Rising	169174	1	6
+General 6-Slot32	Empty	0	0	0
+General 6-Slot33	Devotee's Focus of the Harbinger	169770	5	6
+General 6-Slot34	Acolyte's Focus of the Harbinger	169769	4	6
+General 6-Slot35	Leviathan Cabochon	173166	1	6
+General 6-Slot36	Gleaming Silver Protector Source	111667	1	6
+General 6-Slot37	Emblem of the Suzerain Protector	152425	92	6
+General 6-Slot38	Devotee's Defense of Enduring Harmony	138885	1	6
+General 6-Slot39	Diminished Broken Accord Wrist Armor	175974	1	2
+General 6-Slot39-Slot1	Empty	0	0	0
+General 6-Slot39-Slot2	Empty	0	0	0
+General 6-Slot40	Lumber Plank	81130	99	6
+General 6-Slot41	Leather Roll	81162	121	6
+General 6-Slot42	Cloth Bolt	81986	119	6
+General 6-Slot43	Darkpaw Torch Ornament	89299	1	6
+General 6-Slot44	Writing Ink	81132	16	6
+General 6-Slot45	Black Powder Pouch	81133	175	6
+General 6-Slot46	Arcana Imbued Gormar Venom	170881	63	6
+General 6-Slot47	Medicinal Herbs	81127	139	6
+General 6-Slot48	Natural Spices	81129	27	6
+General 7	Broodslayer's Chest	151783	1	52
+General 7-Slot1	Warped Arcane Lens	172490	1	6
+General 7-Slot2	Cracked Relic Stone	172472	1	6
+General 7-Slot3	Forgotten Wrench	172057	1	6
+General 7-Slot4	Cracked Test Tube	172058	1	6
+General 7-Slot5	Ashveil Seed	172510	1	6
+General 7-Slot6	Thrashed Letter	172017	4	6
+General 7-Slot7	Encoded Journal Entry	172022	1	6
+General 7-Slot8	Revenant's Clawed Nails	172029	1	6
+General 7-Slot9	Teir Haeth Ribcage	172025	2	6
+General 7-Slot10	Singed Notation	172024	4	6
+General 7-Slot11	Faded Parchment	172020	2	6
+General 7-Slot12	Teir Haeth Vertebra	172030	3	6
+General 7-Slot13	Revenant's Lower Jaw	172032	1	6
+General 7-Slot14	Zombified Scapula	172026	1	6
+General 7-Slot15	Dirty Scrap of Hide	172018	1	6
+General 7-Slot16	Husk's Femur	172031	2	6
+General 7-Slot17	Runed Pebble	172483	2	6
+General 7-Slot18	Frayed Scrying Cloth	172480	1	6
+General 7-Slot19	Mote-Dusted Pebble	172473	1	6
+General 7-Slot20	Cerulean Chalk Stub	172486	1	6
+General 7-Slot21	Torn and Stained Notes	172019	1	6
+General 7-Slot22	Shar'Drahn's Scale Fragment	172491	2	6
+General 7-Slot23	Partially Digested Seed	171977	1	6
+General 7-Slot24	Bramble Seed	171981	1	6
+General 7-Slot25	Corrupted Seed	171982	1	6
+General 7-Slot26	Ashen Seed	171984	1	6
+General 7-Slot27	Cracked Geode	172001	3	6
+General 7-Slot28	A Pretty Rock	172003	1	6
+General 7-Slot29	Sharpened Obsidian	172004	2	6
+General 7-Slot30	Clear Palm Stone	172008	3	6
+General 7-Slot31	Volatile Essence Vial	172487	1	6
+General 7-Slot32	Broken Conduit Core	172479	2	6
+General 7-Slot33	Mote-Dusted Pebble	172473	1	6
+General 7-Slot34	Shimmer Bark	171997	1	6
+General 7-Slot35	Shattered Incantation Shard	172495	3	6
+General 7-Slot36	Cracked Vials of Oil	172061	1	6
+General 7-Slot37	River Polished Stone	172002	5	6
+General 7-Slot38	Bird Skull Stone	172005	2	6
+General 7-Slot39	Wax Encrusted Circuit Board	172063	2	6
+General 7-Slot40	Wax Clump Mixture	172053	1	6
+General 7-Slot41	Muddied Wax Clump	172054	1	6
+General 7-Slot42	Azure Wax Clump	172049	4	6
+General 7-Slot43	Crimson Wax Clump	172050	1	6
+General 7-Slot44	Runed Pebble	172483	1	6
+General 7-Slot45	Blasted Spell Lattice	172476	1	6
+General 7-Slot46	Splintered Altar Stone	172453	1	6
+General 7-Slot47	Charred Ritual Candle	172452	1	6
+General 7-Slot48	Warped Focus Ring	172494	1	6
+General 7-Slot49	Cracked Geode	172001	1	6
+General 7-Slot50	Anarchic Shatter	172469	1	6
+General 7-Slot51	Hardened Wax Clump	172052	1	6
+General 7-Slot52	Stormfused Fulgurite	172006	7	6
+General 8	Broodslayer's Backpack	151799	1	48
+General 8-Slot1	Repaired Key of the Jungle	161906	1	6
+General 8-Slot2	Repaired Key of Fire	161926	1	6
+General 8-Slot3	Repaired Key of Swamps	161916	1	6
+General 8-Slot4	Repaired Key of Fear	161936	1	6
+General 8-Slot5	Repaired Key of the Void	161941	1	6
+General 8-Slot6	Luclinite Defender Source	167183	1	6
+General 8-Slot7	Sapphire of Defense	111802	1	6
+General 8-Slot8	Overseer Collection Item Dispenser	105880	83	6
+General 8-Slot9	Blazing Euphoria Enhancement	161650	1	6
+General 8-Slot10	Elegant Maul	151162	1	6
+General 8-Slot10-Slot1	Empty	0	0	0
+General 8-Slot10-Slot2	Empty	0	0	0
+General 8-Slot10-Slot3	Empty	0	0	0
+General 8-Slot11	Overseer Collection Item Dispenser Fragment	133773	71	6
+General 8-Slot12	Emblem of the Dread Suzerain	152427	5	6
+General 8-Slot13	Summoned: Kotahl's Tonic of Clarity	109894	1	6
+General 8-Slot14	Inert Median Engram	170292	1	6
+General 8-Slot15	Axe of Fallen Leaves	171759	1	6
+General 8-Slot15-Slot1	Empty	0	0	0
+General 8-Slot15-Slot2	Empty	0	0	0
+General 8-Slot15-Slot3	Empty	0	0	0
+General 8-Slot16	Overseer Collection Item Dispenser Fragment	133773	91	6
+General 8-Slot17	Chestplate of the Dark Flame	81759	1	6
+General 8-Slot17-Slot1	Empty	0	0	0
+General 8-Slot17-Slot2	Empty	0	0	0
+General 8-Slot17-Slot3	Empty	0	0	0
+General 8-Slot18	Greater Emblem of the Forge	164584	1	6
+General 8-Slot19	Ceremonial Sash of Sahteb Mahlni	169737	1	6
+General 8-Slot19-Slot1	Empty	0	0	0
+General 8-Slot19-Slot2	Empty	0	0	0
+General 8-Slot19-Slot3	Empty	0	0	0
+General 8-Slot20	Phantasmal Luclinite Earring of Brilliance	169515	1	6
+General 8-Slot20-Slot1	Empty	0	0	0
+General 8-Slot20-Slot2	Empty	0	0	0
+General 8-Slot20-Slot3	Empty	0	0	0
+General 8-Slot21	Emblem of the Overlord	152423	23	6
+General 8-Slot22	Empty	0	0	0
+General 8-Slot23	Unparalleled Intellect Gem of Distant Echoes	111863	1	6
+General 8-Slot24	Peridot	10028	170	6
+General 8-Slot25	Chunk of Discordian Rock	58028	8	6
+General 8-Slot26	Pearl	10024	100	6
+General 8-Slot27	The Bone Rod	151934	1	6
+General 8-Slot28	Duskbringer's Plate Chestguard of the Hateful	70886	1	6
+General 8-Slot28-Slot1	Empty	0	0	0
+General 8-Slot28-Slot2	Empty	0	0	0
+General 8-Slot29	Acrylian Plate Helm Ornament	149920	1	6
+General 8-Slot30	Deluxe Toolbox	17877	1	10
+General 8-Slot30-Slot1	Empty	0	0	0
+General 8-Slot30-Slot2	Empty	0	0	0
+General 8-Slot30-Slot3	Empty	0	0	0
+General 8-Slot30-Slot4	Empty	0	0	0
+General 8-Slot30-Slot5	Empty	0	0	0
+General 8-Slot30-Slot6	Empty	0	0	0
+General 8-Slot30-Slot7	Empty	0	0	0
+General 8-Slot30-Slot8	Empty	0	0	0
+General 8-Slot30-Slot9	Empty	0	0	0
+General 8-Slot30-Slot10	Empty	0	0	0
+General 8-Slot31	Reactive Honed Gem of the Shackled	151785	1	6
+General 8-Slot32	Distillate of Antidote XVII	135330	20	6
+General 8-Slot33	Guild Banner Materials	70339	100	6
+General 8-Slot34	Stirring Bardiche of the Bound	173759	1	6
+General 8-Slot34-Slot1	Empty	0	0	0
+General 8-Slot34-Slot2	Empty	0	0	0
+General 8-Slot34-Slot3	Empty	0	0	0
+General 8-Slot35	Rapier of Legends	127313	1	6
+General 8-Slot35-Slot1	Empty	0	0	0
+General 8-Slot35-Slot2	Empty	0	0	0
+General 8-Slot36	Luclinite Ensanguined Gem of Vigor	167570	1	6
+General 8-Slot37	Emerald	10029	86	6
+General 8-Slot38	Serene Spring Water	154770	100	6
+General 8-Slot39	Trinket of Fen's Return	171373	1	6
+General 8-Slot40	Reactive Phantasmal Luclinite Gem of Striking	164567	1	6
+General 8-Slot41	Totem of Elitist Rites	68815	1	6
+General 8-Slot41-Slot1	Empty	0	0	0
+General 8-Slot42	Zun'Muram's Signet of Command	64034	1	6
+General 8-Slot43	Reactive Luclinite Ensanguined Gem of Striking	164185	1	6
+General 8-Slot44	Selyrah of Fear Saddle	94098	1	6
+General 8-Slot45	Faskan Rift	173368	1	6
+General 8-Slot46	Potion of Harvest	40606	20	6
+General 8-Slot47	Potion of Healing	40607	20	6
+General 8-Slot48	Darkened Cobalt Bracer	146248	1	6
+General 8-Slot48-Slot1	Empty	0	0	0
+General 8-Slot48-Slot2	Empty	0	0	0
+General 8-Slot48-Slot3	Empty	0	0	0
+General 8-Slot48-Slot4	Empty	0	0	0
+General 9	Storm Chaser's Backpack	153975	1	48
+General 9-Slot1	Mysterious Message	168146	1	6
+General 9-Slot2	Bottle of Dehydrated Storms	169395	1	6
+General 9-Slot3	Blasted Scrykin Orb Fragment	169385	13	6
+General 9-Slot4	Pristine Mechanical Octopus Oil	169386	1	6
+General 9-Slot5	Creased Parchment Sheet	168148	1	6
+General 9-Slot6	Riven Arcana Ore	170822	52	6
+General 9-Slot7	Empty	0	0	0
+General 9-Slot8	Riven Arcana Imbued Hide	170824	471	6
+General 9-Slot9	Riven Arcana Imbued Silk	170825	40	6
+General 9-Slot10	Riven Arcana Lumber	170840	2	6
+General 9-Slot11	Extruded Black Pearl	151936	1	6
+General 9-Slot12	Revealed Message	169389	1	6
+General 9-Slot13	Pristine Mechanical Octopus Oil	169386	1	6
+General 9-Slot14	A Masterfully Marked Map	169391	1	6
+General 9-Slot15	Philter of Major Translocation	96467	3	6
+General 9-Slot16	Warhelm of Rallos Zek	57914	1	6
+General 9-Slot17	Plate Helm Ornament of Swirling Spirits	149949	1	6
+General 9-Slot18	Evocation Focus Draught	160185	17	6
+General 9-Slot19	Empty	0	0	0
+General 9-Slot20	Fishing Bait	13101	977	6
+General 9-Slot21	Fishing Bait	13101	745	6
+General 9-Slot22	Fellowship Campfire Materials	70338	86	6
+General 9-Slot23	Journeyman's Compass	127551	1	6
+General 9-Slot24	Damsel of Decay Plate Helm Ornament	145687	1	6
+General 9-Slot25	Blade of Jade Ornament	102967	1	6
+General 9-Slot26	Bone Chips	13073	100	6
+General 9-Slot27	Glowgem	32696	37	6
+General 9-Slot28	Irae Faycite Shard: Blood of Shoru	159540	1	6
+General 9-Slot29	Silver Protecting Magic of Jubilation	109576	1	6
+General 9-Slot30	Irae Faycite Shard: Vitriolic Darkness	159545	1	6
+General 9-Slot31	Scalebreaker's Storage Crate	128741	1	6
+General 9-Slot32	Stormslayer's Backpack	153978	1	48
+General 9-Slot32-Slot1	Empty	0	0	0
+General 9-Slot32-Slot2	Empty	0	0	0
+General 9-Slot32-Slot3	Empty	0	0	0
+General 9-Slot32-Slot4	Empty	0	0	0
+General 9-Slot32-Slot5	Empty	0	0	0
+General 9-Slot32-Slot6	Empty	0	0	0
+General 9-Slot32-Slot7	Empty	0	0	0
+General 9-Slot32-Slot8	Empty	0	0	0
+General 9-Slot32-Slot9	Empty	0	0	0
+General 9-Slot32-Slot10	Empty	0	0	0
+General 9-Slot32-Slot11	Empty	0	0	0
+General 9-Slot32-Slot12	Empty	0	0	0
+General 9-Slot32-Slot13	Empty	0	0	0
+General 9-Slot32-Slot14	Empty	0	0	0
+General 9-Slot32-Slot15	Empty	0	0	0
+General 9-Slot32-Slot16	Empty	0	0	0
+General 9-Slot32-Slot17	Empty	0	0	0
+General 9-Slot32-Slot18	Empty	0	0	0
+General 9-Slot32-Slot19	Empty	0	0	0
+General 9-Slot32-Slot20	Empty	0	0	0
+General 9-Slot32-Slot21	Empty	0	0	0
+General 9-Slot32-Slot22	Empty	0	0	0
+General 9-Slot32-Slot23	Empty	0	0	0
+General 9-Slot32-Slot24	Empty	0	0	0
+General 9-Slot32-Slot25	Empty	0	0	0
+General 9-Slot32-Slot26	Empty	0	0	0
+General 9-Slot32-Slot27	Empty	0	0	0
+General 9-Slot32-Slot28	Empty	0	0	0
+General 9-Slot32-Slot29	Empty	0	0	0
+General 9-Slot32-Slot30	Empty	0	0	0
+General 9-Slot32-Slot31	Empty	0	0	0
+General 9-Slot32-Slot32	Empty	0	0	0
+General 9-Slot32-Slot33	Empty	0	0	0
+General 9-Slot32-Slot34	Empty	0	0	0
+General 9-Slot32-Slot35	Empty	0	0	0
+General 9-Slot32-Slot36	Empty	0	0	0
+General 9-Slot32-Slot37	Empty	0	0	0
+General 9-Slot32-Slot38	Empty	0	0	0
+General 9-Slot32-Slot39	Empty	0	0	0
+General 9-Slot32-Slot40	Empty	0	0	0
+General 9-Slot32-Slot41	Empty	0	0	0
+General 9-Slot32-Slot42	Empty	0	0	0
+General 9-Slot32-Slot43	Empty	0	0	0
+General 9-Slot32-Slot44	Empty	0	0	0
+General 9-Slot32-Slot45	Empty	0	0	0
+General 9-Slot32-Slot46	Empty	0	0	0
+General 9-Slot32-Slot47	Empty	0	0	0
+General 9-Slot32-Slot48	Empty	0	0	0
+General 9-Slot33	Stormslayer's Chest	153962	1	52
+General 9-Slot33-Slot1	Empty	0	0	0
+General 9-Slot33-Slot2	Empty	0	0	0
+General 9-Slot33-Slot3	Empty	0	0	0
+General 9-Slot33-Slot4	Empty	0	0	0
+General 9-Slot33-Slot5	Empty	0	0	0
+General 9-Slot33-Slot6	Empty	0	0	0
+General 9-Slot33-Slot7	Empty	0	0	0
+General 9-Slot33-Slot8	Empty	0	0	0
+General 9-Slot33-Slot9	Empty	0	0	0
+General 9-Slot33-Slot10	Empty	0	0	0
+General 9-Slot33-Slot11	Empty	0	0	0
+General 9-Slot33-Slot12	Empty	0	0	0
+General 9-Slot33-Slot13	Empty	0	0	0
+General 9-Slot33-Slot14	Empty	0	0	0
+General 9-Slot33-Slot15	Empty	0	0	0
+General 9-Slot33-Slot16	Empty	0	0	0
+General 9-Slot33-Slot17	Empty	0	0	0
+General 9-Slot33-Slot18	Empty	0	0	0
+General 9-Slot33-Slot19	Empty	0	0	0
+General 9-Slot33-Slot20	Empty	0	0	0
+General 9-Slot33-Slot21	Empty	0	0	0
+General 9-Slot33-Slot22	Empty	0	0	0
+General 9-Slot33-Slot23	Empty	0	0	0
+General 9-Slot33-Slot24	Empty	0	0	0
+General 9-Slot33-Slot25	Empty	0	0	0
+General 9-Slot33-Slot26	Empty	0	0	0
+General 9-Slot33-Slot27	Empty	0	0	0
+General 9-Slot33-Slot28	Empty	0	0	0
+General 9-Slot33-Slot29	Empty	0	0	0
+General 9-Slot33-Slot30	Empty	0	0	0
+General 9-Slot33-Slot31	Empty	0	0	0
+General 9-Slot33-Slot32	Empty	0	0	0
+General 9-Slot33-Slot33	Empty	0	0	0
+General 9-Slot33-Slot34	Empty	0	0	0
+General 9-Slot33-Slot35	Empty	0	0	0
+General 9-Slot33-Slot36	Empty	0	0	0
+General 9-Slot33-Slot37	Empty	0	0	0
+General 9-Slot33-Slot38	Empty	0	0	0
+General 9-Slot33-Slot39	Empty	0	0	0
+General 9-Slot33-Slot40	Empty	0	0	0
+General 9-Slot33-Slot41	Empty	0	0	0
+General 9-Slot33-Slot42	Empty	0	0	0
+General 9-Slot33-Slot43	Empty	0	0	0
+General 9-Slot33-Slot44	Empty	0	0	0
+General 9-Slot33-Slot45	Empty	0	0	0
+General 9-Slot33-Slot46	Empty	0	0	0
+General 9-Slot33-Slot47	Empty	0	0	0
+General 9-Slot33-Slot48	Empty	0	0	0
+General 9-Slot33-Slot49	Empty	0	0	0
+General 9-Slot33-Slot50	Empty	0	0	0
+General 9-Slot33-Slot51	Empty	0	0	0
+General 9-Slot33-Slot52	Empty	0	0	0
+General 9-Slot34	Metamorph: Jade Prowler Cub	102970	1	6
+General 9-Slot35	Di`Zok Plate Helm Ornament	148966	1	6
+General 9-Slot36	Cloudy Potion	14514	9	6
+General 9-Slot37	Restless Focus	164271	4	6
+General 9-Slot38	Grandiose Necklace of the Contracted	161699	1	6
+General 9-Slot39	Overflowing Urn of Life	141175	1	6
+General 9-Slot40	Arx Mentis Cloth Robe Ornament	103162	1	6
+General 9-Slot41	Echoing Memoryweave Cloth Robe Ornament	154583	1	6
+General 9-Slot42	Brilliant Ring of Memoryforged Desolation	169994	1	6
+General 9-Slot42-Slot1	Empty	0	0	0
+General 9-Slot42-Slot2	Empty	0	0	0
+General 9-Slot42-Slot3	Empty	0	0	0
+General 9-Slot43	Forgotten Gemstone	129895	1	6
+General 9-Slot44	Silver Defense of Jubilation	109569	1	6
+General 9-Slot45	Ancient Cloak of Flames	81807	1	6
+General 9-Slot45-Slot1	Empty	0	0	0
+General 9-Slot45-Slot2	Empty	0	0	0
+General 9-Slot46	Philter of Major Translocation	96467	20	6
+General 9-Slot47	Jade-Tinted Spectacles Ornamentation	109261	1	6
+General 9-Slot48	Monitor's Iris Shard	173377	1	6
+General 10	Fractured String Serving	170817	1	6
+General 11	Empty	0	0	0
+General 12	Empty	0	0	0
+Held	Empty	0	0	0
+Bank1	Heroic Backpack of the Adventurer	135987	1	40
+Bank1-Slot1	Manipulated Ruby Egg Fluid	166341	14	6
+Bank1-Slot2	Gospel of Veeshan Vol. 5 "Forgiveness"	162046	6	6
+Bank1-Slot3	Gospel of Veeshan Vol. 3 "Surviving"	162044	16	6
+Bank1-Slot4	Broken Symbol of Marr	162966	42	6
+Bank1-Slot5	Molted Voidcrab Legs	166358	17	6
+Bank1-Slot6	Scalewrought Claw	167788	80	6
+Bank1-Slot7	Discarded Amethyst Egg	166346	5	6
+Bank1-Slot8	Interstellar Communique Theta	162041	50	6
+Bank1-Slot9	Scalewrought Tympanum	167790	38	6
+Bank1-Slot10	Emptied Amethyst Egg Shell	166343	7	6
+Bank1-Slot11	Discarded Ruby Egg	166347	3	6
+Bank1-Slot12	Transport Tie-Down Strap	166366	28	6
+Bank1-Slot13	Hangar Lift Crank Handle	166364	18	6
+Bank1-Slot14	Crushed Aurelian Armor Plate	162062	91	6
+Bank1-Slot15	Blasted Piece of Behemoth Scale	162064	60	6
+Bank1-Slot16	Broken Bow String	166630	65	6
+Bank1-Slot17	Cracked Aurelian Polearm	162061	100	6
+Bank1-Slot18	Lost Chain Links	166634	51	6
+Bank1-Slot19	Broken Staff	166635	54	6
+Bank1-Slot20	Scalewrought Eye	167789	55	6
+Bank1-Slot21	Tissue Magnifier	167799	7	6
+Bank1-Slot22	Cracktooth Orc Jaw	162968	35	6
+Bank1-Slot23	Tunarian Coin	162969	23	6
+Bank1-Slot24	Invasion Success Needs	166353	14	6
+Bank1-Slot25	Scalewrought Shoulder Patch	167786	56	6
+Bank1-Slot26	Aureate Hardtack	166929	35	6
+Bank1-Slot27	Aurelian Spice Bottle	166930	30	6
+Bank1-Slot28	Voidcrab Roe	166928	38	6
+Bank1-Slot29	Invasion Force's Glaive	162981	32	6
+Bank1-Slot30	Invasion Force's Lance	162982	20	6
+Bank1-Slot31	Farmer's Abandoned Hoe	162971	28	6
+Bank1-Slot32	Interstellar Communique Zeta	162039	69	6
+Bank1-Slot33	Broken Chain	166633	56	6
+Bank1-Slot34	Broken Axe Head	166637	24	6
+Bank1-Slot35	Shed Scales	145390	25	6
+Bank1-Slot36	Broken Shield	166632	80	6
+Bank1-Slot37	Shattered Armor	166631	57	6
+Bank1-Slot38	`The Heart` Constellation Map	166908	18	6
+Bank1-Slot39	Otherworldly Dried Meat	166924	44	6
+Bank1-Slot40	Interstellar Communique Eta	162040	50	6
+Bank2	Tan Battleworn Sack	161424	1	40
+Bank2-Slot1	Nektulos Fern	162990	23	6
+Bank2-Slot2	Interstellar Communique Epsilon	162038	55	6
+Bank2-Slot3	Bobble-by-Water Rebuilding Plans	162970	39	6
+Bank2-Slot4	Mu`Lin Lupine	162989	41	6
+Bank2-Slot5	Satin Flower	162991	7	6
+Bank2-Slot6	Interstellar Communique Beta	162035	59	6
+Bank2-Slot7	Interstellar Communique Delta	162037	61	6
+Bank2-Slot8	Spent Hangar Fire Suppressor	166365	13	6
+Bank2-Slot9	Snapped Transport Hook	166368	20	6
+Bank2-Slot10	Severed Tail Tip	145394	45	6
+Bank2-Slot11	Writhing Spark	145384	19	6
+Bank2-Slot12	Leviathan Cerebral Fluid	167771	24	6
+Bank2-Slot13	Sparking Node	145383	18	6
+Bank2-Slot14	Gospel of Veeshan Vol. 1 "Creation"	162042	13	6
+Bank2-Slot15	Gospel of Veeshan Vol. 6 "Dominance"	162047	8	6
+Bank2-Slot16	Gospel of Veeshan Vol. 4 "Conquest"	162045	22	6
+Bank2-Slot17	Empty Barnacle Shell	162054	13	6
+Bank2-Slot18	Fracturing Spark	145387	3	6
+Bank2-Slot19	Drooping Spark	145388	6	6
+Bank2-Slot20	Swirling Spark	145386	16	6
+Bank2-Slot21	Leviathan Lymph Fluid	167772	16	6
+Bank2-Slot22	Succulent Voidcrab Meat	166925	48	6
+Bank2-Slot23	Delectable Aureate Cupcake	166926	26	6
+Bank2-Slot24	Shredded Wing Tip	145395	7	6
+Bank2-Slot25	Dark Discrete Droppings	145376	25	6
+Bank2-Slot26	Braver Krim's Lost Treasure	162965	26	6
+Bank2-Slot27	Ancient Rift Rune	162962	35	6
+Bank2-Slot28	Chief Digger's Report	162967	22	6
+Bank2-Slot29	Stalk of a Spotter	162055	5	6
+Bank2-Slot30	Dried Behemoth Leaf	162053	20	6
+Bank2-Slot31	Pebble Sized Droppings	145378	13	6
+Bank2-Slot32	Long Wide Droppings	145377	18	6
+Bank2-Slot33	Interstellar Communique Alpha	162034	78	6
+Bank2-Slot34	Interstellar Communique Gamma	162036	73	6
+Bank2-Slot35	Icon of Veeshan: Left Flank	166921	15	6
+Bank2-Slot36	Icon of Veeshan: Front Right Wing	166917	14	6
+Bank2-Slot37	Unexploded Ordnance Shell	162060	100	6
+Bank2-Slot38	Invasion Preparation Needs	166352	3	6
+Bank2-Slot39	Shed Skin	166628	2	6
+Bank2-Slot40	Manipulated Emerald Egg Fluid	166342	4	6
+Bank3	Heroic Backpack of the Adventurer	135987	1	40
+Bank3-Slot1	Invasion Force's Warhammer	162985	8	6
+Bank3-Slot2	Shed Baby Horn	166629	1	6
+Bank3-Slot3	Invasion Failure Needs	166354	1	6
+Bank3-Slot4	Large Vein Tourniquet	167797	13	6
+Bank3-Slot5	`The Executioner` Constellation Map	166910	17	6
+Bank3-Slot6	Molted Voidcrab Tips	166363	11	6
+Bank3-Slot7	Invasion Force's Pernach	162983	17	6
+Bank3-Slot8	Invasion Force's Sabre	162984	10	6
+Bank3-Slot9	Invasion Magic Needs	166349	5	6
+Bank3-Slot10	Molted Voidcrab Joints	166359	8	6
+Bank3-Slot11	Molted Voidcrab Spines	166362	5	6
+Bank3-Slot12	Cracked Aurelian Polearm	162061	10	6
+Bank3-Slot13	Unexploded Ordnance Shell	162060	9	6
+Bank3-Slot14	Broken Cannon Battery	162059	1	6
+Bank3-Slot15	`The Jailer` Constellation Map	166914	3	6
+Bank3-Slot16	Heart Diagram - Tablet 8	167784	1	6
+Bank3-Slot17	Gilded Aurelian Tassel	166904	1	6
+Bank3-Slot18	Gilded Stitching	166903	1	6
+Bank3-Slot19	Tawny Nightshade Orchid	116536	1	6
+Bank3-Slot20	Ocherous Nightshade Orchid	116538	2	6
+Bank3-Slot21	Fools Webcap	116545	1	6
+Bank3-Slot22	Indigo Nightshade Orchid	116534	1	6
+Bank3-Slot23	Timorous Falls Guard Report 3	150474	1	6
+Bank3-Slot24	Temby Strawberry	162993	1	6
+Bank3-Slot25	Shattered Shield Crest	172443	1	6
+Bank3-Slot26	Jeweler's Kit	17912	1	4
+Bank3-Slot26-Slot1	Empty	0	0	0
+Bank3-Slot26-Slot2	Empty	0	0	0
+Bank3-Slot26-Slot3	Empty	0	0	0
+Bank3-Slot26-Slot4	Empty	0	0	0
+Bank3-Slot27	Solo Setting Tool	37803	1	6
+Bank3-Slot28	Ring Mold	37798	1	6
+Bank3-Slot29	Duo Setting Tool	37804	1	6
+Bank3-Slot30	Empty	0	0	0
+Bank3-Slot31	Empty	0	0	0
+Bank3-Slot32	Empty	0	0	0
+Bank3-Slot33	Empty	0	0	0
+Bank3-Slot34	Empty	0	0	0
+Bank3-Slot35	Empty	0	0	0
+Bank3-Slot36	Empty	0	0	0
+Bank3-Slot37	Empty	0	0	0
+Bank3-Slot38	Empty	0	0	0
+Bank3-Slot39	Empty	0	0	0
+Bank3-Slot40	Empty	0	0	0
+Bank4	Gorangan Blood-Stained Bag	168038	1	40
+Bank4-Slot1	Cracked Vials of Oil	172061	3	6
+Bank4-Slot2	Cracked Test Tube	172058	2	6
+Bank4-Slot3	Volatile Essence Vial	172487	2	6
+Bank4-Slot4	Encoded Journal Entry	172022	2	6
+Bank4-Slot5	Encoded Journal Entry	172022	1	6
+Bank4-Slot6	Faded Parchment	172020	7	6
+Bank4-Slot7	Forgotten Wrench	172057	3	6
+Bank4-Slot8	Thrashed Letter	172017	10	6
+Bank4-Slot9	Singed Notation	172024	5	6
+Bank4-Slot10	Revenant's Clawed Nails	172029	15	6
+Bank4-Slot11	Dirty Scrap of Hide	172018	8	6
+Bank4-Slot12	Soiled Note Scrap	172023	7	6
+Bank4-Slot13	Teir Haeth Vertebra	172030	9	6
+Bank4-Slot14	Torn and Stained Notes	172019	9	6
+Bank4-Slot15	Husk's Femur	172031	2	6
+Bank4-Slot16	Azure Wax Clump	172049	3	6
+Bank4-Slot17	Hardened Wax Clump	172052	3	6
+Bank4-Slot18	Molten Wax Clump	172051	3	6
+Bank4-Slot19	Crimson Wax Clump	172050	3	6
+Bank4-Slot20	Rekindled Wax Wick Sprout	172056	1	6
+Bank4-Slot21	Chaotic Scribbles	172021	12	6
+Bank4-Slot22	Aetherial Prism	172505	3	6
+Bank4-Slot23	Ashveil Seed	172510	2	6
+Bank4-Slot24	Arcflare Facet	172509	2	6
+Bank4-Slot25	Skybrand Crystal	172507	1	6
+Bank4-Slot26	Pyrostorm Gemstone	172504	2	6
+Bank4-Slot27	Runemarked Sliver	172474	6	6
+Bank4-Slot28	Polished Windworn Stone	172461	3	6
+Bank4-Slot29	Shard of Celestial Glass	172451	11	6
+Bank4-Slot30	Broken Ceremonial Urn	172449	11	6
+Bank4-Slot31	Fragmented Obsidian Idol	172448	12	6
+Bank4-Slot32	Shard of Celestial Granite	172456	4	6
+Bank4-Slot33	Charred Spellbone Sliver	172492	8	6
+Bank4-Slot34	Sealed Hex Knot	172488	6	6
+Bank4-Slot35	Warped Arcane Lens	172490	5	6
+Bank4-Slot36	Rift-Touched Scale Dust	172493	9	6
+Bank4-Slot37	Crimson Wick	172048	4	6
+Bank4-Slot38	Crystallized Wick	172046	4	6
+Bank4-Slot39	Sap-Stained Leaf	172433	1	6
+Bank4-Slot40	Fragment of Wrath	172016	20	6
+Bank5	Shadow Slayer's Rucksack	168042	1	40
+Bank5-Slot1	Wanted Poster - Bandits	162975	23	6
+Bank5-Slot2	Hodstock Child's Doll	162972	40	6
+Bank5-Slot3	Molted Voidcrab Claws	166360	5	6
+Bank5-Slot4	Common Camas	162986	15	6
+Bank5-Slot5	Invasion Food Needs	166348	9	6
+Bank5-Slot6	Exotic Flora Seed	162052	7	6
+Bank5-Slot7	Invasion Defensive Needs	166350	6	6
+Bank5-Slot8	Invasion Weapon Needs	166351	9	6
+Bank5-Slot9	Bobble-by-Water Town Banner	162964	54	6
+Bank5-Slot10	Molted Voidcrab Merus	166357	19	6
+Bank5-Slot11	Broken Claw Tip	145391	29	6
+Bank5-Slot12	Broken Cannon Battery	162059	100	6
+Bank5-Slot13	Aurelian Loaf	166927	29	6
+Bank5-Slot14	Light Shedding Crystal	162058	92	6
+Bank5-Slot15	Piece of Aurelian Tapestry	162065	62	6
+Bank5-Slot16	Monitor Wing	162063	93	6
+Bank5-Slot17	Dendrite Horror Shedding	162051	16	6
+Bank5-Slot18	Cutting from Behemoth Tree	162050	11	6
+Bank5-Slot19	Dirtied Transport Sponge	166367	17	6
+Bank5-Slot20	Bobble-by-Water Cookbook	162963	40	6
+Bank5-Slot21	Fading Globe	145382	19	6
+Bank5-Slot22	Broken Spine Tip	145392	31	6
+Bank5-Slot23	Broken Tooth	145393	16	6
+Bank5-Slot24	Glowing Smear	145385	29	6
+Bank5-Slot25	Hard Jagged Droppings	145375	26	6
+Bank5-Slot26	Leviathan Bile	167769	34	6
+Bank5-Slot27	Leviathan Blood Plasma	167770	26	6
+Bank5-Slot28	Leviathan Pancreatic Fluid	167773	26	6
+Bank5-Slot29	Leviathan Saliva	167774	19	6
+Bank5-Slot30	Leviathan Spinal Fluid	167775	24	6
+Bank5-Slot31	Unused Horseshoe	162974	28	6
+Bank5-Slot32	Hodstock to Temby Trade Receipt	162973	32	6
+Bank5-Slot33	Invasion Force's Dagger	162980	26	6
+Bank5-Slot34	Water-Damaged Playing Cards	162976	18	6
+Bank5-Slot35	Sea Thrift	162992	17	6
+Bank5-Slot36	Evergreen Twig	162987	23	6
+Bank5-Slot37	Hodstock Columbine	162988	18	6
+Bank5-Slot38	Icon of Veeshan: Back Left Wing	166918	12	6
+Bank5-Slot39	Aurelian Cord	166900	9	6
+Bank5-Slot40	Shattered Arrow Shafts	166636	51	6
+Bank6	Heroic Backpack of the Adventurer	135987	1	40
+Bank6-Slot1	Gelatinous Saliva	145379	18	6
+Bank6-Slot2	Partially Digested Meal	145380	12	6
+Bank6-Slot3	Invasion Force's Battle Axe	162978	28	6
+Bank6-Slot4	Invasion Force's Club	162979	14	6
+Bank6-Slot5	Crushed Lock-In Bolt	166370	5	6
+Bank6-Slot6	Scalewrought Tongue	167791	49	6
+Bank6-Slot7	Broken Transport Lock	166369	8	6
+Bank6-Slot8	`The Lover` Constellation Map	166909	28	6
+Bank6-Slot9	`The Guardian` Constellation Map	166913	23	6
+Bank6-Slot10	Dried Aurelian Beans	166931	14	6
+Bank6-Slot11	Icon of Veeshan: Front Left Wing	166916	14	6
+Bank6-Slot12	Icon of Veeshan: Right Flank	166922	3	6
+Bank6-Slot13	Soft Large Droppings	145374	26	6
+Bank6-Slot14	Depleted Battery Casing	167796	15	6
+Bank6-Slot15	Scalewrought Head	167785	54	6
+Bank6-Slot16	Biomagical Infusing Rod	167793	11	6
+Bank6-Slot17	Biomagical Tongs	167795	18	6
+Bank6-Slot18	Scalewrought Facial Scales	167792	21	6
+Bank6-Slot19	Biomagical Lance	167794	13	6
+Bank6-Slot20	Heart Diagram - Tablet 5	167781	6	6
+Bank6-Slot21	Gospel of Veeshan Vol. 2 "Thriving"	162043	3	6
+Bank6-Slot22	Emptied Emerald Egg Shell	166345	1	6
+Bank6-Slot23	Heart Diagram - Tablet 1	167777	5	6
+Bank6-Slot24	Heart Diagram - Tablet 2	167778	1	6
+Bank6-Slot25	Heart Diagram - Tablet 3	167779	8	6
+Bank6-Slot26	Heart Diagram - Tablet 7	167783	14	6
+Bank6-Slot27	Icon of Veeshan: Back Right Wing	166919	12	6
+Bank6-Slot28	Icon of Veeshan: Horned Head	166920	20	6
+Bank6-Slot29	Manipulated Amethyst Egg Fluid	166340	4	6
+Bank6-Slot30	Aurelian Cotton	166901	6	6
+Bank6-Slot31	Transport Hangar Carabiner	166371	5	6
+Bank6-Slot32	Red Pillow Upholstery	166905	2	6
+Bank6-Slot33	Scalewrought Leg Joint	167787	63	6
+Bank6-Slot34	Molted Voidcrab Shoulders	166356	9	6
+Bank6-Slot35	Molted Voidcrab Carapace	166361	10	6
+Bank6-Slot36	`The Shepherd` Constellation Map	166915	8	6
+Bank6-Slot37	Large Smear of Mucus	145381	10	6
+Bank6-Slot38	`The Giver` Constellation Map	166912	19	6
+Bank6-Slot39	`The Destroyer` Constellation Map	166911	12	6
+Bank6-Slot40	Magic Transferrance Gem	167798	14	6
+Bank7	Nightslayer's Satchel	164564	1	40
+Bank7-Slot1	Muddied Wax Clump	172054	3	6
+Bank7-Slot2	Torn Quiver	171990	4	6
+Bank7-Slot3	Bloodied Pauldrons	172071	30	6
+Bank7-Slot4	Wax Hardened Dagger	172072	27	6
+Bank7-Slot5	Fused Crystalline Shell	172517	14	6
+Bank7-Slot6	Glassbone Fragment	172512	30	6
+Bank7-Slot7	Threadstone Coil	172513	20	6
+Bank7-Slot8	Soulglass Splinter	172514	30	6
+Bank7-Slot9	Stoneblood Droplet	172518	25	6
+Bank7-Slot10	Brimsteel Husk	172515	15	6
+Bank7-Slot11	Magmavine Tendril	172516	18	6
+Bank7-Slot12	Scorched Incense Holder	172455	15	6
+Bank7-Slot13	Ashflesh Pellet	172519	17	6
+Bank7-Slot14	Sharpened Obsidian	172004	14	6
+Bank7-Slot15	Cracked Geode	172001	18	6
+Bank7-Slot16	Bird Skull Stone	172005	13	6
+Bank7-Slot17	Zombified Scapula	172026	15	6
+Bank7-Slot18	Teir Haeth Ribcage	172025	11	6
+Bank7-Slot19	A Pretty Rock	172003	15	6
+Bank7-Slot20	Cracked Geode	172001	2	6
+Bank7-Slot21	River Polished Stone	172002	22	6
+Bank7-Slot22	Stormfused Fulgurite	172006	17	6
+Bank7-Slot23	Bird Skull Stone	172005	1	6
+Bank7-Slot24	Carnelian Rutilated Quartz	172007	20	6
+Bank7-Slot25	Splintered Altar Stone	172453	10	6
+Bank7-Slot26	Cracked Tablet of Warding	172450	18	6
+Bank7-Slot27	Defaced Silver Talisman	172454	19	6
+Bank7-Slot28	Husk's Finger Bone	172028	15	6
+Bank7-Slot29	Teir Dal Collarbone	172027	10	6
+Bank7-Slot30	Revenant's Lower Jaw	172032	4	6
+Bank7-Slot31	Clear Palm Stone	172008	22	6
+Bank7-Slot32	Destroyed Eye Socket	172070	40	6
+Bank7-Slot33	Molten Rock Clump	172067	51	6
+Bank7-Slot34	Bone Charm	172065	64	6
+Bank7-Slot35	Broken Carapace Shard	172068	63	6
+Bank7-Slot36	Fungal Stipe	172066	51	6
+Bank7-Slot37	Cracked Tooth	172069	58	6
+Bank7-Slot38	Charred Ritual Candle	172452	18	6
+Bank7-Slot39	Wax Bark	172055	2	6
+Bank7-Slot40	Wax Encrusted Sprocket	172062	3	6
+Bank8	Shrieker Cap Satchel	169970	1	42
+Bank8-Slot1	Etched Skyshard	172462	3	6
+Bank8-Slot2	Weathered Arcstone Relic	172463	4	6
+Bank8-Slot3	Gleaming Moonstone Chip	172459	3	6
+Bank8-Slot4	Wax Entombed Wick	172045	8	6
+Bank8-Slot5	Shattered Incantation Shard	172495	2	6
+Bank8-Slot6	Cracked Sunstone Fragment	172460	2	6
+Bank8-Slot7	Blazing Wick	172042	6	6
+Bank8-Slot8	Azure Wick	172047	2	6
+Bank8-Slot9	Flickering Wick	172041	6	6
+Bank8-Slot10	Burnt Wick	172043	5	6
+Bank8-Slot11	Fragment of Envy	172012	27	6
+Bank8-Slot12	Tarnished Sword Fragment	172442	2	6
+Bank8-Slot13	Broken Lantern	172060	7	6
+Bank8-Slot14	Turbulent Shard	172464	3	6
+Bank8-Slot15	Warped Focus Ring	172494	7	6
+Bank8-Slot16	Bundle of Candlesticks	172059	4	6
+Bank8-Slot17	Containment Ring Loop	172489	3	6
+Bank8-Slot18	Shar'Drahn's Scale Fragment	172491	7	6
+Bank8-Slot19	Fused Arcane Shard	172478	1	6
+Bank8-Slot20	Melted Glyph Bead	172475	4	6
+Bank8-Slot21	Blasted Spell Lattice	172476	3	6
+Bank8-Slot22	Residual Mana Pebble	172477	3	6
+Bank8-Slot23	Mote-Dusted Pebble	172473	4	6
+Bank8-Slot24	Broken Conduit Core	172479	1	6
+Bank8-Slot25	Poisonous Hopethorn	172000	7	6
+Bank8-Slot26	Spiteful Sewage	172037	1	6
+Bank8-Slot27	Shiver Vine	171999	9	6
+Bank8-Slot28	Blue Flower Petal	171994	9	6
+Bank8-Slot29	Trampled Bud	171995	8	6
+Bank8-Slot30	Broad Oak Leaf	171993	2	6
+Bank8-Slot31	Shimmer Bark	171997	4	6
+Bank8-Slot32	Twisting Rumble Root	171998	7	6
+Bank8-Slot33	Seething Mushroom	171996	5	6
+Bank8-Slot34	Fragment of Rancor	172015	15	6
+Bank8-Slot35	Fragment of Malice	172014	20	6
+Bank8-Slot36	Twisted Silver Pin	172485	2	6
+Bank8-Slot37	Frayed Scrying Cloth	172480	1	6
+Bank8-Slot38	Runed Pebble	172483	1	6
+Bank8-Slot39	Torn Standard Scrap	171988	1	6
+Bank8-Slot40	Empty Spiter Egg Sac	172040	1	6
+Bank8-Slot41	Bland Ration	171985	1	6
+Bank8-Slot42	Snapped Bowstring	171991	1	6
+Bank9	Frozen Storage Crate	164613	1	40
+Bank9-Slot1	Fragment of Contempt	172010	22	6
+Bank9-Slot2	Fragment of Jealousy	172013	18	6
+Bank9-Slot3	Fragment of Enmity	172011	25	6
+Bank9-Slot4	Fragment of Animosity	172009	22	6
+Bank9-Slot5	Discarded Worn Robe	172038	1	6
+Bank9-Slot6	Rusted Knight's Helm	172440	6	6
+Bank9-Slot7	Decayed Cloak Scrap	172444	2	6
+Bank9-Slot8	Corroded Spur	172445	1	6
+Bank9-Slot9	Cracked Bone Gauntlet	172441	5	6
+Bank9-Slot10	Broken Oathband	172446	4	6
+Bank9-Slot11	Chaotic Core Chip	172501	1	6
+Bank9-Slot12	Fractured Starrock	172458	1	6
+Bank9-Slot13	Runeflux Shard	172508	3	6
+Bank9-Slot14	Splintered Bark Shard	172432	2	6
+Bank9-Slot15	Vortexborn Husk	172498	1	6
+Bank9-Slot16	Fragment of Living Root	172436	1	6
+Bank9-Slot17	Vine Binding Strand	172435	1	6
+Bank9-Slot18	Twisted Thorns	172434	2	6
+Bank9-Slot19	Stained Pollen Husk	172437	3	6
+Bank9-Slot20	Aetherloom Tassel	172527	15	6
+Bank9-Slot21	Iridescent Molt Plume	172520	26	6
+Bank9-Slot22	Silken Wing Dust	172523	19	6
+Bank9-Slot23	Charred Ritual Vellum	172526	21	6
+Bank9-Slot24	Mechanical Shell Plate	172524	28	6
+Bank9-Slot25	Glimmerscale Fragment	172521	14	6
+Bank9-Slot26	Chromatic Jelly	172522	21	6
+Bank9-Slot27	Threadbare Spell Pouch	172525	11	6
+Bank9-Slot28	Well Used Whetstone	171986	1	6
+Bank9-Slot29	Burning Seed	171980	6	6
+Bank9-Slot30	Blood Seed	171979	5	6
+Bank9-Slot31	Corrupted Seed	171982	1	6
+Bank9-Slot32	Bramble Seed	171981	9	6
+Bank9-Slot33	Sprouting Seed	171983	5	6
+Bank9-Slot34	Petrified Seed	171978	8	6
+Bank9-Slot35	Partially Digested Seed	171977	6	6
+Bank9-Slot36	Armor Buckle	171992	3	6
+Bank9-Slot37	Blood-Soaked Bandage	171987	5	6
+Bank9-Slot38	Dented War Horn	171989	3	6
+Bank9-Slot39	Wax Clump Mixture	172053	3	6
+Bank9-Slot40	Cerulean Chalk Stub	172486	1	6
+Bank10	Iced Satchel	164982	1	42
+Bank10-Slot1	Empty	0	0	0
+Bank10-Slot2	Empty	0	0	0
+Bank10-Slot3	Empty	0	0	0
+Bank10-Slot4	Empty	0	0	0
+Bank10-Slot5	Empty	0	0	0
+Bank10-Slot6	Empty	0	0	0
+Bank10-Slot7	Empty	0	0	0
+Bank10-Slot8	Empty	0	0	0
+Bank10-Slot9	Empty	0	0	0
+Bank10-Slot10	Empty	0	0	0
+Bank10-Slot11	Empty	0	0	0
+Bank10-Slot12	Empty	0	0	0
+Bank10-Slot13	Empty	0	0	0
+Bank10-Slot14	Empty	0	0	0
+Bank10-Slot15	Empty	0	0	0
+Bank10-Slot16	Empty	0	0	0
+Bank10-Slot17	Empty	0	0	0
+Bank10-Slot18	Empty	0	0	0
+Bank10-Slot19	Empty	0	0	0
+Bank10-Slot20	Empty	0	0	0
+Bank10-Slot21	Empty	0	0	0
+Bank10-Slot22	Empty	0	0	0
+Bank10-Slot23	Empty	0	0	0
+Bank10-Slot24	Empty	0	0	0
+Bank10-Slot25	Empty	0	0	0
+Bank10-Slot26	Empty	0	0	0
+Bank10-Slot27	Empty	0	0	0
+Bank10-Slot28	Empty	0	0	0
+Bank10-Slot29	Empty	0	0	0
+Bank10-Slot30	Empty	0	0	0
+Bank10-Slot31	Empty	0	0	0
+Bank10-Slot32	Empty	0	0	0
+Bank10-Slot33	Empty	0	0	0
+Bank10-Slot34	Empty	0	0	0
+Bank10-Slot35	Empty	0	0	0
+Bank10-Slot36	Empty	0	0	0
+Bank10-Slot37	Empty	0	0	0
+Bank10-Slot38	Empty	0	0	0
+Bank10-Slot39	Empty	0	0	0
+Bank10-Slot40	Empty	0	0	0
+Bank10-Slot41	Empty	0	0	0
+Bank10-Slot42	Empty	0	0	0
+Bank11	Frozen Satchel	164612	1	42
+Bank11-Slot1	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot2	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot3	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot4	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot5	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot6	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot7	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot8	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot9	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot10	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot11	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot12	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot13	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot14	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot15	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot16	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot17	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot18	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot19	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot20	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot21	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot22	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot23	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot24	Acrylian Plate Arms Ornament	149922	1	6
+Bank11-Slot25	Acrylian Plate Chest Ornament	149921	1	6
+Bank11-Slot26	Acrylian Plate Legs Ornament	149925	1	6
+Bank11-Slot27	Acrylian Plate Hands Ornament	149924	1	6
+Bank11-Slot28	Acrylian Plate Feet Ornament	149926	1	6
+Bank11-Slot29	Acrylian Plate Wrist Ornament	149923	1	6
+Bank11-Slot30	Ruby	10035	56	6
+Bank11-Slot31	Extra Planar Potential Shard	148442	1	6
+Bank11-Slot32	Shamrock Bowler Hat Ornament	85448	1	6
+Bank11-Slot33	Blood-Soaked Athame	166480	1	6
+Bank11-Slot33-Slot1	Empty	0	0	0
+Bank11-Slot33-Slot2	Empty	0	0	0
+Bank11-Slot34	Blood-Soaked Knife	166471	1	6
+Bank11-Slot34-Slot1	Empty	0	0	0
+Bank11-Slot34-Slot2	Empty	0	0	0
+Bank11-Slot35	Velium Smithy Hammer	10425	1	6
+Bank11-Slot36	Non-Stick Frying Pan	8174	1	6
+Bank11-Slot37	Empty	0	0	0
+Bank11-Slot38	Empty	0	0	0
+Bank11-Slot39	Empty	0	0	0
+Bank11-Slot40	Empty	0	0	0
+Bank11-Slot41	Empty	0	0	0
+Bank11-Slot42	Empty	0	0	0
+Bank12	Frosted Storage Chest	164610	1	44
+Bank12-Slot1	Freshman Tailor Trophy	95066	1	6
+Bank12-Slot1-Slot1	Empty	0	0	0
+Bank12-Slot2	Elm Handled Shears	65260	1	6
+Bank12-Slot3	Empty	0	0	0
+Bank12-Slot4	Chisel Set	54000	1	6
+Bank12-Slot5	Empty	0	0	0
+Bank12-Slot6	Empty	0	0	0
+Bank12-Slot7	Empty	0	0	0
+Bank12-Slot8	Empty	0	0	0
+Bank12-Slot9	Empty	0	0	0
+Bank12-Slot10	Empty	0	0	0
+Bank12-Slot11	Empty	0	0	0
+Bank12-Slot12	Empty	0	0	0
+Bank12-Slot13	Empty	0	0	0
+Bank12-Slot14	Empty	0	0	0
+Bank12-Slot15	Empty	0	0	0
+Bank12-Slot16	Empty	0	0	0
+Bank12-Slot17	Empty	0	0	0
+Bank12-Slot18	Empty	0	0	0
+Bank12-Slot19	Empty	0	0	0
+Bank12-Slot20	Empty	0	0	0
+Bank12-Slot21	Empty	0	0	0
+Bank12-Slot22	Empty	0	0	0
+Bank12-Slot23	Empty	0	0	0
+Bank12-Slot24	Empty	0	0	0
+Bank12-Slot25	Empty	0	0	0
+Bank12-Slot26	Empty	0	0	0
+Bank12-Slot27	Empty	0	0	0
+Bank12-Slot28	Empty	0	0	0
+Bank12-Slot29	Empty	0	0	0
+Bank12-Slot30	Empty	0	0	0
+Bank12-Slot31	Empty	0	0	0
+Bank12-Slot32	Empty	0	0	0
+Bank12-Slot33	Empty	0	0	0
+Bank12-Slot34	Empty	0	0	0
+Bank12-Slot35	Empty	0	0	0
+Bank12-Slot36	Empty	0	0	0
+Bank12-Slot37	Empty	0	0	0
+Bank12-Slot38	Empty	0	0	0
+Bank12-Slot39	Empty	0	0	0
+Bank12-Slot40	Empty	0	0	0
+Bank12-Slot41	Empty	0	0	0
+Bank12-Slot42	Empty	0	0	0
+Bank12-Slot43	Empty	0	0	0
+Bank12-Slot44	Empty	0	0	0
+Bank13	Iced Rucksack	164984	1	40
+Bank13-Slot1	Acolyte's Casting Magic of the Selenelion	109564	1	6
+Bank13-Slot2	Blazing Euphoria Assaulting Fire	161637	1	6
+Bank13-Slot3	Acolyte's Soothing of the Selenelion	109566	1	6
+Bank13-Slot4	Acolyte's Assaulting Magic of the Selenelion	109560	1	6
+Bank13-Slot5	Acolyte's Attacker of the Selenelion	109559	1	6
+Bank13-Slot6	Acolyte's Dorsal Defense of the Selenelion	109563	1	6
+Bank13-Slot7	Acolyte's Stealth of the Selenelion	169184	1	6
+Bank13-Slot8	Acolyte's Warding Magic of the Selenelion	109567	1	6
+Bank13-Slot9	Acolyte's Defense of the Selenelion	109558	1	6
+Bank13-Slot10	Blazing Euphoria Defender	161635	1	6
+Bank13-Slot11	Emberquartz Protector Source	171183	1	6
+Bank13-Slot12	Empty	0	0	0
+Bank13-Slot13	Empty	0	0	0
+Bank13-Slot14	Empty	0	0	0
+Bank13-Slot15	Empty	0	0	0
+Bank13-Slot16	Bound Leviathan Cloth Robe Ornament	174362	1	6
+Bank13-Slot17	Delicacies Purse	129902	1	38
+Bank13-Slot17-Slot1	Empty	0	0	0
+Bank13-Slot17-Slot2	Empty	0	0	0
+Bank13-Slot17-Slot3	Empty	0	0	0
+Bank13-Slot17-Slot4	Empty	0	0	0
+Bank13-Slot17-Slot5	Empty	0	0	0
+Bank13-Slot17-Slot6	Empty	0	0	0
+Bank13-Slot17-Slot7	Empty	0	0	0
+Bank13-Slot17-Slot8	Empty	0	0	0
+Bank13-Slot17-Slot9	Empty	0	0	0
+Bank13-Slot17-Slot10	Empty	0	0	0
+Bank13-Slot17-Slot11	Empty	0	0	0
+Bank13-Slot17-Slot12	Empty	0	0	0
+Bank13-Slot17-Slot13	Empty	0	0	0
+Bank13-Slot17-Slot14	Empty	0	0	0
+Bank13-Slot17-Slot15	Empty	0	0	0
+Bank13-Slot17-Slot16	Empty	0	0	0
+Bank13-Slot17-Slot17	Empty	0	0	0
+Bank13-Slot17-Slot18	Empty	0	0	0
+Bank13-Slot17-Slot19	Empty	0	0	0
+Bank13-Slot17-Slot20	Empty	0	0	0
+Bank13-Slot17-Slot21	Empty	0	0	0
+Bank13-Slot17-Slot22	Empty	0	0	0
+Bank13-Slot17-Slot23	Empty	0	0	0
+Bank13-Slot17-Slot24	Empty	0	0	0
+Bank13-Slot17-Slot25	Empty	0	0	0
+Bank13-Slot17-Slot26	Empty	0	0	0
+Bank13-Slot17-Slot27	Empty	0	0	0
+Bank13-Slot17-Slot28	Empty	0	0	0
+Bank13-Slot17-Slot29	Empty	0	0	0
+Bank13-Slot17-Slot30	Empty	0	0	0
+Bank13-Slot17-Slot31	Empty	0	0	0
+Bank13-Slot17-Slot32	Empty	0	0	0
+Bank13-Slot17-Slot33	Empty	0	0	0
+Bank13-Slot17-Slot34	Empty	0	0	0
+Bank13-Slot17-Slot35	Empty	0	0	0
+Bank13-Slot17-Slot36	Empty	0	0	0
+Bank13-Slot17-Slot37	Empty	0	0	0
+Bank13-Slot17-Slot38	Empty	0	0	0
+Bank13-Slot18	Hoarder's Belt Pouch	129789	1	38
+Bank13-Slot18-Slot1	Empty	0	0	0
+Bank13-Slot18-Slot2	Empty	0	0	0
+Bank13-Slot18-Slot3	Empty	0	0	0
+Bank13-Slot18-Slot4	Empty	0	0	0
+Bank13-Slot18-Slot5	Empty	0	0	0
+Bank13-Slot18-Slot6	Empty	0	0	0
+Bank13-Slot18-Slot7	Empty	0	0	0
+Bank13-Slot18-Slot8	Empty	0	0	0
+Bank13-Slot18-Slot9	Empty	0	0	0
+Bank13-Slot18-Slot10	Empty	0	0	0
+Bank13-Slot18-Slot11	Empty	0	0	0
+Bank13-Slot18-Slot12	Empty	0	0	0
+Bank13-Slot18-Slot13	Empty	0	0	0
+Bank13-Slot18-Slot14	Empty	0	0	0
+Bank13-Slot18-Slot15	Empty	0	0	0
+Bank13-Slot18-Slot16	Empty	0	0	0
+Bank13-Slot18-Slot17	Empty	0	0	0
+Bank13-Slot18-Slot18	Empty	0	0	0
+Bank13-Slot18-Slot19	Empty	0	0	0
+Bank13-Slot18-Slot20	Empty	0	0	0
+Bank13-Slot18-Slot21	Empty	0	0	0
+Bank13-Slot18-Slot22	Empty	0	0	0
+Bank13-Slot18-Slot23	Empty	0	0	0
+Bank13-Slot18-Slot24	Empty	0	0	0
+Bank13-Slot18-Slot25	Empty	0	0	0
+Bank13-Slot18-Slot26	Empty	0	0	0
+Bank13-Slot18-Slot27	Empty	0	0	0
+Bank13-Slot18-Slot28	Empty	0	0	0
+Bank13-Slot18-Slot29	Empty	0	0	0
+Bank13-Slot18-Slot30	Empty	0	0	0
+Bank13-Slot18-Slot31	Empty	0	0	0
+Bank13-Slot18-Slot32	Empty	0	0	0
+Bank13-Slot18-Slot33	Empty	0	0	0
+Bank13-Slot18-Slot34	Empty	0	0	0
+Bank13-Slot18-Slot35	Empty	0	0	0
+Bank13-Slot18-Slot36	Empty	0	0	0
+Bank13-Slot18-Slot37	Empty	0	0	0
+Bank13-Slot18-Slot38	Empty	0	0	0
+Bank13-Slot19	Traveler's Cinched Bag	128743	1	36
+Bank13-Slot19-Slot1	Empty	0	0	0
+Bank13-Slot19-Slot2	Empty	0	0	0
+Bank13-Slot19-Slot3	Empty	0	0	0
+Bank13-Slot19-Slot4	Empty	0	0	0
+Bank13-Slot19-Slot5	Empty	0	0	0
+Bank13-Slot19-Slot6	Empty	0	0	0
+Bank13-Slot19-Slot7	Empty	0	0	0
+Bank13-Slot19-Slot8	Empty	0	0	0
+Bank13-Slot19-Slot9	Empty	0	0	0
+Bank13-Slot19-Slot10	Empty	0	0	0
+Bank13-Slot19-Slot11	Empty	0	0	0
+Bank13-Slot19-Slot12	Empty	0	0	0
+Bank13-Slot19-Slot13	Empty	0	0	0
+Bank13-Slot19-Slot14	Empty	0	0	0
+Bank13-Slot19-Slot15	Empty	0	0	0
+Bank13-Slot19-Slot16	Empty	0	0	0
+Bank13-Slot19-Slot17	Empty	0	0	0
+Bank13-Slot19-Slot18	Empty	0	0	0
+Bank13-Slot19-Slot19	Empty	0	0	0
+Bank13-Slot19-Slot20	Empty	0	0	0
+Bank13-Slot19-Slot21	Empty	0	0	0
+Bank13-Slot19-Slot22	Empty	0	0	0
+Bank13-Slot19-Slot23	Empty	0	0	0
+Bank13-Slot19-Slot24	Empty	0	0	0
+Bank13-Slot19-Slot25	Empty	0	0	0
+Bank13-Slot19-Slot26	Empty	0	0	0
+Bank13-Slot19-Slot27	Empty	0	0	0
+Bank13-Slot19-Slot28	Empty	0	0	0
+Bank13-Slot19-Slot29	Empty	0	0	0
+Bank13-Slot19-Slot30	Empty	0	0	0
+Bank13-Slot19-Slot31	Empty	0	0	0
+Bank13-Slot19-Slot32	Empty	0	0	0
+Bank13-Slot19-Slot33	Empty	0	0	0
+Bank13-Slot19-Slot34	Empty	0	0	0
+Bank13-Slot19-Slot35	Empty	0	0	0
+Bank13-Slot19-Slot36	Empty	0	0	0
+Bank13-Slot20	Hoarder's Pocketed Sling	129872	1	38
+Bank13-Slot20-Slot1	Empty	0	0	0
+Bank13-Slot20-Slot2	Empty	0	0	0
+Bank13-Slot20-Slot3	Empty	0	0	0
+Bank13-Slot20-Slot4	Empty	0	0	0
+Bank13-Slot20-Slot5	Empty	0	0	0
+Bank13-Slot20-Slot6	Empty	0	0	0
+Bank13-Slot20-Slot7	Empty	0	0	0
+Bank13-Slot20-Slot8	Empty	0	0	0
+Bank13-Slot20-Slot9	Empty	0	0	0
+Bank13-Slot20-Slot10	Empty	0	0	0
+Bank13-Slot20-Slot11	Empty	0	0	0
+Bank13-Slot20-Slot12	Empty	0	0	0
+Bank13-Slot20-Slot13	Empty	0	0	0
+Bank13-Slot20-Slot14	Empty	0	0	0
+Bank13-Slot20-Slot15	Empty	0	0	0
+Bank13-Slot20-Slot16	Empty	0	0	0
+Bank13-Slot20-Slot17	Empty	0	0	0
+Bank13-Slot20-Slot18	Empty	0	0	0
+Bank13-Slot20-Slot19	Empty	0	0	0
+Bank13-Slot20-Slot20	Empty	0	0	0
+Bank13-Slot20-Slot21	Empty	0	0	0
+Bank13-Slot20-Slot22	Empty	0	0	0
+Bank13-Slot20-Slot23	Empty	0	0	0
+Bank13-Slot20-Slot24	Empty	0	0	0
+Bank13-Slot20-Slot25	Empty	0	0	0
+Bank13-Slot20-Slot26	Empty	0	0	0
+Bank13-Slot20-Slot27	Empty	0	0	0
+Bank13-Slot20-Slot28	Empty	0	0	0
+Bank13-Slot20-Slot29	Empty	0	0	0
+Bank13-Slot20-Slot30	Empty	0	0	0
+Bank13-Slot20-Slot31	Empty	0	0	0
+Bank13-Slot20-Slot32	Empty	0	0	0
+Bank13-Slot20-Slot33	Empty	0	0	0
+Bank13-Slot20-Slot34	Empty	0	0	0
+Bank13-Slot20-Slot35	Empty	0	0	0
+Bank13-Slot20-Slot36	Empty	0	0	0
+Bank13-Slot20-Slot37	Empty	0	0	0
+Bank13-Slot20-Slot38	Empty	0	0	0
+Bank13-Slot21	Frozen Storage Box	164614	1	38
+Bank13-Slot21-Slot1	Empty	0	0	0
+Bank13-Slot21-Slot2	Empty	0	0	0
+Bank13-Slot21-Slot3	Empty	0	0	0
+Bank13-Slot21-Slot4	Empty	0	0	0
+Bank13-Slot21-Slot5	Empty	0	0	0
+Bank13-Slot21-Slot6	Empty	0	0	0
+Bank13-Slot21-Slot7	Empty	0	0	0
+Bank13-Slot21-Slot8	Empty	0	0	0
+Bank13-Slot21-Slot9	Empty	0	0	0
+Bank13-Slot21-Slot10	Empty	0	0	0
+Bank13-Slot21-Slot11	Empty	0	0	0
+Bank13-Slot21-Slot12	Empty	0	0	0
+Bank13-Slot21-Slot13	Empty	0	0	0
+Bank13-Slot21-Slot14	Empty	0	0	0
+Bank13-Slot21-Slot15	Empty	0	0	0
+Bank13-Slot21-Slot16	Empty	0	0	0
+Bank13-Slot21-Slot17	Empty	0	0	0
+Bank13-Slot21-Slot18	Empty	0	0	0
+Bank13-Slot21-Slot19	Empty	0	0	0
+Bank13-Slot21-Slot20	Empty	0	0	0
+Bank13-Slot21-Slot21	Empty	0	0	0
+Bank13-Slot21-Slot22	Empty	0	0	0
+Bank13-Slot21-Slot23	Empty	0	0	0
+Bank13-Slot21-Slot24	Empty	0	0	0
+Bank13-Slot21-Slot25	Empty	0	0	0
+Bank13-Slot21-Slot26	Empty	0	0	0
+Bank13-Slot21-Slot27	Empty	0	0	0
+Bank13-Slot21-Slot28	Empty	0	0	0
+Bank13-Slot21-Slot29	Empty	0	0	0
+Bank13-Slot21-Slot30	Empty	0	0	0
+Bank13-Slot21-Slot31	Empty	0	0	0
+Bank13-Slot21-Slot32	Empty	0	0	0
+Bank13-Slot21-Slot33	Empty	0	0	0
+Bank13-Slot21-Slot34	Empty	0	0	0
+Bank13-Slot21-Slot35	Empty	0	0	0
+Bank13-Slot21-Slot36	Empty	0	0	0
+Bank13-Slot21-Slot37	Empty	0	0	0
+Bank13-Slot21-Slot38	Empty	0	0	0
+Bank13-Slot22	Heroic Backpack of the Adventurer	135987	1	40
+Bank13-Slot22-Slot1	Empty	0	0	0
+Bank13-Slot22-Slot2	Empty	0	0	0
+Bank13-Slot22-Slot3	Empty	0	0	0
+Bank13-Slot22-Slot4	Empty	0	0	0
+Bank13-Slot22-Slot5	Empty	0	0	0
+Bank13-Slot22-Slot6	Empty	0	0	0
+Bank13-Slot22-Slot7	Empty	0	0	0
+Bank13-Slot22-Slot8	Empty	0	0	0
+Bank13-Slot22-Slot9	Empty	0	0	0
+Bank13-Slot22-Slot10	Empty	0	0	0
+Bank13-Slot22-Slot11	Empty	0	0	0
+Bank13-Slot22-Slot12	Empty	0	0	0
+Bank13-Slot22-Slot13	Empty	0	0	0
+Bank13-Slot22-Slot14	Empty	0	0	0
+Bank13-Slot22-Slot15	Empty	0	0	0
+Bank13-Slot22-Slot16	Empty	0	0	0
+Bank13-Slot22-Slot17	Empty	0	0	0
+Bank13-Slot22-Slot18	Empty	0	0	0
+Bank13-Slot22-Slot19	Empty	0	0	0
+Bank13-Slot22-Slot20	Empty	0	0	0
+Bank13-Slot22-Slot21	Empty	0	0	0
+Bank13-Slot22-Slot22	Empty	0	0	0
+Bank13-Slot22-Slot23	Empty	0	0	0
+Bank13-Slot22-Slot24	Empty	0	0	0
+Bank13-Slot22-Slot25	Empty	0	0	0
+Bank13-Slot22-Slot26	Empty	0	0	0
+Bank13-Slot22-Slot27	Empty	0	0	0
+Bank13-Slot22-Slot28	Empty	0	0	0
+Bank13-Slot22-Slot29	Empty	0	0	0
+Bank13-Slot22-Slot30	Empty	0	0	0
+Bank13-Slot22-Slot31	Empty	0	0	0
+Bank13-Slot22-Slot32	Empty	0	0	0
+Bank13-Slot22-Slot33	Empty	0	0	0
+Bank13-Slot22-Slot34	Empty	0	0	0
+Bank13-Slot22-Slot35	Empty	0	0	0
+Bank13-Slot22-Slot36	Empty	0	0	0
+Bank13-Slot22-Slot37	Empty	0	0	0
+Bank13-Slot22-Slot38	Empty	0	0	0
+Bank13-Slot22-Slot39	Empty	0	0	0
+Bank13-Slot22-Slot40	Empty	0	0	0
+Bank13-Slot23	Planar Satchel	129948	1	42
+Bank13-Slot23-Slot1	Empty	0	0	0
+Bank13-Slot23-Slot2	Empty	0	0	0
+Bank13-Slot23-Slot3	Empty	0	0	0
+Bank13-Slot23-Slot4	Empty	0	0	0
+Bank13-Slot23-Slot5	Empty	0	0	0
+Bank13-Slot23-Slot6	Empty	0	0	0
+Bank13-Slot23-Slot7	Empty	0	0	0
+Bank13-Slot23-Slot8	Empty	0	0	0
+Bank13-Slot23-Slot9	Empty	0	0	0
+Bank13-Slot23-Slot10	Empty	0	0	0
+Bank13-Slot23-Slot11	Empty	0	0	0
+Bank13-Slot23-Slot12	Empty	0	0	0
+Bank13-Slot23-Slot13	Empty	0	0	0
+Bank13-Slot23-Slot14	Empty	0	0	0
+Bank13-Slot23-Slot15	Empty	0	0	0
+Bank13-Slot23-Slot16	Empty	0	0	0
+Bank13-Slot23-Slot17	Empty	0	0	0
+Bank13-Slot23-Slot18	Empty	0	0	0
+Bank13-Slot23-Slot19	Empty	0	0	0
+Bank13-Slot23-Slot20	Empty	0	0	0
+Bank13-Slot23-Slot21	Empty	0	0	0
+Bank13-Slot23-Slot22	Empty	0	0	0
+Bank13-Slot23-Slot23	Empty	0	0	0
+Bank13-Slot23-Slot24	Empty	0	0	0
+Bank13-Slot23-Slot25	Empty	0	0	0
+Bank13-Slot23-Slot26	Empty	0	0	0
+Bank13-Slot23-Slot27	Empty	0	0	0
+Bank13-Slot23-Slot28	Empty	0	0	0
+Bank13-Slot23-Slot29	Empty	0	0	0
+Bank13-Slot23-Slot30	Empty	0	0	0
+Bank13-Slot23-Slot31	Empty	0	0	0
+Bank13-Slot23-Slot32	Empty	0	0	0
+Bank13-Slot23-Slot33	Empty	0	0	0
+Bank13-Slot23-Slot34	Empty	0	0	0
+Bank13-Slot23-Slot35	Empty	0	0	0
+Bank13-Slot23-Slot36	Empty	0	0	0
+Bank13-Slot23-Slot37	Empty	0	0	0
+Bank13-Slot23-Slot38	Empty	0	0	0
+Bank13-Slot23-Slot39	Empty	0	0	0
+Bank13-Slot23-Slot40	Empty	0	0	0
+Bank13-Slot23-Slot41	Empty	0	0	0
+Bank13-Slot23-Slot42	Empty	0	0	0
+Bank13-Slot24	Shadow Slayer's Satchel	168041	1	38
+Bank13-Slot24-Slot1	Empty	0	0	0
+Bank13-Slot24-Slot2	Empty	0	0	0
+Bank13-Slot24-Slot3	Empty	0	0	0
+Bank13-Slot24-Slot4	Empty	0	0	0
+Bank13-Slot24-Slot5	Empty	0	0	0
+Bank13-Slot24-Slot6	Empty	0	0	0
+Bank13-Slot24-Slot7	Empty	0	0	0
+Bank13-Slot24-Slot8	Empty	0	0	0
+Bank13-Slot24-Slot9	Empty	0	0	0
+Bank13-Slot24-Slot10	Empty	0	0	0
+Bank13-Slot24-Slot11	Empty	0	0	0
+Bank13-Slot24-Slot12	Empty	0	0	0
+Bank13-Slot24-Slot13	Empty	0	0	0
+Bank13-Slot24-Slot14	Empty	0	0	0
+Bank13-Slot24-Slot15	Empty	0	0	0
+Bank13-Slot24-Slot16	Empty	0	0	0
+Bank13-Slot24-Slot17	Empty	0	0	0
+Bank13-Slot24-Slot18	Empty	0	0	0
+Bank13-Slot24-Slot19	Empty	0	0	0
+Bank13-Slot24-Slot20	Empty	0	0	0
+Bank13-Slot24-Slot21	Empty	0	0	0
+Bank13-Slot24-Slot22	Empty	0	0	0
+Bank13-Slot24-Slot23	Empty	0	0	0
+Bank13-Slot24-Slot24	Empty	0	0	0
+Bank13-Slot24-Slot25	Empty	0	0	0
+Bank13-Slot24-Slot26	Empty	0	0	0
+Bank13-Slot24-Slot27	Empty	0	0	0
+Bank13-Slot24-Slot28	Empty	0	0	0
+Bank13-Slot24-Slot29	Empty	0	0	0
+Bank13-Slot24-Slot30	Empty	0	0	0
+Bank13-Slot24-Slot31	Empty	0	0	0
+Bank13-Slot24-Slot32	Empty	0	0	0
+Bank13-Slot24-Slot33	Empty	0	0	0
+Bank13-Slot24-Slot34	Empty	0	0	0
+Bank13-Slot24-Slot35	Empty	0	0	0
+Bank13-Slot24-Slot36	Empty	0	0	0
+Bank13-Slot24-Slot37	Empty	0	0	0
+Bank13-Slot24-Slot38	Empty	0	0	0
+Bank13-Slot25	Empty	0	0	0
+Bank13-Slot26	Di`Zok Courier's Pouch	129900	1	36
+Bank13-Slot26-Slot1	Empty	0	0	0
+Bank13-Slot26-Slot2	Empty	0	0	0
+Bank13-Slot26-Slot3	Empty	0	0	0
+Bank13-Slot26-Slot4	Empty	0	0	0
+Bank13-Slot26-Slot5	Empty	0	0	0
+Bank13-Slot26-Slot6	Empty	0	0	0
+Bank13-Slot26-Slot7	Empty	0	0	0
+Bank13-Slot26-Slot8	Empty	0	0	0
+Bank13-Slot26-Slot9	Empty	0	0	0
+Bank13-Slot26-Slot10	Empty	0	0	0
+Bank13-Slot26-Slot11	Empty	0	0	0
+Bank13-Slot26-Slot12	Empty	0	0	0
+Bank13-Slot26-Slot13	Empty	0	0	0
+Bank13-Slot26-Slot14	Empty	0	0	0
+Bank13-Slot26-Slot15	Empty	0	0	0
+Bank13-Slot26-Slot16	Empty	0	0	0
+Bank13-Slot26-Slot17	Empty	0	0	0
+Bank13-Slot26-Slot18	Empty	0	0	0
+Bank13-Slot26-Slot19	Empty	0	0	0
+Bank13-Slot26-Slot20	Empty	0	0	0
+Bank13-Slot26-Slot21	Empty	0	0	0
+Bank13-Slot26-Slot22	Empty	0	0	0
+Bank13-Slot26-Slot23	Empty	0	0	0
+Bank13-Slot26-Slot24	Empty	0	0	0
+Bank13-Slot26-Slot25	Empty	0	0	0
+Bank13-Slot26-Slot26	Empty	0	0	0
+Bank13-Slot26-Slot27	Empty	0	0	0
+Bank13-Slot26-Slot28	Empty	0	0	0
+Bank13-Slot26-Slot29	Empty	0	0	0
+Bank13-Slot26-Slot30	Empty	0	0	0
+Bank13-Slot26-Slot31	Empty	0	0	0
+Bank13-Slot26-Slot32	Empty	0	0	0
+Bank13-Slot26-Slot33	Empty	0	0	0
+Bank13-Slot26-Slot34	Empty	0	0	0
+Bank13-Slot26-Slot35	Empty	0	0	0
+Bank13-Slot26-Slot36	Empty	0	0	0
+Bank13-Slot27	Icy Rucksack	164985	1	38
+Bank13-Slot27-Slot1	Empty	0	0	0
+Bank13-Slot27-Slot2	Empty	0	0	0
+Bank13-Slot27-Slot3	Empty	0	0	0
+Bank13-Slot27-Slot4	Empty	0	0	0
+Bank13-Slot27-Slot5	Empty	0	0	0
+Bank13-Slot27-Slot6	Empty	0	0	0
+Bank13-Slot27-Slot7	Empty	0	0	0
+Bank13-Slot27-Slot8	Empty	0	0	0
+Bank13-Slot27-Slot9	Empty	0	0	0
+Bank13-Slot27-Slot10	Empty	0	0	0
+Bank13-Slot27-Slot11	Empty	0	0	0
+Bank13-Slot27-Slot12	Empty	0	0	0
+Bank13-Slot27-Slot13	Empty	0	0	0
+Bank13-Slot27-Slot14	Empty	0	0	0
+Bank13-Slot27-Slot15	Empty	0	0	0
+Bank13-Slot27-Slot16	Empty	0	0	0
+Bank13-Slot27-Slot17	Empty	0	0	0
+Bank13-Slot27-Slot18	Empty	0	0	0
+Bank13-Slot27-Slot19	Empty	0	0	0
+Bank13-Slot27-Slot20	Empty	0	0	0
+Bank13-Slot27-Slot21	Empty	0	0	0
+Bank13-Slot27-Slot22	Empty	0	0	0
+Bank13-Slot27-Slot23	Empty	0	0	0
+Bank13-Slot27-Slot24	Empty	0	0	0
+Bank13-Slot27-Slot25	Empty	0	0	0
+Bank13-Slot27-Slot26	Empty	0	0	0
+Bank13-Slot27-Slot27	Empty	0	0	0
+Bank13-Slot27-Slot28	Empty	0	0	0
+Bank13-Slot27-Slot29	Empty	0	0	0
+Bank13-Slot27-Slot30	Empty	0	0	0
+Bank13-Slot27-Slot31	Empty	0	0	0
+Bank13-Slot27-Slot32	Empty	0	0	0
+Bank13-Slot27-Slot33	Empty	0	0	0
+Bank13-Slot27-Slot34	Empty	0	0	0
+Bank13-Slot27-Slot35	Empty	0	0	0
+Bank13-Slot27-Slot36	Empty	0	0	0
+Bank13-Slot27-Slot37	Empty	0	0	0
+Bank13-Slot27-Slot38	Empty	0	0	0
+Bank13-Slot28	Lceanium Shipping Crate	129898	1	32
+Bank13-Slot28-Slot1	Empty	0	0	0
+Bank13-Slot28-Slot2	Empty	0	0	0
+Bank13-Slot28-Slot3	Empty	0	0	0
+Bank13-Slot28-Slot4	Empty	0	0	0
+Bank13-Slot28-Slot5	Empty	0	0	0
+Bank13-Slot28-Slot6	Empty	0	0	0
+Bank13-Slot28-Slot7	Empty	0	0	0
+Bank13-Slot28-Slot8	Empty	0	0	0
+Bank13-Slot28-Slot9	Empty	0	0	0
+Bank13-Slot28-Slot10	Empty	0	0	0
+Bank13-Slot28-Slot11	Empty	0	0	0
+Bank13-Slot28-Slot12	Empty	0	0	0
+Bank13-Slot28-Slot13	Empty	0	0	0
+Bank13-Slot28-Slot14	Empty	0	0	0
+Bank13-Slot28-Slot15	Empty	0	0	0
+Bank13-Slot28-Slot16	Empty	0	0	0
+Bank13-Slot28-Slot17	Empty	0	0	0
+Bank13-Slot28-Slot18	Empty	0	0	0
+Bank13-Slot28-Slot19	Empty	0	0	0
+Bank13-Slot28-Slot20	Empty	0	0	0
+Bank13-Slot28-Slot21	Empty	0	0	0
+Bank13-Slot28-Slot22	Empty	0	0	0
+Bank13-Slot28-Slot23	Empty	0	0	0
+Bank13-Slot28-Slot24	Empty	0	0	0
+Bank13-Slot28-Slot25	Empty	0	0	0
+Bank13-Slot28-Slot26	Empty	0	0	0
+Bank13-Slot28-Slot27	Empty	0	0	0
+Bank13-Slot28-Slot28	Empty	0	0	0
+Bank13-Slot28-Slot29	Empty	0	0	0
+Bank13-Slot28-Slot30	Empty	0	0	0
+Bank13-Slot28-Slot31	Empty	0	0	0
+Bank13-Slot28-Slot32	Empty	0	0	0
+Bank13-Slot29	Empty	0	0	0
+Bank13-Slot30	Empty	0	0	0
+Bank13-Slot31	Empty	0	0	0
+Bank13-Slot32	Empty	0	0	0
+Bank13-Slot33	Empty	0	0	0
+Bank13-Slot34	Empty	0	0	0
+Bank13-Slot35	Empty	0	0	0
+Bank13-Slot36	Empty	0	0	0
+Bank13-Slot37	Covariant Engram	170289	1	6
+Bank13-Slot38	Covariant Engram	170289	1	6
+Bank13-Slot39	Covariant Engram	170289	1	6
+Bank13-Slot40	Empty	0	0	0
+Bank14	Nightslayer's Rucksack	164565	1	42
+Bank14-Slot1	Luclinite Defender Source	167183	1	6
+Bank14-Slot2	Luclinite Defender Source	167183	1	6
+Bank14-Slot3	Luclinite Defender Source	167183	1	6
+Bank14-Slot4	Luclinite Defender Source	167183	1	6
+Bank14-Slot5	Luclinite Defender Source	167183	1	6
+Bank14-Slot6	Luclinite Defender Source	167183	1	6
+Bank14-Slot7	Luclinite Defender Source	167183	1	6
+Bank14-Slot8	Luclinite Defender Source	167183	1	6
+Bank14-Slot9	Luclinite Defender Source	167183	1	6
+Bank14-Slot10	Luclinite Defender Source	167183	1	6
+Bank14-Slot11	Luclinite Defender Source	167183	1	6
+Bank14-Slot12	Luclinite Defender Source	167183	1	6
+Bank14-Slot13	Luclinite Defender Source	167183	1	6
+Bank14-Slot14	Luclinite Defender Source	167183	1	6
+Bank14-Slot15	Luclinite Defender Source	167183	1	6
+Bank14-Slot16	Luclinite Defender Source	167183	1	6
+Bank14-Slot17	Luclinite Defender Source	167183	1	6
+Bank14-Slot18	Luclinite Defender Source	167183	1	6
+Bank14-Slot19	Luclinite Defender Source	167183	1	6
+Bank14-Slot20	Luclinite Defender Source	167183	1	6
+Bank14-Slot21	Luclinite Defender Source	167183	1	6
+Bank14-Slot22	Gleaming Silver Protector Source	111667	1	6
+Bank14-Slot23	Gleaming Silver Protector Source	111667	1	6
+Bank14-Slot24	Emberquartz Protector Source	171183	1	6
+Bank14-Slot25	Emberquartz Protector Source	171183	1	6
+Bank14-Slot26	Emberquartz Protector Source	171183	1	6
+Bank14-Slot27	Emberquartz Protector Source	171183	1	6
+Bank14-Slot28	Emberquartz Protector Source	171183	1	6
+Bank14-Slot29	Emberquartz Protector Source	171183	1	6
+Bank14-Slot30	Emberquartz Protector Source	171183	1	6
+Bank14-Slot31	Extra Planar Potential Shard	148442	1	6
+Bank14-Slot32	Extra Planar Potential Shard	148442	1	6
+Bank14-Slot33	Extra Planar Potential Shard	148442	1	6
+Bank14-Slot34	Extra Planar Potential Shard	148442	1	6
+Bank14-Slot35	Extra Planar Potential Shard	148442	1	6
+Bank14-Slot36	Extra Planar Potential Shard	148442	1	6
+Bank14-Slot37	Emberquartz Protector Source	171183	1	6
+Bank14-Slot38	Emberquartz Protector Source	171183	1	6
+Bank14-Slot39	Emberquartz Protector Source	171183	1	6
+Bank14-Slot40	Emberquartz Conjuror Source	171187	1	6
+Bank14-Slot41	Empty	0	0	0
+Bank14-Slot42	Empty	0	0	0
+Bank15	Song Seeker's Backpack	151237	1	46
+Bank15-Slot1	Mace of Memoryforged Desolation	170008	1	6
+Bank15-Slot1-Slot1	Empty	0	0	0
+Bank15-Slot1-Slot2	Empty	0	0	0
+Bank15-Slot2	Rod of the Firestarter	171360	1	6
+Bank15-Slot2-Slot1	Empty	0	0	0
+Bank15-Slot2-Slot2	Empty	0	0	0
+Bank15-Slot2-Slot3	Empty	0	0	0
+Bank15-Slot3	Hammer of Memoryforged Desolation	170007	1	6
+Bank15-Slot3-Slot1	Empty	0	0	0
+Bank15-Slot3-Slot2	Empty	0	0	0
+Bank15-Slot4	Energized Minor Engram	170295	1	6
+Bank15-Slot5	Energized Median Engram	170297	1	6
+Bank15-Slot6	Energized Greater Engram	170298	1	6
+Bank15-Slot7	Energized Glowing Engram	170299	1	6
+Bank15-Slot8	Mask Fastener of Rebellion	170442	1	6
+Bank15-Slot9	Empty	0	0	0
+Bank15-Slot10	Empty	0	0	0
+Bank15-Slot11	Empty	0	0	0
+Bank15-Slot12	Empty	0	0	0
+Bank15-Slot13	Empty	0	0	0
+Bank15-Slot14	Empty	0	0	0
+Bank15-Slot15	Empty	0	0	0
+Bank15-Slot16	Empty	0	0	0
+Bank15-Slot17	Empty	0	0	0
+Bank15-Slot18	Empty	0	0	0
+Bank15-Slot19	Empty	0	0	0
+Bank15-Slot20	Empty	0	0	0
+Bank15-Slot21	Empty	0	0	0
+Bank15-Slot22	Empty	0	0	0
+Bank15-Slot23	Empty	0	0	0
+Bank15-Slot24	Empty	0	0	0
+Bank15-Slot25	Empty	0	0	0
+Bank15-Slot26	Empty	0	0	0
+Bank15-Slot27	Empty	0	0	0
+Bank15-Slot28	Empty	0	0	0
+Bank15-Slot29	Empty	0	0	0
+Bank15-Slot30	Empty	0	0	0
+Bank15-Slot31	Empty	0	0	0
+Bank15-Slot32	Empty	0	0	0
+Bank15-Slot33	Empty	0	0	0
+Bank15-Slot34	Empty	0	0	0
+Bank15-Slot35	Empty	0	0	0
+Bank15-Slot36	Empty	0	0	0
+Bank15-Slot37	Empty	0	0	0
+Bank15-Slot38	Empty	0	0	0
+Bank15-Slot39	Empty	0	0	0
+Bank15-Slot40	Empty	0	0	0
+Bank15-Slot41	Empty	0	0	0
+Bank15-Slot42	Empty	0	0	0
+Bank15-Slot43	Empty	0	0	0
+Bank15-Slot44	Empty	0	0	0
+Bank15-Slot45	Empty	0	0	0
+Bank15-Slot46	Mythslayer's Satchel	151238	1	42
+Bank15-Slot46-Slot1	Empty	0	0	0
+Bank15-Slot46-Slot2	Empty	0	0	0
+Bank15-Slot46-Slot3	Empty	0	0	0
+Bank15-Slot46-Slot4	Empty	0	0	0
+Bank15-Slot46-Slot5	Empty	0	0	0
+Bank15-Slot46-Slot6	Empty	0	0	0
+Bank15-Slot46-Slot7	Empty	0	0	0
+Bank15-Slot46-Slot8	Empty	0	0	0
+Bank15-Slot46-Slot9	Empty	0	0	0
+Bank15-Slot46-Slot10	Empty	0	0	0
+Bank15-Slot46-Slot11	Empty	0	0	0
+Bank15-Slot46-Slot12	Empty	0	0	0
+Bank15-Slot46-Slot13	Empty	0	0	0
+Bank15-Slot46-Slot14	Empty	0	0	0
+Bank15-Slot46-Slot15	Empty	0	0	0
+Bank15-Slot46-Slot16	Empty	0	0	0
+Bank15-Slot46-Slot17	Empty	0	0	0
+Bank15-Slot46-Slot18	Empty	0	0	0
+Bank15-Slot46-Slot19	Empty	0	0	0
+Bank15-Slot46-Slot20	Empty	0	0	0
+Bank15-Slot46-Slot21	Empty	0	0	0
+Bank15-Slot46-Slot22	Empty	0	0	0
+Bank15-Slot46-Slot23	Empty	0	0	0
+Bank15-Slot46-Slot24	Empty	0	0	0
+Bank15-Slot46-Slot25	Empty	0	0	0
+Bank15-Slot46-Slot26	Empty	0	0	0
+Bank15-Slot46-Slot27	Empty	0	0	0
+Bank15-Slot46-Slot28	Empty	0	0	0
+Bank15-Slot46-Slot29	Empty	0	0	0
+Bank15-Slot46-Slot30	Empty	0	0	0
+Bank15-Slot46-Slot31	Empty	0	0	0
+Bank15-Slot46-Slot32	Empty	0	0	0
+Bank15-Slot46-Slot33	Empty	0	0	0
+Bank15-Slot46-Slot34	Empty	0	0	0
+Bank15-Slot46-Slot35	Empty	0	0	0
+Bank15-Slot46-Slot36	Empty	0	0	0
+Bank15-Slot46-Slot37	Empty	0	0	0
+Bank15-Slot46-Slot38	Empty	0	0	0
+Bank15-Slot46-Slot39	Empty	0	0	0
+Bank15-Slot46-Slot40	Empty	0	0	0
+Bank15-Slot46-Slot41	Empty	0	0	0
+Bank15-Slot46-Slot42	Empty	0	0	0
+Bank16	Shadow Slayer's Backpack	168043	1	42
+Bank16-Slot1	Luclinite Ensanguined Amice of Adroitness	167525	1	6
+Bank16-Slot1-Slot1	Empty	0	0	0
+Bank16-Slot1-Slot2	Empty	0	0	0
+Bank16-Slot1-Slot3	Empty	0	0	0
+Bank16-Slot2	Seldom-used Aegis	169342	1	6
+Bank16-Slot2-Slot1	Empty	0	0	0
+Bank16-Slot2-Slot2	Empty	0	0	0
+Bank16-Slot2-Slot3	Empty	0	0	0
+Bank16-Slot2-Slot4	Empty	0	0	0
+Bank16-Slot3	Knightly Sword of Spectral Destruction	169351	1	6
+Bank16-Slot3-Slot1	Empty	0	0	0
+Bank16-Slot3-Slot2	Empty	0	0	0
+Bank16-Slot4	Soulrender Bracer of the Celestial Zenith	169229	1	6
+Bank16-Slot4-Slot1	Empty	0	0	0
+Bank16-Slot4-Slot2	Empty	0	0	0
+Bank16-Slot4-Slot3	Extra Planar Potential Shard	148442	1	6
+Bank16-Slot4-Slot4	Empty	0	0	0
+Bank16-Slot5	Empty	0	0	0
+Bank16-Slot6	Empty	0	0	0
+Bank16-Slot7	Empty	0	0	0
+Bank16-Slot8	Empty	0	0	0
+Bank16-Slot9	Laminator Blade	96488	1	6
+Bank16-Slot10	Simple Sewing Needle	34914	1	6
+Bank16-Slot11	Sculpting Tools	21625	1	6
+Bank16-Slot12	Skinning Knife	21565	1	6
+Bank16-Slot13	Dark Reign Token	57209	1	6
+Bank16-Slot14	Dashing Feathered Cap	86796	1	6
+Bank16-Slot15	Pot	13432	1	6
+Bank16-Slot16	Luclinite Ensanguined Charm of Security	167540	1	6
+Bank16-Slot16-Slot1	Empty	0	0	0
+Bank16-Slot16-Slot2	Empty	0	0	0
+Bank16-Slot16-Slot3	Empty	0	0	0
+Bank16-Slot16-Slot4	Empty	0	0	0
+Bank16-Slot17	Dazzling Emerald Earring of Bluster	169314	1	6
+Bank16-Slot17-Slot1	Empty	0	0	0
+Bank16-Slot17-Slot2	Empty	0	0	0
+Bank16-Slot17-Slot3	Empty	0	0	0
+Bank16-Slot18	Soulrender Gauntlets of the Celestial Zenith	169230	1	6
+Bank16-Slot18-Slot1	Empty	0	0	0
+Bank16-Slot18-Slot2	Empty	0	0	0
+Bank16-Slot18-Slot3	Extra Planar Potential Shard	148442	1	6
+Bank16-Slot18-Slot4	Empty	0	0	0
+Bank16-Slot19	Filleting Knife	9753	1	6
+Bank16-Slot20	Whittling Blade	8085	1	6
+Bank16-Slot21	Master Brewer Trophy	95020	1	6
+Bank16-Slot21-Slot1	Empty	0	0	0
+Bank16-Slot22	Reinforced Scalewrought Footlocker	174037	1	46
+Bank16-Slot22-Slot1	Empty	0	0	0
+Bank16-Slot22-Slot2	Empty	0	0	0
+Bank16-Slot22-Slot3	Empty	0	0	0
+Bank16-Slot22-Slot4	Empty	0	0	0
+Bank16-Slot22-Slot5	Empty	0	0	0
+Bank16-Slot22-Slot6	Empty	0	0	0
+Bank16-Slot22-Slot7	Empty	0	0	0
+Bank16-Slot22-Slot8	Empty	0	0	0
+Bank16-Slot22-Slot9	Empty	0	0	0
+Bank16-Slot22-Slot10	Empty	0	0	0
+Bank16-Slot22-Slot11	Empty	0	0	0
+Bank16-Slot22-Slot12	Empty	0	0	0
+Bank16-Slot22-Slot13	Empty	0	0	0
+Bank16-Slot22-Slot14	Empty	0	0	0
+Bank16-Slot22-Slot15	Empty	0	0	0
+Bank16-Slot22-Slot16	Empty	0	0	0
+Bank16-Slot22-Slot17	Empty	0	0	0
+Bank16-Slot22-Slot18	Empty	0	0	0
+Bank16-Slot22-Slot19	Empty	0	0	0
+Bank16-Slot22-Slot20	Empty	0	0	0
+Bank16-Slot22-Slot21	Empty	0	0	0
+Bank16-Slot22-Slot22	Empty	0	0	0
+Bank16-Slot22-Slot23	Empty	0	0	0
+Bank16-Slot22-Slot24	Empty	0	0	0
+Bank16-Slot22-Slot25	Empty	0	0	0
+Bank16-Slot22-Slot26	Empty	0	0	0
+Bank16-Slot22-Slot27	Empty	0	0	0
+Bank16-Slot22-Slot28	Empty	0	0	0
+Bank16-Slot22-Slot29	Empty	0	0	0
+Bank16-Slot22-Slot30	Empty	0	0	0
+Bank16-Slot22-Slot31	Empty	0	0	0
+Bank16-Slot22-Slot32	Empty	0	0	0
+Bank16-Slot22-Slot33	Empty	0	0	0
+Bank16-Slot22-Slot34	Empty	0	0	0
+Bank16-Slot22-Slot35	Empty	0	0	0
+Bank16-Slot22-Slot36	Empty	0	0	0
+Bank16-Slot22-Slot37	Empty	0	0	0
+Bank16-Slot22-Slot38	Empty	0	0	0
+Bank16-Slot22-Slot39	Empty	0	0	0
+Bank16-Slot22-Slot40	Empty	0	0	0
+Bank16-Slot22-Slot41	Empty	0	0	0
+Bank16-Slot22-Slot42	Empty	0	0	0
+Bank16-Slot22-Slot43	Empty	0	0	0
+Bank16-Slot22-Slot44	Empty	0	0	0
+Bank16-Slot22-Slot45	Empty	0	0	0
+Bank16-Slot22-Slot46	Empty	0	0	0
+Bank16-Slot23	Hickory Handled Shears	65259	1	6
+Bank16-Slot24	Ice Encased Storage Chest	164981	1	44
+Bank16-Slot24-Slot1	Empty	0	0	0
+Bank16-Slot24-Slot2	Empty	0	0	0
+Bank16-Slot24-Slot3	Empty	0	0	0
+Bank16-Slot24-Slot4	Empty	0	0	0
+Bank16-Slot24-Slot5	Empty	0	0	0
+Bank16-Slot24-Slot6	Empty	0	0	0
+Bank16-Slot24-Slot7	Empty	0	0	0
+Bank16-Slot24-Slot8	Empty	0	0	0
+Bank16-Slot24-Slot9	Empty	0	0	0
+Bank16-Slot24-Slot10	Empty	0	0	0
+Bank16-Slot24-Slot11	Empty	0	0	0
+Bank16-Slot24-Slot12	Empty	0	0	0
+Bank16-Slot24-Slot13	Empty	0	0	0
+Bank16-Slot24-Slot14	Empty	0	0	0
+Bank16-Slot24-Slot15	Empty	0	0	0
+Bank16-Slot24-Slot16	Empty	0	0	0
+Bank16-Slot24-Slot17	Empty	0	0	0
+Bank16-Slot24-Slot18	Empty	0	0	0
+Bank16-Slot24-Slot19	Empty	0	0	0
+Bank16-Slot24-Slot20	Empty	0	0	0
+Bank16-Slot24-Slot21	Empty	0	0	0
+Bank16-Slot24-Slot22	Empty	0	0	0
+Bank16-Slot24-Slot23	Empty	0	0	0
+Bank16-Slot24-Slot24	Empty	0	0	0
+Bank16-Slot24-Slot25	Empty	0	0	0
+Bank16-Slot24-Slot26	Empty	0	0	0
+Bank16-Slot24-Slot27	Empty	0	0	0
+Bank16-Slot24-Slot28	Empty	0	0	0
+Bank16-Slot24-Slot29	Empty	0	0	0
+Bank16-Slot24-Slot30	Empty	0	0	0
+Bank16-Slot24-Slot31	Empty	0	0	0
+Bank16-Slot24-Slot32	Empty	0	0	0
+Bank16-Slot24-Slot33	Empty	0	0	0
+Bank16-Slot24-Slot34	Empty	0	0	0
+Bank16-Slot24-Slot35	Empty	0	0	0
+Bank16-Slot24-Slot36	Empty	0	0	0
+Bank16-Slot24-Slot37	Empty	0	0	0
+Bank16-Slot24-Slot38	Empty	0	0	0
+Bank16-Slot24-Slot39	Empty	0	0	0
+Bank16-Slot24-Slot40	Empty	0	0	0
+Bank16-Slot24-Slot41	Empty	0	0	0
+Bank16-Slot24-Slot42	Empty	0	0	0
+Bank16-Slot24-Slot43	Empty	0	0	0
+Bank16-Slot24-Slot44	Empty	0	0	0
+Bank16-Slot25	Scuffed Weapon Crate of the Mercenary	54445	1	20
+Bank16-Slot25-Slot1	Empty	0	0	0
+Bank16-Slot25-Slot2	Empty	0	0	0
+Bank16-Slot25-Slot3	Empty	0	0	0
+Bank16-Slot25-Slot4	Empty	0	0	0
+Bank16-Slot25-Slot5	Empty	0	0	0
+Bank16-Slot25-Slot6	Empty	0	0	0
+Bank16-Slot25-Slot7	Empty	0	0	0
+Bank16-Slot25-Slot8	Empty	0	0	0
+Bank16-Slot25-Slot9	Empty	0	0	0
+Bank16-Slot25-Slot10	Empty	0	0	0
+Bank16-Slot25-Slot11	Empty	0	0	0
+Bank16-Slot25-Slot12	Empty	0	0	0
+Bank16-Slot25-Slot13	Empty	0	0	0
+Bank16-Slot25-Slot14	Empty	0	0	0
+Bank16-Slot25-Slot15	Empty	0	0	0
+Bank16-Slot25-Slot16	Empty	0	0	0
+Bank16-Slot25-Slot17	Empty	0	0	0
+Bank16-Slot25-Slot18	Empty	0	0	0
+Bank16-Slot25-Slot19	Empty	0	0	0
+Bank16-Slot25-Slot20	Empty	0	0	0
+Bank16-Slot26	Broodslayer's Rucksack	151798	1	46
+Bank16-Slot26-Slot1	Empty	0	0	0
+Bank16-Slot26-Slot2	Empty	0	0	0
+Bank16-Slot26-Slot3	Empty	0	0	0
+Bank16-Slot26-Slot4	Empty	0	0	0
+Bank16-Slot26-Slot5	Empty	0	0	0
+Bank16-Slot26-Slot6	Empty	0	0	0
+Bank16-Slot26-Slot7	Empty	0	0	0
+Bank16-Slot26-Slot8	Empty	0	0	0
+Bank16-Slot26-Slot9	Empty	0	0	0
+Bank16-Slot26-Slot10	Empty	0	0	0
+Bank16-Slot26-Slot11	Empty	0	0	0
+Bank16-Slot26-Slot12	Empty	0	0	0
+Bank16-Slot26-Slot13	Empty	0	0	0
+Bank16-Slot26-Slot14	Empty	0	0	0
+Bank16-Slot26-Slot15	Empty	0	0	0
+Bank16-Slot26-Slot16	Empty	0	0	0
+Bank16-Slot26-Slot17	Empty	0	0	0
+Bank16-Slot26-Slot18	Empty	0	0	0
+Bank16-Slot26-Slot19	Empty	0	0	0
+Bank16-Slot26-Slot20	Empty	0	0	0
+Bank16-Slot26-Slot21	Empty	0	0	0
+Bank16-Slot26-Slot22	Empty	0	0	0
+Bank16-Slot26-Slot23	Empty	0	0	0
+Bank16-Slot26-Slot24	Empty	0	0	0
+Bank16-Slot26-Slot25	Empty	0	0	0
+Bank16-Slot26-Slot26	Empty	0	0	0
+Bank16-Slot26-Slot27	Empty	0	0	0
+Bank16-Slot26-Slot28	Empty	0	0	0
+Bank16-Slot26-Slot29	Empty	0	0	0
+Bank16-Slot26-Slot30	Empty	0	0	0
+Bank16-Slot26-Slot31	Empty	0	0	0
+Bank16-Slot26-Slot32	Empty	0	0	0
+Bank16-Slot26-Slot33	Empty	0	0	0
+Bank16-Slot26-Slot34	Empty	0	0	0
+Bank16-Slot26-Slot35	Empty	0	0	0
+Bank16-Slot26-Slot36	Empty	0	0	0
+Bank16-Slot26-Slot37	Empty	0	0	0
+Bank16-Slot26-Slot38	Empty	0	0	0
+Bank16-Slot26-Slot39	Empty	0	0	0
+Bank16-Slot26-Slot40	Empty	0	0	0
+Bank16-Slot26-Slot41	Empty	0	0	0
+Bank16-Slot26-Slot42	Empty	0	0	0
+Bank16-Slot26-Slot43	Empty	0	0	0
+Bank16-Slot26-Slot44	Empty	0	0	0
+Bank16-Slot26-Slot45	Empty	0	0	0
+Bank16-Slot26-Slot46	Empty	0	0	0
+Bank16-Slot27	Velium Wood Chisel	164490	1	6
+Bank16-Slot28	File	12011	1	6
+Bank16-Slot29	Hybrid Research Kit	41632	1	10
+Bank16-Slot29-Slot1	Empty	0	0	0
+Bank16-Slot29-Slot2	Empty	0	0	0
+Bank16-Slot29-Slot3	Empty	0	0	0
+Bank16-Slot29-Slot4	Empty	0	0	0
+Bank16-Slot29-Slot5	Empty	0	0	0
+Bank16-Slot29-Slot6	Empty	0	0	0
+Bank16-Slot29-Slot7	Empty	0	0	0
+Bank16-Slot29-Slot8	Empty	0	0	0
+Bank16-Slot29-Slot9	Empty	0	0	0
+Bank16-Slot29-Slot10	Empty	0	0	0
+Bank16-Slot30	Pebble Crusher	7906	1	6
+Bank16-Slot30-Slot1	Empty	0	0	0
+Bank16-Slot30-Slot2	Empty	0	0	0
+Bank16-Slot31	Empty	0	0	0
+Bank16-Slot32	Nascent Guardian's Pauldrons	170357	1	2
+Bank16-Slot32-Slot1	Empty	0	0	0
+Bank16-Slot32-Slot2	Empty	0	0	0
+Bank16-Slot33	Sewing Needle	10064	1	6
+Bank16-Slot34	Empty	0	0	0
+Bank16-Slot35	Master Researcher Trophy	95062	1	6
+Bank16-Slot35-Slot1	Empty	0	0	0
+Bank16-Slot36	Vial of Prismatic Dye	32557	5	6
+Bank16-Slot37	Grakaw Mask	161995	1	6
+Bank16-Slot38	Akhevan Shadow Shears	26561	1	6
+Bank16-Slot38-Slot1	Empty	0	0	0
+Bank16-Slot38-Slot2	Empty	0	0	0
+Bank16-Slot39	Celebratory Opal Stein Ornament	86798	1	6
+Bank16-Slot40	Empty	0	0	0
+Bank16-Slot41	Empty	0	0	0
+Bank16-Slot42	Etching Tools	8893	1	6
+Bank17	Tanned Travelworn Backpack	174036	1	42
+Bank17-Slot1	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot2	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot3	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot4	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot5	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot6	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot7	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot8	Sealed Pure Energeian Metal Orb	66280	5	6
+Bank17-Slot9	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot10	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot11	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot12	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot13	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot14	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot15	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot16	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot17	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot18	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot19	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot20	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot21	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot22	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot23	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot24	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot25	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot26	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot27	Grandiose Earring of the Contracted	161698	1	6
+Bank17-Slot28	Grandiose Earring of the Contracted	161698	1	6
+Bank17-Slot29	Grandiose Earring of the Contracted	161698	1	6
+Bank17-Slot30	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot31	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot32	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot33	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot34	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot35	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot36	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot37	Grandiose Earring of the Contracted	161698	1	6
+Bank17-Slot38	Grandiose Necklace of the Contracted	161699	1	6
+Bank17-Slot39	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank17-Slot40	Grandiose Earring of the Contracted	161698	1	6
+Bank17-Slot41	Empty	0	0	0
+Bank17-Slot42	Empty	0	0	0
+Bank18	Stormslayer's Satchel	153976	1	44
+Bank18-Slot1	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot2	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot3	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot4	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot5	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot6	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot7	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot8	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot9	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot10	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot11	Grandiose Necklace of the Contracted	161699	1	6
+Bank18-Slot12	Grandiose Necklace of the Contracted	161699	1	6
+Bank18-Slot13	Grandiose Necklace of the Contracted	161699	1	6
+Bank18-Slot14	Grandiose Necklace of the Contracted	161699	1	6
+Bank18-Slot15	Grandiose Necklace of the Contracted	161699	1	6
+Bank18-Slot16	Grandiose Necklace of the Contracted	161699	1	6
+Bank18-Slot17	Grandiose Necklace of the Contracted	161699	1	6
+Bank18-Slot18	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot19	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot20	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot21	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot22	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot23	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot24	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot25	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot26	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot27	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot28	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot29	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot30	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot31	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot32	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot33	Grandiose Pauldrons of the Contracted	161700	1	6
+Bank18-Slot34	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot35	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot36	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot37	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot38	Grandiose Earring of the Contracted	161698	1	6
+Bank18-Slot39	Empty	0	0	0
+Bank18-Slot40	Empty	0	0	0
+Bank18-Slot41	Empty	0	0	0
+Bank18-Slot42	Empty	0	0	0
+Bank18-Slot43	Empty	0	0	0
+Bank18-Slot44	Empty	0	0	0
+Bank19	Ashbreather's Supply Bag	128742	1	40
+Bank19-Slot1	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot2	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot3	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot4	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot5	Spectral Luclinite Amice of Adroitness	169925	1	6
+Bank19-Slot5-Slot1	Empty	0	0	0
+Bank19-Slot5-Slot2	Empty	0	0	0
+Bank19-Slot5-Slot3	Empty	0	0	0
+Bank19-Slot6	Blood-Soaked Cloak of Security	166449	1	6
+Bank19-Slot6-Slot1	Empty	0	0	0
+Bank19-Slot6-Slot2	Empty	0	0	0
+Bank19-Slot6-Slot3	Empty	0	0	0
+Bank19-Slot7	Ans Temariel Itraer	167733	1	6
+Bank19-Slot7-Slot1	Empty	0	0	0
+Bank19-Slot7-Slot2	Empty	0	0	0
+Bank19-Slot7-Slot3	Empty	0	0	0
+Bank19-Slot8	Akelha`Ra's Ring of Rage	169732	1	6
+Bank19-Slot8-Slot1	Empty	0	0	0
+Bank19-Slot8-Slot2	Empty	0	0	0
+Bank19-Slot8-Slot3	Empty	0	0	0
+Bank19-Slot9	Guardian's Luclinite Coagulated Mask	167917	1	6
+Bank19-Slot9-Slot1	Empty	0	0	0
+Bank19-Slot9-Slot2	Empty	0	0	0
+Bank19-Slot9-Slot3	Empty	0	0	0
+Bank19-Slot10	Atraeth Centien xi Vius	169716	1	6
+Bank19-Slot10-Slot1	Empty	0	0	0
+Bank19-Slot10-Slot2	Empty	0	0	0
+Bank19-Slot10-Slot3	Empty	0	0	0
+Bank19-Slot11	Phantasmal Luclinite Earring of Brilliance	169515	1	6
+Bank19-Slot11-Slot1	Empty	0	0	0
+Bank19-Slot11-Slot2	Empty	0	0	0
+Bank19-Slot11-Slot3	Empty	0	0	0
+Bank19-Slot12	Shortbow of the Khala Dun Garrison	169767	1	6
+Bank19-Slot12-Slot1	Empty	0	0	0
+Bank19-Slot12-Slot2	Empty	0	0	0
+Bank19-Slot12-Slot3	Empty	0	0	0
+Bank19-Slot12-Slot4	Empty	0	0	0
+Bank19-Slot12-Slot5	Empty	0	0	0
+Bank19-Slot13	Ephyr's Extra Eider Effigy	169738	1	6
+Bank19-Slot13-Slot1	Empty	0	0	0
+Bank19-Slot13-Slot2	Empty	0	0	0
+Bank19-Slot13-Slot3	Empty	0	0	0
+Bank19-Slot13-Slot4	Empty	0	0	0
+Bank19-Slot14	Crys Xaui xi ans Fiel	169720	1	6
+Bank19-Slot14-Slot1	Empty	0	0	0
+Bank19-Slot14-Slot2	Empty	0	0	0
+Bank19-Slot14-Slot3	Empty	0	0	0
+Bank19-Slot15	Blood-Soaked Necklace of Security	166444	1	6
+Bank19-Slot15-Slot1	Empty	0	0	0
+Bank19-Slot15-Slot2	Empty	0	0	0
+Bank19-Slot15-Slot3	Empty	0	0	0
+Bank19-Slot16	Graffitied Stele of Deepshade	169740	1	6
+Bank19-Slot16-Slot1	Empty	0	0	0
+Bank19-Slot16-Slot2	Empty	0	0	0
+Bank19-Slot16-Slot3	Empty	0	0	0
+Bank19-Slot16-Slot4	Empty	0	0	0
+Bank19-Slot17	Luclinite Ensanguined Ring of Vigor	167532	1	6
+Bank19-Slot17-Slot1	Empty	0	0	0
+Bank19-Slot17-Slot2	Empty	0	0	0
+Bank19-Slot17-Slot3	Empty	0	0	0
+Bank19-Slot18	Duelist's Ring of Rebellion	173934	1	6
+Bank19-Slot18-Slot1	Empty	0	0	0
+Bank19-Slot18-Slot2	Empty	0	0	0
+Bank19-Slot18-Slot3	Empty	0	0	0
+Bank19-Slot19	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot20	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot21	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot22	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot23	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot24	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot25	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot26	Emberquartz Protector Source	171183	1	6
+Bank19-Slot27	Emberquartz Protector Source	171183	1	6
+Bank19-Slot28	Emberquartz Conjuror Source	171187	1	6
+Bank19-Slot29	Emberquartz Protector Source	171183	1	6
+Bank19-Slot30	Luclinite Attacker Source	167189	1	6
+Bank19-Slot31	Emberquartz Protector Source	171183	1	6
+Bank19-Slot32	Emberquartz Protector Source	171183	1	6
+Bank19-Slot33	Record of Lore	56994	1	6
+Bank19-Slot34	Painting: Haunting Laughter	107972	1	6
+Bank19-Slot35	Empty	0	0	0
+Bank19-Slot36	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot37	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot38	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot39	Extra Planar Potential Shard	148442	1	6
+Bank19-Slot40	Extra Planar Potential Shard	148442	1	6
+Bank20	Nightslayer's Backpack	164566	1	44
+Bank20-Slot1	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot2	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot3	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot4	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot5	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot6	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot7	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot8	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot9	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot10	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot11	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot12	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot13	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot14	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot15	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot16	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot17	Emberquartz Conjuror Source	171187	1	6
+Bank20-Slot18	Luclinite Convoker Source	167187	1	6
+Bank20-Slot19	Emberquartz Protector Source	171183	1	6
+Bank20-Slot20	Emberquartz Conjuror Source	171187	1	6
+Bank20-Slot21	Emberquartz Protector Source	171183	1	6
+Bank20-Slot22	Emberquartz Protector Source	171183	1	6
+Bank20-Slot23	Emberquartz Protector Source	171183	1	6
+Bank20-Slot24	Emberquartz Protector Source	171183	1	6
+Bank20-Slot25	Emberquartz Conjuror Source	171187	1	6
+Bank20-Slot26	Emberquartz Conjuror Source	171187	1	6
+Bank20-Slot27	Emberquartz Protector Source	171183	1	6
+Bank20-Slot28	Luclinite Defender Source	167183	1	6
+Bank20-Slot29	Emberquartz Protector Source	171183	1	6
+Bank20-Slot30	Emberquartz Protector Source	171183	1	6
+Bank20-Slot31	Emberquartz Protector Source	171183	1	6
+Bank20-Slot32	Emberquartz Protector Source	171183	1	6
+Bank20-Slot33	Luclinite Attacker Source	167189	1	6
+Bank20-Slot34	Luclinite Attacker Source	167189	1	6
+Bank20-Slot35	Luclinite Attacker Source	167189	1	6
+Bank20-Slot36	Luclinite Attacker Source	167189	1	6
+Bank20-Slot37	Luclinite Attacker Source	167189	1	6
+Bank20-Slot38	Luclinite Defender Source	167183	1	6
+Bank20-Slot39	Luclinite Defender Source	167183	1	6
+Bank20-Slot40	Luclinite Defender Source	167183	1	6
+Bank20-Slot41	Extra Planar Potential Shard	148442	1	6
+Bank20-Slot42	Emberquartz Protector Source	171183	1	6
+Bank20-Slot43	Emberquartz Protector Source	171183	1	6
+Bank20-Slot44	Empty	0	0	0
+Bank21	Night Seeker's Backpack	164563	1	44
+Bank21-Slot1	Cloak of Flames	11621	1	6
+Bank21-Slot1-Slot1	Empty	0	0	0
+Bank21-Slot2	Cloak of Flames	11621	1	6
+Bank21-Slot2-Slot1	Empty	0	0	0
+Bank21-Slot3	Orb of Tishan	11625	1	6
+Bank21-Slot3-Slot1	Empty	0	0	0
+Bank21-Slot3-Slot2	Empty	0	0	0
+Bank21-Slot4	Morguecaller	47316	1	6
+Bank21-Slot4-Slot1	Empty	0	0	0
+Bank21-Slot4-Slot2	Empty	0	0	0
+Bank21-Slot5	Muramite's Shield of Legend	70665	1	6
+Bank21-Slot5-Slot1	Empty	0	0	0
+Bank21-Slot5-Slot2	Empty	0	0	0
+Bank21-Slot6	Ancient Claw	150512	1	6
+Bank21-Slot7	Copper Flecked Geode of Adroitness	165189	1	6
+Bank21-Slot8	Frozen Piece of the Moon	165369	1	6
+Bank21-Slot9	Chipped Stone of Starfall	87987	1	6
+Bank21-Slot10	Fascinating Medicine Doll	167166	1	6
+Bank21-Slot11	Pastletlith's Skill	165167	1	6
+Bank21-Slot12	Velium Infused Gem of Adroitness	163571	1	6
+Bank21-Slot13	Steely Stone of Buckling	171179	1	6
+Bank21-Slot14	Steely Stone of Buckling	171179	1	6
+Bank21-Slot15	Gleaming Gem of Feshlak	165371	1	6
+Bank21-Slot16	Noble Expedition Haversack	171974	1	42
+Bank21-Slot16-Slot1	Empty	0	0	0
+Bank21-Slot16-Slot2	Empty	0	0	0
+Bank21-Slot16-Slot3	Empty	0	0	0
+Bank21-Slot16-Slot4	Empty	0	0	0
+Bank21-Slot16-Slot5	Empty	0	0	0
+Bank21-Slot16-Slot6	Empty	0	0	0
+Bank21-Slot16-Slot7	Empty	0	0	0
+Bank21-Slot16-Slot8	Empty	0	0	0
+Bank21-Slot16-Slot9	Empty	0	0	0
+Bank21-Slot16-Slot10	Empty	0	0	0
+Bank21-Slot16-Slot11	Empty	0	0	0
+Bank21-Slot16-Slot12	Empty	0	0	0
+Bank21-Slot16-Slot13	Empty	0	0	0
+Bank21-Slot16-Slot14	Empty	0	0	0
+Bank21-Slot16-Slot15	Empty	0	0	0
+Bank21-Slot16-Slot16	Empty	0	0	0
+Bank21-Slot16-Slot17	Empty	0	0	0
+Bank21-Slot16-Slot18	Empty	0	0	0
+Bank21-Slot16-Slot19	Empty	0	0	0
+Bank21-Slot16-Slot20	Empty	0	0	0
+Bank21-Slot16-Slot21	Empty	0	0	0
+Bank21-Slot16-Slot22	Empty	0	0	0
+Bank21-Slot16-Slot23	Empty	0	0	0
+Bank21-Slot16-Slot24	Empty	0	0	0
+Bank21-Slot16-Slot25	Empty	0	0	0
+Bank21-Slot16-Slot26	Empty	0	0	0
+Bank21-Slot16-Slot27	Empty	0	0	0
+Bank21-Slot16-Slot28	Empty	0	0	0
+Bank21-Slot16-Slot29	Empty	0	0	0
+Bank21-Slot16-Slot30	Empty	0	0	0
+Bank21-Slot16-Slot31	Empty	0	0	0
+Bank21-Slot16-Slot32	Empty	0	0	0
+Bank21-Slot16-Slot33	Empty	0	0	0
+Bank21-Slot16-Slot34	Empty	0	0	0
+Bank21-Slot16-Slot35	Empty	0	0	0
+Bank21-Slot16-Slot36	Empty	0	0	0
+Bank21-Slot16-Slot37	Empty	0	0	0
+Bank21-Slot16-Slot38	Empty	0	0	0
+Bank21-Slot16-Slot39	Empty	0	0	0
+Bank21-Slot16-Slot40	Empty	0	0	0
+Bank21-Slot16-Slot41	Empty	0	0	0
+Bank21-Slot16-Slot42	Empty	0	0	0
+Bank21-Slot17	Grandiose Necklace of the Contracted	161699	1	6
+Bank21-Slot18	Grandiose Necklace of the Contracted	161699	1	6
+Bank21-Slot19	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot20	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot21	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot22	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot23	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot24	Mark of Fury	110396	1	6
+Bank21-Slot25	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot26	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot27	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot28	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot29	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot30	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot31	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot32	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot33	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot34	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot35	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot36	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot37	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot38	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot39	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot40	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot41	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot42	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot43	Extra Planar Potential Shard	148442	1	6
+Bank21-Slot44	Extra Planar Potential Shard	148442	1	6
+Bank22	Ice Encased Rucksack	164983	1	42
+Bank22-Slot1	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot2	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot3	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot4	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot5	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot6	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot7	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot8	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot9	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot10	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot11	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot12	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot13	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot14	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot15	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot16	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot17	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot18	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot19	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot20	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot21	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot22	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot23	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot24	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot25	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot26	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot27	Extra Planar Potential Shard	148442	1	6
+Bank22-Slot28	Emberquartz Protector Source	171183	1	6
+Bank22-Slot29	Luclinite Defender Source	167183	1	6
+Bank22-Slot30	Emberquartz Protector Source	171183	1	6
+Bank22-Slot31	Emberquartz Protector Source	171183	1	6
+Bank22-Slot32	Emberquartz Protector Source	171183	1	6
+Bank22-Slot33	Emberquartz Protector Source	171183	1	6
+Bank22-Slot34	Emberquartz Protector Source	171183	1	6
+Bank22-Slot35	Emberquartz Protector Source	171183	1	6
+Bank22-Slot36	Emberquartz Protector Source	171183	1	6
+Bank22-Slot37	Emberquartz Protector Source	171183	1	6
+Bank22-Slot38	Emberquartz Protector Source	171183	1	6
+Bank22-Slot39	Emberquartz Protector Source	171183	1	6
+Bank22-Slot40	Emberquartz Protector Source	171183	1	6
+Bank22-Slot41	Emberquartz Protector Source	171183	1	6
+Bank22-Slot42	Luclinite Defender Source	167183	1	6
+Bank23	Shadow Seeker's Backpack	168040	1	42
+Bank23-Slot1	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot2	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot3	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot4	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot5	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot6	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot7	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot8	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot9	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot10	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot11	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot12	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot13	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot14	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot15	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot16	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot17	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot18	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot19	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot20	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot21	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot22	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot23	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot24	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot25	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot26	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot27	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot28	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot29	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot30	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot31	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot32	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot33	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot34	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot35	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot36	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot37	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot38	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot39	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot40	Extra Planar Potential Shard	148442	1	6
+Bank23-Slot41	Empty	0	0	0
+Bank23-Slot42	Empty	0	0	0
+Bank24	Broodslayer's Satchel	151797	1	44
+Bank24-Slot1	Emberquartz Slayer Source	171189	1	6
+Bank24-Slot2	Emberquartz Protector Source	171183	1	6
+Bank24-Slot3	Emberquartz Protector Source	171183	1	6
+Bank24-Slot4	Runic Shard of Speed	149167	1	6
+Bank24-Slot5	Luclinite Attacker Source	167189	1	6
+Bank24-Slot6	Emberquartz Conjuror Source	171187	1	6
+Bank24-Slot7	Emberquartz Conjuror Source	171187	1	6
+Bank24-Slot8	Emberquartz Conjuror Source	171187	1	6
+Bank24-Slot9	Emberquartz Conjuror Source	171187	1	6
+Bank24-Slot10	Luclinite Defender Source	167183	1	6
+Bank24-Slot11	Emberquartz Slayer Source	171189	1	6
+Bank24-Slot12	Emberquartz Slayer Source	171189	1	6
+Bank24-Slot13	Emberquartz Slayer Source	171189	1	6
+Bank24-Slot14	Emberquartz Protector Source	171183	1	6
+Bank24-Slot15	Emberquartz Protector Source	171183	1	6
+Bank24-Slot16	Luclinite Defender Source	167183	1	6
+Bank24-Slot17	Luclinite Defender Source	167183	1	6
+Bank24-Slot18	Emberquartz Slayer Source	171189	1	6
+Bank24-Slot19	Emberquartz Slayer Source	171189	1	6
+Bank24-Slot20	Emberquartz Protector Source	171183	1	6
+Bank24-Slot21	Emberquartz Slayer Source	171189	1	6
+Bank24-Slot22	Emberquartz Protector Source	171183	1	6
+Bank24-Slot23	Emberquartz Protector Source	171183	1	6
+Bank24-Slot24	Emberquartz Protector Source	171183	1	6
+Bank24-Slot25	Luclinite Defender Source	167183	1	6
+Bank24-Slot26	Emberquartz Protector Source	171183	1	6
+Bank24-Slot27	Emberquartz Protector Source	171183	1	6
+Bank24-Slot28	Emberquartz Slayer Source	171189	1	6
+Bank24-Slot29	Emberquartz Protector Source	171183	1	6
+Bank24-Slot30	Emberquartz Slayer Source	171189	1	6
+Bank24-Slot31	Emberquartz Protector Source	171183	1	6
+Bank24-Slot32	Emberquartz Protector Source	171183	1	6
+Bank24-Slot33	Emberquartz Protector Source	171183	1	6
+Bank24-Slot34	Emberquartz Protector Source	171183	1	6
+Bank24-Slot35	Emberquartz Protector Source	171183	1	6
+Bank24-Slot36	Emberquartz Protector Source	171183	1	6
+Bank24-Slot37	Emberquartz Protector Source	171183	1	6
+Bank24-Slot38	Emberquartz Protector Source	171183	1	6
+Bank24-Slot39	Emberquartz Protector Source	171183	1	6
+Bank24-Slot40	Emberquartz Protector Source	171183	1	6
+Bank24-Slot41	Emberquartz Protector Source	171183	1	6
+Bank24-Slot42	Emberquartz Protector Source	171183	1	6
+Bank24-Slot43	Emberquartz Slayer Source	171189	1	6
+Bank24-Slot44	Empty	0	0	0
+SharedBank1	Noble Expedition Haversack	171974	1	42
+SharedBank1-Slot1	Empty	0	0	0
+SharedBank1-Slot2	Empty	0	0	0
+SharedBank1-Slot3	Empty	0	0	0
+SharedBank1-Slot4	Empty	0	0	0
+SharedBank1-Slot5	Empty	0	0	0
+SharedBank1-Slot6	Empty	0	0	0
+SharedBank1-Slot7	Empty	0	0	0
+SharedBank1-Slot8	Empty	0	0	0
+SharedBank1-Slot9	Empty	0	0	0
+SharedBank1-Slot10	Empty	0	0	0
+SharedBank1-Slot11	Empty	0	0	0
+SharedBank1-Slot12	Empty	0	0	0
+SharedBank1-Slot13	Empty	0	0	0
+SharedBank1-Slot14	Empty	0	0	0
+SharedBank1-Slot15	Empty	0	0	0
+SharedBank1-Slot16	Empty	0	0	0
+SharedBank1-Slot17	Empty	0	0	0
+SharedBank1-Slot18	Empty	0	0	0
+SharedBank1-Slot19	Empty	0	0	0
+SharedBank1-Slot20	Empty	0	0	0
+SharedBank1-Slot21	Empty	0	0	0
+SharedBank1-Slot22	Empty	0	0	0
+SharedBank1-Slot23	Empty	0	0	0
+SharedBank1-Slot24	Empty	0	0	0
+SharedBank1-Slot25	Empty	0	0	0
+SharedBank1-Slot26	Empty	0	0	0
+SharedBank1-Slot27	Empty	0	0	0
+SharedBank1-Slot28	Empty	0	0	0
+SharedBank1-Slot29	Empty	0	0	0
+SharedBank1-Slot30	Empty	0	0	0
+SharedBank1-Slot31	Empty	0	0	0
+SharedBank1-Slot32	Empty	0	0	0
+SharedBank1-Slot33	Empty	0	0	0
+SharedBank1-Slot34	Empty	0	0	0
+SharedBank1-Slot35	Empty	0	0	0
+SharedBank1-Slot36	Empty	0	0	0
+SharedBank1-Slot37	Empty	0	0	0
+SharedBank1-Slot38	Empty	0	0	0
+SharedBank1-Slot39	Empty	0	0	0
+SharedBank1-Slot40	Empty	0	0	0
+SharedBank1-Slot41	Empty	0	0	0
+SharedBank1-Slot42	Empty	0	0	0
+SharedBank2	Scout's Pocketed Sling	128745	1	32
+SharedBank2-Slot1	Empty	0	0	0
+SharedBank2-Slot2	Empty	0	0	0
+SharedBank2-Slot3	Empty	0	0	0
+SharedBank2-Slot4	Empty	0	0	0
+SharedBank2-Slot5	Empty	0	0	0
+SharedBank2-Slot6	Empty	0	0	0
+SharedBank2-Slot7	Empty	0	0	0
+SharedBank2-Slot8	Empty	0	0	0
+SharedBank2-Slot9	Empty	0	0	0
+SharedBank2-Slot10	Empty	0	0	0
+SharedBank2-Slot11	Empty	0	0	0
+SharedBank2-Slot12	Empty	0	0	0
+SharedBank2-Slot13	Empty	0	0	0
+SharedBank2-Slot14	Empty	0	0	0
+SharedBank2-Slot15	Empty	0	0	0
+SharedBank2-Slot16	Empty	0	0	0
+SharedBank2-Slot17	Empty	0	0	0
+SharedBank2-Slot18	Empty	0	0	0
+SharedBank2-Slot19	Empty	0	0	0
+SharedBank2-Slot20	Empty	0	0	0
+SharedBank2-Slot21	Empty	0	0	0
+SharedBank2-Slot22	Empty	0	0	0
+SharedBank2-Slot23	Empty	0	0	0
+SharedBank2-Slot24	Empty	0	0	0
+SharedBank2-Slot25	Empty	0	0	0
+SharedBank2-Slot26	Empty	0	0	0
+SharedBank2-Slot27	Empty	0	0	0
+SharedBank2-Slot28	Empty	0	0	0
+SharedBank2-Slot29	Empty	0	0	0
+SharedBank2-Slot30	Empty	0	0	0
+SharedBank2-Slot31	Empty	0	0	0
+SharedBank2-Slot32	Empty	0	0	0
+SharedBank3	Yetihide Patchwork Bag	128744	1	34
+SharedBank3-Slot1	Glowing Etched Rune of Nokk	164580	2	6
+SharedBank3-Slot2	Minor Etched Rune of Nokk	164576	4	6
+SharedBank3-Slot3	Median Etched Rune of Nokk	164578	4	6
+SharedBank3-Slot4	Lesser Etched Rune of Nokk	164577	5	6
+SharedBank3-Slot5	Greater Etched Rune of Nokk	164579	3	6
+SharedBank3-Slot6	Inert Median Engram	170292	5	6
+SharedBank3-Slot7	Empty	0	0	0
+SharedBank3-Slot8	Empty	0	0	0
+SharedBank3-Slot9	Empty	0	0	0
+SharedBank3-Slot10	Empty	0	0	0
+SharedBank3-Slot11	Empty	0	0	0
+SharedBank3-Slot12	Empty	0	0	0
+SharedBank3-Slot13	Empty	0	0	0
+SharedBank3-Slot14	Empty	0	0	0
+SharedBank3-Slot15	Empty	0	0	0
+SharedBank3-Slot16	Empty	0	0	0
+SharedBank3-Slot17	Empty	0	0	0
+SharedBank3-Slot18	Empty	0	0	0
+SharedBank3-Slot19	Empty	0	0	0
+SharedBank3-Slot20	Empty	0	0	0
+SharedBank3-Slot21	Empty	0	0	0
+SharedBank3-Slot22	Empty	0	0	0
+SharedBank3-Slot23	Empty	0	0	0
+SharedBank3-Slot24	Empty	0	0	0
+SharedBank3-Slot25	Empty	0	0	0
+SharedBank3-Slot26	Empty	0	0	0
+SharedBank3-Slot27	Empty	0	0	0
+SharedBank3-Slot28	Empty	0	0	0
+SharedBank3-Slot29	Empty	0	0	0
+SharedBank3-Slot30	Empty	0	0	0
+SharedBank3-Slot31	Empty	0	0	0
+SharedBank3-Slot32	Empty	0	0	0
+SharedBank3-Slot33	Empty	0	0	0
+SharedBank3-Slot34	Empty	0	0	0
+SharedBank4	Konikor Carafe	129899	1	34
+SharedBank4-Slot1	Lithium Lava Glass	139963	7	6
+SharedBank4-Slot2	Yellow Nepeta Petals	139950	4	6
+SharedBank4-Slot3	White Nepeta Petals	139951	2	6
+SharedBank4-Slot4	Purple Nepeta Petals	139948	11	6
+SharedBank4-Slot5	Obsidian Lava Glass	139968	1	6
+SharedBank4-Slot6	Magnesium Lava Glass	139967	2	6
+SharedBank4-Slot7	Sodium Lava Glass	139964	4	6
+SharedBank4-Slot8	Blue Nepeta Petals	139949	2	6
+SharedBank4-Slot9	Calcium Lava Glass	139966	10	6
+SharedBank4-Slot10	Lavender Nepeta Petals	139946	5	6
+SharedBank4-Slot11	Strontium Lava Glass	139961	6	6
+SharedBank4-Slot12	Amber Nepeta Petals	139952	5	6
+SharedBank4-Slot13	Copper Lava Glass	139965	2	6
+SharedBank4-Slot14	Silver Nepeta Petals	139945	5	6
+SharedBank4-Slot15	Pink Nepeta Petals	139947	8	6
+SharedBank4-Slot16	Empty	0	0	0
+SharedBank4-Slot17	Empty	0	0	0
+SharedBank4-Slot18	Empty	0	0	0
+SharedBank4-Slot19	Empty	0	0	0
+SharedBank4-Slot20	Empty	0	0	0
+SharedBank4-Slot21	Empty	0	0	0
+SharedBank4-Slot22	Empty	0	0	0
+SharedBank4-Slot23	Empty	0	0	0
+SharedBank4-Slot24	Empty	0	0	0
+SharedBank4-Slot25	Empty	0	0	0
+SharedBank4-Slot26	Empty	0	0	0
+SharedBank4-Slot27	Empty	0	0	0
+SharedBank4-Slot28	Empty	0	0	0
+SharedBank4-Slot29	Empty	0	0	0
+SharedBank4-Slot30	Empty	0	0	0
+SharedBank4-Slot31	Empty	0	0	0
+SharedBank4-Slot32	Empty	0	0	0
+SharedBank4-Slot33	Empty	0	0	0
+SharedBank4-Slot34	Empty	0	0	0
+SharedBank5	Faded Manashard Pouch	176006	1	42
+SharedBank5-Slot1	Empty	0	0	0
+SharedBank5-Slot2	Empty	0	0	0
+SharedBank5-Slot3	Empty	0	0	0
+SharedBank5-Slot4	Empty	0	0	0
+SharedBank5-Slot5	Empty	0	0	0
+SharedBank5-Slot6	Empty	0	0	0
+SharedBank5-Slot7	Empty	0	0	0
+SharedBank5-Slot8	Empty	0	0	0
+SharedBank5-Slot9	Empty	0	0	0
+SharedBank5-Slot10	Empty	0	0	0
+SharedBank5-Slot11	Empty	0	0	0
+SharedBank5-Slot12	Empty	0	0	0
+SharedBank5-Slot13	Empty	0	0	0
+SharedBank5-Slot14	Empty	0	0	0
+SharedBank5-Slot15	Empty	0	0	0
+SharedBank5-Slot16	Empty	0	0	0
+SharedBank5-Slot17	Empty	0	0	0
+SharedBank5-Slot18	Empty	0	0	0
+SharedBank5-Slot19	Empty	0	0	0
+SharedBank5-Slot20	Empty	0	0	0
+SharedBank5-Slot21	Empty	0	0	0
+SharedBank5-Slot22	Empty	0	0	0
+SharedBank5-Slot23	Empty	0	0	0
+SharedBank5-Slot24	Empty	0	0	0
+SharedBank5-Slot25	Empty	0	0	0
+SharedBank5-Slot26	Empty	0	0	0
+SharedBank5-Slot27	Empty	0	0	0
+SharedBank5-Slot28	Empty	0	0	0
+SharedBank5-Slot29	Empty	0	0	0
+SharedBank5-Slot30	Empty	0	0	0
+SharedBank5-Slot31	Empty	0	0	0
+SharedBank5-Slot32	Empty	0	0	0
+SharedBank5-Slot33	Empty	0	0	0
+SharedBank5-Slot34	Empty	0	0	0
+SharedBank5-Slot35	Empty	0	0	0
+SharedBank5-Slot36	Empty	0	0	0
+SharedBank5-Slot37	Empty	0	0	0
+SharedBank5-Slot38	Empty	0	0	0
+SharedBank5-Slot39	Empty	0	0	0
+SharedBank5-Slot40	Empty	0	0	0
+SharedBank5-Slot41	Empty	0	0	0
+SharedBank5-Slot42	Empty	0	0	0
+SharedBank6	Empty	0	0	0
+SharedBank7	Mythslayer's Rucksack	151239	1	44
+SharedBank7-Slot1	Amulet of Necropotence	11646	1	6
+SharedBank7-Slot1-Slot1	Empty	0	0	0
+SharedBank7-Slot2	Amulet of Necropotence	11646	1	6
+SharedBank7-Slot2-Slot1	Empty	0	0	0
+SharedBank7-Slot3	Amulet of Necropotence	11646	1	6
+SharedBank7-Slot3-Slot1	Empty	0	0	0
+SharedBank7-Slot4	Amulet of Necropotence	11646	1	6
+SharedBank7-Slot4-Slot1	Empty	0	0	0
+SharedBank7-Slot5	Amulet of Necropotence	11646	1	6
+SharedBank7-Slot5-Slot1	Empty	0	0	0
+SharedBank7-Slot6	Empty	0	0	0
+SharedBank7-Slot7	Empty	0	0	0
+SharedBank7-Slot8	Empty	0	0	0
+SharedBank7-Slot9	Empty	0	0	0
+SharedBank7-Slot10	Empty	0	0	0
+SharedBank7-Slot11	Empty	0	0	0
+SharedBank7-Slot12	Empty	0	0	0
+SharedBank7-Slot13	Empty	0	0	0
+SharedBank7-Slot14	Empty	0	0	0
+SharedBank7-Slot15	Empty	0	0	0
+SharedBank7-Slot16	Empty	0	0	0
+SharedBank7-Slot17	Empty	0	0	0
+SharedBank7-Slot18	Empty	0	0	0
+SharedBank7-Slot19	Empty	0	0	0
+SharedBank7-Slot20	Empty	0	0	0
+SharedBank7-Slot21	Empty	0	0	0
+SharedBank7-Slot22	Empty	0	0	0
+SharedBank7-Slot23	Empty	0	0	0
+SharedBank7-Slot24	Empty	0	0	0
+SharedBank7-Slot25	Empty	0	0	0
+SharedBank7-Slot26	Empty	0	0	0
+SharedBank7-Slot27	Empty	0	0	0
+SharedBank7-Slot28	Empty	0	0	0
+SharedBank7-Slot29	Empty	0	0	0
+SharedBank7-Slot30	Empty	0	0	0
+SharedBank7-Slot31	Empty	0	0	0
+SharedBank7-Slot32	Empty	0	0	0
+SharedBank7-Slot33	Empty	0	0	0
+SharedBank7-Slot34	Empty	0	0	0
+SharedBank7-Slot35	Empty	0	0	0
+SharedBank7-Slot36	Empty	0	0	0
+SharedBank7-Slot37	Empty	0	0	0
+SharedBank7-Slot38	Empty	0	0	0
+SharedBank7-Slot39	Empty	0	0	0
+SharedBank7-Slot40	Empty	0	0	0
+SharedBank7-Slot41	Empty	0	0	0
+SharedBank7-Slot42	Empty	0	0	0
+SharedBank7-Slot43	Empty	0	0	0
+SharedBank7-Slot44	Empty	0	0	0
+SharedBank8	Satchel of the Combine Hero	148778	1	40
+SharedBank8-Slot1	Empty	0	0	0
+SharedBank8-Slot2	Empty	0	0	0
+SharedBank8-Slot3	Empty	0	0	0
+SharedBank8-Slot4	Empty	0	0	0
+SharedBank8-Slot5	Empty	0	0	0
+SharedBank8-Slot6	Empty	0	0	0
+SharedBank8-Slot7	Empty	0	0	0
+SharedBank8-Slot8	Empty	0	0	0
+SharedBank8-Slot9	Empty	0	0	0
+SharedBank8-Slot10	Empty	0	0	0
+SharedBank8-Slot11	Empty	0	0	0
+SharedBank8-Slot12	Empty	0	0	0
+SharedBank8-Slot13	Empty	0	0	0
+SharedBank8-Slot14	Empty	0	0	0
+SharedBank8-Slot15	Empty	0	0	0
+SharedBank8-Slot16	Empty	0	0	0
+SharedBank8-Slot17	Empty	0	0	0
+SharedBank8-Slot18	Empty	0	0	0
+SharedBank8-Slot19	Empty	0	0	0
+SharedBank8-Slot20	Empty	0	0	0
+SharedBank8-Slot21	Empty	0	0	0
+SharedBank8-Slot22	Empty	0	0	0
+SharedBank8-Slot23	Empty	0	0	0
+SharedBank8-Slot24	Empty	0	0	0
+SharedBank8-Slot25	Empty	0	0	0
+SharedBank8-Slot26	Empty	0	0	0
+SharedBank8-Slot27	Empty	0	0	0
+SharedBank8-Slot28	Empty	0	0	0
+SharedBank8-Slot29	Empty	0	0	0
+SharedBank8-Slot30	Empty	0	0	0
+SharedBank8-Slot31	Empty	0	0	0
+SharedBank8-Slot32	Empty	0	0	0
+SharedBank8-Slot33	Empty	0	0	0
+SharedBank8-Slot34	Empty	0	0	0
+SharedBank8-Slot35	Empty	0	0	0
+SharedBank8-Slot36	Empty	0	0	0
+SharedBank8-Slot37	Empty	0	0	0
+SharedBank8-Slot38	Empty	0	0	0
+SharedBank8-Slot39	Empty	0	0	0
+SharedBank8-Slot40	Empty	0	0	0
+
+KeyRing	Name	ID	
+Mount	Eye-Spotted Shik'Nar Saddle	164194
+Mount	Steed of Souls	77447
+Mount	Wicked Steed	77449
+Mount	Snow Griffin Saddle	164607
+Mount	Gnomish Hovering Transport	108485
+Mount	Radiant Hawk Harness	151223
+Mount	Selyrah of Fear Saddle	94098
+Mount	Holy Steed	77442
+Mount	Scalewrought Drone Harness	151782
+Mount	Selyrah of Fear Saddle	94098
+Mount	Armored Bee Harness	153961	STAT
+Illusion	Amulet of Necropotence	11646
+Illusion	Jann's Veil	129907	STAT
+Illusion	Mask of the Chetari	133165
+Illusion	Bloodmetal Inlaid Gnollish Totem	86222
+Familiar	Ice Bound Ulthork	164955
+Familiar	Striped Badger Whistle	151225
+Familiar	Fungal Underbulk	164195
+Familiar	Emperor Ganak Familiar	128740
+Familiar	Personal Hemic Source	163996
+Familiar	Metamorph: Onyx Scaled Hatchling	75998
+Familiar	Metamorph: Vulpine Trickster	161985
+Familiar	Dragonscale Skystrider Scales	61009
+Familiar	Scalewrought Flyer Egg	151784
+Familiar	Metamorph: Jade Sessiloid	109263
+Familiar	Candlefolk Whistle	153963	STAT
+Teleportation	Northern Desert Outlook Device	111209
+Teleportation	Primary Anchor Transport Device	57851
+Teleportation	Sodden Staff of the Kedge	161993
+Teleportation	Wishing Lamp: Zephyr's Flight	129937
+Teleportation	Drunkard's Stein	93995
+Teleportation	Fellowship Registration Insignia	34023
+Teleportation	Broken Spear of Ill Omen	161994
+Teleportation	Zueria Slide: Skyfire	146382
+Teleportation	Tsikut's Crystallized Magic	175180
+Activated	Staff of Viral Flux	127554
+Activated	Violet Conch of the Tempest	141172
+Activated	Huntsman's Ethereal Quiver	121333
+Activated	Unified Phoenix Feather	165188
+Activated	Miniature Horn of Unity	85964
+Activated	Cleansing Rod	93992
+Activated	Spirit Drinker's Coating	86647
+Activated	Gladiator's Plate Chestguard of War	70858
+Activated	Ring of the Ancients	67098
+Activated	Innoruuk's Dark Blessing	48136
+Activated	Swiftmantle	86515
+Activated	Valia's Unyielding Bravery	86648
+Activated	Venenium	141740
+Activated	Bifold Focus of the Evil Eye	133708
+Activated	Mirror Fragment of Anashti Sul	69478
+Equipment	Soulrender Bracer of Eternal Reverie	171829
+Equipment-Soulrender Bracer of Eternal Reverie	Extra Planar Potential Shard	148442
+Equipment-Soulrender Bracer of Eternal Reverie	Echoing Memoryweave Plate Wrist Ornament	154558
+Equipment	Soulrender Helm of Heroic Reflections	171632
+Equipment-Soulrender Helm of Heroic Reflections	Rapidious Sun Shaving	171174
+Equipment-Soulrender Helm of Heroic Reflections	Extra Planar Potential Shard	148442
+Equipment	Velium Empowered Gem of Striking	163583
+Equipment	Spectral Luclinite Soulrender Breastplate	169835
+Equipment-Spectral Luclinite Soulrender Breastplate	Rapidious Sun Shaving	171174
+Equipment-Spectral Luclinite Soulrender Breastplate	Tormented Lere	167369
+Equipment-Spectral Luclinite Soulrender Breastplate	Extra Planar Potential Shard	148442
+Equipment-Spectral Luclinite Soulrender Breastplate	Echoing Memoryweave Plate Chest Ornament	154556
+Equipment	Soulrender Vambraces of Heroic Reflections	171633
+Equipment-Soulrender Vambraces of Heroic Reflections	Rapidious Sun Shaving	171174
+Equipment-Soulrender Vambraces of Heroic Reflections	Extra Planar Potential Shard	148442
+Equipment-Soulrender Vambraces of Heroic Reflections	Echoing Memoryweave Plate Arms Ornament	154557
+Equipment	Riven Arcana Protector Source	175183
+Equipment	Legionnaire Bracer of Shattered Dominion	175601
+Equipment-Legionnaire Bracer of Shattered Dominion	Extra Planar Potential Shard	148442
+Equipment-Legionnaire Bracer of Shattered Dominion	Echoing Memoryweave Plate Wrist Ornament	154558
+Equipment	Soulrender Bracer of Eternal Reverie	171829
+Equipment-Soulrender Bracer of Eternal Reverie	Extra Planar Potential Shard	148442
+Equipment	Guardian's Mask of Eternal Reverie	171917
+Equipment-Guardian's Mask of Eternal Reverie	Irae Faycite Shard: Charka's Bite	159538
+Equipment-Guardian's Mask of Eternal Reverie	Rapidious Sun Shaving	171174
+Equipment	Soulrender Gauntlets of Eternal Reverie	171830
+Equipment-Soulrender Gauntlets of Eternal Reverie	Rapidious Sun Shaving	171174
+Equipment-Soulrender Gauntlets of Eternal Reverie	Extra Planar Potential Shard	148442
+Equipment-Soulrender Gauntlets of Eternal Reverie	Echoing Memoryweave Chain Hands Ornament	154566
+Equipment	Darkened Cone of the Mystics	146355
+Equipment-Darkened Cone of the Mystics	Glittering Token of Horror	173174
+Equipment-Darkened Cone of the Mystics	Blurred Corathus Shard of Health	86286
+Equipment	Soulrender Greaves of Eternal Reverie	171834
+Equipment-Soulrender Greaves of Eternal Reverie	Rapidious Sun Shaving	171174
+Equipment-Soulrender Greaves of Eternal Reverie	Extra Planar Potential Shard	148442
+Equipment-Soulrender Greaves of Eternal Reverie	Echoing Memoryweave Plate Legs Ornament	154560
+Equipment	Legionnaire Breastplate of Resonant Fracture	175807
+Equipment-Legionnaire Breastplate of Resonant Fracture	Di`Zok Plate Chest Ornament	148967
+Equipment	Soulrender Boots of Eternal Reverie	171831
+Equipment-Soulrender Boots of Eternal Reverie	Rapidious Sun Shaving	171174
+Equipment-Soulrender Boots of Eternal Reverie	Jovial Jharin Jingle	169167
+Equipment-Soulrender Boots of Eternal Reverie	Extra Planar Potential Shard	148442
+Equipment-Soulrender Boots of Eternal Reverie	Echoing Memoryweave Plate Feet Ornament	154561
+Equipment	Elddar Cinch	171736
+Equipment-Elddar Cinch	Irae Faycite Shard: Plague of the Fleawalker	159543
+Equipment	Legionnaire Helm of Resonant Fracture	175804
+Equipment-Legionnaire Helm of Resonant Fracture	Extra Planar Potential Shard	148442
+Equipment-Legionnaire Helm of Resonant Fracture	Royal Silver Crown Ornamentation	89298
+Equipment	Legionnaire Bracer of Shattered Dominion	175601
+Equipment-Legionnaire Bracer of Shattered Dominion	Extra Planar Potential Shard	148442
+Equipment-Legionnaire Bracer of Shattered Dominion	Di`Zok Plate Wrist Ornament	148969
+Equipment	Durus Faycite Shard: Petition for Power	159539
+Equipment	Legionnaire Gauntlets of Shattered Dominion	175602
+Equipment-Legionnaire Gauntlets of Shattered Dominion	Protective Beak Bauble	171169
+Equipment-Legionnaire Gauntlets of Shattered Dominion	Extra Planar Potential Shard	148442
+Equipment-Legionnaire Gauntlets of Shattered Dominion	Di`Zok Plate Hands Ornament	148970
+Equipment	Legionnaire Vambraces of Shattered Dominion	175605
+Equipment-Legionnaire Vambraces of Shattered Dominion	Balanced Gem of Unraveling Order	175577
+Equipment-Legionnaire Vambraces of Shattered Dominion	Acrobat's Gem of Unraveling Order	175572
+Equipment-Legionnaire Vambraces of Shattered Dominion	Extra Planar Potential Shard	148442
+Equipment-Legionnaire Vambraces of Shattered Dominion	Di`Zok Plate Arms Ornament	148968
+Equipment	Sword Breaker of Resonant Fracture	175950
+Equipment-Sword Breaker of Resonant Fracture	Mark of Fury	110396
+Equipment	Legionnaire Greaves of Resonant Fracture	175806
+Equipment-Legionnaire Greaves of Resonant Fracture	Gem of Sly Wind	175378
+Equipment-Legionnaire Greaves of Resonant Fracture	Extra Planar Potential Shard	148442
+Equipment-Legionnaire Greaves of Resonant Fracture	Di`Zok Plate Legs Ornament	148971
+Equipment	Sword Breaker of Rebellion	173950
+Equipment	Rapidious Sun Shaving	171174
+Equipment	Legionnaire Boots of Rebellion	173803
+Equipment-Legionnaire Boots of Rebellion	Medallion of Loathing	175371
+Equipment-Legionnaire Boots of Rebellion	Extra Planar Potential Shard	148442
+Equipment-Legionnaire Boots of Rebellion	Di`Zok Plate Feet Ornament	148972
+Equipment	Broadsword of Rebellion	173951
+Equipment-Broadsword of Rebellion	Reactive Windstone of Virtue	153964
+Equipment	Irae Faycite Shard: Odious Bargain	159548
+Equipment	Defender's Waistguard of Rebellion	173935
+Equipment-Defender's Waistguard of Rebellion	Rift-Touched Cereous Bar	175172
+Equipment	Gnoll Hide Lariat	5317
+Equipment	Rapidious Sun Shaving	171174
+Equipment	Luclinite Ensanguined Gem of Security	167573
+Equipment	Petalbane	175760
+Equipment-Petalbane	Seal of the Sword	110395
+Equipment	Acolyte's Attacker of the Selenelion	109559
+Equipment	Tower Shield of Rebellion	173941
+Equipment-Tower Shield of Rebellion	Rapidious Sun Shaving	171174
+Equipment-Tower Shield of Rebellion	Votive of The Great Shell	175179
+Equipment	Tempus Faycite Shard: Incapacitating Blade	159547
+Equipment	Glittering Token of Horror	173174
+Equipment	Glittering Token of Horror	173174
+Equipment	Mischievous Reanimating Reagent	171167
+Equipment	Acolyte's Attacker of the Harbinger	169780
+Equipment	Tempus Faycite Shard: Spiraling Blades	159502
+Equipment	Tempus Faycite Shard: Armor of Rallosian Runes	159501
+Equipment	Smoldering Core of Radir	169169
+Equipment	Blacksmith's Adamantine Hammer	95056
+Equipment	Glittering Token of Horror	173174
+Equipment	Rapidious Sun Shaving	171174
+Equipment	Tourmaline of Alteration	111797
+Equipment	Glittering Token of Horror	173174
+Equipment	Gnoll Hide Lariat	5317
+Equipment	Kobold Handprint	175171
+Equipment	Rapidious Sun Shaving	171174
+Equipment	Irae Faycite Shard: Odious Bargain	159548
+Equipment	Rapidious Sun Shaving	171174
+Equipment	Master Fletcher Trophy	95027
+Equipment	Rapidious Sun Shaving	171174
+Equipment	Intricate Jewelers Glass	95035
+Equipment	Tempus Faycite Shard: Convalesce	159500
+Equipment	Tempus Faycite Shard: Infuriate	159503
+Equipment	Tempus Faycite Shard: Razor Tongue Discipline	159504
