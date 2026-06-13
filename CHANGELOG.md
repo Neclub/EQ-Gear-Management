@@ -4,6 +4,19 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 **To release a new version:** edit `__version__` in `src/inventory_parser/__init__.py`, then add an entry below.
 
+## [Unreleased]
+
+### Changed
+
+- **Crew → Team rename:** user-facing labels, default export filenames (`Team Inventory.xlsx`), Excel/HTML tab **Team gear**, GUI **Team characters (column order)**, and internal module names (`team_report.py`, `TeamGearReport`, etc.). Legacy `Crew Inventory` output paths are still recognized for auto-default save locations.
+- **GUI buttons** use anti-aliased **pill-shaped** controls (color-coded: blue primary actions, teal secondary, red destructive, green **Generate Excel**).
+- **Slots** checkboxes use teal hover text instead of bright white on mouseover.
+- **Dependencies:** [Pillow](https://pypi.org/project/Pillow/) (`>=10.0`) for smooth button rendering in the GUI (installed automatically with `pip install -e .` and bundled in the `.exe` build).
+
+### Fixed
+
+- **PyInstaller build:** Pillow is no longer excluded from the frozen executable (`scripts/run_pyinstaller.py`).
+
 ## [1.9.1] - 2026-05-26
 
 ### Added

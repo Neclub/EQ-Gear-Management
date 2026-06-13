@@ -2,8 +2,8 @@ from pathlib import Path
 
 from openpyxl import load_workbook
 
-from inventory_parser.crew_report import build_crew_report
-from inventory_parser.excel_export import UNMADE_GEAR_SHEET_NAME, write_crew_workbook
+from inventory_parser.team_report import build_team_report
+from inventory_parser.excel_export import UNMADE_GEAR_SHEET_NAME, write_team_workbook
 from inventory_parser.gear_tiers import tier_rank
 from inventory_parser.unmade_gear import (
     build_unmade_gear_report,
@@ -94,7 +94,7 @@ def test_rebellion_mat_listed_when_neck_empty(tmp_path: Path) -> None:
         "General 1-Slot1\tNecklace Clasp of Rebellion\t170443\t1\t6\n",
         encoding="utf-8",
     )
-    report = build_crew_report([inv])
+    report = build_team_report([inv])
     entries = build_unmade_gear_report(report)
     assert [row.item_name for row in entries] == ["Necklace Clasp of Rebellion"]
 
@@ -107,13 +107,13 @@ def test_rebellion_mat_hidden_when_face_at_tob_r2(tmp_path: Path) -> None:
         "General 1-Slot1\tMask Fastener of Rebellion\t170442\t1\t6\n",
         encoding="utf-8",
     )
-    report = build_crew_report([inv])
+    report = build_team_report([inv])
     entries = build_unmade_gear_report(report)
     assert entries == []
 
 
 def test_songlub_lists_diminished_head_when_head_below_sor_r1() -> None:
-    report = build_crew_report([EXAMPLES / "Songlub_bristle-Inventory.txt"])
+    report = build_team_report([EXAMPLES / "Songlub_bristle-Inventory.txt"])
     entries = build_unmade_gear_report(report)
     names = {row.item_name for row in entries}
     assert "Diminished Shattered Dominion Head Armor" in names
@@ -121,7 +121,7 @@ def test_songlub_lists_diminished_head_when_head_below_sor_r1() -> None:
 
 
 def test_deflub_excludes_ore_and_finished_bound_gear() -> None:
-    report = build_crew_report([EXAMPLES / "Deflub_bristle-Inventory.txt"])
+    report = build_team_report([EXAMPLES / "Deflub_bristle-Inventory.txt"])
     entries = build_unmade_gear_report(report)
     names = {row.item_name for row in entries}
     assert "Riven Arcana Ore" not in names
@@ -130,14 +130,14 @@ def test_deflub_excludes_ore_and_finished_bound_gear() -> None:
 
 
 def test_healub_lists_obscured_bound_container() -> None:
-    report = build_crew_report([EXAMPLES / "Healub_bristle-Inventory.txt"])
+    report = build_team_report([EXAMPLES / "Healub_bristle-Inventory.txt"])
     entries = build_unmade_gear_report(report)
     names = {row.item_name for row in entries}
     assert "Obscured Wrist Armor of the Bound" in names
 
 
 def test_deflub_lists_fractured_string_serving() -> None:
-    report = build_crew_report([EXAMPLES / "Deflub_bristle-Inventory.txt"])
+    report = build_team_report([EXAMPLES / "Deflub_bristle-Inventory.txt"])
     entries = build_unmade_gear_report(report)
     names = {row.item_name for row in entries}
     assert "Fractured String Serving" in names
@@ -148,9 +148,9 @@ def test_excel_export_includes_unmade_gear_tab(tmp_path: Path) -> None:
         EXAMPLES / "Songlub_bristle-Inventory.txt",
         EXAMPLES / "Deflub_bristle-Inventory.txt",
     ]
-    report = build_crew_report(paths)
+    report = build_team_report(paths)
     out = tmp_path / "unmade.xlsx"
-    write_crew_workbook(report, out)
+    write_team_workbook(report, out)
 
     wb = load_workbook(out, data_only=True)
     assert UNMADE_GEAR_SHEET_NAME in wb.sheetnames

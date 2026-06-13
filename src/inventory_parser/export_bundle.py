@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import gc
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -10,7 +11,7 @@ from inventory_parser.character_column_order import (
     apply_character_column_order,
     reorder_unmade_entries,
 )
-from inventory_parser.crew_report import CrewGearReport, build_crew_report
+from inventory_parser.team_report import TeamGearReport, build_team_report
 from inventory_parser.missing_spells import split_input_paths
 from inventory_parser.slots import SlotFilter
 from inventory_parser.spell_report import SpellRuneReport, build_spell_rune_report
@@ -19,12 +20,17 @@ from inventory_parser.unmade_gear import UnmadeGearEntry, build_unmade_gear_repo
 
 @dataclass
 class ExportBundle:
-    crew: CrewGearReport
+    team: TeamGearReport
     spell_report: SpellRuneReport | None = None
     achievement_report: AchievementReport | None = None
     unmade_entries: list[UnmadeGearEntry] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
     slot_filter: SlotFilter = "all"
+
+
+def release_export_memory() -> None:
+    """Drop large export allocations and encourage the GC to reclaim memory."""
+    gc.collect()
 
 
 def build_export_bundle(
@@ -42,7 +48,7 @@ def build_export_bundle(
             "No inventory files were provided. Add *-Inventory.txt dumps."
         )
 
-    report = build_crew_report(inventory_paths, spell_paths=spell_file_paths)
+    report = build_team_report(inventory_paths, spell_paths=spell_file_paths)
     if not report.characters:
         raise ValueError("No inventory files were parsed successfully.")
 
@@ -75,7 +81,7 @@ def build_export_bundle(
         character_column_order,
     )
     return ExportBundle(
-        crew=report,
+        team=report,
         spell_report=spell_report,
         achievement_report=achievement_report,
         unmade_entries=unmade_entries,

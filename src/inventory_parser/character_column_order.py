@@ -1,4 +1,4 @@
-"""Persist and apply user-defined crew column order."""
+"""Persist and apply user-defined team column order."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import TypeVar
 
 from inventory_parser.achievement_files import parse_achievements_filename
-from inventory_parser.crew_report import CharacterGear, CrewGearReport, build_crew_report
+from inventory_parser.team_report import CharacterGear, TeamGearReport, build_team_report
 from inventory_parser.missing_spells import discover_persona_bindings, persona_key, split_input_paths
 from inventory_parser.unmade_gear import UnmadeGearEntry
 
@@ -101,7 +101,7 @@ def build_column_roster(
     if not inventory_paths:
         return []
 
-    report = build_crew_report(inventory_paths, spell_paths=spell_paths or None)
+    report = build_team_report(inventory_paths, spell_paths=spell_paths or None)
     entries = [
         ColumnRosterEntry(
             persona_key=character.persona_key,
@@ -116,19 +116,19 @@ def build_column_roster(
 
 
 def apply_character_column_order(
-    crew: CrewGearReport,
+    team: TeamGearReport,
     order: list[str] | None,
 ) -> None:
-    """Reorder crew gear and spell personas for export columns."""
+    """Reorder team gear and spell personas for export columns."""
     if not order:
         return
-    crew.characters = order_by_persona_keys(
-        crew.characters,
+    team.characters = order_by_persona_keys(
+        team.characters,
         order,
         key_fn=lambda row: row.persona_key,
     )
-    crew.spell_characters = order_by_persona_keys(
-        crew.spell_characters,
+    team.spell_characters = order_by_persona_keys(
+        team.spell_characters,
         order,
         key_fn=lambda row: row.persona_key,
     )
@@ -136,14 +136,14 @@ def apply_character_column_order(
 
 def reorder_unmade_entries(
     entries: list[UnmadeGearEntry],
-    crew: CrewGearReport,
+    team: TeamGearReport,
     order: list[str] | None,
 ) -> list[UnmadeGearEntry]:
     if not order:
         return entries
     rank_by_display = {
         character.display_name: index
-        for index, character in enumerate(crew.characters)
+        for index, character in enumerate(team.characters)
     }
     return sorted(
         entries,

@@ -1,9 +1,9 @@
 from pathlib import Path
 
-from inventory_parser.crew_report import (
+from inventory_parser.team_report import (
     CharacterGear,
-    CrewGearReport,
-    build_crew_report,
+    TeamGearReport,
+    build_team_report,
     format_character_display_name,
 )
 from inventory_parser.missing_spells import (
@@ -52,7 +52,7 @@ def test_explicit_spell_file_without_spelldata_folder() -> None:
     discovery = discover_missing_spells_for_inventories([], extra_spell_paths=[spell])
     assert discovery.paths[persona_key("Monklub", "bristle", "MNK")] == spell.resolve()
     report = build_spell_rune_report(
-        build_crew_report([inv], spell_paths=[spell]),
+        build_team_report([inv], spell_paths=[spell]),
         inventory_paths=[inv],
         extra_spell_paths=[spell],
     )
@@ -67,7 +67,7 @@ def test_format_character_display_name() -> None:
 
 def test_class_from_spelldata_via_bindings() -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
-    report = build_crew_report([inv])
+    report = build_team_report([inv])
     assert report.characters[0].class_abbr == "PAL"
     assert report.characters[0].display_name == "Deflub ( PAL )"
 
@@ -117,7 +117,7 @@ def test_monklub_rk3_entries() -> None:
 def test_deflub_126_130_rune_counts() -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
     report = build_spell_rune_report(
-        build_crew_report([inv]),
+        build_team_report([inv]),
         inventory_paths=[inv],
     )
     assert report is not None
@@ -131,7 +131,7 @@ def test_deflub_126_130_rune_counts() -> None:
 
 def test_spell_report_entries_have_rune() -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
-    report = build_spell_rune_report(build_crew_report([inv]), inventory_paths=[inv])
+    report = build_spell_rune_report(build_team_report([inv]), inventory_paths=[inv])
     assert report is not None
     sample = next(e for e in report.entries if e.spell_name == "Committal Rk. III")
     assert sample.level == 126
@@ -141,7 +141,7 @@ def test_spell_report_entries_have_rune() -> None:
 
 def test_kawiika_rk2_counts_as_rk3_at_126_130() -> None:
     pk = persona_key("Kawiika", "bristle", "WIZ")
-    crew = CrewGearReport(
+    team = TeamGearReport(
         spell_characters=[
             CharacterGear(
                 character="Kawiika",
@@ -152,7 +152,7 @@ def test_kawiika_rk2_counts_as_rk3_at_126_130() -> None:
         ]
     )
     report = build_spell_rune_report(
-        crew,
+        team,
         spell_paths={pk: SPELL_FILES["Kawiika"]},
     )
     assert report is not None
@@ -182,7 +182,7 @@ def test_dedupe_rk2_and_rk3_same_level(tmp_path: Path) -> None:
         encoding="utf-8",
     )
     pk = persona_key("Dedupe", "bristle", "WIZ")
-    crew = CrewGearReport(
+    team = TeamGearReport(
         spell_characters=[
             CharacterGear(
                 character="Dedupe",
@@ -192,7 +192,7 @@ def test_dedupe_rk2_and_rk3_same_level(tmp_path: Path) -> None:
             )
         ]
     )
-    report = build_spell_rune_report(crew, spell_paths={pk: spell_file})
+    report = build_spell_rune_report(team, spell_paths={pk: spell_file})
     assert report is not None
     matches = [e for e in report.entries if e.level == 126]
     assert len(matches) == 1

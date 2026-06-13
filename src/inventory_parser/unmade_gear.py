@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from inventory_parser.crew_report import CharacterGear, CrewGearReport, format_character_display_name
+from inventory_parser.team_report import CharacterGear, TeamGearReport, format_character_display_name
 from inventory_parser.evolver import EVOLVER_GAP_LABEL
 from inventory_parser.gear_tiers import (
     UNKNOWN_TIER_LABEL,
@@ -169,7 +169,7 @@ def _equipped_tier_label(char: CharacterGear, slot: str | None) -> tuple[str | N
     return sor_gap_label(item.name, is_evolver=item.is_evolver), item.is_evolver
 
 
-def build_unmade_gear_report(report: CrewGearReport) -> list[UnmadeGearEntry]:
+def build_unmade_gear_report(report: TeamGearReport) -> list[UnmadeGearEntry]:
     """Scan General bags and return rows for mats/containers still worth crafting."""
     entries: list[UnmadeGearEntry] = []
 

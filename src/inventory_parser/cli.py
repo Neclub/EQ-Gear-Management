@@ -12,17 +12,17 @@ from pathlib import Path
 
 from inventory_parser import __version__
 
-from inventory_parser.crew_report import (
+from inventory_parser.team_report import (
 
     discover_input_files,
 
 )
 
-from inventory_parser.excel_export import write_crew_workbook
+from inventory_parser.excel_export import write_team_workbook
 
-from inventory_parser.export_bundle import build_export_bundle
+from inventory_parser.export_bundle import build_export_bundle, release_export_memory
 
-from inventory_parser.html_export import write_crew_html
+from inventory_parser.html_export import write_team_html
 
 from inventory_parser.output_paths import html_path_for_workbook
 
@@ -52,7 +52,7 @@ def generate_workbook(
 
 ) -> tuple[Path, list[str], Path | None]:
 
-    """Parse inventories and write the crew inventory Excel file."""
+    """Parse inventories and write the team inventory Excel file."""
 
     bundle = build_export_bundle(
 
@@ -68,27 +68,37 @@ def generate_workbook(
 
     )
 
-    saved = write_crew_workbook(
+    warnings = list(bundle.warnings)
 
-        bundle.crew,
+    try:
 
-        output_path,
+        saved = write_team_workbook(
 
-        slot_filter=bundle.slot_filter,
+            bundle.team,
 
-        spell_report=bundle.spell_report,
+            output_path,
 
-        achievement_report=bundle.achievement_report,
+            slot_filter=bundle.slot_filter,
 
-    )
+            spell_report=bundle.spell_report,
 
-    html_saved = None
+            achievement_report=bundle.achievement_report,
 
-    if also_html:
+        )
 
-        html_saved = write_crew_html(bundle, html_path_for_workbook(saved))
+        html_saved = None
 
-    return saved, bundle.warnings, html_saved
+        if also_html:
+
+            html_saved = write_team_html(bundle, html_path_for_workbook(saved))
+
+        return saved, warnings, html_saved
+
+    finally:
+
+        del bundle
+
+        release_export_memory()
 
 
 
@@ -98,7 +108,7 @@ def main(argv: list[str] | None = None) -> int:
 
     p = argparse.ArgumentParser(
 
-        description="Build crew inventory Excel from EverQuest *-Inventory.txt dumps.",
+        description="Build team inventory Excel from EverQuest *-Inventory.txt dumps.",
 
         prog="inventory-parser",
 

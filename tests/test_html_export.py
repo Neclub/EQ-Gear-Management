@@ -6,7 +6,7 @@ from inventory_parser.achievement_parser import EVERQUEST_BASE_LABEL
 from inventory_parser.achievement_report import build_achievement_report
 from inventory_parser.cli import generate_workbook
 from inventory_parser.export_bundle import build_export_bundle
-from inventory_parser.html_export import extract_report_json, write_crew_html
+from inventory_parser.html_export import extract_report_json, write_team_html
 from inventory_parser.output_paths import html_path_for_workbook
 
 EXAMPLES = Path(__file__).resolve().parents[1] / "Examples"
@@ -16,26 +16,26 @@ SHAMLUB_ACH = ACHIEVEMENTS / "Shamlub_xegony-Achievements.txt"
 
 
 def test_html_path_for_workbook() -> None:
-    xlsx = Path("D:/out/Bristlebane_Crew Inventory.xlsx")
-    assert html_path_for_workbook(xlsx) == Path("D:/out/Bristlebane_Crew Inventory.html")
+    xlsx = Path("D:/out/Bristlebane_Team Inventory.xlsx")
+    assert html_path_for_workbook(xlsx) == Path("D:/out/Bristlebane_Team Inventory.html")
 
 
-def test_write_crew_html_structure(tmp_path: Path) -> None:
+def test_write_team_html_structure(tmp_path: Path) -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
     spell = SPELL_DATA / "Deflub_bristle-PAL-MissingSpells.txt"
     bundle = build_export_bundle([inv, spell], include_achievements=False)
     out = tmp_path / "crew.html"
-    write_crew_html(bundle, out)
+    write_team_html(bundle, out)
 
     text = out.read_text(encoding="utf-8")
     assert "<!DOCTYPE html>" in text
-    assert "Crew Inventory Report" in text
+    assert "Team Inventory Report" in text
     assert "const REPORT =" in text
 
     report = extract_report_json(text)
     assert report["meta"]["version"]
     titles = [section["title"] for section in report["sections"]]
-    assert "Crew gear" in titles
+    assert "Team gear" in titles
     assert "Gear T-Level" in titles
     assert "Missing Runes" in titles
     assert "Spell List" in titles
@@ -45,7 +45,7 @@ def test_html_includes_item_link(tmp_path: Path) -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
     bundle = build_export_bundle([inv], include_spells=False, include_achievements=False)
     out = tmp_path / "crew.html"
-    write_crew_html(bundle, out)
+    write_team_html(bundle, out)
     text = out.read_text(encoding="utf-8")
     assert "items.eqresource.com/items.php?id=173940" in text
 
@@ -54,13 +54,13 @@ def test_html_achievement_expansion_labels(tmp_path: Path) -> None:
     inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
     bundle = build_export_bundle([inv], include_spells=False, include_achievements=False)
     ach_report = build_achievement_report(
-        bundle.crew,
+        bundle.team,
         achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
     )
     assert ach_report is not None
     bundle = replace(bundle, achievement_report=ach_report)
     out = tmp_path / "crew.html"
-    write_crew_html(bundle, out)
+    write_team_html(bundle, out)
     report = extract_report_json(out.read_text(encoding="utf-8"))
     assert "Rain of Fear (2012)" in report["expansionOrder"]
     assert EVERQUEST_BASE_LABEL in report["expansionOrder"]
@@ -73,7 +73,7 @@ def test_html_unmade_gear_omitted_when_empty(tmp_path: Path) -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
     bundle = replace(build_export_bundle([inv], include_spells=False, include_achievements=False), unmade_entries=[])
     out = tmp_path / "crew.html"
-    write_crew_html(bundle, out)
+    write_team_html(bundle, out)
     report = extract_report_json(out.read_text(encoding="utf-8"))
     assert not any(section["title"] == "Unmade Gear" for section in report["sections"])
 
@@ -99,13 +99,13 @@ def test_embedded_json_row_counts_match_bundle(tmp_path: Path) -> None:
     spell = SPELL_DATA / "Shamlub_bristle-SHM-MissingSpells.txt"
     bundle = build_export_bundle([inv, spell], include_achievements=False)
     ach_report = build_achievement_report(
-        bundle.crew,
+        bundle.team,
         achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
     )
     if ach_report is not None:
         bundle = replace(bundle, achievement_report=ach_report)
     out = tmp_path / "crew.html"
-    write_crew_html(bundle, out)
+    write_team_html(bundle, out)
     report = extract_report_json(out.read_text(encoding="utf-8"))
 
     if bundle.spell_report is not None:

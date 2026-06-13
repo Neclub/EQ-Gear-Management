@@ -1,4 +1,4 @@
-"""Dark workbook styling for crew gear Excel export."""
+"""Dark workbook styling for team gear Excel export."""
 
 from __future__ import annotations
 

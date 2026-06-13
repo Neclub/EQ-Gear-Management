@@ -1,4 +1,4 @@
-"""Equipment slot layout for crew gear spreadsheets."""
+"""Equipment slot layout for team gear spreadsheets."""
 
 from __future__ import annotations
 
@@ -33,8 +33,8 @@ NON_VISIBLE_SLOTS: tuple[str, ...] = (
     "Waist",
 )
 
-# All crew slots: visible first, then non-visible.
-CREW_GEAR_SLOTS: tuple[str, ...] = VISIBLE_SLOTS + NON_VISIBLE_SLOTS
+# All team slots: visible first, then non-visible.
+TEAM_GEAR_SLOTS: tuple[str, ...] = VISIBLE_SLOTS + NON_VISIBLE_SLOTS
 
 VISIBILITY_VISIBLE = "Visible"
 VISIBILITY_NON_VISIBLE = "Non-visible"
@@ -78,7 +78,7 @@ def slots_for_export(slot_filter: SlotFilter = "all") -> tuple[str, ...]:
         return VISIBLE_SLOTS
     if slot_filter == "non_visible":
         return NON_VISIBLE_SLOTS
-    return CREW_GEAR_SLOTS
+    return TEAM_GEAR_SLOTS
 
 
 def slot_visibility(slot: str) -> str:

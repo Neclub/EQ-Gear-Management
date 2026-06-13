@@ -1,4 +1,4 @@
-"""Export crew reports to a self-contained interactive HTML file."""
+"""Export team reports to a self-contained interactive HTML file."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ from inventory_parser.achievement_parser import (
     EXPANSIONS_NEWEST_FIRST,
     format_expansion_label,
 )
-from inventory_parser.crew_report import CharacterGear, CrewGearReport
+from inventory_parser.team_report import CharacterGear, TeamGearReport
 from inventory_parser.evolver import EVOLVER_GAP_LABEL
 from inventory_parser.excel_export import (
     ACHIEVEMENT_SUMMARY_SHEET_NAME,
@@ -60,15 +60,15 @@ _TIER_CODE_COLORS: dict[str, str] = {
 }
 
 
-def _slots_for_tier_sheet(report: CrewGearReport, base_slots: tuple[str, ...]) -> tuple[str, ...]:
+def _slots_for_tier_sheet(report: TeamGearReport, base_slots: tuple[str, ...]) -> tuple[str, ...]:
     slots = list(base_slots)
     if "Secondary" in slots and not any("Secondary" in c.slots for c in report.characters):
         slots.remove("Secondary")
     return tuple(slots)
 
 
-def _spell_characters(crew: CrewGearReport, spell_report: SpellRuneReport) -> list[CharacterGear]:
-    personas = crew.spell_characters if crew.spell_characters else crew.characters
+def _spell_characters(team: TeamGearReport, spell_report: SpellRuneReport) -> list[CharacterGear]:
+    personas = team.spell_characters if team.spell_characters else team.characters
     if spell_report.persona_keys:
         by_persona = {c.persona_key: c for c in personas}
         return [by_persona[pk] for pk in spell_report.persona_keys if pk in by_persona]
@@ -103,7 +103,7 @@ def _tier_cell(item: EquippedItem | None) -> dict | None:
     return {"label": label, "tierCode": label}
 
 
-def _gear_matrix(report: CrewGearReport, slots: tuple[str, ...], *, tier_mode: bool) -> dict:
+def _gear_matrix(report: TeamGearReport, slots: tuple[str, ...], *, tier_mode: bool) -> dict:
     characters = [c.display_name for c in report.characters]
     rows: list[dict] = []
     for slot in slots:
@@ -194,15 +194,15 @@ def _serialize_table(
 
 def serialize_report(bundle: ExportBundle) -> dict:
     """Build JSON payload for the HTML template."""
-    report = bundle.crew
+    report = bundle.team
     base_slots = slots_for_export(bundle.slot_filter)
     tier_slots = _slots_for_tier_sheet(report, base_slots)
     sections: list[dict] = []
 
     sections.append(
         {
-            "id": "crew_gear",
-            "title": "Crew gear",
+            "id": "team_gear",
+            "title": "Team gear",
             "type": "gear_matrix",
             "data": _gear_matrix(report, base_slots, tier_mode=False),
         }
@@ -395,18 +395,20 @@ def serialize_report(bundle: ExportBundle) -> dict:
     }
 
 
-def write_crew_html(bundle: ExportBundle, output_path: Path) -> Path:
+def write_team_html(bundle: ExportBundle, output_path: Path) -> Path:
     """Write a self-contained interactive HTML report."""
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    template = read_data_text("crew_report.html")
+    template = read_data_text("team_report.html")
     if _REPORT_JSON_MARKER not in template:
         raise ValueError("HTML template is missing the report JSON marker.")
 
     payload = json.dumps(serialize_report(bundle), ensure_ascii=False)
     html = template.replace(_REPORT_JSON_MARKER, payload, 1)
+    del payload, template, bundle
     output_path.write_text(html, encoding="utf-8")
+    del html
     return output_path
 
 

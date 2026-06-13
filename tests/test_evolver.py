@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from inventory_parser.crew_report import build_crew_report
+from inventory_parser.team_report import build_team_report
 from inventory_parser.evolver import (
     equipped_item_is_evolver,
     evolver_augment_slot_number,
     is_evolver_augment_row,
     parent_location_of_evolver_row,
 )
-from inventory_parser.excel_export import write_crew_workbook
+from inventory_parser.excel_export import write_team_workbook
 from inventory_parser.parser import (
     InventoryData,
     InventoryItem,
@@ -73,35 +73,35 @@ def test_tier_primary_with_slot5_row_not_evolver() -> None:
     path = ACHIEVEMENTS / "Shamlub_bristle-Inventory.txt"
     if not path.is_file():
         return
-    report = build_crew_report([path])
+    report = build_team_report([path])
     char = next(c for c in report.characters if c.character == "Shamlub")
     assert char.slots["Primary"].is_evolver is False
     assert char.slots["Primary"].name == "Spectral Luclinite Great Censer"
 
 
 def test_secondary_not_evolver_from_slot4_row() -> None:
-    report = build_crew_report([EXAMPLES / "Shamlub_bristle-Inventory.txt"])
+    report = build_team_report([EXAMPLES / "Shamlub_bristle-Inventory.txt"])
     char = report.characters[0]
     assert char.slots["Secondary"].is_evolver is False
     assert char.slots["Primary"].is_evolver is False
 
 
 def test_equipped_evolver_flag_from_dump() -> None:
-    report = build_crew_report([EXAMPLES / "Shamlub_bristle-Inventory.txt"])
+    report = build_team_report([EXAMPLES / "Shamlub_bristle-Inventory.txt"])
     char = report.characters[0]
     assert char.slots["Face"].is_evolver is True
     assert char.slots["Chest"].is_evolver is False
 
 
 def test_evolver_fill_in_excel(tmp_path: Path) -> None:
-    report = build_crew_report([EXAMPLES / "Shamlub_bristle-Inventory.txt"])
+    report = build_team_report([EXAMPLES / "Shamlub_bristle-Inventory.txt"])
     out = tmp_path / "evolver.xlsx"
-    write_crew_workbook(report, out)
+    write_team_workbook(report, out)
 
     from openpyxl import load_workbook
 
     wb = load_workbook(out, data_only=False)
-    ws = wb["Crew gear"]
+    ws = wb["Team gear"]
     shamlub_col = next(
         c for c in range(3, ws.max_column + 1) if ws.cell(1, c).value == "Shamlub ( SHM )"
     )

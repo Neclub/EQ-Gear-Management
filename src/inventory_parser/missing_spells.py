@@ -248,7 +248,7 @@ def _apply_gear_eligibility(bindings: list[PersonaBinding]) -> tuple[list[Person
         if binding.spell_path is not None and binding.inventory_path.resolve() in shared_inventories:
             updated.append(replace(binding, include_gear=False))
             warnings.append(
-                f"Skipping crew gear for {_persona_display_label(binding.character, binding.class_abbr)}: "
+                f"Skipping team gear for {_persona_display_label(binding.character, binding.class_abbr)}: "
                 "inventory dump is shared with other personas (equipped gear reflects the active persona only)."
             )
         else:
@@ -266,7 +266,7 @@ def discover_persona_bindings(
 
     Subfolders: each spell pairs with inventory in its directory. When multiple
     spell files share one inventory path and are auto-discovered (not explicitly
-    selected), those personas appear on spell tabs only (not Crew Gear / Gear T-Level).
+    selected), those personas appear on spell tabs only (not Team Gear / Gear T-Level).
     Explicitly selected MissingSpells files always produce gear columns labeled with
     that class.
     """
@@ -371,7 +371,7 @@ def spell_path_for_persona(
     class_abbr: str | None,
     spell_paths: dict[str, Path],
 ) -> Path | None:
-    """Resolve a MissingSpells file for a crew column / persona."""
+    """Resolve a MissingSpells file for a team column / persona."""
     key = persona_key(character, server, class_abbr)
     if key in spell_paths:
         return spell_paths[key]

@@ -15,7 +15,8 @@ from inventory_parser.character_column_order import (
     saved_character_column_order,
 )
 from inventory_parser.cli import generate_workbook
-from inventory_parser.crew_report import (
+from inventory_parser.export_bundle import release_export_memory
+from inventory_parser.team_report import (
     FolderCharacterChoice,
     discover_folder_character_choices,
 )
@@ -30,11 +31,12 @@ from inventory_parser.evolver import EVOLVER_LABEL
 from inventory_parser.excel_theme import GEAR_SET_FILLS
 from inventory_parser.gear_sets import GEAR_SETS_NEWEST_FIRST
 from inventory_parser.output_paths import (
-    crew_inventory_filename,
-    crew_inventory_path,
+    team_inventory_filename,
+    team_inventory_path,
     default_export_prefix_from_input_paths,
-    is_auto_crew_inventory_path,
+    is_auto_team_inventory_path,
 )
+from inventory_parser.pill_button import PillButton
 from inventory_parser.slots import NON_VISIBLE_SLOTS, VISIBLE_SLOTS, SlotFilter
 
 _FILE_TYPES = [
@@ -52,7 +54,7 @@ def _downloads_dir() -> Path:
 
 
 def _default_output_path(prefix: str | None = None) -> Path:
-    return crew_inventory_path(_downloads_dir(), prefix)
+    return team_inventory_path(_downloads_dir(), prefix)
 
 
 # Dark base
@@ -67,9 +69,6 @@ _ACCENT_FILES = "#5b8fd9"
 _ACCENT_SLOTS = "#5cb8a8"
 _ACCENT_OUTPUT = "#c9a227"
 _ACCENT_EXCEL = "#3d9b5c"
-_ACCENT_EXCEL_ACTIVE = "#2f7a47"
-_ACCENT_DANGER = "#c45c5c"
-_ACCENT_DANGER_ACTIVE = "#a04848"
 
 # Card label colors per section
 _CARD_STYLES: dict[str, tuple[str, str]] = {
@@ -99,40 +98,27 @@ def _apply_theme(root: tk.Tk, style: ttk.Style) -> None:
         style.configure(name, background=_BG_PANEL, bordercolor=accent)
         style.configure(f"{name}.Label", background=_BG_PANEL, foreground=accent, font=("Segoe UI", 10, "bold"))
 
-    style.configure("TButton", padding=(10, 6), background="#35353d", foreground=_FG)
-    style.map("TButton", background=[("active", "#454550")])
-
-    style.configure("Primary.TButton", padding=(10, 6))
-    style.map(
-        "Primary.TButton",
-        background=[("active", "#4a7ec4"), ("!disabled", "#3d6fad")],
-        foreground=[("!disabled", "#ffffff")],
-    )
-
-    style.configure("Secondary.TButton", padding=(10, 6))
-    style.map(
-        "Secondary.TButton",
-        background=[("active", "#4a9e92"), ("!disabled", "#3d857a")],
-        foreground=[("!disabled", "#ffffff")],
-    )
-
-    style.configure("Danger.TButton", padding=(10, 6))
-    style.map(
-        "Danger.TButton",
-        background=[("active", _ACCENT_DANGER_ACTIVE), ("!disabled", _ACCENT_DANGER)],
-        foreground=[("!disabled", "#ffffff")],
-    )
-
-    style.configure("Accent.TButton", padding=(18, 11), font=("Segoe UI", 11, "bold"))
-    style.map(
-        "Accent.TButton",
-        background=[("active", _ACCENT_EXCEL_ACTIVE), ("!disabled", _ACCENT_EXCEL)],
-        foreground=[("!disabled", "#ffffff")],
-    )
-
     style.configure("TEntry", fieldbackground=_BG_INPUT, foreground=_FG, bordercolor="#454550")
     style.configure("TCombobox", fieldbackground=_BG_INPUT, foreground=_FG, bordercolor="#454550")
     style.map("TCombobox", fieldbackground=[("readonly", _BG_INPUT)])
+
+    style.configure(
+        "Panel.TCheckbutton",
+        background=_BG_PANEL,
+        foreground=_FG,
+        focuscolor=_ACCENT_SLOTS,
+        padding=(2, 4),
+    )
+    style.map(
+        "Panel.TCheckbutton",
+        background=[("active", "#2a2a32")],
+        foreground=[
+            ("active", _ACCENT_SLOTS),
+            ("!disabled", _FG),
+            ("disabled", _FG_MUTED),
+        ],
+    )
+
     _apply_picker_theme(style)
 
 
@@ -284,7 +270,7 @@ def _show_gear_tiers_help(parent: tk.Tk) -> None:
 
     notes = (
         "Unlisted items (e.g. Legacies Lost, Selenelion) have no tier color in Excel.\n\n"
-        "Excel legend: Crew gear sheet, A26–A35 (Evolver + gear tiers).\n\n"
+        "Excel legend: Team gear sheet, A26–A35 (Evolver + gear tiers).\n\n"
         "Item names link to EQ Resource using the ID from your inventory dump."
     )
     tk.Label(
@@ -322,7 +308,7 @@ def _show_gear_tiers_help(parent: tk.Tk) -> None:
         justify=tk.LEFT,
     ).pack(anchor="w")
 
-    ttk.Button(outer, text="Close", command=win.destroy).pack(anchor="e", pady=(14, 0))
+    PillButton(outer, text="Close", command=win.destroy).pack(anchor="e", pady=(14, 0))
 
     win.update_idletasks()
     x = parent.winfo_x() + (parent.winfo_width() - win.winfo_width()) // 2
@@ -538,8 +524,8 @@ def _show_folder_character_picker(
 
     btn_row = ttk.Frame(footer)
     btn_row.pack(side=tk.LEFT)
-    ttk.Button(btn_row, text="Select all", command=lambda: set_all(True)).pack(side=tk.LEFT)
-    ttk.Button(btn_row, text="Select none", command=lambda: set_all(False)).pack(
+    PillButton(btn_row, text="Select all", command=lambda: set_all(True)).pack(side=tk.LEFT)
+    PillButton(btn_row, text="Select none", command=lambda: set_all(False)).pack(
         side=tk.LEFT, padx=(8, 0)
     )
 
@@ -561,8 +547,8 @@ def _show_folder_character_picker(
 
     action_row = ttk.Frame(footer)
     action_row.pack(side=tk.RIGHT)
-    ttk.Button(action_row, text="Cancel", command=cancel).pack(side=tk.RIGHT, padx=(8, 0))
-    ttk.Button(action_row, text="Add selected", style="Primary.TButton", command=confirm).pack(
+    PillButton(action_row, text="Cancel", command=cancel).pack(side=tk.RIGHT, padx=(8, 0))
+    PillButton(action_row, text="Add selected", variant="primary", command=confirm).pack(
         side=tk.RIGHT
     )
 
@@ -580,9 +566,9 @@ def _show_about(parent: tk.Tk) -> None:
     messagebox.showinfo(
         "About Inventory Parser",
         f"Inventory Parser {__version__}\n\n"
-        "Build crew gear Excel workbooks from EverQuest\n"
+        "Build team gear Excel workbooks from EverQuest\n"
         "/outputfile inventory and missingspells dumps.\n\n"
-        "Sheets: Crew gear, Gear T-Level, Missing Runes, Spell List.",
+        "Sheets: Team gear, Gear T-Level, Missing Runes, Spell List.",
         parent=parent,
     )
 
@@ -634,7 +620,7 @@ def main() -> None:
         """Set output path from inputs when empty or still using an auto-generated name."""
         prefix = default_export_prefix_from_input_paths([Path(p) for p in file_list])
         current = output_var.get().strip()
-        if not current or is_auto_crew_inventory_path(current):
+        if not current or is_auto_team_inventory_path(current):
             output_var.set(str(_default_output_path(prefix)))
     include_spells_var = tk.BooleanVar(value=False)
     include_achievements_var = tk.BooleanVar(value=False)
@@ -656,7 +642,7 @@ def main() -> None:
     ttk.Label(header, text=f"Inventory Parser {__version__}", style="Title.TLabel").pack(anchor="w")
     ttk.Label(
         header,
-        text="Crew gear workbook · color-coded tiers · EQ Resource links",
+        text="Team gear workbook · color-coded tiers · EQ Resource links",
         style="Muted.TLabel",
     ).pack(anchor="w", pady=(2, 0))
 
@@ -669,7 +655,7 @@ def main() -> None:
     files_inner.pack(fill=tk.BOTH, expand=True)
     files_lf = ttk.LabelFrame(
         files_inner,
-        text=" Crew characters (column order) ",
+        text=" Team characters (column order) ",
         style="Files.TLabelframe",
         padding=10,
     )
@@ -876,19 +862,19 @@ def main() -> None:
 
     btn_row = ttk.Frame(files_lf)
     btn_row.grid(row=1, column=0, sticky="ew", pady=(10, 0))
-    add_files_btn = ttk.Button(btn_row, text="Add files…", style="Primary.TButton", command=browse_files)
+    add_files_btn = PillButton(btn_row, text="Add files…", variant="primary", command=browse_files)
     add_files_btn.pack(side=tk.LEFT, padx=(0, 8))
-    add_folder_btn = ttk.Button(
-        btn_row, text="Add folder…", style="Secondary.TButton", command=browse_folder
+    add_folder_btn = PillButton(
+        btn_row, text="Add folder…", variant="secondary", command=browse_folder
     )
     add_folder_btn.pack(side=tk.LEFT, padx=(0, 8))
-    remove_btn = ttk.Button(btn_row, text="Remove selected", command=remove_selected)
+    remove_btn = PillButton(btn_row, text="Remove selected", command=remove_selected)
     remove_btn.pack(side=tk.LEFT, padx=(0, 8))
-    move_up_btn = ttk.Button(btn_row, text="Move up", command=lambda: move_selected(-1))
+    move_up_btn = PillButton(btn_row, text="Move up", command=lambda: move_selected(-1))
     move_up_btn.pack(side=tk.LEFT, padx=(0, 8))
-    move_down_btn = ttk.Button(btn_row, text="Move down", command=lambda: move_selected(1))
+    move_down_btn = PillButton(btn_row, text="Move down", command=lambda: move_selected(1))
     move_down_btn.pack(side=tk.LEFT, padx=(0, 8))
-    clear_btn = ttk.Button(btn_row, text="Clear all", style="Danger.TButton", command=clear_all)
+    clear_btn = PillButton(btn_row, text="Clear all", variant="danger", command=clear_all)
     clear_btn.pack(side=tk.LEFT)
     file_action_buttons = (
         add_files_btn,
@@ -923,6 +909,7 @@ def main() -> None:
         text="Include missing spells (Rk. III runes)",
         variable=include_spells_var,
         command=update_status,
+        style="Panel.TCheckbutton",
     )
     spells_cb.grid(row=2, column=0, columnspan=2, sticky="w", pady=(8, 0))
     spells_cb.configure(state=tk.DISABLED)
@@ -933,6 +920,7 @@ def main() -> None:
         text="Include achievements (collections & summary)",
         variable=include_achievements_var,
         command=update_status,
+        style="Panel.TCheckbutton",
     )
     achievements_cb.grid(row=3, column=0, columnspan=2, sticky="w", pady=(8, 0))
     achievements_cb.configure(state=tk.DISABLED)
@@ -942,6 +930,7 @@ def main() -> None:
         slots_lf,
         text="Also generate HTML report",
         variable=also_html_var,
+        style="Panel.TCheckbutton",
     )
     html_cb.grid(row=4, column=0, columnspan=2, sticky="w", pady=(8, 0))
 
@@ -953,7 +942,7 @@ def main() -> None:
             title="Save Excel workbook",
             defaultextension=".xlsx",
             initialdir=str(_downloads_dir()),
-            initialfile=crew_inventory_filename(
+            initialfile=team_inventory_filename(
                 default_export_prefix_from_input_paths([Path(p) for p in file_list])
             ),
             filetypes=[("Excel workbook", "*.xlsx"), ("All files", "*.*")],
@@ -965,7 +954,7 @@ def main() -> None:
         row=0, column=0, sticky="w", padx=(0, 8)
     )
     ttk.Entry(out_lf, textvariable=output_var).grid(row=0, column=1, sticky="ew")
-    ttk.Button(out_lf, text="Browse…", style="Secondary.TButton", command=browse_output).grid(
+    PillButton(out_lf, text="Browse…", variant="secondary", command=browse_output).grid(
         row=0, column=2, padx=(8, 0)
     )
 
@@ -1044,13 +1033,15 @@ def main() -> None:
                         btn.configure(state=tk.NORMAL)
 
                 root.after(0, done_err)
+            finally:
+                release_export_memory()
 
         threading.Thread(target=work, daemon=True).start()
 
-    gen_btn = ttk.Button(
+    gen_btn = PillButton(
         action_bar,
         text="  Generate Excel  ",
-        style="Accent.TButton",
+        variant="accent",
         command=run_export,
     )
     gen_btn.grid(row=0, column=1, sticky="e", padx=(12, 0))

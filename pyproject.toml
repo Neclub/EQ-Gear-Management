@@ -9,6 +9,7 @@ description = "EverQuest multi-character inventory dumps to equipped-gear Excel"
 requires-python = ">=3.10"
 dependencies = [
     "openpyxl>=3.1",
+    "Pillow>=10.0",
 ]
 
 [project.optional-dependencies]

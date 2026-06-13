@@ -1,4 +1,4 @@
-"""Export crew equipped gear to Excel."""
+"""Export team equipped gear to Excel."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.worksheet import Worksheet
 
-from inventory_parser.crew_report import CharacterGear, CrewGearReport
+from inventory_parser.team_report import CharacterGear, TeamGearReport
 from inventory_parser.achievement_report import AchievementReport
 from inventory_parser.achievement_parser import format_expansion_label
 from inventory_parser.spell_report import SpellRuneReport
@@ -81,15 +81,15 @@ ACHIEVEMENT_SUMMARY_SHEET_NAME = "Achievement Summary"
 RAID_ACHIEVEMENTS_SHEET_NAME = "Raid Achievements"
 
 
-def write_crew_workbook(
-    report: CrewGearReport,
+def write_team_workbook(
+    report: TeamGearReport,
     output_path: Path,
     *,
     slot_filter: SlotFilter = "all",
     spell_report: SpellRuneReport | None = None,
     achievement_report: AchievementReport | None = None,
 ) -> Path:
-    """Write crew gear workbook with item sheet and SOR gap tracking sheet."""
+    """Write team gear workbook with item sheet and SOR gap tracking sheet."""
     output_path = Path(output_path)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
@@ -100,8 +100,8 @@ def write_crew_workbook(
     wb = Workbook()
 
     ws_gear = wb.active
-    ws_gear.title = "Crew gear"
-    _write_crew_gear_sheet(ws_gear, report, slots_tab1)
+    ws_gear.title = "Team gear"
+    _write_team_gear_sheet(ws_gear, report, slots_tab1)
 
     ws_sor = wb.create_sheet(GEAR_T_LEVEL_SHEET_NAME)
     _write_sor_gaps_sheet(ws_sor, report, slots_tab2)
@@ -131,7 +131,7 @@ def write_crew_workbook(
     return _save_with_fallback(wb, output_path)
 
 
-def _slots_for_sor_sheet(report: CrewGearReport, base_slots: tuple[str, ...]) -> tuple[str, ...]:
+def _slots_for_sor_sheet(report: TeamGearReport, base_slots: tuple[str, ...]) -> tuple[str, ...]:
     """Drop Secondary unless at least one character had it equipped on the gear sheet."""
     slots = list(base_slots)
     if "Secondary" in slots and not any("Secondary" in c.slots for c in report.characters):
@@ -139,7 +139,7 @@ def _slots_for_sor_sheet(report: CrewGearReport, base_slots: tuple[str, ...]) ->
     return tuple(slots)
 
 
-def _write_crew_gear_sheet(ws: Worksheet, report: CrewGearReport, slots: tuple[str, ...]) -> None:
+def _write_team_gear_sheet(ws: Worksheet, report: TeamGearReport, slots: tuple[str, ...]) -> None:
     ws.sheet_properties.tabColor = "000000"
     _fill_sheet_background(ws)
     num_cols = _write_sheet_header(ws, report)
@@ -157,7 +157,7 @@ def _write_crew_gear_sheet(ws: Worksheet, report: CrewGearReport, slots: tuple[s
     _write_gear_legend_on_sheet(ws)
 
 
-def _write_sor_gaps_sheet(ws: Worksheet, report: CrewGearReport, slots: tuple[str, ...]) -> None:
+def _write_sor_gaps_sheet(ws: Worksheet, report: TeamGearReport, slots: tuple[str, ...]) -> None:
     ws.sheet_properties.tabColor = "542A35"
     _fill_sheet_background(ws)
     num_cols = _write_sheet_header(ws, report)
@@ -182,7 +182,7 @@ def _write_sor_gaps_sheet(ws: Worksheet, report: CrewGearReport, slots: tuple[st
     _write_sor_legend_on_sheet(ws)
 
 
-def _write_sheet_header(ws: Worksheet, report: CrewGearReport) -> int:
+def _write_sheet_header(ws: Worksheet, report: TeamGearReport) -> int:
     headers = ("Slot", "Visibility", *(r.display_name for r in report.characters))
     for col, title in enumerate(headers, start=1):
         cell = ws.cell(1, col, title)
@@ -454,8 +454,8 @@ def _write_spell_summary_section(
     return row + 1
 
 
-def _spell_characters(crew: CrewGearReport, spell_report: SpellRuneReport) -> list[CharacterGear]:
-    personas = crew.spell_characters if crew.spell_characters else crew.characters
+def _spell_characters(team: TeamGearReport, spell_report: SpellRuneReport) -> list[CharacterGear]:
+    personas = team.spell_characters if team.spell_characters else team.characters
     if spell_report.persona_keys:
         by_persona = {c.persona_key: c for c in personas}
         return [by_persona[pk] for pk in spell_report.persona_keys if pk in by_persona]
@@ -487,14 +487,14 @@ def _write_spell_sheet_banner(
 
 def _write_missing_runes_sheet(
     ws: Worksheet,
-    crew: CrewGearReport,
+    team: TeamGearReport,
     spell_report: SpellRuneReport,
 ) -> None:
     ws.sheet_properties.tabColor = "5C4688"
     _fill_sheet_background(ws)
     config = load_rune_config()
     tiers = config.tiers
-    characters = _spell_characters(crew, spell_report)
+    characters = _spell_characters(team, spell_report)
     summary_cols = max(2, 1 + len(characters))
 
     row = _write_spell_sheet_banner(
@@ -532,7 +532,7 @@ def _write_missing_runes_sheet(
 
 def _write_spell_list_sheet(
     ws: Worksheet,
-    crew: CrewGearReport,
+    team: TeamGearReport,
     spell_report: SpellRuneReport,
 ) -> None:
     ws.sheet_properties.tabColor = "3D4A6E"
@@ -835,17 +835,20 @@ def _write_raid_achievements_sheet(ws: Worksheet, report: AchievementReport) -> 
 
 def _save_with_fallback(wb: Workbook, target: Path) -> Path:
     try:
-        wb.save(target)
-        return target
-    except PermissionError:
-        stem = target.stem
-        suffix = target.suffix
-        parent = target.parent
-        for n in range(1, 100):
-            alt = parent / f"{stem}_{n}{suffix}"
-            try:
-                wb.save(alt)
-                return alt
-            except PermissionError:
-                continue
-        raise
+        try:
+            wb.save(target)
+            return target
+        except PermissionError:
+            stem = target.stem
+            suffix = target.suffix
+            parent = target.parent
+            for n in range(1, 100):
+                alt = parent / f"{stem}_{n}{suffix}"
+                try:
+                    wb.save(alt)
+                    return alt
+                except PermissionError:
+                    continue
+            raise
+    finally:
+        wb.close()

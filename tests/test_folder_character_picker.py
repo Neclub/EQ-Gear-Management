@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from inventory_parser.crew_report import discover_folder_character_choices
+from inventory_parser.team_report import discover_folder_character_choices
 
 EXAMPLES = Path(__file__).resolve().parents[1] / "Examples"
 

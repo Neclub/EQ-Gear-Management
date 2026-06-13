@@ -14,12 +14,12 @@ from inventory_parser.achievement_parser import (
     split_collection_name,
 )
 from inventory_parser.achievement_report import build_achievement_report
-from inventory_parser.crew_report import build_crew_report
+from inventory_parser.team_report import build_team_report
 from inventory_parser.excel_export import (
     ACHIEVEMENT_SUMMARY_SHEET_NAME,
     MISSING_COLLECTIONS_SHEET_NAME,
     RAID_ACHIEVEMENTS_SHEET_NAME,
-    write_crew_workbook,
+    write_team_workbook,
 )
 from inventory_parser.missing_spells import split_input_paths
 
@@ -110,7 +110,7 @@ def test_format_expansion_label() -> None:
 
 def test_build_achievement_report_includes_sorted_raid_rows() -> None:
     inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
-    report = build_crew_report([inv])
+    report = build_team_report([inv])
     ach_report = build_achievement_report(
         report,
         achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
@@ -124,7 +124,7 @@ def test_build_achievement_report_includes_sorted_raid_rows() -> None:
 
 def test_build_achievement_report_with_explicit_path() -> None:
     inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
-    report = build_crew_report([inv])
+    report = build_team_report([inv])
     ach_report = build_achievement_report(
         report,
         achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
@@ -138,7 +138,7 @@ def test_build_achievement_report_with_explicit_path() -> None:
     assert any(row.expansion == "Rain of Fear" for row in ach_report.raid_achievements)
 
 
-def test_missing_collections_char_has_from_crew_inventory(tmp_path: Path) -> None:
+def test_missing_collections_char_has_from_team_inventory(tmp_path: Path) -> None:
     holder_inv = tmp_path / "Tanklub_bristle-Inventory.txt"
     holder_inv.write_text(
         "Location\tName\tID\tCount\tSlots\n"
@@ -146,7 +146,7 @@ def test_missing_collections_char_has_from_crew_inventory(tmp_path: Path) -> Non
         encoding="utf-8",
     )
     missing_inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
-    report = build_crew_report([missing_inv, holder_inv])
+    report = build_team_report([missing_inv, holder_inv])
     ach_report = build_achievement_report(
         report,
         achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
@@ -173,14 +173,14 @@ def test_collect_achievement_paths_from_achievementdata(tmp_path: Path) -> None:
 
 def test_achievement_sheets_in_workbook(tmp_path: Path) -> None:
     inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
-    report = build_crew_report([inv])
+    report = build_team_report([inv])
     ach_report = build_achievement_report(
         report,
         achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
     )
     assert ach_report is not None
     out = tmp_path / "crew.xlsx"
-    write_crew_workbook(report, out, achievement_report=ach_report)
+    write_team_workbook(report, out, achievement_report=ach_report)
 
     from openpyxl import load_workbook
 

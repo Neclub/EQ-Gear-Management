@@ -1,6 +1,6 @@
 # Inventory Parser
 
-EverQuest tool that builds a **dark-themed Excel workbook** from crew inventory dumps: equipped gear by slot, gear tier level tracking, and optional missing Rank III spell / rune reports.
+EverQuest tool that builds a **dark-themed Excel workbook** from team inventory dumps: equipped gear by slot, gear tier level tracking, and optional missing Rank III spell / rune reports.
 
 **Version:** see `src/inventory_parser/__init__.py` (`__version__`). Check in the GUI (**Help → About**), CLI (`--version`), or `py -3 -m inventory_parser --version`.
 
@@ -14,7 +14,7 @@ EverQuest tool that builds a **dark-themed Excel workbook** from crew inventory 
 |---------|-------------|
 | Multi-character export | One column per character (or persona) from `*-Inventory.txt` dumps |
 | Slot layout | Visible slots first, then non-visible; filter to all / visible / non-visible |
-| Gear set colors | Fracture, Rebellion, Evolver, etc. on **Crew gear**; legend on-sheet and in GUI Help |
+| Gear set colors | Fracture, Rebellion, Evolver, etc. on **Team gear**; legend on-sheet and in GUI Help |
 | EQ Resource links | Item names hyperlink using item IDs from dumps |
 | **Gear T-Level** | Expansion tier codes per slot (`SOR-R2`, `TOB-R2`, etc.); blank = empty; `Evolver` = Evolver item |
 | **Missing Runes** / **Spell List** | Optional tabs: rune count matrix and missing **Rk. III** spell list |
@@ -23,7 +23,7 @@ EverQuest tool that builds a **dark-themed Excel workbook** from crew inventory 
 ## Requirements
 
 - **Python 3.10+** (for running from source)
-- Dependency: **openpyxl** (installed via `pip install -e .`)
+- Dependencies: **openpyxl** and **Pillow** (installed via `pip install -e .`)
 - **Windows** for the GUI and PyInstaller `.exe` build
 
 ## Input file formats
@@ -48,7 +48,7 @@ Inventory filenames always use the character name only (`CharacterName_server-In
 
 **Alternate personas — two folder layouts:**
 
-1. **Same folder:** one `Deflub_bristle-Inventory.txt` plus MissingSpells file(s). **Add the MissingSpells file for the active persona** to get a Crew Gear column labeled with that class (e.g. `Deflub ( WAR )`). If you add only the inventory file and multiple spell files are auto-discovered, Crew Gear is omitted (spell tabs only).
+1. **Same folder:** one `Deflub_bristle-Inventory.txt` plus MissingSpells file(s). **Add the MissingSpells file for the active persona** to get a Team Gear column labeled with that class (e.g. `Deflub ( WAR )`). If you add only the inventory file and multiple spell files are auto-discovered, Team Gear is omitted (spell tabs only).
 
 2. **Subfolder per persona (separate worn gear):** e.g. `PAL/Deflub_bristle-Inventory.txt` + `PAL/Deflub_bristle-PAL-MissingSpells.txt`, and the same for `SHD/`. Each subfolder uses the standard inventory filename; class comes from the spell file only.
 
@@ -71,9 +71,9 @@ At least one inventory file is required to generate a workbook.
 
 ## Excel workbook
 
-Default output name: **`{Server}_Crew Inventory.xlsx`** (e.g. `Bristlebane_Crew Inventory.xlsx` from the `bristle` slug in `*_bristle-Inventory.txt`, `*-MissingSpells.txt`, or `eqlog_*_bristle.txt`; GUI defaults to Downloads).
+Default output name: **`{Server}_Team Inventory.xlsx`** (e.g. `Bristlebane_Team Inventory.xlsx` from the `bristle` slug in `*_bristle-Inventory.txt`, `*-MissingSpells.txt`, or `eqlog_*_bristle.txt`; GUI defaults to Downloads).
 
-### Crew gear
+### Team gear
 
 - Rows = equipped slots (sorted visible → non-visible)  
 - Columns = characters  
@@ -83,7 +83,7 @@ Default output name: **`{Server}_Crew Inventory.xlsx`** (e.g. `Bristlebane_Crew 
 
 ### Gear T-Level
 
-- Same slot layout as Crew gear (Secondary row omitted unless someone had secondary equipped)  
+- Same slot layout as Team gear (Secondary row omitted unless someone had secondary equipped)  
 - Cells show **tier codes** for equipped gear, e.g. `SOR-R2`, `TOB-R2`, `LS-G1`, `SOR-R1`  
 - Blank = empty slot; `Evolver` = Evolver item; `???` = unrecognized gear  
 - Legend on the Gear T-Level sheet lists all tier codes
@@ -114,6 +114,8 @@ Official spell lists (Rank 1 vendors, Rank 2/3 turn-in items) on EQ Resource:
 
 ## GUI
 
+Dark-themed window with color-coded sections (**Files**, **Slots**, **Output**) and **pill-shaped** action buttons.
+
 ```powershell
 cd "Inventory Parser"
 py -3 -m pip install -e .
@@ -131,13 +133,13 @@ Or after install: `inventory-parser-gui`
 2. **Include** slot filter; **Include missing spells** when spell data exists  
 3. Set output path → **Generate Excel**  
 
-**Help → Gear tiers & slots** explains colors and visible vs non-visible slots.
+Button colors: **Add files…** (blue), **Add folder…** / **Browse…** (teal), **Clear all** (red), **Generate Excel** (green). **Help → Gear tiers & slots** explains colors and visible vs non-visible slots.
 
 ## Command line
 
 ```powershell
-py -3 -m inventory_parser --folder Examples -o "Examples/Crew Inventory.xlsx"
-py -3 -m inventory_parser Examples\Deflub_bristle-Inventory.txt -o Crew.xlsx
+py -3 -m inventory_parser --folder Examples -o "Examples/Team Inventory.xlsx"
+py -3 -m inventory_parser Examples\Deflub_bristle-Inventory.txt -o Team.xlsx
 py -3 -m inventory_parser --folder Examples -o out.xlsx --no-spells --slots visible
 ```
 
@@ -160,7 +162,9 @@ cd "Inventory Parser"
 .\build_exe.bat
 ```
 
-Output: `dist\InventoryParser.exe` (Explorer opens with the file selected when the build finishes).
+Output: `dist\InventoryParser-<version>.exe` (e.g. `InventoryParser-1.9.1.exe`; Explorer opens with the file selected when the build finishes).
+
+`build_exe.bat` installs the package (including Pillow) and runs PyInstaller with Pillow bundled for pill-button rendering. Close any running `InventoryParser-*.exe` before rebuilding if you get “Access is denied” on the output file.
 
 ## Examples
 
@@ -200,7 +204,7 @@ Inventory Parser/
   build_exe.bat
   Examples/
   src/inventory_parser/
-    cli.py gui.py excel_export.py …
+    cli.py gui.py team_report.py pill_button.py excel_export.py …
     data/spell_rune_bands.json
   tests/
 ```

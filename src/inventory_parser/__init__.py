@@ -1,3 +1,3 @@
-"""Parse EverQuest inventory dumps and export crew gear spreadsheets."""
+"""Parse EverQuest inventory dumps and export team gear spreadsheets."""
 
 __version__ = "1.9.1"

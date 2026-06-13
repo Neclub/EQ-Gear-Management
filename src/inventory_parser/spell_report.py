@@ -6,7 +6,7 @@ from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from inventory_parser.crew_report import CrewGearReport
+from inventory_parser.team_report import TeamGearReport
 from inventory_parser.missing_spells import (
     MissingSpellLine,
     counts_as_missing_rk3,
@@ -57,14 +57,14 @@ class SpellRuneReport:
         return self.persona_keys
 
 
-def _spell_personas(crew: CrewGearReport) -> list:
-    if crew.spell_characters:
-        return crew.spell_characters
-    return crew.characters
+def _spell_personas(team: TeamGearReport) -> list:
+    if team.spell_characters:
+        return team.spell_characters
+    return team.characters
 
 
 def build_spell_rune_report(
-    crew: CrewGearReport,
+    team: TeamGearReport,
     spell_paths: dict[str, Path] | None = None,
     *,
     inventory_paths: list[Path] | None = None,
@@ -72,7 +72,7 @@ def build_spell_rune_report(
     discovery_warnings: list[str] | None = None,
 ) -> SpellRuneReport | None:
     """
-    Build spell rune data for crew characters.
+    Build spell rune data for team characters.
 
     If ``spell_paths`` is omitted, discovers files from ``inventory_paths``,
     ``extra_spell_paths``, or each character's inventory filepath.
@@ -82,7 +82,7 @@ def build_spell_rune_report(
     if not blocks:
         return None
 
-    personas = _spell_personas(crew)
+    personas = _spell_personas(team)
     warnings: list[str] = list(discovery_warnings or [])
     if spell_paths is None:
         inv_paths = inventory_paths or [Path(c.filepath) for c in personas]

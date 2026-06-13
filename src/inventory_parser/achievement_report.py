@@ -1,4 +1,4 @@
-"""Build achievement collection and summary reports for crew exports."""
+"""Build achievement collection and summary reports for team exports."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ from inventory_parser.achievement_parser import (
     expansion_sort_key,
     parse_achievements_file,
 )
-from inventory_parser.crew_report import CrewGearReport
+from inventory_parser.team_report import TeamGearReport
 from inventory_parser.parser import parse_inventory_file
 
 
@@ -64,11 +64,11 @@ def _character_key(character: str, server: str) -> str:
     return f"{character}_{server}".casefold()
 
 
-def _build_item_holders_by_name(crew: CrewGearReport) -> dict[str, list[str]]:
-    """Map item name (casefold) to crew display names that have it in inventory."""
+def _build_item_holders_by_name(team: TeamGearReport) -> dict[str, list[str]]:
+    """Map item name (casefold) to team display names that have it in inventory."""
     holders: dict[str, list[str]] = {}
     seen: dict[str, set[str]] = {}
-    for character in crew.characters:
+    for character in team.characters:
         data = parse_inventory_file(character.filepath)
         if data is None:
             continue
@@ -176,7 +176,7 @@ def _rows_from_parse(
 
 
 def build_achievement_report(
-    crew: CrewGearReport,
+    team: TeamGearReport,
     achievement_paths: dict[str, Path] | None = None,
     *,
     inventory_paths: list[Path] | None = None,
@@ -185,7 +185,7 @@ def build_achievement_report(
     """Build achievement rows for characters with achievement dumps."""
     if achievement_paths is None:
         if not inventory_paths and not extra_achievement_paths:
-            inventory_paths = [Path(c.filepath) for c in crew.characters]
+            inventory_paths = [Path(c.filepath) for c in team.characters]
         achievement_paths = collect_achievement_paths(
             inventory_paths or [],
             extra_achievement_paths,
@@ -195,9 +195,9 @@ def build_achievement_report(
 
     report = AchievementReport()
     seen_characters: set[str] = set()
-    item_holders = _build_item_holders_by_name(crew)
+    item_holders = _build_item_holders_by_name(team)
 
-    for character in crew.characters:
+    for character in team.characters:
         key = _character_key(character.character, character.server)
         path = achievement_paths.get(key)
         if path is None:

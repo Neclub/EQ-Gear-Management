@@ -32,7 +32,7 @@ Tab-separated text from `/outputfile inventory`. One file per character (`Charac
 
 **Alternate personas:** EQ’s Alternate Persona system lets one character swap class while sharing bank, bags, and other data. Class is defined **only** by the MissingSpells filename (`CharacterName_server-CLASS-MissingSpells.txt`).
 
-**Same folder:** one inventory plus MissingSpells file(s). Add the spell file for the active persona to get a Crew Gear column labeled with that class. If you add only the inventory and multiple spell files are auto-discovered, Crew Gear is skipped (spell tabs only).
+**Same folder:** one inventory plus MissingSpells file(s). Add the spell file for the active persona to get a Team Gear column labeled with that class. If you add only the inventory and multiple spell files are auto-discovered, Team Gear is skipped (spell tabs only).
 
 **Subfolders (separate worn gear per persona):** each persona’s folder contains the standard inventory name plus its spell file — e.g. `PAL/Deflub_bristle-Inventory.txt` + `PAL/Deflub_bristle-PAL-MissingSpells.txt`.
 
@@ -74,11 +74,13 @@ The **Missing Collections** tab lists collection items still needed (`owned/tota
 
 ## Quick start (GUI)
 
+The app uses a **dark theme** with color-coded panels and **pill-shaped** buttons (blue **Add files…**, teal **Add folder…** / **Browse…**, red **Clear all**, green **Generate Excel**).
+
 1. **In EQ:** on each toon, `/outputfile inventory` and (optional) `/outputfile missingspells`; copy the `.txt` files into one folder.
 
 2. **Run the app**
    - Double-click **`run_gui.bat`**, or  
-   - Double-click **`dist\InventoryParser.exe`** after building (see [Building the .exe](#building-the-exe))
+   - Double-click **`dist\InventoryParser-<version>.exe`** after building (see [Building the .exe](#building-the-exe))
 
 3. **Add your files**
    - **Add files…** — pick one or more `*-Inventory.txt`, `*-MissingSpells.txt`, and/or `*-Achievements.txt` files  
@@ -88,15 +90,15 @@ The **Missing Collections** tab lists collection items still needed (`owned/tota
    - **Include** — `all`, `visible`, or `non_visible` slots on the gear sheets  
    - **Include missing spells** — checked automatically when matching spell files are found; uncheck to skip spell tabs  
    - **Include achievements** — checked automatically when matching achievement files are found; uncheck to skip achievement tabs  
-   - **Also generate HTML report** — writes a `{prefix}_Crew Inventory.html` file next to the Excel workbook (open in your browser; no server needed)  
+   - **Also generate HTML report** — writes a `{prefix}_Team Inventory.html` file next to the Excel workbook (open in your browser; no server needed)  
 
 5. **Output**
-   - Default save location: **Downloads\{Server}_Crew Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Crew Inventory.xlsx` from `*_bristle-Inventory.txt`)  
+   - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
    - Use **Browse…** to pick another path  
 
 6. Click **Generate Excel**
 
-If Excel already has the file open, the app saves as `Crew Inventory_1.xlsx`, etc.
+If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, etc.
 
 ---
 
@@ -104,7 +106,7 @@ If Excel already has the file open, the app saves as `Crew Inventory_1.xlsx`, et
 
 The file uses a **dark theme** (black background, light text). Item names link to [EQ Resource](https://items.eqresource.com/) when the dump includes item IDs.
 
-### Crew gear
+### Team gear
 
 - One **column per character**, one **row per equipped slot**  
 - Rows are grouped **visible** gear first, then **non-visible**  
@@ -113,7 +115,7 @@ The file uses a **dark theme** (black background, light text). Item names link t
 
 ### Gear T-Level
 
-Same layout as Crew gear, but cells show **what tier is equipped** in each slot:
+Same layout as Team gear, but cells show **what tier is equipped** in each slot:
 
 | Cell value | Meaning |
 |------------|---------|
@@ -148,7 +150,7 @@ Older bands (111–120) are in config but not shown until enabled in `spell_rune
 
 ### Missing Collections *(if enabled)*
 
-Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from the collection name), collection name, missing item, progress, which crew member has the item in inventory (**Char Has**), and total needed.
+Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from the collection name), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed.
 
 ### Achievement Summary *(if enabled)*
 
@@ -160,7 +162,7 @@ Incomplete raid **objectives** from each expansion’s **Raids** section. Column
 
 ### HTML report *(optional)*
 
-When **Also generate HTML report** is checked (or **`--also-html`** on the CLI), the app saves `{prefix}_Crew Inventory.html` next to the `.xlsx` file. Double-click to open in Chrome, Edge, Firefox, etc.
+When **Also generate HTML report** is checked (or **`--also-html`** on the CLI), the app saves `{prefix}_Team Inventory.html` next to the `.xlsx` file. Double-click to open in Chrome, Edge, Firefox, etc.
 
 - Same tabs as Excel (omitted when empty, same rules as the workbook)
 - **Search**, **sort** (click column headers), **Character** and **Expansion** filters on table tabs
@@ -187,7 +189,7 @@ From the `Inventory Parser` folder:
 
 ```powershell
 py -3 -m pip install -e .
-py -3 -m inventory_parser --folder "D:\EQ Dumps" -o "D:\EQ Dumps\Crew Inventory.xlsx"
+py -3 -m inventory_parser --folder "D:\EQ Dumps" -o "D:\EQ Dumps\Team Inventory.xlsx"
 ```
 
 Skip the spell tabs:
@@ -220,9 +222,13 @@ py -3 -m inventory_parser --folder Examples -o out.xlsx --slots visible
 
 Run **`build_exe.bat`** inside the **`Inventory Parser`** folder (not another project’s batch file).
 
+The batch file runs `pip install -e .` (installs **openpyxl** and **Pillow**) and PyInstaller. Pillow is required for the GUI’s anti-aliased pill buttons and is bundled into the executable.
+
 Output: `Inventory Parser\dist\InventoryParser-<version>.exe`
 
 Copy that `.exe` to any Windows PC; Python does not need to be installed there.
+
+**Before rebuilding:** close any running `InventoryParser-*.exe`. If the old exe is still open, PyInstaller may fail with “Access is denied” when writing to `dist\`.
 
 ### Code signing (optional, recommended for release builds)
 
@@ -254,6 +260,8 @@ py -3 scripts\sign_exe.py dist\InventoryParser-1.7.5.exe
 | Problem | What to do |
 |---------|------------|
 | “Add at least one *-Inventory.txt” | Spell files alone are not enough — add inventory dumps. |
+| `ModuleNotFoundError: No module named 'PIL'` when running from source | Run `py -3 -m pip install -e .` in the project folder (installs Pillow). |
+| Build fails with “Access is denied” on the exe | Close any running `InventoryParser-*.exe`, then run **`build_exe.bat`** again. |
 | Spell tabs empty | Confirm spell file names match `Name_server-CLASS-MissingSpells.txt` and character names match inventory files. |
 | Achievement tabs empty | Confirm achievement file names match `Name_server-Achievements.txt` and character/server match inventory files. |
 | Checkbox for spells is grayed out | No inventory files in the list yet. |

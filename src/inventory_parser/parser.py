@@ -130,9 +130,9 @@ def extract_equipped_items(
     data: InventoryData,
 ) -> tuple[dict[str, InventoryItem], set[str]]:
     """
-    Map normalized crew slots (e.g. ``Ear-1``) to the equipped item in that slot.
+    Map normalized team slots (e.g. ``Ear-1``) to the equipped item in that slot.
 
-    Returns equipped items and crew slot keys marked as Evolvers (dump has the
+    Returns equipped items and team slot keys marked as Evolvers (dump has the
     final augment row for that slot, e.g. ``Ear-Slot6``, ``Primary-Slot5``).
     """
     from inventory_parser.evolver import (

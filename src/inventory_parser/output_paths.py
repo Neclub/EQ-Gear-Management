@@ -1,11 +1,11 @@
-"""Default crew inventory export file names."""
+"""Default team inventory export file names."""
 
 from __future__ import annotations
 
 from pathlib import Path
 from typing import Iterable
 
-from inventory_parser.crew_report import CrewGearReport
+from inventory_parser.team_report import TeamGearReport
 from inventory_parser.eq_servers import server_display_name, server_slug_from_eqlog_filename
 from inventory_parser.missing_spells import (
     is_inventory_file,
@@ -14,37 +14,38 @@ from inventory_parser.missing_spells import (
 )
 from inventory_parser.parser import parse_character_from_filename
 
-CREW_INVENTORY_BASENAME = "Crew Inventory"
-CREW_INVENTORY_SUFFIX = ".xlsx"
-CREW_INVENTORY_HTML_SUFFIX = ".html"
+TEAM_INVENTORY_BASENAME = "Team Inventory"
+LEGACY_CREW_INVENTORY_BASENAME = "Crew Inventory"
+TEAM_INVENTORY_SUFFIX = ".xlsx"
+TEAM_INVENTORY_HTML_SUFFIX = ".html"
 
 
-def crew_inventory_filename(prefix: str | None = None) -> str:
-    """Return export workbook filename, e.g. ``Deflub_Crew Inventory.xlsx``."""
+def team_inventory_filename(prefix: str | None = None) -> str:
+    """Return export workbook filename, e.g. ``Deflub_Team Inventory.xlsx``."""
     if prefix:
-        return f"{prefix}_{CREW_INVENTORY_BASENAME}{CREW_INVENTORY_SUFFIX}"
-    return f"{CREW_INVENTORY_BASENAME}{CREW_INVENTORY_SUFFIX}"
+        return f"{prefix}_{TEAM_INVENTORY_BASENAME}{TEAM_INVENTORY_SUFFIX}"
+    return f"{TEAM_INVENTORY_BASENAME}{TEAM_INVENTORY_SUFFIX}"
 
 
-def crew_inventory_html_filename(prefix: str | None = None) -> str:
-    """Return export HTML filename, e.g. ``Deflub_Crew Inventory.html``."""
+def team_inventory_html_filename(prefix: str | None = None) -> str:
+    """Return export HTML filename, e.g. ``Deflub_Team Inventory.html``."""
     if prefix:
-        return f"{prefix}_{CREW_INVENTORY_BASENAME}{CREW_INVENTORY_HTML_SUFFIX}"
-    return f"{CREW_INVENTORY_BASENAME}{CREW_INVENTORY_HTML_SUFFIX}"
+        return f"{prefix}_{TEAM_INVENTORY_BASENAME}{TEAM_INVENTORY_HTML_SUFFIX}"
+    return f"{TEAM_INVENTORY_BASENAME}{TEAM_INVENTORY_HTML_SUFFIX}"
 
 
-def crew_inventory_path(directory: Path, prefix: str | None = None) -> Path:
-    return directory / crew_inventory_filename(prefix)
+def team_inventory_path(directory: Path, prefix: str | None = None) -> Path:
+    return directory / team_inventory_filename(prefix)
 
 
-def crew_inventory_html_path(directory: Path, prefix: str | None = None) -> Path:
-    return directory / crew_inventory_html_filename(prefix)
+def team_inventory_html_path(directory: Path, prefix: str | None = None) -> Path:
+    return directory / team_inventory_html_filename(prefix)
 
 
 def html_path_for_workbook(workbook_path: Path | str) -> Path:
     """Sibling HTML path for an Excel export (same stem, ``.html`` extension)."""
     path = Path(workbook_path)
-    return path.with_suffix(CREW_INVENTORY_HTML_SUFFIX)
+    return path.with_suffix(TEAM_INVENTORY_HTML_SUFFIX)
 
 
 def _server_slug_from_path(path: Path) -> str | None:
@@ -95,7 +96,7 @@ def server_slug_from_inventory_paths(paths: Iterable[Path | str]) -> str | None:
     return server_slug_from_input_paths(paths)
 
 
-def server_slug_from_report(report: CrewGearReport) -> str | None:
+def server_slug_from_report(report: TeamGearReport) -> str | None:
     servers = {c.server for c in report.characters if c.server}
     if len(servers) == 1:
         return next(iter(servers))
@@ -128,7 +129,7 @@ def default_export_prefix_from_input_paths(paths: Iterable[Path | str]) -> str |
     return server_display_name(slug) if slug else None
 
 
-def default_export_prefix_from_report(report: CrewGearReport) -> str | None:
+def default_export_prefix_from_report(report: TeamGearReport) -> str | None:
     """Like :func:`default_export_prefix_from_input_paths`, but from a built report."""
     characters = {c.character for c in report.characters if c.character}
     if len(characters) == 1:
@@ -137,9 +138,10 @@ def default_export_prefix_from_report(report: CrewGearReport) -> str | None:
     return server_display_name(slug) if slug else None
 
 
-def is_auto_crew_inventory_path(path: str | Path) -> bool:
+def is_auto_team_inventory_path(path: str | Path) -> bool:
     """True when the path looks like an app-generated default export name."""
     stem = Path(path).stem
-    if stem == CREW_INVENTORY_BASENAME:
-        return True
-    return stem.endswith(f"_{CREW_INVENTORY_BASENAME}")
+    for basename in (TEAM_INVENTORY_BASENAME, LEGACY_CREW_INVENTORY_BASENAME):
+        if stem == basename or stem.endswith(f"_{basename}"):
+            return True
+    return False

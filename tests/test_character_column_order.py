@@ -8,7 +8,7 @@ from inventory_parser.character_column_order import (
     save_character_column_order,
     saved_character_column_order,
 )
-from inventory_parser.crew_report import build_crew_report
+from inventory_parser.team_report import build_team_report
 from inventory_parser.export_bundle import build_export_bundle
 from inventory_parser.missing_spells import split_input_paths
 
@@ -34,10 +34,10 @@ def test_order_roster_entries_uses_saved_order() -> None:
     assert [entry.display_name for entry in ordered] == list(reversed(names))
 
 
-def test_apply_character_column_order_reorders_crew_report() -> None:
+def test_apply_character_column_order_reorders_team_report() -> None:
     paths = [Path(p) for p in _example_paths()]
     inventory_paths, spell_paths, _ = split_input_paths(paths)
-    report = build_crew_report(inventory_paths, spell_paths=spell_paths or None)
+    report = build_team_report(inventory_paths, spell_paths=spell_paths or None)
     original = [character.display_name for character in report.characters]
     custom_order = [character.persona_key for character in reversed(report.characters)]
     apply_character_column_order(report, custom_order)
@@ -47,10 +47,10 @@ def test_apply_character_column_order_reorders_crew_report() -> None:
 def test_build_export_bundle_honors_character_column_order() -> None:
     paths = [Path(p) for p in _example_paths()]
     inventory_paths, spell_paths, _ = split_input_paths(paths)
-    base = build_crew_report(inventory_paths, spell_paths=spell_paths or None)
+    base = build_team_report(inventory_paths, spell_paths=spell_paths or None)
     custom_order = [character.persona_key for character in reversed(base.characters)]
     bundle = build_export_bundle(paths, character_column_order=custom_order)
-    assert [character.persona_key for character in bundle.crew.characters] == custom_order
+    assert [character.persona_key for character in bundle.team.characters] == custom_order
     if bundle.spell_report is not None:
         spell_keys = bundle.spell_report.persona_keys
         assert spell_keys == [key for key in custom_order if key in spell_keys]

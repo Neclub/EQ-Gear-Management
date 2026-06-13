@@ -6,7 +6,7 @@ from inventory_parser.parser import (
     parse_inventory_filename,
     parse_inventory_file,
 )
-from inventory_parser.slots import CREW_GEAR_SLOTS
+from inventory_parser.slots import TEAM_GEAR_SLOTS
 
 EXAMPLES = Path(__file__).resolve().parents[1] / "Examples"
 
@@ -33,10 +33,10 @@ def test_extract_equipped_deflub_arms() -> None:
     assert "Ear-1" not in evolver_keys
 
 
-def test_crew_slots_subset_of_output_slots() -> None:
+def test_team_slots_subset_of_output_slots() -> None:
     data = parse_inventory_file(EXAMPLES / "Monklub_bristle-Inventory.txt")
     assert data is not None
     equipped, _evolver_keys = extract_equipped_items(data)
-    for slot in CREW_GEAR_SLOTS:
+    for slot in TEAM_GEAR_SLOTS:
         if slot in equipped:
             assert equipped[slot].name != "Empty"

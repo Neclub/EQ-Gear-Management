@@ -1,6 +1,6 @@
 **Inventory Parser — Quick Guide**
 
-Turn EQ inventory dumps into one Excel crew workbook (gear, tier levels, optional missing rune tracking, optional achievement collection progress). Optionally generate an interactive HTML report in the same folder.
+Turn EQ inventory dumps into one Excel team workbook (gear, tier levels, optional missing rune tracking, optional achievement collection progress). Optionally generate an interactive HTML report in the same folder.
 
 ---
 
@@ -26,12 +26,12 @@ Tip: put achievement files in an `AchievementData` subfolder — same pattern.
 ---
 
 **Using the app (EXE)**
-1. Double-click **`InventoryParser.exe`**
+1. Double-click **`InventoryParser-<version>.exe`** (from `dist\` after building, or wherever you copied it)
 2. Click **Add folder…** and pick your dump folder
    • Check the characters you want
    • Use the **Server** dropdown to filter (e.g. Xegony)
    • Click **Add selected**
-3. **Crew characters (column order)** — the list shows toon names, not file paths
+3. **Team characters (column order)** — the list shows toon names, not file paths
    • **Move up** / **Move down** to put your main or tank in the first column
    • Order is remembered for next time
 4. (Optional) Leave **Include missing spells** checked for rune tabs
@@ -39,13 +39,13 @@ Tip: put achievement files in an `AchievementData` subfolder — same pattern.
 6. (Optional) Check **Also generate HTML report** for a browser-viewable `.html` file next to the Excel workbook
 7. Click **Generate Excel**
 
-Default save location: `Downloads\{Server}_Crew Inventory.xlsx`
+Default save location: `Downloads\{Server}_Team Inventory.xlsx`
 Use **Browse…** to pick a different path if you want.
 
 ---
 
 **What you get**
-• **Crew gear** — who is wearing what (color-coded by gear set)
+• **Team gear** — who is wearing what (color-coded by gear set)
 • **Gear T-Level** — tier codes per slot (`SOR-R2`, `TOB-R2`, etc.)
 • **Unmade Gear** — craft mats and T1 containers in General bags that still upgrade a slot
 • **Missing Runes / Spell List** — missing Rk. III runes (121–125 & 126–130)
@@ -54,7 +54,7 @@ Use **Browse…** to pick a different path if you want.
 
 Item names link to EQ Resource when the dump has item IDs.
 
-**HTML report (optional)** — same data in a single `.html` file you open in a browser; tabs, search, sort, and expansion filters built in. Saved as `{Server}_Crew Inventory.html` beside the Excel file.
+**HTML report (optional)** — same data in a single `.html` file you open in a browser; tabs, search, sort, and expansion filters built in. Saved as `{Server}_Team Inventory.html` beside the Excel file.
 
 ---
 
