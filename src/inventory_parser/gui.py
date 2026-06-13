@@ -6,6 +6,8 @@ import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
+from PIL import Image, ImageTk
+
 from inventory_parser import __version__
 from inventory_parser.character_column_order import (
     ColumnRosterEntry,
@@ -36,8 +38,28 @@ from inventory_parser.output_paths import (
     default_export_prefix_from_input_paths,
     is_auto_team_inventory_path,
 )
-from inventory_parser.pill_button import PillButton
+from inventory_parser.package_data import asset_path
+from inventory_parser.pill_button import ChipToggle, PillButton
 from inventory_parser.slots import NON_VISIBLE_SLOTS, VISIBLE_SLOTS, SlotFilter
+from inventory_parser.window_chrome import bind_dark_title_bar
+from inventory_parser.gui_theme import (
+    ACCENT as _ACCENT,
+    ACCENT_EXCEL as _ACCENT_EXCEL,
+    ACCENT_FILES as _ACCENT_FILES,
+    ACCENT_OUTPUT as _ACCENT_OUTPUT,
+    ACCENT_SLOTS as _ACCENT_SLOTS,
+    BADGE_BG as _BADGE_BG,
+    BG as _BG,
+    BG_INPUT as _BG_INPUT,
+    BG_PANEL as _BG_PANEL,
+    BG_RECESSED as _BG_RECESSED,
+    FG as _FG,
+    FG_MUTED as _FG_MUTED,
+    INPUT_BORDER as _INPUT_BORDER,
+    PANEL_BORDER as _PANEL_BORDER,
+    SCROLL_THUMB as _SCROLL_THUMB,
+    SCROLL_THUMB_ACTIVE as _SCROLL_THUMB_ACTIVE,
+)
 
 _FILE_TYPES = [
     ("Inventory, MissingSpells & Achievements", "*-Inventory.txt;*-MissingSpells.txt;*-Achievements.txt"),
@@ -57,25 +79,40 @@ def _default_output_path(prefix: str | None = None) -> Path:
     return team_inventory_path(_downloads_dir(), prefix)
 
 
-# Dark base
-_BG = "#121214"
-_BG_PANEL = "#1e1e24"
-_BG_INPUT = "#282830"
-_FG = "#e8eaef"
-_FG_MUTED = "#9ca3b4"
+_HEADER_ICON_PX = 44
+_TITLEBAR_ICON_PX = 16
 
-# Section accents (echo Excel gear tiers)
-_ACCENT_FILES = "#5b8fd9"
-_ACCENT_SLOTS = "#5cb8a8"
-_ACCENT_OUTPUT = "#c9a227"
-_ACCENT_EXCEL = "#3d9b5c"
 
-# Card label colors per section
-_CARD_STYLES: dict[str, tuple[str, str]] = {
-    "files": ("Files.TLabelframe", _ACCENT_FILES),
-    "slots": ("Slots.TLabelframe", _ACCENT_SLOTS),
-    "output": ("Output.TLabelframe", _ACCENT_OUTPUT),
-}
+def _scaled_icon_photo(root: tk.Misc, image: Image.Image, px: int) -> ImageTk.PhotoImage:
+    w, h = image.size
+    scale = px / max(w, h)
+    resized = image.resize((max(1, int(w * scale)), max(1, int(h * scale))), Image.Resampling.LANCZOS)
+    return ImageTk.PhotoImage(resized, master=root)
+
+
+def _apply_app_icon(root: tk.Tk) -> tk.PhotoImage | None:
+    """Set window/taskbar icon and return a larger image for the header row."""
+    icon_file = asset_path("eq-icon.png")
+    if not icon_file.is_file():
+        return None
+    try:
+        base = Image.open(icon_file).convert("RGBA")
+    except OSError:
+        return None
+
+    refs: list[ImageTk.PhotoImage] = []
+    try:
+        titlebar = _scaled_icon_photo(root, base, _TITLEBAR_ICON_PX)
+        refs.append(titlebar)
+        root.iconphoto(True, titlebar)
+    except tk.TclError:
+        pass
+
+    header = _scaled_icon_photo(root, base, _HEADER_ICON_PX)
+    refs.append(header)
+    root._app_icon_refs = refs  # type: ignore[attr-defined]
+    base.close()
+    return header
 
 
 def _apply_theme(root: tk.Tk, style: ttk.Style) -> None:
@@ -88,35 +125,38 @@ def _apply_theme(root: tk.Tk, style: ttk.Style) -> None:
     style.configure(".", background=_BG, foreground=_FG, font=("Segoe UI", 10))
     style.configure("TFrame", background=_BG)
     style.configure("TLabel", background=_BG, foreground=_FG)
-    style.configure("Title.TLabel", background=_BG, foreground=_ACCENT_FILES, font=("Segoe UI", 18, "bold"))
     style.configure("Muted.TLabel", background=_BG, foreground=_FG_MUTED)
-    style.configure("Panel.TLabel", background=_BG_PANEL, foreground=_FG_MUTED)
-    style.configure("Status.TLabel", background=_BG_PANEL, foreground=_ACCENT_SLOTS)
-    style.configure("StatusOk.TLabel", background=_BG_PANEL, foreground=_ACCENT_EXCEL)
-
-    for name, accent in _CARD_STYLES.values():
-        style.configure(name, background=_BG_PANEL, bordercolor=accent)
-        style.configure(f"{name}.Label", background=_BG_PANEL, foreground=accent, font=("Segoe UI", 10, "bold"))
-
-    style.configure("TEntry", fieldbackground=_BG_INPUT, foreground=_FG, bordercolor="#454550")
-    style.configure("TCombobox", fieldbackground=_BG_INPUT, foreground=_FG, bordercolor="#454550")
-    style.map("TCombobox", fieldbackground=[("readonly", _BG_INPUT)])
+    style.configure("Panel.TLabel", background=_BG_PANEL, foreground=_FG_MUTED, font=("Segoe UI", 9))
+    style.configure("Status.TLabel", background=_BG, foreground=_FG_MUTED)
+    style.configure("StatusOk.TLabel", background=_BG, foreground=_ACCENT_EXCEL)
 
     style.configure(
-        "Panel.TCheckbutton",
-        background=_BG_PANEL,
+        "TEntry",
+        fieldbackground=_BG_RECESSED,
         foreground=_FG,
-        focuscolor=_ACCENT_SLOTS,
-        padding=(2, 4),
+        bordercolor=_INPUT_BORDER,
+    )
+    style.configure(
+        "TCombobox",
+        fieldbackground=_BG_RECESSED,
+        foreground=_FG,
+        bordercolor=_INPUT_BORDER,
+    )
+    style.map("TCombobox", fieldbackground=[("readonly", _BG_RECESSED)])
+
+    style.configure(
+        "Main.Vertical.TScrollbar",
+        background=_SCROLL_THUMB,
+        troughcolor=_BG_RECESSED,
+        bordercolor=_BG_RECESSED,
+        arrowcolor=_FG,
+        darkcolor=_PANEL_BORDER,
+        lightcolor=_SCROLL_THUMB,
     )
     style.map(
-        "Panel.TCheckbutton",
-        background=[("active", "#2a2a32")],
-        foreground=[
-            ("active", _ACCENT_SLOTS),
-            ("!disabled", _FG),
-            ("disabled", _FG_MUTED),
-        ],
+        "Main.Vertical.TScrollbar",
+        background=[("active", _SCROLL_THUMB_ACTIVE)],
+        arrowcolor=[("active", "#ffffff")],
     )
 
     _apply_picker_theme(style)
@@ -126,21 +166,21 @@ def _apply_picker_theme(style: ttk.Style) -> None:
     """Styles for the folder character picker dialog."""
     style.configure(
         "Picker.TCombobox",
-        fieldbackground=_BG_INPUT,
+        fieldbackground=_BG_RECESSED,
         foreground=_FG,
-        background="#454550",
+        background=_SCROLL_THUMB,
         bordercolor=_ACCENT_FILES,
-        lightcolor="#606070",
-        darkcolor="#35353d",
+        lightcolor=_SCROLL_THUMB,
+        darkcolor=_PANEL_BORDER,
         arrowsize=16,
         arrowcolor=_FG,
         padding=(8, 6),
     )
     style.map(
         "Picker.TCombobox",
-        fieldbackground=[("readonly", _BG_INPUT), ("disabled", _BG_PANEL)],
+        fieldbackground=[("readonly", _BG_RECESSED), ("disabled", _BG_PANEL)],
         foreground=[("readonly", _FG), ("disabled", _FG_MUTED)],
-        background=[("readonly", "#454550"), ("active", "#5a5a68")],
+        background=[("readonly", _SCROLL_THUMB), ("active", _SCROLL_THUMB_ACTIVE)],
         arrowcolor=[("readonly", _FG), ("active", "#ffffff"), ("disabled", _FG_MUTED)],
         bordercolor=[("focus", _ACCENT_FILES), ("readonly", _ACCENT_FILES)],
     )
@@ -158,30 +198,30 @@ def _apply_picker_theme(style: ttk.Style) -> None:
     )
     style.configure(
         "Picker.Horizontal.TScrollbar",
-        background="#454550",
-        troughcolor=_BG_INPUT,
-        bordercolor=_BG_INPUT,
+        background=_SCROLL_THUMB,
+        troughcolor=_BG_RECESSED,
+        bordercolor=_BG_RECESSED,
         arrowcolor=_FG,
-        darkcolor="#35353d",
-        lightcolor="#606070",
+        darkcolor=_PANEL_BORDER,
+        lightcolor=_SCROLL_THUMB,
     )
     style.map(
         "Picker.Horizontal.TScrollbar",
-        background=[("active", "#5a5a68")],
+        background=[("active", _SCROLL_THUMB_ACTIVE)],
         arrowcolor=[("active", "#ffffff")],
     )
     style.configure(
         "Picker.Vertical.TScrollbar",
-        background="#454550",
-        troughcolor=_BG_INPUT,
-        bordercolor=_BG_INPUT,
+        background=_SCROLL_THUMB,
+        troughcolor=_BG_RECESSED,
+        bordercolor=_BG_RECESSED,
         arrowcolor=_FG,
-        darkcolor="#35353d",
-        lightcolor="#606070",
+        darkcolor=_PANEL_BORDER,
+        lightcolor=_SCROLL_THUMB,
     )
     style.map(
         "Picker.Vertical.TScrollbar",
-        background=[("active", "#5a5a68")],
+        background=[("active", _SCROLL_THUMB_ACTIVE)],
         arrowcolor=[("active", "#ffffff")],
     )
     style.configure(
@@ -573,42 +613,53 @@ def _show_about(parent: tk.Tk) -> None:
     )
 
 
-def _build_help_menu(root: tk.Tk) -> None:
-    menubar = tk.Menu(root)
-    help_menu = tk.Menu(menubar, tearoff=0)
-    help_menu.add_command(
+def _popup_help_menu(root: tk.Tk, anchor: tk.Widget) -> None:
+    menu = tk.Menu(root, tearoff=0)
+    menu.add_command(
         label="Gear tier colors…",
         command=lambda: _show_gear_tiers_help(root),
     )
-    help_menu.add_separator()
-    help_menu.add_command(
+    menu.add_separator()
+    menu.add_command(
         label=f"About Inventory Parser {__version__}…",
         command=lambda: _show_about(root),
     )
-    menubar.add_cascade(label="Help", menu=help_menu)
-    root.config(menu=menubar)
+    try:
+        menu.tk_popup(anchor.winfo_rootx(), anchor.winfo_rooty() + anchor.winfo_height())
+    finally:
+        menu.grab_release()
 
 
-def _accent_card(parent: ttk.Frame, title: str, card_key: str, **grid_kw) -> ttk.LabelFrame:
-    frame_style, stripe_color = _CARD_STYLES[card_key]
-    wrap = tk.Frame(parent, bg=stripe_color, padx=2, pady=2)
+def _panel_card(parent: ttk.Frame, title: str, **grid_kw) -> tk.Frame:
+    """Subtle bordered panel with section title."""
+    wrap = tk.Frame(parent, bg=_PANEL_BORDER, padx=1, pady=1)
     wrap.grid(**grid_kw)
-    inner = ttk.Frame(wrap)
+    inner = tk.Frame(wrap, bg=_BG_PANEL)
     inner.pack(fill=tk.BOTH, expand=True)
-    lf = ttk.LabelFrame(inner, text=f" {title} ", style=frame_style, padding=10)
-    lf.pack(fill=tk.BOTH, expand=True)
-    return lf
+    title_bar = tk.Frame(inner, bg=_BG_PANEL)
+    title_bar.pack(fill=tk.X, padx=12, pady=(10, 4))
+    tk.Label(
+        title_bar,
+        text=title,
+        bg=_BG_PANEL,
+        fg=_ACCENT,
+        font=("Segoe UI", 10, "bold"),
+    ).pack(anchor="w")
+    body = tk.Frame(inner, bg=_BG_PANEL)
+    body.pack(fill=tk.BOTH, expand=True, padx=12, pady=(0, 12))
+    return body
 
 
 def main() -> None:
     root = tk.Tk()
-    root.title(f"Inventory Parser {__version__}")
+    root.title(f"Inventory Parser v{__version__}")
     root.minsize(680, 520)
     root.geometry("820x640")
 
     style = ttk.Style(root)
     _apply_theme(root, style)
-    _build_help_menu(root)
+    bind_dark_title_bar(root, background=_BG, foreground=_FG)
+    header_icon = _apply_app_icon(root)
 
     pad = {"padx": 12, "pady": 8}
     file_list: list[str] = []
@@ -624,46 +675,87 @@ def main() -> None:
             output_var.set(str(_default_output_path(prefix)))
     include_spells_var = tk.BooleanVar(value=False)
     include_achievements_var = tk.BooleanVar(value=False)
-    also_html_var = tk.BooleanVar(value=False)
-    spells_cb_ref: list[ttk.Checkbutton] = []
-    achievements_cb_ref: list[ttk.Checkbutton] = []
+    also_html_var = tk.BooleanVar(value=True)
+    spells_cb_ref: list[ChipToggle] = []
+    achievements_cb_ref: list[ChipToggle] = []
     status_var = tk.StringVar(value="Add inventory dump files to begin.")
 
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
 
-    frm = ttk.Frame(root, padding=16)
+    frm = ttk.Frame(root, padding=(16, 10, 16, 16))
     frm.grid(row=0, column=0, sticky="nsew")
     frm.columnconfigure(0, weight=1)
     frm.rowconfigure(1, weight=1)
 
-    header = ttk.Frame(frm)
-    header.grid(row=0, column=0, sticky="ew", pady=(0, 4))
-    ttk.Label(header, text=f"Inventory Parser {__version__}", style="Title.TLabel").pack(anchor="w")
+    header = tk.Frame(frm, bg=_BG)
+    header.grid(row=0, column=0, sticky="ew", pady=(0, 10))
+    header.columnconfigure(0, weight=1)
+
+    header_top = tk.Frame(header, bg=_BG)
+    header_top.grid(row=0, column=0, sticky="ew")
+    header_top.columnconfigure(0, weight=1)
+
+    title_row = tk.Frame(header_top, bg=_BG)
+    title_row.grid(row=0, column=0, sticky="w")
+    if header_icon is not None:
+        tk.Label(title_row, image=header_icon, bg=_BG).pack(side=tk.LEFT, padx=(0, 12))
+    else:
+        tk.Label(
+            title_row,
+            text="EQ",
+            bg=_BG_INPUT,
+            fg=_ACCENT,
+            font=("Segoe UI", 9, "bold"),
+            padx=8,
+            pady=3,
+        ).pack(side=tk.LEFT, padx=(0, 12))
+    tk.Label(
+        title_row,
+        text="Inventory Parser",
+        bg=_BG,
+        fg=_FG,
+        font=("Segoe UI", 15, "bold"),
+    ).pack(side=tk.LEFT)
+    tk.Label(
+        title_row,
+        text=f"v{__version__}",
+        bg=_BADGE_BG,
+        fg=_FG_MUTED,
+        font=("Segoe UI", 8),
+        padx=7,
+        pady=3,
+    ).pack(side=tk.LEFT, padx=(10, 0))
+
+    help_btn = tk.Label(
+        header_top,
+        text="Help",
+        bg=_BG,
+        fg=_FG_MUTED,
+        font=("Segoe UI", 9),
+        cursor="hand2",
+    )
+    help_btn.grid(row=0, column=1, sticky="e", padx=(8, 0))
+    help_btn.bind("<Button-1>", lambda _e: _popup_help_menu(root, help_btn))
+    help_btn.bind("<Enter>", lambda _e: help_btn.configure(fg=_FG))
+    help_btn.bind("<Leave>", lambda _e: help_btn.configure(fg=_FG_MUTED))
+
     ttk.Label(
         header,
         text="Team gear workbook · color-coded tiers · EQ Resource links",
         style="Muted.TLabel",
-    ).pack(anchor="w", pady=(2, 0))
+    ).grid(row=1, column=0, sticky="w", pady=(6, 0), padx=(56, 0))
 
-    files_outer = tk.Frame(frm, bg=_ACCENT_FILES, padx=2, pady=2)
-    files_outer.grid(row=1, column=0, sticky="nsew", **pad)
-    files_outer.columnconfigure(0, weight=1)
-    files_outer.rowconfigure(0, weight=1)
+    files_body = _panel_card(frm, "Team characters", row=1, column=0, sticky="nsew", **pad)
+    files_body.columnconfigure(0, weight=1)
+    files_body.rowconfigure(0, weight=1)
 
-    files_inner = ttk.Frame(files_outer)
-    files_inner.pack(fill=tk.BOTH, expand=True)
-    files_lf = ttk.LabelFrame(
-        files_inner,
-        text=" Team characters (column order) ",
-        style="Files.TLabelframe",
-        padding=10,
-    )
-    files_lf.pack(fill=tk.BOTH, expand=True)
-    files_lf.columnconfigure(0, weight=1)
-    files_lf.rowconfigure(0, weight=1)
+    list_shell = tk.Frame(files_body, bg=_PANEL_BORDER, padx=1, pady=1)
+    list_shell.grid(row=0, column=0, sticky="nsew")
+    list_shell.columnconfigure(0, weight=1)
+    list_shell.rowconfigure(0, weight=1)
 
-    lb_frame = ttk.Frame(files_lf)
+    lb_frame = tk.Frame(list_shell, bg=_BG_RECESSED)
     lb_frame.grid(row=0, column=0, sticky="nsew")
     lb_frame.columnconfigure(0, weight=1)
     lb_frame.rowconfigure(0, weight=1)
@@ -672,26 +764,25 @@ def main() -> None:
         lb_frame,
         selectmode=tk.EXTENDED,
         activestyle="none",
-        bg=_BG_INPUT,
+        bg=_BG_RECESSED,
         fg=_FG,
         selectbackground=_ACCENT_FILES,
         selectforeground="#ffffff",
         highlightthickness=1,
-        highlightbackground="#454550",
+        highlightbackground=_INPUT_BORDER,
         highlightcolor=_ACCENT_FILES,
         borderwidth=0,
         font=("Segoe UI", 10),
     )
     listbox.grid(row=0, column=0, sticky="nsew")
-    scroll = ttk.Scrollbar(lb_frame, orient=tk.VERTICAL, command=listbox.yview)
+    scroll = ttk.Scrollbar(
+        lb_frame,
+        orient=tk.VERTICAL,
+        command=listbox.yview,
+        style="Main.Vertical.TScrollbar",
+    )
     scroll.grid(row=0, column=1, sticky="ns")
     listbox.configure(yscrollcommand=scroll.set)
-
-    ttk.Label(
-        files_lf,
-        text="Top character = first column in Excel and HTML. Use Move up / Move down to prioritize.",
-        style="Muted.TLabel",
-    ).grid(row=2, column=0, sticky="w", pady=(8, 0))
 
     roster: list[ColumnRosterEntry] = []
 
@@ -732,7 +823,7 @@ def main() -> None:
         n = len(file_list)
         status_lbl.configure(style="Status.TLabel")
         if n == 0:
-            status_var.set("Add inventory, MissingSpells, or achievement files to begin.")
+            status_var.set("Add inventory dump files to begin.")
             return
         inv_paths, spell_paths, achievement_paths = _split_file_list()
         parts: list[str] = []
@@ -860,22 +951,43 @@ def main() -> None:
             rebuild_roster()
             _refresh_output_default()
 
-    btn_row = ttk.Frame(files_lf)
-    btn_row.grid(row=1, column=0, sticky="ew", pady=(10, 0))
-    add_files_btn = PillButton(btn_row, text="Add files…", variant="primary", command=browse_files)
-    add_files_btn.pack(side=tk.LEFT, padx=(0, 8))
-    add_folder_btn = PillButton(
-        btn_row, text="Add folder…", variant="secondary", command=browse_folder
+    btn_col = tk.Frame(files_body, bg=_BG_PANEL, width=132)
+    btn_col.grid(row=0, column=1, sticky="ns", padx=(12, 0))
+    btn_col.grid_propagate(False)
+
+    _btn_w = 124
+
+    add_files_btn = PillButton(
+        btn_col, text="Add files", variant="primary", command=browse_files, width=_btn_w
     )
-    add_folder_btn.pack(side=tk.LEFT, padx=(0, 8))
-    remove_btn = PillButton(btn_row, text="Remove selected", command=remove_selected)
-    remove_btn.pack(side=tk.LEFT, padx=(0, 8))
-    move_up_btn = PillButton(btn_row, text="Move up", command=lambda: move_selected(-1))
-    move_up_btn.pack(side=tk.LEFT, padx=(0, 8))
-    move_down_btn = PillButton(btn_row, text="Move down", command=lambda: move_selected(1))
-    move_down_btn.pack(side=tk.LEFT, padx=(0, 8))
-    clear_btn = PillButton(btn_row, text="Clear all", variant="danger", command=clear_all)
-    clear_btn.pack(side=tk.LEFT)
+    add_files_btn.pack(fill=tk.X, pady=(0, 6))
+    add_folder_btn = PillButton(
+        btn_col, text="Add folder", variant="secondary", command=browse_folder, width=_btn_w
+    )
+    add_folder_btn.pack(fill=tk.X, pady=(0, 10))
+
+    util_grid = tk.Frame(btn_col, bg=_BG_PANEL)
+    util_grid.pack(fill=tk.X)
+    util_grid.columnconfigure(0, weight=1)
+    util_grid.columnconfigure(1, weight=1)
+
+    _ghost_w = 58
+    move_up_btn = PillButton(
+        util_grid, text="Up", variant="ghost", command=lambda: move_selected(-1), width=_ghost_w
+    )
+    move_up_btn.grid(row=0, column=0, sticky="ew", padx=(0, 4), pady=(0, 4))
+    remove_btn = PillButton(
+        util_grid, text="Remove", variant="ghost", command=remove_selected, width=_ghost_w
+    )
+    remove_btn.grid(row=0, column=1, sticky="ew", pady=(0, 4))
+    move_down_btn = PillButton(
+        util_grid, text="Down", variant="ghost", command=lambda: move_selected(1), width=_ghost_w
+    )
+    move_down_btn.grid(row=1, column=0, sticky="ew", padx=(0, 4))
+    clear_btn = PillButton(
+        util_grid, text="Clear", variant="ghost", command=clear_all, width=_ghost_w
+    )
+    clear_btn.grid(row=1, column=1, sticky="ew")
     file_action_buttons = (
         add_files_btn,
         add_folder_btn,
@@ -886,56 +998,48 @@ def main() -> None:
     )
 
     options = ttk.Frame(frm)
-    options.grid(row=2, column=0, sticky="ew", pady=(4, 0))
+    options.grid(row=2, column=0, sticky="ew", pady=(8, 0))
+    options.columnconfigure(0, weight=1)
     options.columnconfigure(1, weight=1)
 
-    slots_lf = _accent_card(options, "Slots", "slots", row=0, column=0, sticky="nsw", padx=(0, 10))
-    ttk.Label(slots_lf, text="Include", style="Panel.TLabel").grid(row=0, column=0, sticky="w", padx=(0, 8))
+    slots_body = _panel_card(options, "Slots", row=0, column=0, sticky="nsew", padx=(0, 6))
+    slots_body.columnconfigure(0, weight=1)
     ttk.Combobox(
-        slots_lf,
+        slots_body,
         textvariable=slots_var,
         values=("all", "visible", "non_visible"),
         state="readonly",
-        width=16,
-    ).grid(row=0, column=1, sticky="w")
-    ttk.Label(
-        slots_lf,
-        text="Visible = model slots first in sheet",
-        style="Panel.TLabel",
-    ).grid(row=1, column=0, columnspan=2, sticky="w", pady=(6, 0))
+    ).grid(row=0, column=0, sticky="ew")
 
-    spells_cb = ttk.Checkbutton(
-        slots_lf,
-        text="Include missing spells (Rk. III runes)",
-        variable=include_spells_var,
+    chips_row = tk.Frame(slots_body, bg=_BG_PANEL)
+    chips_row.grid(row=1, column=0, sticky="w", pady=(10, 0))
+
+    spells_chip = ChipToggle(
+        chips_row,
+        "Spells",
+        include_spells_var,
+        icon="★",
         command=update_status,
-        style="Panel.TCheckbutton",
     )
-    spells_cb.grid(row=2, column=0, columnspan=2, sticky="w", pady=(8, 0))
-    spells_cb.configure(state=tk.DISABLED)
-    spells_cb_ref.append(spells_cb)
+    spells_chip.pack(side=tk.LEFT, padx=(0, 6))
+    spells_chip.configure(state=tk.DISABLED)
+    spells_cb_ref.append(spells_chip)
 
-    achievements_cb = ttk.Checkbutton(
-        slots_lf,
-        text="Include achievements (collections & summary)",
-        variable=include_achievements_var,
+    achievements_chip = ChipToggle(
+        chips_row,
+        "Achievements",
+        include_achievements_var,
+        icon="🏆",
         command=update_status,
-        style="Panel.TCheckbutton",
     )
-    achievements_cb.grid(row=3, column=0, columnspan=2, sticky="w", pady=(8, 0))
-    achievements_cb.configure(state=tk.DISABLED)
-    achievements_cb_ref.append(achievements_cb)
+    achievements_chip.pack(side=tk.LEFT, padx=(0, 6))
+    achievements_chip.configure(state=tk.DISABLED)
+    achievements_cb_ref.append(achievements_chip)
 
-    html_cb = ttk.Checkbutton(
-        slots_lf,
-        text="Also generate HTML report",
-        variable=also_html_var,
-        style="Panel.TCheckbutton",
-    )
-    html_cb.grid(row=4, column=0, columnspan=2, sticky="w", pady=(8, 0))
+    ChipToggle(chips_row, "HTML", also_html_var, icon="</>").pack(side=tk.LEFT)
 
-    out_lf = _accent_card(options, "Output", "output", row=0, column=1, sticky="ew")
-    out_lf.columnconfigure(1, weight=1)
+    out_body = _panel_card(options, "Output", row=0, column=1, sticky="nsew", padx=(6, 0))
+    out_body.columnconfigure(0, weight=1)
 
     def browse_output() -> None:
         p = filedialog.asksaveasfilename(
@@ -950,18 +1054,16 @@ def main() -> None:
         if p:
             output_var.set(p)
 
-    ttk.Label(out_lf, text="Excel file", style="Panel.TLabel").grid(
-        row=0, column=0, sticky="w", padx=(0, 8)
+    ttk.Label(out_body, text="Output Excel file", style="Panel.TLabel").grid(
+        row=0, column=0, columnspan=2, sticky="w", pady=(0, 6)
     )
-    ttk.Entry(out_lf, textvariable=output_var).grid(row=0, column=1, sticky="ew")
-    PillButton(out_lf, text="Browse…", variant="secondary", command=browse_output).grid(
-        row=0, column=2, padx=(8, 0)
+    ttk.Entry(out_body, textvariable=output_var).grid(row=1, column=0, sticky="ew")
+    PillButton(out_body, text="Browse…", variant="secondary", command=browse_output).grid(
+        row=1, column=1, padx=(8, 0)
     )
 
-    action_wrap = tk.Frame(frm, bg=_ACCENT_EXCEL, padx=0, pady=2)
-    action_wrap.grid(row=3, column=0, sticky="ew", pady=(12, 0))
-    action_bar = tk.Frame(action_wrap, bg=_BG_PANEL, padx=14, pady=12)
-    action_bar.pack(fill=tk.X)
+    action_bar = tk.Frame(frm, bg=_BG, padx=14, pady=12)
+    action_bar.grid(row=3, column=0, sticky="ew", pady=(12, 0))
     action_bar.columnconfigure(0, weight=1)
 
     status_lbl = ttk.Label(action_bar, textvariable=status_var, style="Status.TLabel")
@@ -1040,7 +1142,7 @@ def main() -> None:
 
     gen_btn = PillButton(
         action_bar,
-        text="  Generate Excel  ",
+        text="Generate Report",
         variant="accent",
         command=run_export,
     )

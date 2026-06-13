@@ -6,12 +6,41 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.12.0] - 2026-06-13
+
+### Changed
+
+- **HTML report redesign (sidebar navigator):** dark-themed browser report with a left **sidebar** (EQ logo, section icons, navigation), main content area (server title, search, filters), and footer **gear-tier legend** on Team Gear. Still a single self-contained `.html` file — no web server required.
+- **HTML navigation & filters:**
+  - **Character filter** chips directly under the section list (filters gear columns and table rows)
+  - **Visible slots** dropdown on gear tabs (replaces the old Visibility column)
+  - **Character** and **Expansion** dropdowns on table tabs (Spell List, Raid Achievements, Missing Collections, etc.)
+  - Sticky, compact **Slot** column; item names link to EQ Resource
+- **HTML export metadata:** report title (`{Server} Team Inventory`), character count, and embedded EQ icon.
+- Renamed Excel/HTML section label **Team gear** → **Team Gear** in the HTML export.
+
+### Added
+
+- Backup snapshot before HTML redesign: [`backup/pre-html-redesign/`](backup/pre-html-redesign/) (restore via [`RESTORE.md`](backup/pre-html-redesign/RESTORE.md)).
+
+## [1.11.0] - 2026-06-13
+
+### Changed
+
+- **GUI redesign (calm unified layout):** unified blue accent, subtle panel cards, **Team characters** list with side action buttons (Add files / Add folder, Remove, Up, Down, Clear), horizontal **Spells** / **Achievements** / **HTML** chip toggles, layered dark backgrounds (window, cards, recessed list/path fields), EQ app icon, dark Windows title bar, and **Help** link in the header.
+- **Generate Report** — primary action button renamed from **Generate Excel** (still writes the `.xlsx` workbook; HTML too when enabled).
+- **HTML export** is **on by default** in the GUI (**HTML** chip); uncheck to skip the browser report.
+- Shared GUI palette in [`gui_theme.py`](src/inventory_parser/gui_theme.py).
+
+## [1.10.0] - 2026-06-12
+
 ### Changed
 
 - **Crew → Team rename:** user-facing labels, default export filenames (`Team Inventory.xlsx`), Excel/HTML tab **Team gear**, GUI **Team characters (column order)**, and internal module names (`team_report.py`, `TeamGearReport`, etc.). Legacy `Crew Inventory` output paths are still recognized for auto-default save locations.
 - **GUI buttons** use anti-aliased **pill-shaped** controls (color-coded: blue primary actions, teal secondary, red destructive, green **Generate Excel**).
 - **Slots** checkboxes use teal hover text instead of bright white on mouseover.
 - **Dependencies:** [Pillow](https://pypi.org/project/Pillow/) (`>=10.0`) for smooth button rendering in the GUI (installed automatically with `pip install -e .` and bundled in the `.exe` build).
+- **Export memory:** parsed report data and large HTML/Excel intermediates are released after each generate; pill-button images are cleaned up on redraw.
 
 ### Fixed
 

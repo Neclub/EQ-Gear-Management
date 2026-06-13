@@ -31,36 +31,43 @@ Tip: put achievement files in an `AchievementData` subfolder — same pattern.
    • Check the characters you want
    • Use the **Server** dropdown to filter (e.g. Xegony)
    • Click **Add selected**
-3. **Team characters (column order)** — the list shows toon names, not file paths
-   • **Move up** / **Move down** to put your main or tank in the first column
+3. **Team characters** — the list shows toon names, not file paths
+   • **Up** / **Down** to put your main or tank in the first column
    • Order is remembered for next time
-4. (Optional) Leave **Include missing spells** checked for rune tabs
-5. (Optional) Leave **Include achievements** checked for collection/summary tabs
-6. (Optional) Check **Also generate HTML report** for a browser-viewable `.html` file next to the Excel workbook
-7. Click **Generate Excel**
+4. (Optional) Leave **Spells** checked for rune tabs (auto-enabled when spell files are present)
+5. (Optional) Leave **Achievements** checked for collection/summary tabs (auto-enabled when achievement files are present)
+6. (Optional) Leave **HTML** checked for a browser-viewable `.html` file next to the Excel workbook (on by default; uncheck to skip)
+7. Click **Generate Report**
 
 Default save location: `Downloads\{Server}_Team Inventory.xlsx`
 Use **Browse…** to pick a different path if you want.
 
 ---
 
-**What you get**
-• **Team gear** — who is wearing what (color-coded by gear set)
+**What you get (Excel)**
+• **Team Gear** — who is wearing what (color-coded by gear set)
 • **Gear T-Level** — tier codes per slot (`SOR-R2`, `TOB-R2`, etc.)
 • **Unmade Gear** — craft mats and T1 containers in General bags that still upgrade a slot
 • **Missing Runes / Spell List** — missing Rk. III runes (121–125 & 126–130)
   • Missing Rk. II at those levels counts too (shown as Rk. III in the report)
-• **Missing Collections / Achievement Summary** — incomplete collection items and per-section completion counts (when achievement dumps are included)
+• **Missing Collections / Achievement Summary / Raid Achievements** — when achievement dumps are included
 
 Item names link to EQ Resource when the dump has item IDs.
 
-**HTML report (optional)** — same data in a single `.html` file you open in a browser; tabs, search, sort, and expansion filters built in. Saved as `{Server}_Team Inventory.html` beside the Excel file.
+**HTML report (optional)** — same data in a single `.html` file beside the Excel workbook (`{Server}_Team Inventory.html`). Open in any browser; no server needed.
+
+• **Sidebar** — section icons (Team Gear, Gear T-Level, Missing Runes, Spell List, …)
+• **Character filter** chips under the nav — filter the whole report by toon
+• **Search**, **sort** (click headers), **Visible slots** on gear tabs
+• **Character** / **Expansion** dropdowns on table tabs (Spell List, Raid Achievements, etc.)
+• Gear colors and EQ Resource links match Excel
 
 ---
 
 **Quick tips**
 • You need at least one `*-Inventory.txt` — spell files alone aren't enough
-• First character in the list = first column in Excel and HTML (reorder with **Move up** / **Move down**)
+• First character in the list = first column in Excel and HTML (reorder with **Up** / **Down**)
 • Close the Excel file before exporting if save fails
-• **Help → Gear tiers & slots** in the app explains colors and slot layout
+• Regenerate the HTML after app updates to pick up layout changes
+• **Help** (top right) → gear tier colors and About
 • No Python install needed — just run the `.exe`

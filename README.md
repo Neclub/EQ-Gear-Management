@@ -1,6 +1,6 @@
 # Inventory Parser
 
-EverQuest tool that builds a **dark-themed Excel workbook** from team inventory dumps: equipped gear by slot, gear tier level tracking, and optional missing Rank III spell / rune reports.
+EverQuest tool that builds a **dark-themed Excel workbook** from team inventory dumps: equipped gear by slot, gear tier level tracking, and optional missing Rank III spell / rune and achievement reports. Optionally writes a matching **interactive HTML report** you open in any browser.
 
 **Version:** see `src/inventory_parser/__init__.py` (`__version__`). Check in the GUI (**Help → About**), CLI (`--version`), or `py -3 -m inventory_parser --version`.
 
@@ -14,11 +14,14 @@ EverQuest tool that builds a **dark-themed Excel workbook** from team inventory 
 |---------|-------------|
 | Multi-character export | One column per character (or persona) from `*-Inventory.txt` dumps |
 | Slot layout | Visible slots first, then non-visible; filter to all / visible / non-visible |
-| Gear set colors | Fracture, Rebellion, Evolver, etc. on **Team gear**; legend on-sheet and in GUI Help |
+| Gear set colors | Fracture, Rebellion, Evolver, etc. on **Team Gear**; legend on-sheet, in HTML footer, and in GUI Help |
 | EQ Resource links | Item names hyperlink using item IDs from dumps |
 | **Gear T-Level** | Expansion tier codes per slot (`SOR-R2`, `TOB-R2`, etc.); blank = empty; `Evolver` = Evolver item |
 | **Missing Runes** / **Spell List** | Optional tabs: rune count matrix and missing **Rk. III** spell list |
-| File picker | Accepts `*-Inventory.txt` and `*-MissingSpells.txt`; folder scan for both |
+| **Achievements** | Optional Missing Collections, Achievement Summary, and Raid Achievements tabs |
+| **Unmade Gear** | Craft mats and T1 containers in General bags that still upgrade a slot |
+| **HTML report** | Optional self-contained `{Server}_Team Inventory.html` — sidebar navigation, search, filters, sort (CLI: `--also-html`; GUI: **HTML** chip, on by default) |
+| File picker | Accepts inventory, spell, and achievement dumps; folder scan |
 
 ## Requirements
 
@@ -73,7 +76,7 @@ At least one inventory file is required to generate a workbook.
 
 Default output name: **`{Server}_Team Inventory.xlsx`** (e.g. `Bristlebane_Team Inventory.xlsx` from the `bristle` slug in `*_bristle-Inventory.txt`, `*-MissingSpells.txt`, or `eqlog_*_bristle.txt`; GUI defaults to Downloads).
 
-### Team gear
+### Team Gear
 
 - Rows = equipped slots (sorted visible → non-visible)  
 - Columns = characters  
@@ -83,14 +86,14 @@ Default output name: **`{Server}_Team Inventory.xlsx`** (e.g. `Bristlebane_Team 
 
 ### Gear T-Level
 
-- Same slot layout as Team gear (Secondary row omitted unless someone had secondary equipped)  
+- Same slot layout as Team Gear (Secondary row omitted unless someone had secondary equipped)  
 - Cells show **tier codes** for equipped gear, e.g. `SOR-R2`, `TOB-R2`, `LS-G1`, `SOR-R1`  
 - Blank = empty slot; `Evolver` = Evolver item; `???` = unrecognized gear  
 - Legend on the Gear T-Level sheet lists all tier codes
 
 ### Missing Runes & Spell List
 
-Included when spell files are found and **Include missing spells** is enabled (GUI) or `--no-spells` is not passed (CLI).
+Included when spell files are found and the **Spells** chip is enabled (GUI) or `--no-spells` is not passed (CLI).
 
 - **Missing Runes:** rune counts (Minor → Glowing) per character for each enabled level band  
 - **Spell List:** Character, Levels, Level, Rune, Spell — zebra striping by character, tier/block colors, frozen header, auto-filter  
@@ -112,9 +115,23 @@ Official spell lists (Rank 1 vendors, Rank 2/3 turn-in items) on EQ Resource:
 - [The Outer Brood (ToB)](https://tob.eqresource.com/spells.php) — levels 121–125  
 - [Laurion's Song (LS)](https://ls.eqresource.com/spells.php) — levels 121–125  
 
+### HTML report *(optional)*
+
+When the **HTML** chip is enabled (GUI default) or **`--also-html`** is passed (CLI), the app writes `{prefix}_Team Inventory.html` beside the `.xlsx` file. Open it in Chrome, Edge, Firefox, etc. — no Python or web server required.
+
+| Area | What you get |
+|------|----------------|
+| **Sidebar** | EQ logo, section list with icons (Team Gear, Gear T-Level, Missing Runes, Spell List, Unmade Gear, achievements…), **Character filter** chips below the nav |
+| **Main header** | `{Server} Team Inventory`, character count, generation date |
+| **Toolbar** | Search; **Visible slots** on gear tabs; **Character** / **Expansion** dropdowns on table tabs |
+| **Gear tables** | Color-coded cells, sticky Slot column, EQ Resource links |
+| **Footer** | Gear-tier color legend (Team Gear tab) |
+
+Same sections as Excel — omitted when empty, using the same rules as the workbook.
+
 ## GUI
 
-Dark-themed window with color-coded sections (**Files**, **Slots**, **Output**) and **pill-shaped** action buttons.
+Unified **dark-themed** window: **Team characters** roster, **Slots** / **Output** cards, pill-shaped buttons, and chip toggles for export options.
 
 ```powershell
 cd "Inventory Parser"
@@ -129,11 +146,11 @@ py -3 -m inventory_parser.gui
 
 Or after install: `inventory-parser-gui`
 
-1. **Add files…** / **Add folder…** — inventory and/or MissingSpells files  
-2. **Include** slot filter; **Include missing spells** when spell data exists  
-3. Set output path → **Generate Excel**  
+1. **Add files** / **Add folder** — inventory and/or MissingSpells / achievement files  
+2. **Slots** filter; **Spells**, **Achievements**, and **HTML** chips (HTML on by default)  
+3. Set output path → **Generate Report**  
 
-Button colors: **Add files…** (blue), **Add folder…** / **Browse…** (teal), **Clear all** (red), **Generate Excel** (green). **Help → Gear tiers & slots** explains colors and visible vs non-visible slots.
+Primary **Generate Report** (green) builds the Excel workbook and, when **HTML** is checked, a matching `.html` file. **Add files** (blue), **Add folder** (teal), utility buttons (ghost), **Browse…** (teal). **Help** (header) → gear tier colors and About. EQ icon in the title bar and header.
 
 ## Command line
 
@@ -141,15 +158,18 @@ Button colors: **Add files…** (blue), **Add folder…** / **Browse…** (teal)
 py -3 -m inventory_parser --folder Examples -o "Examples/Team Inventory.xlsx"
 py -3 -m inventory_parser Examples\Deflub_bristle-Inventory.txt -o Team.xlsx
 py -3 -m inventory_parser --folder Examples -o out.xlsx --no-spells --slots visible
+py -3 -m inventory_parser --folder Examples -o out.xlsx --also-html
 ```
 
 | Option | Description |
 |--------|-------------|
-| `inventories` | One or more dump paths (inventory and/or spell files) |
-| `--folder` | Scan folder for `*-Inventory.txt` and `*-MissingSpells.txt` |
+| `inventories` | One or more dump paths (inventory, spell, and/or achievement files) |
+| `--folder` | Scan folder for matching dump files |
 | `-o`, `--output` | Output `.xlsx` path (required) |
 | `--slots` | `all` (default), `visible`, or `non_visible` |
 | `--no-spells` | Omit Missing Runes and Spell List sheets |
+| `--no-achievements` | Omit achievement sheets |
+| `--also-html` | Also write `{prefix}_Team Inventory.html` next to the workbook |
 
 Entry point: `inventory-parser` after `pip install -e .`
 
@@ -162,7 +182,7 @@ cd "Inventory Parser"
 .\build_exe.bat
 ```
 
-Output: `dist\InventoryParser-<version>.exe` (e.g. `InventoryParser-1.9.1.exe`; Explorer opens with the file selected when the build finishes).
+Output: `dist\InventoryParser-<version>.exe` (e.g. `InventoryParser-1.12.0.exe`; Explorer opens with the file selected when the build finishes).
 
 `build_exe.bat` installs the package (including Pillow) and runs PyInstaller with Pillow bundled for pill-button rendering. Close any running `InventoryParser-*.exe` before rebuilding if you get “Access is denied” on the output file.
 
@@ -173,7 +193,7 @@ Output: `dist\InventoryParser-<version>.exe` (e.g. `InventoryParser-1.9.1.exe`; 
 | `Examples/*.txt` | Six sample `*-Inventory.txt` dumps |
 | `Examples/SpellData/*.txt` | Matching `*-MissingSpells.txt` for several characters |
 
-Try the GUI with **Add folder…** → `Examples`, then **Generate Excel**.
+Try the GUI with **Add folder…** → `Examples`, then **Generate Report**.
 
 ## Versioning
 
@@ -200,12 +220,14 @@ py -3 -m inventory_parser --version
 Inventory Parser/
   HowToUse.md          ← user guide
   README.md            ← this file
+  Discord_Instructions.txt
   run_gui.bat
   build_exe.bat
   Examples/
+  backup/              ← pre-redesign snapshots (GUI, HTML)
   src/inventory_parser/
-    cli.py gui.py team_report.py pill_button.py excel_export.py …
-    data/spell_rune_bands.json
+    cli.py gui.py html_export.py team_report.py pill_button.py gui_theme.py …
+    data/team_report.html spell_rune_bands.json
   tests/
 ```
 

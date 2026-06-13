@@ -74,7 +74,7 @@ The **Missing Collections** tab lists collection items still needed (`owned/tota
 
 ## Quick start (GUI)
 
-The app uses a **dark theme** with color-coded panels and **pill-shaped** buttons (blue **Add files…**, teal **Add folder…** / **Browse…**, red **Clear all**, green **Generate Excel**).
+The app uses a **dark theme** with unified panel cards, **pill-shaped** buttons (blue **Add files**, teal **Add folder** / **Browse…**), utility ghost buttons (**Remove**, **Up**, **Down**, **Clear**), and chip toggles for **Spells**, **Achievements**, and **HTML** (HTML on by default).
 
 1. **In EQ:** on each toon, `/outputfile inventory` and (optional) `/outputfile missingspells`; copy the `.txt` files into one folder.
 
@@ -83,20 +83,20 @@ The app uses a **dark theme** with color-coded panels and **pill-shaped** button
    - Double-click **`dist\InventoryParser-<version>.exe`** after building (see [Building the .exe](#building-the-exe))
 
 3. **Add your files**
-   - **Add files…** — pick one or more `*-Inventory.txt`, `*-MissingSpells.txt`, and/or `*-Achievements.txt` files  
-   - **Add folder…** — load every matching file in a folder at once  
+   - **Add files** — pick one or more `*-Inventory.txt`, `*-MissingSpells.txt`, and/or `*-Achievements.txt` files  
+   - **Add folder** — load every matching file in a folder at once  
 
 4. **Options** (optional)
-   - **Include** — `all`, `visible`, or `non_visible` slots on the gear sheets  
-   - **Include missing spells** — checked automatically when matching spell files are found; uncheck to skip spell tabs  
-   - **Include achievements** — checked automatically when matching achievement files are found; uncheck to skip achievement tabs  
-   - **Also generate HTML report** — writes a `{prefix}_Team Inventory.html` file next to the Excel workbook (open in your browser; no server needed)  
+   - **Slots** dropdown — `all`, `visible`, or `non_visible` on the gear sheets  
+   - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs  
+   - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs  
+   - **HTML** chip — on by default; writes a `{prefix}_Team Inventory.html` file next to the Excel workbook (open in your browser; no server needed). Uncheck to skip HTML  
 
 5. **Output**
    - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
    - Use **Browse…** to pick another path  
 
-6. Click **Generate Excel**
+6. Click **Generate Report**
 
 If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, etc.
 
@@ -106,16 +106,16 @@ If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, et
 
 The file uses a **dark theme** (black background, light text). Item names link to [EQ Resource](https://items.eqresource.com/) when the dump includes item IDs.
 
-### Team gear
+### Team Gear
 
 - One **column per character**, one **row per equipped slot**  
 - Rows are grouped **visible** gear first, then **non-visible**  
-- **Colors** show gear set (Fracture, Rebellion, Evolver, etc.) — see the legend on the sheet (rows 26–35) or **Help → Gear tiers & slots** in the app  
+- **Colors** show gear set (Fracture, Rebellion, Evolver, etc.) — see the legend on the sheet (rows 26–35) or **Help** → gear tier colors in the app  
 - **Purple** = Evolver (special augment slot, not the “6” in the Slots column)
 
 ### Gear T-Level
 
-Same layout as Team gear, but cells show **what tier is equipped** in each slot:
+Same layout as Team Gear, but cells show **what tier is equipped** in each slot:
 
 | Cell value | Meaning |
 |------------|---------|
@@ -162,11 +162,30 @@ Incomplete raid **objectives** from each expansion’s **Raids** section. Column
 
 ### HTML report *(optional)*
 
-When **Also generate HTML report** is checked (or **`--also-html`** on the CLI), the app saves `{prefix}_Team Inventory.html` next to the `.xlsx` file. Double-click to open in Chrome, Edge, Firefox, etc.
+When the **HTML** chip is checked (default in the GUI) or **`--also-html`** is passed on the CLI, the app saves `{prefix}_Team Inventory.html` next to the `.xlsx` file. Double-click to open in Chrome, Edge, Firefox, etc.
 
-- Same tabs as Excel (omitted when empty, same rules as the workbook)
-- **Search**, **sort** (click column headers), **Character** and **Expansion** filters on table tabs
-- Gear-set and tier colors match the Excel theme; item names link to EQ Resource
+**Layout**
+
+- **Left sidebar** — EQ logo, section list with icons, then **Character filter** chips (directly under the nav, not at the bottom of the window)
+- **Main area** — report title (e.g. `Bristlebane Team Inventory`), character count, generation date, toolbar, and the active section’s table
+- **Footer** — gear-tier color legend when viewing **Team Gear**
+
+**Sections**
+
+Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Spell List, Unmade Gear, Missing Collections, Achievement Summary, Raid Achievements.
+
+**Filters & tools**
+
+| Control | Where | What it does |
+|---------|-------|----------------|
+| **Character filter** (chips) | Sidebar | Filters gear columns and table rows across the report |
+| **Search** | Toolbar | Filters the active section |
+| **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
+| **Character** dropdown | Toolbar (table tabs) | Filter Spell List, Raid Achievements, Missing Collections, etc. to one character |
+| **Expansion** dropdown | Toolbar (table tabs) | Filter achievement tables by expansion |
+| **Column headers** | Table | Click to sort |
+
+Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.
 
 No Python or web server is required to view the HTML file.
 
@@ -178,7 +197,7 @@ No Python or web server is required to view the HTML file.
 - **Spell files in SpellData** — keeps inventory folder tidy; the app finds them automatically.  
 - **Achievement files in AchievementData** — same pattern for `/outputfile achievements` dumps.  
 - **Status bar** — shows how many inventory, MissingSpells, and achievement files are loaded.  
-- **Remove / Clear all** — fix the file list before regenerating.  
+- **Remove** / **Clear** — fix the file list before regenerating.  
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
 
 ---
@@ -267,6 +286,7 @@ py -3 scripts\sign_exe.py dist\InventoryParser-1.7.5.exe
 | Checkbox for spells is grayed out | No inventory files in the list yet. |
 | “Permission denied” / save failed | Close the workbook in Excel and try again. |
 | Wrong characters in columns | Each inventory file should be one character; check filenames. |
+| HTML looks outdated after an update | Regenerate the report, or run `pip install -e .` if using source install. |
 
 ---
 

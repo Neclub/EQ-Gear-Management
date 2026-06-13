@@ -13,6 +13,17 @@ def data_dir() -> Path:
     return Path(__file__).resolve().parent / "data"
 
 
+def assets_dir() -> Path:
+    """Directory containing bundled images and other static assets."""
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS) / "inventory_parser" / "assets"
+    return Path(__file__).resolve().parent / "assets"
+
+
+def asset_path(filename: str) -> Path:
+    return assets_dir() / filename
+
+
 def read_data_text(filename: str) -> str:
     path = data_dir() / filename
     if not path.is_file():

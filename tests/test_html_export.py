@@ -31,11 +31,20 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
     assert "<!DOCTYPE html>" in text
     assert "Team Inventory Report" in text
     assert "const REPORT =" in text
+    assert 'id="sidebar"' in text
+    assert 'id="navList"' in text
+    assert 'id="characterFilter"' in text
+    assert 'id="tierLegend"' in text
+    assert ">Visibility<" not in text
 
     report = extract_report_json(text)
     assert report["meta"]["version"]
+    assert report["meta"]["reportTitle"]
+    assert report["meta"]["characterCount"] >= 1
+    assert report["meta"]["characters"]
+    assert report["meta"]["logoDataUri"].startswith("data:image/png;base64,")
     titles = [section["title"] for section in report["sections"]]
-    assert "Team gear" in titles
+    assert "Team Gear" in titles
     assert "Gear T-Level" in titles
     assert "Missing Runes" in titles
     assert "Spell List" in titles
@@ -76,6 +85,20 @@ def test_html_unmade_gear_omitted_when_empty(tmp_path: Path) -> None:
     write_team_html(bundle, out)
     report = extract_report_json(out.read_text(encoding="utf-8"))
     assert not any(section["title"] == "Unmade Gear" for section in report["sections"])
+
+
+def test_html_spell_list_has_character_filter(tmp_path: Path) -> None:
+    inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
+    spell = SPELL_DATA / "Deflub_bristle-PAL-MissingSpells.txt"
+    bundle = build_export_bundle([inv, spell], include_achievements=False)
+    out = tmp_path / "crew.html"
+    write_team_html(bundle, out)
+    text = out.read_text(encoding="utf-8")
+    assert "All characters" in text
+    report = extract_report_json(text)
+    spell_section = next(s for s in report["sections"] if s["id"] == "spell_list")
+    assert spell_section["data"]["characterColumn"] == 0
+    assert spell_section["data"]["rows"]
 
 
 def test_cli_also_html_flag(tmp_path: Path) -> None:

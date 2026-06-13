@@ -10,14 +10,32 @@ from typing import Callable
 
 from PIL import Image, ImageDraw, ImageTk
 
-_FG = "#e8eaef"
-_FG_MUTED = "#9ca3b4"
-_ACCENT_EXCEL = "#3d9b5c"
+from inventory_parser.gui_theme import (
+    ACCENT as _ACCENT_CHIP,
+    ACCENT_EXCEL as _ACCENT_EXCEL,
+    BG as _FALLBACK_BG,
+    BG_PANEL as _BG_PANEL,
+    BG_RECESSED as _BG_RECESSED,
+    CHIP_BORDER as _CHIP_BORDER,
+    CHIP_OFF_BG as _CHIP_OFF_BG,
+    CHIP_ON_BG as _CHIP_ON_BG,
+    FG as _FG,
+    FG_MUTED as _FG_MUTED,
+    GHOST_FILL as _GHOST_FILL,
+    GHOST_FILL_HOVER as _GHOST_FILL_HOVER,
+    INPUT_BORDER as _INPUT_BORDER,
+    SCROLL_THUMB as _SCROLL_THUMB,
+)
+
+_AA_SCALE = 3
 _ACCENT_EXCEL_ACTIVE = "#2f7a47"
 _ACCENT_DANGER = "#c45c5c"
 _ACCENT_DANGER_ACTIVE = "#a04848"
-_FALLBACK_BG = "#121214"
-_AA_SCALE = 3
+
+_ACCENT_PRIMARY = "#3d6fad"
+_ACCENT_PRIMARY_HOVER = "#4a7ec4"
+_ACCENT_SECONDARY = "#2a8a8f"
+_ACCENT_SECONDARY_HOVER = "#3d9994"
 
 _VARIANT_PADDING: dict[str, tuple[tuple[int, int], tuple[str, int, str] | tuple[str, int]]] = {
     "default": ((10, 6), ("Segoe UI", 10)),
@@ -25,6 +43,8 @@ _VARIANT_PADDING: dict[str, tuple[tuple[int, int], tuple[str, int, str] | tuple[
     "secondary": ((10, 6), ("Segoe UI", 10)),
     "danger": ((10, 6), ("Segoe UI", 10)),
     "accent": ((18, 11), ("Segoe UI", 11, "bold")),
+    "ghost": ((8, 5), ("Segoe UI", 9)),
+    "compact": ((10, 6), ("Segoe UI", 10)),
 }
 
 
@@ -38,11 +58,12 @@ class _PillColors:
 
 
 _VARIANTS: dict[str, _PillColors] = {
-    "default": _PillColors("#35353d", "#454550", "#2a2a32", _FG, _FG_MUTED),
-    "primary": _PillColors("#3d6fad", "#4a7ec4", "#2a2a32", "#ffffff", _FG_MUTED),
-    "secondary": _PillColors("#3d857a", "#4a9e92", "#2a2a32", "#ffffff", _FG_MUTED),
-    "danger": _PillColors(_ACCENT_DANGER, _ACCENT_DANGER_ACTIVE, "#2a2a32", "#ffffff", _FG_MUTED),
-    "accent": _PillColors(_ACCENT_EXCEL, _ACCENT_EXCEL_ACTIVE, "#2a2a32", "#ffffff", _FG_MUTED),
+    "default": _PillColors(_CHIP_ON_BG, _SCROLL_THUMB, _GHOST_FILL, _FG, _FG_MUTED),
+    "primary": _PillColors(_ACCENT_PRIMARY, _ACCENT_PRIMARY_HOVER, _BG_RECESSED, "#ffffff", _FG_MUTED),
+    "secondary": _PillColors(_ACCENT_SECONDARY, _ACCENT_SECONDARY_HOVER, _BG_RECESSED, "#ffffff", _FG_MUTED),
+    "danger": _PillColors(_ACCENT_DANGER, _ACCENT_DANGER_ACTIVE, _BG_RECESSED, "#ffffff", _FG_MUTED),
+    "accent": _PillColors(_ACCENT_EXCEL, _ACCENT_EXCEL_ACTIVE, _BG_RECESSED, "#ffffff", _FG_MUTED),
+    "ghost": _PillColors(_GHOST_FILL, _GHOST_FILL_HOVER, _BG_PANEL, _FG, _FG_MUTED),
 }
 
 
@@ -99,6 +120,7 @@ class PillButton(tk.Frame):
         text: str = "",
         command: Callable[[], None] | None = None,
         variant: str = "default",
+        width: int | None = None,
         **kwargs: object,
     ) -> None:
         bg = _parent_bg(parent)
@@ -108,6 +130,7 @@ class PillButton(tk.Frame):
         self._variant = variant if variant in _VARIANTS else "default"
         self._state = tk.NORMAL
         self._hover = False
+        self._fixed_width = width
         self._pill_image: ImageTk.PhotoImage | None = None
         self._image_name = f"inventory_parser_pill_{id(self)}"
 
@@ -175,11 +198,11 @@ class PillButton(tk.Frame):
         self._release_pill_image()
         self._canvas.delete("all")
         text_w = self._font.measure(self._text)
-        width = max(text_w + self._padx * 2, self._pady * 4)
+        width = self._fixed_width if self._fixed_width else max(text_w + self._padx * 2, self._pady * 4)
         height = self._font.metrics("linespace") + self._pady * 2
 
         self._canvas.configure(width=width, height=height)
-        self.configure(width=width, height=height)
+        super().configure(width=width, height=height)
 
         fill = self._fill_color()
         rgba = _render_pill_rgba(width, height, fill)
@@ -224,6 +247,104 @@ class PillButton(tk.Frame):
                 self._padx = padx
                 self._pady = pady
                 redraw = True
+        if "width" in kw:
+            self._fixed_width = kw.pop("width")  # type: ignore[assignment]
+            redraw = True
+        if kw:
+            super().configure(kw)  # type: ignore[arg-type]
+        if redraw:
+            self._redraw()
+        return None
+
+    config = configure
+
+
+class ChipToggle(tk.Frame):
+    """Horizontal toggle chip for export options (Spells / Achievements / HTML)."""
+
+    def __init__(
+        self,
+        parent: tk.Misc,
+        text: str,
+        variable: tk.BooleanVar,
+        *,
+        icon: str = "",
+        command: Callable[[], None] | None = None,
+    ) -> None:
+        bg = _parent_bg(parent)
+        super().__init__(parent, bg=bg, highlightthickness=0, bd=0)
+        self._variable = variable
+        self._command = command
+        self._state = tk.NORMAL
+        self._icon = icon
+        self._label = text
+        self._hover = False
+
+        self._canvas = tk.Canvas(self, bg=bg, highlightthickness=0, bd=0, cursor="hand2")
+        self._canvas.pack()
+
+        for widget in (self, self._canvas):
+            widget.bind("<Enter>", self._on_enter)
+            widget.bind("<Leave>", self._on_leave)
+            widget.bind("<Button-1>", self._on_click)
+
+        self._variable.trace_add("write", lambda *_: self._redraw())
+        self._redraw()
+
+    def _enabled(self) -> bool:
+        return self._state != tk.DISABLED
+
+    def _on_enter(self, _event: tk.Event) -> None:
+        if not self._enabled():
+            return
+        self._hover = True
+        self._redraw()
+
+    def _on_leave(self, _event: tk.Event) -> None:
+        self._hover = False
+        self._redraw()
+
+    def _on_click(self, _event: tk.Event) -> None:
+        if not self._enabled():
+            return
+        self._variable.set(not self._variable.get())
+        if self._command:
+            self._command()
+
+    def _redraw(self) -> None:
+        parent_bg = _parent_bg(self)
+        self._canvas.delete("all")
+        font = tkfont.Font(family="Segoe UI", size=9)
+        on = self._variable.get() and self._enabled()
+        fill = _CHIP_ON_BG if on else (_CHIP_OFF_BG if self._enabled() else _BG_PANEL)
+        if self._hover and self._enabled():
+            fill = "#3d4450" if on else _GHOST_FILL_HOVER
+        border = _ACCENT_CHIP if on else _CHIP_BORDER
+        mark = " ✓" if on else ""
+        display = f"{self._icon} {self._label}{mark}".strip()
+        text_w = font.measure(display)
+        width = max(text_w + 20, 72)
+        height = font.metrics("linespace") + 12
+
+        self._canvas.configure(width=width, height=height, bg=parent_bg)
+        self.configure(width=width, height=height)
+
+        self._canvas.create_rectangle(
+            1, 1, width - 1, height - 1, fill=fill, outline=border, width=1
+        )
+        fg = _FG if self._enabled() else _FG_MUTED
+        if on and self._enabled():
+            fg = "#ffffff"
+        self._canvas.create_text(width // 2, height // 2, text=display, fill=fg, font=font)
+        self._canvas.configure(cursor="hand2" if self._enabled() else "")
+
+    def configure(self, cnf: dict[str, object] | None = None, **kw: object) -> dict[str, object] | None:
+        if cnf:
+            kw = {**cnf, **kw}
+        redraw = False
+        if "state" in kw:
+            self._state = str(kw.pop("state"))
+            redraw = True
         if kw:
             super().configure(kw)  # type: ignore[arg-type]
         if redraw:

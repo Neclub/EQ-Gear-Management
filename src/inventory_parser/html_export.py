@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import base64
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -26,7 +27,8 @@ from inventory_parser.export_bundle import ExportBundle
 from inventory_parser.gear_sets import GEAR_SETS_NEWEST_FIRST, classify_gear_set
 from inventory_parser.gear_tiers import UNKNOWN_TIER_LABEL
 from inventory_parser.items import EQRESOURCE_ITEM_URL, EquippedItem
-from inventory_parser.package_data import read_data_text
+from inventory_parser.output_paths import default_export_prefix_from_report
+from inventory_parser.package_data import asset_path, read_data_text
 from inventory_parser.slots import slot_visibility, slots_for_export
 from inventory_parser.sor_tier import sor_gap_label
 from inventory_parser.spell_report import SpellRuneReport
@@ -177,6 +179,12 @@ def _serialize_missing_runes(
     }
 
 
+def _eq_logo_data_uri() -> str:
+    data = asset_path("eq-icon.png").read_bytes()
+    encoded = base64.standard_b64encode(data).decode("ascii")
+    return f"data:image/png;base64,{encoded}"
+
+
 def _serialize_table(
     columns: list[str],
     rows: list[list[object]],
@@ -202,7 +210,7 @@ def serialize_report(bundle: ExportBundle) -> dict:
     sections.append(
         {
             "id": "team_gear",
-            "title": "Team gear",
+            "title": "Team Gear",
             "type": "gear_matrix",
             "data": _gear_matrix(report, base_slots, tier_mode=False),
         }
@@ -379,10 +387,23 @@ def serialize_report(bundle: ExportBundle) -> dict:
         for gear_set in GEAR_SETS_NEWEST_FIRST
     ]
 
+    prefix = default_export_prefix_from_report(report)
+
     return {
         "meta": {
             "version": __version__,
             "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
+            "reportTitle": f"{prefix} Team Inventory" if prefix else "Team Inventory",
+            "characterCount": len(report.characters),
+            "characters": [
+                {
+                    "name": character.display_name,
+                    "shortName": character.character,
+                    "server": character.server,
+                }
+                for character in report.characters
+            ],
+            "logoDataUri": _eq_logo_data_uri(),
         },
         "theme": {
             "gearSets": GEAR_SET_FILLS,

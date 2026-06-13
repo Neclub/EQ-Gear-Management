@@ -112,6 +112,9 @@ def main() -> int:
     ]
     if sys.platform == "win32":
         args.extend(["--version-file", str(version_info.resolve())])
+        icon_ico = _ROOT / "src" / "inventory_parser" / "assets" / "eq-icon.ico"
+        if icon_ico.is_file():
+            args.extend(["--icon", str(icon_ico.resolve())])
 
     print(f"Package version: {version}")
     print(f"Output exe: {_ROOT / 'dist' / f'{exe_name}.exe'}")
