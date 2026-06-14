@@ -111,6 +111,39 @@ def _render_pill_rgba(width: int, height: int, fill: str) -> Image.Image:
     return image
 
 
+def _render_rounded_chip_rgba(
+    width: int,
+    height: int,
+    *,
+    fill: str,
+    outline: str | None = None,
+    outline_width: int = 1,
+    radius: int = 10,
+) -> Image.Image:
+    """Anti-aliased rounded chip (toggle buttons)."""
+    scale = _AA_SCALE
+    src_w = max(width * scale, 1)
+    src_h = max(height * scale, 1)
+    src_radius = max(min(radius, height // 2) * scale, 0)
+    src_outline = max(outline_width * scale, 0)
+    image = Image.new("RGBA", (src_w, src_h), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    box = (0, 0, src_w - 1, src_h - 1)
+    if outline and src_outline > 0:
+        draw.rounded_rectangle(
+            box,
+            radius=src_radius,
+            fill=_hex_to_rgba(fill),
+            outline=_hex_to_rgba(outline),
+            width=src_outline,
+        )
+    else:
+        draw.rounded_rectangle(box, radius=src_radius, fill=_hex_to_rgba(fill))
+    if scale > 1:
+        image = image.resize((width, height), Image.Resampling.LANCZOS)
+    return image
+
+
 class PillButton(tk.Frame):
     """Capsule-shaped button drawn on a canvas."""
 
@@ -121,10 +154,12 @@ class PillButton(tk.Frame):
         command: Callable[[], None] | None = None,
         variant: str = "default",
         width: int | None = None,
+        icon: str = "",
         **kwargs: object,
     ) -> None:
         bg = _parent_bg(parent)
         super().__init__(parent, bg=bg, highlightthickness=0, bd=0)
+        self._icon = icon
         self._text = text
         self._command = command
         self._variant = variant if variant in _VARIANTS else "default"
@@ -197,7 +232,8 @@ class PillButton(tk.Frame):
     def _redraw(self) -> None:
         self._release_pill_image()
         self._canvas.delete("all")
-        text_w = self._font.measure(self._text)
+        label = f"{self._icon} {self._text}".strip() if self._icon else self._text
+        text_w = self._font.measure(label)
         width = self._fixed_width if self._fixed_width else max(text_w + self._padx * 2, self._pady * 4)
         height = self._font.metrics("linespace") + self._pady * 2
 
@@ -211,10 +247,11 @@ class PillButton(tk.Frame):
         finally:
             rgba.close()
         self._canvas.create_image(width // 2, height // 2, image=self._pill_image)
+        label = f"{self._icon} {self._text}".strip() if self._icon else self._text
         self._canvas.create_text(
             width // 2,
             height // 2,
-            text=self._text,
+            text=label,
             fill=self._text_color(),
             font=self._font,
         )
@@ -233,6 +270,9 @@ class PillButton(tk.Frame):
             redraw = True
         if "text" in kw:
             self._text = str(kw.pop("text"))
+            redraw = True
+        if "icon" in kw:
+            self._icon = str(kw.pop("icon"))
             redraw = True
         if "command" in kw:
             self._command = kw.pop("command")  # type: ignore[assignment]
@@ -279,6 +319,8 @@ class ChipToggle(tk.Frame):
         self._icon = icon
         self._label = text
         self._hover = False
+        self._chip_image: ImageTk.PhotoImage | None = None
+        self._chip_image_name = f"inventory_parser_chip_{id(self)}"
 
         self._canvas = tk.Canvas(self, bg=bg, highlightthickness=0, bd=0, cursor="hand2")
         self._canvas.pack()
@@ -313,30 +355,49 @@ class ChipToggle(tk.Frame):
 
     def _redraw(self) -> None:
         parent_bg = _parent_bg(self)
+        self._release_chip_image()
         self._canvas.delete("all")
         font = tkfont.Font(family="Segoe UI", size=9)
         on = self._variable.get() and self._enabled()
-        fill = _CHIP_ON_BG if on else (_CHIP_OFF_BG if self._enabled() else _BG_PANEL)
-        if self._hover and self._enabled():
-            fill = "#3d4450" if on else _GHOST_FILL_HOVER
-        border = _ACCENT_CHIP if on else _CHIP_BORDER
+        if on:
+            fill = _ACCENT_CHIP if self._enabled() else _BG_PANEL
+        elif self._enabled():
+            fill = _CHIP_OFF_BG if not self._hover else _GHOST_FILL_HOVER
+        else:
+            fill = _BG_PANEL
+        outline = _ACCENT_CHIP if on else _CHIP_BORDER
         mark = " ✓" if on else ""
         display = f"{self._icon} {self._label}{mark}".strip()
         text_w = font.measure(display)
-        width = max(text_w + 20, 72)
-        height = font.metrics("linespace") + 12
+        width = max(text_w + 24, 80)
+        height = font.metrics("linespace") + 14
 
         self._canvas.configure(width=width, height=height, bg=parent_bg)
         self.configure(width=width, height=height)
 
-        self._canvas.create_rectangle(
-            1, 1, width - 1, height - 1, fill=fill, outline=border, width=1
+        chip_rgba = _render_rounded_chip_rgba(
+            width,
+            height,
+            fill=fill,
+            outline=outline,
+            outline_width=1,
+            radius=10,
         )
-        fg = _FG if self._enabled() else _FG_MUTED
-        if on and self._enabled():
-            fg = "#ffffff"
+        try:
+            self._chip_image = ImageTk.PhotoImage(chip_rgba, name=self._chip_image_name, master=self)
+        finally:
+            chip_rgba.close()
+        self._canvas.create_image(width // 2, height // 2, image=self._chip_image)
+        fg = "#ffffff" if on and self._enabled() else (_FG if self._enabled() else _FG_MUTED)
         self._canvas.create_text(width // 2, height // 2, text=display, fill=fg, font=font)
         self._canvas.configure(cursor="hand2" if self._enabled() else "")
+
+    def _release_chip_image(self) -> None:
+        self._chip_image = None
+        try:
+            self.tk.call("image", "delete", self._chip_image_name)
+        except tk.TclError:
+            pass
 
     def configure(self, cnf: dict[str, object] | None = None, **kw: object) -> dict[str, object] | None:
         if cnf:
@@ -352,3 +413,27 @@ class ChipToggle(tk.Frame):
         return None
 
     config = configure
+
+
+class PillBadge(tk.Frame):
+    """Small pill-shaped version or status badge."""
+
+    def __init__(self, parent: tk.Misc, text: str) -> None:
+        bg = _parent_bg(parent)
+        super().__init__(parent, bg=bg, highlightthickness=0, bd=0)
+        font = tkfont.Font(family="Segoe UI", size=8)
+        text_w = font.measure(text)
+        width = max(text_w + 14, 36)
+        height = font.metrics("linespace") + 6
+        image_name = f"inventory_parser_badge_{id(self)}"
+        rgba = _render_pill_rgba(width, height, _CHIP_ON_BG)
+        try:
+            photo = ImageTk.PhotoImage(rgba, name=image_name, master=self)
+        finally:
+            rgba.close()
+        canvas = tk.Canvas(self, width=width, height=height, bg=bg, highlightthickness=0, bd=0)
+        canvas.pack()
+        canvas.create_image(width // 2, height // 2, image=photo)
+        canvas.create_text(width // 2, height // 2, text=text, fill=_FG_MUTED, font=font)
+        self._badge_photo = photo
+        self.configure(width=width, height=height)

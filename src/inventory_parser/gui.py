@@ -37,7 +37,7 @@ from inventory_parser.output_paths import (
     is_auto_team_inventory_path,
 )
 from inventory_parser.package_data import asset_path
-from inventory_parser.pill_button import ChipToggle, PillButton
+from inventory_parser.pill_button import ChipToggle, PillBadge, PillButton
 from inventory_parser.slots import NON_VISIBLE_SLOTS, VISIBLE_SLOTS, SlotFilter
 from inventory_parser.window_chrome import bind_dark_title_bar
 from inventory_parser.gui_theme import (
@@ -46,7 +46,6 @@ from inventory_parser.gui_theme import (
     ACCENT_FILES as _ACCENT_FILES,
     ACCENT_OUTPUT as _ACCENT_OUTPUT,
     ACCENT_SLOTS as _ACCENT_SLOTS,
-    BADGE_BG as _BADGE_BG,
     BG as _BG,
     BG_INPUT as _BG_INPUT,
     BG_PANEL as _BG_PANEL,
@@ -58,16 +57,6 @@ from inventory_parser.gui_theme import (
     SCROLL_THUMB as _SCROLL_THUMB,
     SCROLL_THUMB_ACTIVE as _SCROLL_THUMB_ACTIVE,
 )
-
-_FILE_TYPES = [
-    ("Inventory, MissingSpells & Achievements", "*-Inventory.txt;*-MissingSpells.txt;*-Achievements.txt"),
-    ("Inventory & MissingSpells", "*-Inventory.txt;*-MissingSpells.txt"),
-    ("Inventory dumps", "*-Inventory.txt"),
-    ("MissingSpells logs", "*-MissingSpells.txt"),
-    ("Achievement dumps", "*-Achievements.txt"),
-    ("Text files", "*.txt"),
-    ("All files", "*.*"),
-]
 
 def _downloads_dir() -> Path:
     return Path.home() / "Downloads"
@@ -133,12 +122,27 @@ def _apply_theme(root: tk.Tk, style: ttk.Style) -> None:
         fieldbackground=_BG_RECESSED,
         foreground=_FG,
         bordercolor=_INPUT_BORDER,
+        padding=(8, 6),
     )
     style.configure(
         "TCombobox",
         fieldbackground=_BG_RECESSED,
         foreground=_FG,
         bordercolor=_INPUT_BORDER,
+        padding=(8, 6),
+    )
+    style.configure(
+        "Main.TCombobox",
+        fieldbackground=_BG_RECESSED,
+        foreground=_FG,
+        bordercolor=_INPUT_BORDER,
+        arrowcolor=_FG,
+        padding=(8, 6),
+    )
+    style.map(
+        "Main.TCombobox",
+        fieldbackground=[("readonly", _BG_RECESSED)],
+        bordercolor=[("focus", _ACCENT_FILES), ("readonly", _INPUT_BORDER)],
     )
     style.map("TCombobox", fieldbackground=[("readonly", _BG_RECESSED)])
 
@@ -675,7 +679,7 @@ def main() -> None:
     also_html_var = tk.BooleanVar(value=True)
     spells_cb_ref: list[ChipToggle] = []
     achievements_cb_ref: list[ChipToggle] = []
-    status_var = tk.StringVar(value="Add inventory dump files to begin.")
+    status_var = tk.StringVar(value="Ready • No files loaded")
 
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)
@@ -714,32 +718,24 @@ def main() -> None:
         fg=_FG,
         font=("Segoe UI", 15, "bold"),
     ).pack(side=tk.LEFT)
-    tk.Label(
-        title_row,
-        text=f"v{__version__}",
-        bg=_BADGE_BG,
-        fg=_FG_MUTED,
-        font=("Segoe UI", 8),
-        padx=7,
-        pady=3,
-    ).pack(side=tk.LEFT, padx=(10, 0))
+    PillBadge(title_row, f"v{__version__}").pack(side=tk.LEFT, padx=(10, 0))
 
     help_btn = tk.Label(
         header_top,
         text="Help",
         bg=_BG,
-        fg=_FG_MUTED,
+        fg=_ACCENT,
         font=("Segoe UI", 9),
         cursor="hand2",
     )
     help_btn.grid(row=0, column=1, sticky="e", padx=(8, 0))
     help_btn.bind("<Button-1>", lambda _e: _popup_help_menu(root, help_btn))
     help_btn.bind("<Enter>", lambda _e: help_btn.configure(fg=_FG))
-    help_btn.bind("<Leave>", lambda _e: help_btn.configure(fg=_FG_MUTED))
+    help_btn.bind("<Leave>", lambda _e: help_btn.configure(fg=_ACCENT))
 
     ttk.Label(
         header,
-        text="Team gear workbook · color-coded tiers · EQ Resource links",
+        text="Team gear workbook • color-coded tiers • EQ Resource links",
         style="Muted.TLabel",
     ).grid(row=1, column=0, sticky="w", pady=(6, 0), padx=(56, 0))
 
@@ -781,6 +777,27 @@ def main() -> None:
     scroll.grid(row=0, column=1, sticky="ns")
     listbox.configure(yscrollcommand=scroll.set)
 
+    empty_state = tk.Frame(lb_frame, bg=_BG_RECESSED)
+    empty_state.grid(row=0, column=0, columnspan=2, sticky="nsew")
+    empty_state.columnconfigure(0, weight=1)
+    empty_state.rowconfigure(0, weight=1)
+    empty_inner = tk.Frame(empty_state, bg=_BG_RECESSED)
+    empty_inner.place(relx=0.5, rely=0.5, anchor="center")
+    tk.Label(
+        empty_inner,
+        text="📁",
+        bg=_BG_RECESSED,
+        fg=_FG_MUTED,
+        font=("Segoe UI", 28),
+    ).pack()
+    tk.Label(
+        empty_inner,
+        text="Add inventory dump files to begin",
+        bg=_BG_RECESSED,
+        fg=_FG_MUTED,
+        font=("Segoe UI", 10),
+    ).pack(pady=(8, 0))
+
     roster: list[ColumnRosterEntry] = []
 
     def _split_file_list() -> tuple[list[Path], list[Path], list[Path]]:
@@ -820,8 +837,10 @@ def main() -> None:
         n = len(file_list)
         status_lbl.configure(style="Status.TLabel")
         if n == 0:
-            status_var.set("Add inventory dump files to begin.")
+            status_var.set("Ready • No files loaded")
+            empty_state.grid()
             return
+        empty_state.grid_remove()
         inv_paths, spell_paths, achievement_paths = _split_file_list()
         parts: list[str] = []
         if inv_paths:
@@ -832,9 +851,9 @@ def main() -> None:
             parts.append(f"{len(achievement_paths)} Achievements")
         summary = ", ".join(parts) if parts else f"{n} files"
         if n == 1:
-            status_var.set(f"{Path(file_list[0]).name} ({summary})")
+            status_var.set(f"Ready • {Path(file_list[0]).name} ({summary})")
         else:
-            status_var.set(f"{n} files ({summary})")
+            status_var.set(f"Ready • {n} files ({summary})")
         if include_spells_var.get():
             discovery = _persona_discovery_for_list()
             spell_bindings = [b for b in discovery.bindings if b.spell_path]
@@ -846,17 +865,17 @@ def main() -> None:
                 )
                 plural = "s" if len(spell_bindings) != 1 else ""
                 status_var.set(
-                    f"{status_var.get()} · {len(spell_bindings)} spell {label}{plural}"
+                    f"{status_var.get()} • {len(spell_bindings)} spell {label}{plural}"
                 )
             if discovery.warnings:
-                status_var.set(f"{status_var.get()} · {len(discovery.warnings)} warning(s)")
+                status_var.set(f"{status_var.get()} • {len(discovery.warnings)} warning(s)")
         if include_achievements_var.get():
             inv_paths, _spell_paths, achievement_paths = _split_file_list()
             discovered = collect_achievement_paths(inv_paths, achievement_paths or None)
             ach_count = len(achievement_paths) if achievement_paths else len(discovered)
             if ach_count:
                 label = "achievement file" if ach_count == 1 else "achievement files"
-                status_var.set(f"{status_var.get()} · {ach_count} {label}")
+                status_var.set(f"{status_var.get()} • {ach_count} {label}")
 
     def rebuild_roster(*, preserve_order: bool = True) -> None:
         nonlocal roster
@@ -899,14 +918,6 @@ def main() -> None:
         listbox.selection_set(new_index)
         listbox.see(new_index)
 
-    def browse_files() -> None:
-        paths = filedialog.askopenfilenames(
-            title="Select inventory dumps, MissingSpells logs, and/or achievement files",
-            filetypes=_FILE_TYPES,
-        )
-        if paths:
-            add_paths(list(paths))
-
     def browse_folder() -> None:
         folder = filedialog.askdirectory(
             title="Folder with inventory dumps, MissingSpells logs, and/or achievement files"
@@ -948,46 +959,46 @@ def main() -> None:
             rebuild_roster()
             _refresh_output_default()
 
-    btn_col = tk.Frame(files_body, bg=_BG_PANEL, width=132)
+    btn_col = tk.Frame(files_body, bg=_BG_PANEL, width=138)
     btn_col.grid(row=0, column=1, sticky="ns", padx=(12, 0))
     btn_col.grid_propagate(False)
 
-    _btn_w = 124
+    _btn_w = 130
 
-    add_files_btn = PillButton(
-        btn_col, text="Add files", variant="primary", command=browse_files, width=_btn_w
+    eq_folder_btn = PillButton(
+        btn_col,
+        text="EQ Folder",
+        icon="📁",
+        variant="primary",
+        command=browse_folder,
+        width=_btn_w,
     )
-    add_files_btn.pack(fill=tk.X, pady=(0, 6))
-    add_folder_btn = PillButton(
-        btn_col, text="Add folder", variant="secondary", command=browse_folder, width=_btn_w
-    )
-    add_folder_btn.pack(fill=tk.X, pady=(0, 10))
+    eq_folder_btn.pack(fill=tk.X, pady=(0, 10))
 
     util_grid = tk.Frame(btn_col, bg=_BG_PANEL)
     util_grid.pack(fill=tk.X)
     util_grid.columnconfigure(0, weight=1)
     util_grid.columnconfigure(1, weight=1)
 
-    _ghost_w = 58
+    _ghost_w = 62
     move_up_btn = PillButton(
-        util_grid, text="Up", variant="ghost", command=lambda: move_selected(-1), width=_ghost_w
+        util_grid, text="Up", icon="↑", variant="ghost", command=lambda: move_selected(-1), width=_ghost_w
     )
     move_up_btn.grid(row=0, column=0, sticky="ew", padx=(0, 4), pady=(0, 4))
     remove_btn = PillButton(
-        util_grid, text="Remove", variant="ghost", command=remove_selected, width=_ghost_w
+        util_grid, text="Remove", icon="⊖", variant="ghost", command=remove_selected, width=_ghost_w
     )
     remove_btn.grid(row=0, column=1, sticky="ew", pady=(0, 4))
     move_down_btn = PillButton(
-        util_grid, text="Down", variant="ghost", command=lambda: move_selected(1), width=_ghost_w
+        util_grid, text="Down", icon="↓", variant="ghost", command=lambda: move_selected(1), width=_ghost_w
     )
     move_down_btn.grid(row=1, column=0, sticky="ew", padx=(0, 4))
     clear_btn = PillButton(
-        util_grid, text="Clear", variant="ghost", command=clear_all, width=_ghost_w
+        util_grid, text="Clear", icon="🗑", variant="ghost", command=clear_all, width=_ghost_w
     )
     clear_btn.grid(row=1, column=1, sticky="ew")
     file_action_buttons = (
-        add_files_btn,
-        add_folder_btn,
+        eq_folder_btn,
         remove_btn,
         move_up_btn,
         move_down_btn,
@@ -1006,7 +1017,8 @@ def main() -> None:
         textvariable=slots_var,
         values=("all", "visible", "non_visible"),
         state="readonly",
-    ).grid(row=0, column=0, sticky="ew")
+        style="Main.TCombobox",
+    ).grid(row=0, column=0, sticky="ew", ipady=2)
 
     chips_row = tk.Frame(slots_body, bg=_BG_PANEL)
     chips_row.grid(row=1, column=0, sticky="w", pady=(10, 0))
@@ -1035,7 +1047,7 @@ def main() -> None:
 
     ChipToggle(chips_row, "HTML", also_html_var, icon="</>").pack(side=tk.LEFT)
 
-    out_body = _panel_card(options, "Output", row=0, column=1, sticky="nsew", padx=(6, 0))
+    out_body = _panel_card(options, "Output Folder", row=0, column=1, sticky="nsew", padx=(6, 0))
     out_body.columnconfigure(0, weight=1)
 
     def browse_output() -> None:
@@ -1051,12 +1063,9 @@ def main() -> None:
         if p:
             output_var.set(p)
 
-    ttk.Label(out_body, text="Output Excel file", style="Panel.TLabel").grid(
-        row=0, column=0, columnspan=2, sticky="w", pady=(0, 6)
-    )
-    ttk.Entry(out_body, textvariable=output_var).grid(row=1, column=0, sticky="ew")
+    ttk.Entry(out_body, textvariable=output_var, style="TEntry").grid(row=0, column=0, sticky="ew", ipady=4)
     PillButton(out_body, text="Browse…", variant="secondary", command=browse_output).grid(
-        row=1, column=1, padx=(8, 0)
+        row=0, column=1, padx=(8, 0)
     )
 
     action_bar = tk.Frame(frm, bg=_BG, padx=14, pady=12)
