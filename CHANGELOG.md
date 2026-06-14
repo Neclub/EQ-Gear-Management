@@ -112,11 +112,11 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ### Added
 
-- **Achievements export (Phase 1):** optional achievement tabs when `*-Achievements.txt` dumps from `/outputfile achievements` are included.
+- **Achievements export (Phase 1):** optional achievement tabs when `*-Achievements.txt` Output logs from `/outputfile achievements` are included.
   - **Missing Collections** — incomplete collection items under **Collections** sections; **Char Has** shows which crew member has the item in inventory.
   - **Raid Achievements** — incomplete raid objectives only (no duplicate parent raid rows).
   - **Achievement Summary** — top-level achievement completion counts per section (expansion or category).
-  - Achievement files can sit next to inventory dumps or in an **`AchievementData/`** subfolder (same pattern as `SpellData/`).
+  - Achievement files can sit next to inventory Output logs or in an **`AchievementData/`** subfolder (same pattern as `SpellData/`).
   - GUI checkbox **Include achievements** and CLI flag **`--no-achievements`**.
   - Expansion columns use release-year labels (e.g. `Shattering of Ro (2025)`) and sort **newest to oldest**.
 
@@ -163,7 +163,7 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 ### Changed
 
 - Missing Rk. II spells at rune-relevant levels (121–130) are now counted in Missing Runes / Spell List the same as missing Rk. III; duplicate entries are suppressed when both ranks appear for the same spell at the same level.
-- Spell List / rune reports always show **Rk. III** in the spell name, even when the dump lists the character as missing **Rk. II** (since missing Rk. II implies they also lack the Rk. III rune turn-in).
+- Spell List / rune reports always show **Rk. III** in the spell name, even when the Output log lists the character as missing **Rk. II** (since missing Rk. II implies they also lack the Rk. III rune turn-in).
 - Arie hates his alts so much he doesn't put Rk II spells on them.
 
 ## [1.7.2] - 2026-05-24
@@ -174,27 +174,27 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ### Changed
 
-- Auto-discovered spell files (inventory only, no MissingSpells in the file list) still omit Crew Gear when multiple classes share one inventory dump.
+- Auto-discovered spell files (inventory only, no MissingSpells in the file list) still omit Crew Gear when multiple classes share one inventory Output log.
 
 ## [1.7.1] - 2026-05-24
 
 ### Fixed
 
-- Crew Gear and Gear T-Level no longer show columns for personas that share one inventory dump with other spell files; equipped gear reflects only the active persona at dump time. Spell tabs still include every selected MissingSpells class. Use subfolders with separate inventory dumps per persona for multi-class gear tracking.
+- Crew Gear and Gear T-Level no longer show columns for personas that share one inventory Output log with other spell files; equipped gear reflects only the active persona when the Output log was generated. Spell tabs still include every selected MissingSpells class. Use subfolders with separate inventory Output logs per persona for multi-class gear tracking.
 
 ## [1.7.0] - 2026-05-24
 
 ### Changed
 
 - **Spell-driven persona pairing:** inventory files always use `CharacterName_server-Inventory.txt` (no class suffix); MissingSpells filenames are the sole source of class/persona identity
-- Multiple MissingSpells files for one character in the same folder now produce multiple persona columns sharing one inventory dump (no rename required)
+- Multiple MissingSpells files for one character in the same folder now produce multiple persona columns sharing one inventory Output log (no rename required)
 - Subfolder layout supported: standard inventory filename co-located with each persona’s spell file (e.g. `PAL/Deflub_bristle-Inventory.txt` + `PAL/Deflub_bristle-PAL-MissingSpells.txt`)
 
 ## [1.6.0] - 2026-05-24
 
 ### Added
 
-- **Alternate persona support:** multiple inventory dumps per character when filenames include an optional class suffix (e.g. `Deflub_bristle-PAL-Inventory.txt`), paired with matching `*-CLASS-MissingSpells.txt` files; Excel columns show `Deflub ( PAL )` and `Deflub ( SHD )` side by side
+- **Alternate persona support:** multiple inventory Output logs per character when filenames include an optional class suffix (e.g. `Deflub_bristle-PAL-Inventory.txt`), paired with matching `*-CLASS-MissingSpells.txt` files; Excel columns show `Deflub ( PAL )` and `Deflub ( SHD )` side by side
 - Warning when multiple MissingSpells files exist for one character but the inventory file lacks a class suffix (rename inventory using the class from the spell log)
 
 ## [1.5.0] - 2026-05-21
@@ -207,11 +207,11 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ### Changed
 
-- Default export filename uses the character name when only one inventory dump is selected (e.g. `Deflub_Crew Inventory.xlsx`); multi-character exports still use the server display name (e.g. `Bristlebane_Crew Inventory.xlsx`)
+- Default export filename uses the character name when only one inventory Output log is selected (e.g. `Deflub_Crew Inventory.xlsx`); multi-character exports still use the server display name (e.g. `Bristlebane_Crew Inventory.xlsx`)
 
 ### Fixed
 
-- Equipped Resonant Fracture (SoR-R2) gear is no longer misclassified as Evolver when the final augment slot appears in the inventory dump; tier codes and Fracture coloring now take precedence over Evolver detection
+- Equipped Resonant Fracture (SoR-R2) gear is no longer misclassified as Evolver when the final augment slot appears in the inventory Output log; tier codes and Fracture coloring now take precedence over Evolver detection
 
 ## [1.3.0] - 2026-05-21
 

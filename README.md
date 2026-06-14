@@ -1,6 +1,6 @@
 # Inventory Parser
 
-Turn EverQuest inventory dumps into a team **Excel workbook** and optional **HTML report** — equipped gear, tier levels, runes, spells, and achievements.
+Turn EverQuest inventory Output logs into a team **Excel workbook** and optional **HTML report** — equipped gear, tier levels, runes, spells, and achievements.
 
 **Latest build:** [GitHub Releases](https://github.com/Neclub/Inventory-Parser/releases)
 
@@ -18,7 +18,7 @@ Every push to `main` builds a fresh `.exe` and uploads it to Releases automatica
 
 ## Quick start
 
-### 1. Get dump files in-game
+### 1. Get Output logs in-game
 
 On each character, run in EverQuest chat:
 
@@ -33,7 +33,7 @@ Copy the `.txt` files from your EQ Logs folder into one folder on your PC.
 ### 2. Generate the report
 
 1. Open **Inventory Parser** (the `.exe` or GUI below).
-2. Click **Add folder** and pick the folder with your dumps.
+2. Click **Add folder** and pick the folder with your Output logs.
 3. Leave **Spells**, **Achievements**, and **HTML** on if you want those tabs.
 4. Click **Generate Report**.
 
@@ -76,9 +76,9 @@ Output: `dist\InventoryParser-<version>.exe`
 
 - **Team Gear** — equipped items by slot, color-coded by tier
 - **Gear T-Level** — expansion tier codes per slot
-- **Missing Runes / Missing Spells** — Rk. III tracking (needs spell dumps)
-- **Rune Inventory** — raid runes on hand (from inventory dumps)
-- **Achievements** — collection and raid progress (needs achievement dumps)
+- **Missing Runes / Missing Spells** — Rk. III tracking (needs spell Output logs)
+- **Rune Inventory** — raid runes on hand (from inventory Output logs)
+- **Achievements** — collection and raid progress (needs achievement Output logs)
 - **HTML report** — same data in a browser, searchable and filterable
 
 ---
