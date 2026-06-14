@@ -29,9 +29,7 @@ from inventory_parser.missing_spells import (
     split_input_paths,
 )
 from inventory_parser.eq_servers import server_display_name
-from inventory_parser.evolver import EVOLVER_LABEL
-from inventory_parser.excel_theme import GEAR_SET_FILLS
-from inventory_parser.gear_sets import GEAR_SETS_NEWEST_FIRST
+from inventory_parser.excel_theme import tier_bucket_legend_rows
 from inventory_parser.output_paths import (
     team_inventory_filename,
     team_inventory_path,
@@ -254,7 +252,7 @@ def _show_gear_tiers_help(parent: tk.Tk) -> None:
 
     tk.Label(
         outer,
-        text="Newest at top. Item cells in Excel use these colors when the name matches.",
+        text="Semantic tier buckets. Team Gear and Gear T-Level use the same cell colors.",
         bg=_BG,
         fg=_FG_MUTED,
         font=("Segoe UI", 9),
@@ -290,27 +288,26 @@ def _show_gear_tiers_help(parent: tk.Tk) -> None:
             justify=tk.LEFT,
         ).pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-    add_legend_row(inner, GEAR_SET_FILLS["evolver"], EVOLVER_LABEL)
+    for fill, label_text in tier_bucket_legend_rows():
+        add_legend_row(inner, fill.fgColor.rgb[-6:], label_text)
+
     tk.Label(
         inner,
         text=(
-            "Equipped items whose dump includes the final augment row: "
-            "Ear-Slot6 (and similar), Primary-Slot5. "
-            "Purple overrides tier color."
+            "Evolver: equipped items whose dump includes the final augment row "
+            "(Ear-Slot6, Primary-Slot5, etc.). Tier is resolved first; Evolver only "
+            "when the item has no recognized tier pattern."
         ),
         bg=_BG_PANEL,
         fg=_FG_MUTED,
         font=("Segoe UI", 9),
         wraplength=440,
         justify=tk.LEFT,
-    ).pack(anchor="w", padx=(0, 0), pady=(0, 8))
-
-    for gear_set in GEAR_SETS_NEWEST_FIRST:
-        add_legend_row(inner, GEAR_SET_FILLS[gear_set.key], gear_set.label)
+    ).pack(anchor="w", padx=(0, 0), pady=(8, 0))
 
     notes = (
-        "Unlisted items (e.g. Legacies Lost, Selenelion) have no tier color in Excel.\n\n"
-        "Excel legend: Team gear sheet, A26–A35 (Evolver + gear tiers).\n\n"
+        "Unlisted items (e.g. Legacies Lost, Selenelion) show as red (???).\n\n"
+        "Excel legend: Team gear sheet, A26–A30.\n\n"
         "Item names link to EQ Resource using the ID from your inventory dump."
     )
     tk.Label(
@@ -608,7 +605,7 @@ def _show_about(parent: tk.Tk) -> None:
         f"Inventory Parser {__version__}\n\n"
         "Build team gear Excel workbooks from EverQuest\n"
         "/outputfile inventory and missingspells dumps.\n\n"
-        "Sheets: Team gear, Gear T-Level, Missing Runes, Spell List.",
+        "Sheets: Team gear, Gear T-Level, Missing Runes, Missing Spells.",
         parent=parent,
     )
 

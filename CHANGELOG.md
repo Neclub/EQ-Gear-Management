@@ -6,6 +6,24 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.13.0] - 2026-06-12
+
+### Added
+
+- **Rune Inventory tab** (Excel + HTML): tier × character matrix of raid rune items on hand (NoS Symbol, LS Emblem, ToB Energized Engram, SoR Mirrorshard) from General, Bank, and Shared Bank. Blank cells when count is zero; tab omitted when the team has no matching runes. No MissingSpells file required.
+- **HTML Rune Inventory expansion filter:** **Expansion** dropdown (NoS, LS, ToB, SoR) on the Rune Inventory toolbar.
+
+### Fixed
+
+- **HTML search focus:** typing in the search box no longer blurs the input on each keystroke (only table content refreshes; toolbar controls stay mounted).
+
+### Changed
+
+- **Spell List renamed to Missing Spells** in Excel sheet tab, HTML sidebar, and docs (internal section id `spell_list` unchanged).
+- **Gear T-Level colors:** tier code cells use semantic buckets — green (`SOR-R2`), yellow (`SOR-R1`, `ANI27`), orange (all `TOB-*`), red (everything else), purple (`Evolver` unchanged). **Team Gear** now uses the same bucket colors (replacing per gear-set hues).
+- **HTML Missing Spells filters:** **Level range** (`121-125`, `126-130`) and **Rune type** (Minor → Glowing) dropdowns on the Missing Spells toolbar.
+- **HTML sidebar icons:** Lucide-style stroke icons (including a dedicated Rune Inventory stack icon); active nav uses a darker blue highlight.
+
 ## [1.12.0] - 2026-06-13
 
 ### Changed

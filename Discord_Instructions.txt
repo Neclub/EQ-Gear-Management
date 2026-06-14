@@ -45,10 +45,11 @@ Use **Browse…** to pick a different path if you want.
 ---
 
 **What you get (Excel)**
-• **Team Gear** — who is wearing what (color-coded by gear set)
+• **Team Gear** — who is wearing what (tier-bucket colors: green / yellow / orange / red / purple)
 • **Gear T-Level** — tier codes per slot (`SOR-R2`, `TOB-R2`, etc.)
 • **Unmade Gear** — craft mats and T1 containers in General bags that still upgrade a slot
-• **Missing Runes / Spell List** — missing Rk. III runes (121–125 & 126–130)
+• **Missing Runes / Missing Spells** — missing Rk. III runes (121–125 & 126–130)
+• **Rune Inventory** — on-hand raid runes in bags/bank (NoS, LS, ToB, SoR); no spell file needed
   • Missing Rk. II at those levels counts too (shown as Rk. III in the report)
 • **Missing Collections / Achievement Summary / Raid Achievements** — when achievement dumps are included
 
@@ -56,10 +57,10 @@ Item names link to EQ Resource when the dump has item IDs.
 
 **HTML report (optional)** — same data in a single `.html` file beside the Excel workbook (`{Server}_Team Inventory.html`). Open in any browser; no server needed.
 
-• **Sidebar** — section icons (Team Gear, Gear T-Level, Missing Runes, Spell List, …)
+• **Sidebar** — Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Rune Inventory, …)
 • **Character filter** chips under the nav — filter the whole report by toon
-• **Search**, **sort** (click headers), **Visible slots** on gear tabs
-• **Character** / **Expansion** dropdowns on table tabs (Spell List, Raid Achievements, etc.)
+• **Search**, **sort** (click headers), **Visible slots** on gear tabs (search keeps focus while typing)
+• **Character** / **Level range** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Raid Achievements, Rune Inventory, etc.)
 • Gear colors and EQ Resource links match Excel
 
 ---

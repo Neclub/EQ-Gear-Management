@@ -14,10 +14,11 @@ EverQuest tool that builds a **dark-themed Excel workbook** from team inventory 
 |---------|-------------|
 | Multi-character export | One column per character (or persona) from `*-Inventory.txt` dumps |
 | Slot layout | Visible slots first, then non-visible; filter to all / visible / non-visible |
-| Gear set colors | Fracture, Rebellion, Evolver, etc. on **Team Gear**; legend on-sheet, in HTML footer, and in GUI Help |
+| Gear set colors | Semantic tier buckets on **Team Gear** and **Gear T-Level** (green / yellow / orange / red / purple); legend on-sheet, HTML footer, and GUI Help |
 | EQ Resource links | Item names hyperlink using item IDs from dumps |
 | **Gear T-Level** | Expansion tier codes per slot (`SOR-R2`, `TOB-R2`, etc.); blank = empty; `Evolver` = Evolver item |
-| **Missing Runes** / **Spell List** | Optional tabs: rune count matrix and missing **Rk. III** spell list |
+| **Missing Runes** / **Missing Spells** | Optional tabs: rune count matrix and missing **Rk. III** spell list |
+| **Rune Inventory** | On-hand raid rune counts (NoS / LS / ToB / SoR) from inventory dumps — no spell file required |
 | **Achievements** | Optional Missing Collections, Achievement Summary, and Raid Achievements tabs |
 | **Unmade Gear** | Craft mats and T1 containers in General bags that still upgrade a slot |
 | **HTML report** | Optional self-contained `{Server}_Team Inventory.html` — sidebar navigation, search, filters, sort (CLI: `--also-html`; GUI: **HTML** chip, on by default) |
@@ -82,7 +83,7 @@ Default output name: **`{Server}_Team Inventory.xlsx`** (e.g. `Bristlebane_Team 
 - Columns = characters  
 - **Visibility** column for Excel filters  
 - **Evolver** detection via augment rows (`Ear-Slot6`, `Primary-Slot5`, …) — purple fill, not the Slots column value `6`  
-- Gear-set legend at A26–A35  
+- Tier-bucket legend at A26–A30 (green / yellow / orange / red / purple)  
 
 ### Gear T-Level
 
@@ -91,12 +92,12 @@ Default output name: **`{Server}_Team Inventory.xlsx`** (e.g. `Bristlebane_Team 
 - Blank = empty slot; `Evolver` = Evolver item; `???` = unrecognized gear  
 - Legend on the Gear T-Level sheet lists all tier codes
 
-### Missing Runes & Spell List
+### Missing Runes & Missing Spells
 
 Included when spell files are found and the **Spells** chip is enabled (GUI) or `--no-spells` is not passed (CLI).
 
 - **Missing Runes:** rune counts (Minor → Glowing) per character for each enabled level band  
-- **Spell List:** Character, Levels, Level, Rune, Spell — zebra striping by character, tier/block colors, frozen header, auto-filter  
+- **Missing Spells:** Character, Levels, Level, Rune, Spell — zebra striping by character, tier/block colors, frozen header, auto-filter  
 
 Level bands with `"count_runes": true` in config (current defaults):
 
@@ -108,6 +109,16 @@ Level bands with `"count_runes": true` in config (current defaults):
 `{Tier}` is Minor, Lesser, Median, Greater, or Glowing (one per level; matches the Missing Runes rows). Examples: *Minor Emblem of the Forge*, *Energized Glowing Engram*, *Median Mirrorshard of Relic*.
 
 Configure bands in `src/inventory_parser/data/spell_rune_bands.json` (`turn_in_theme` = rune family shown on the Missing Runes sheet). Add a new block with `"count_runes": true` for future level caps without code changes.
+
+### Rune Inventory
+
+Included automatically when inventory dumps contain matching raid rune items (no spell file required).
+
+- **Rune Inventory:** on-hand counts (Minor → Glowing) per character for four families — NoS `{Tier} Symbol of Shar Vahl`, LS `{Tier} Emblem of the Forge`, ToB `Energized {Tier} Engram`, SoR `{Tier} Mirrorshard of Relic`
+- Scans **General**, **Bank**, and **Shared Bank**; blank cells when count is zero; tab omitted when the team has none
+- Inert and Covariant Engrams are excluded (ToB counts **Energized** engrams only)
+
+Configure families in `src/inventory_parser/data/spell_rune_inventory.json`.
 
 Official spell lists (Rank 1 vendors, Rank 2/3 turn-in items) on EQ Resource:
 
@@ -121,9 +132,9 @@ When the **HTML** chip is enabled (GUI default) or **`--also-html`** is passed (
 
 | Area | What you get |
 |------|----------------|
-| **Sidebar** | EQ logo, section list with icons (Team Gear, Gear T-Level, Missing Runes, Spell List, Unmade Gear, achievements…), **Character filter** chips below the nav |
+| **Sidebar** | EQ logo, Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Rune Inventory, Unmade Gear, achievements…), **Character filter** chips below the nav |
 | **Main header** | `{Server} Team Inventory`, character count, generation date |
-| **Toolbar** | Search; **Visible slots** on gear tabs; **Character** / **Expansion** dropdowns on table tabs |
+| **Toolbar** | Search (keeps focus while typing); **Visible slots** on gear tabs; **Character** / **Level range** / **Rune type** / **Expansion** dropdowns on table tabs; **Expansion** on Rune Inventory (NoS / LS / ToB / SoR) |
 | **Gear tables** | Color-coded cells, sticky Slot column, EQ Resource links |
 | **Footer** | Gear-tier color legend (Team Gear tab) |
 
@@ -167,7 +178,7 @@ py -3 -m inventory_parser --folder Examples -o out.xlsx --also-html
 | `--folder` | Scan folder for matching dump files |
 | `-o`, `--output` | Output `.xlsx` path (required) |
 | `--slots` | `all` (default), `visible`, or `non_visible` |
-| `--no-spells` | Omit Missing Runes and Spell List sheets |
+| `--no-spells` | Omit Missing Runes and Missing Spells sheets |
 | `--no-achievements` | Omit achievement sheets |
 | `--also-html` | Also write `{prefix}_Team Inventory.html` next to the workbook |
 
@@ -182,7 +193,7 @@ cd "Inventory Parser"
 .\build_exe.bat
 ```
 
-Output: `dist\InventoryParser-<version>.exe` (e.g. `InventoryParser-1.12.0.exe`; Explorer opens with the file selected when the build finishes).
+Output: `dist\InventoryParser-<version>.exe` (e.g. `InventoryParser-1.13.0.exe`; Explorer opens with the file selected when the build finishes).
 
 `build_exe.bat` installs the package (including Pillow) and runs PyInstaller with Pillow bundled for pill-button rendering. Close any running `InventoryParser-*.exe` before rebuilding if you get “Access is denied” on the output file.
 

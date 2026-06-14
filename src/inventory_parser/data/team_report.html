@@ -64,11 +64,18 @@ body {
 }
 .nav-btn:hover { background: var(--panel-hover); color: var(--text); }
 .nav-btn.active {
-  background: var(--accent-soft);
+  background: #1e3a5f;
   color: var(--text);
   font-weight: 600;
 }
-.nav-btn svg { width: 18px; height: 18px; flex-shrink: 0; opacity: 0.82; }
+.nav-btn svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  opacity: 0.82;
+}
 .nav-btn.active svg { color: #c8d4f0; opacity: 1; }
 .char-filter-section {
   margin-top: 16px;
@@ -259,39 +266,57 @@ a:hover { text-decoration: underline; }
 </head>
 <body>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- Lucide-style stroke icons (MIT) -->
   <symbol id="icon-shield" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 3.1 19 6v5.9c0 4.6-3 8.1-7 9-4-.9-7-4.4-7-9V6l7-2.9z"/>
-    <path d="M12 6.8v11"/>
+    <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>
   </symbol>
-  <symbol id="icon-chart" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M4.5 20h3.2V12H4.5v8zm5.1 0H13V8.5h-3.4V20zm5.1 0h3.3V5h-3.3v15z"/>
+  <symbol id="icon-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" x2="18" y1="20" y2="10"/>
+    <line x1="12" x2="12" y1="20" y2="4"/>
+    <line x1="6" x2="6" y1="20" y2="14"/>
   </symbol>
   <symbol id="icon-rune" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="8.25"/>
-    <path d="M12 7.2v9.6M8.1 10.2h7.8M8.1 13.8h7.8"/>
-    <path d="M12 10.2 9.4 12 12 13.8l2.6-1.8-2.6-1.8z"/>
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M8 12h8"/>
+    <path d="M12 8v8"/>
+  </symbol>
+  <symbol id="icon-rune-stack" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/>
+    <path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/>
+    <path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/>
   </symbol>
   <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 5.1c-2.5 0-5-.9-5-.9V19s2.5-.9 5-.9 5 .9 5 .9V4.2s-2.5.9-5 .9z"/>
-    <path d="M12 5.1c2.5 0 5-.9 5-.9V19s-2.5-.9-5-.9"/>
-    <path d="M8.2 9h2.4M8.2 11.4h2.4M8.2 13.8h1.8"/>
-    <path d="M14.8 9h1.6M14.8 11.4h1.6M14.8 13.8h1.2"/>
+    <path d="M12 7v14"/>
+    <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>
   </symbol>
-  <symbol id="icon-anvil" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M7.2 18.4h9.6v1.6H7.2v-1.6zm-1.4-2h12.4l1.3 2H4.5l1.3-2zm1.1-2.2h10.2l1-3.1H6.8l1.1 3.1zM10.2 11h3.6l.9-2.8h-5.4l.9 2.8zM12 5.4c1.9 0 3.4 1.1 3.7 2.7H8.3c.3-1.6 1.8-2.7 3.7-2.7z"/>
+  <symbol id="icon-anvil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 10H6a4 4 0 0 1 4-4"/>
+    <path d="M7 14v6"/>
+    <path d="M11 14v6"/>
+    <path d="M15 14v6"/>
+    <path d="M18 10h1a4 4 0 0 0-4-4"/>
+    <path d="M7 10h10"/>
+    <path d="M8 18h8"/>
   </symbol>
-  <symbol id="icon-chest" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M4.5 12.2h15v7.8h-15v-7.8zm7.5-7c4 0 7.2 2.7 7.2 6.2H4.8c0-3.5 3.2-6.2 7.2-6.2z"/>
-    <rect x="10.8" y="14.2" width="2.4" height="3.2" rx="0.4" opacity="0.45"/>
+  <symbol id="icon-chest" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <rect width="20" height="5" x="2" y="3" rx="1"/>
+    <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/>
+    <path d="M10 12h4"/>
   </symbol>
-  <symbol id="icon-trophy" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M8.4 4.2h7.2v4c0 2.2-1.6 4-3.6 4s-3.6-1.8-3.6-4v-4zm-3.1 1h1.9v3.1c0 1.9 1.3 3.5 3.1 4V4.2H5.3v1zm13.4 0H20v7.3c-1.8-.5-3.1-2.1-3.1-4V5.2zM9.6 14.6h4.8v2.4H9.6v-2.4zM8.2 17h7.6v1.8H8.2V17z"/>
+  <symbol id="icon-trophy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 21h8"/>
+    <path d="M12 17v4"/>
+    <path d="M7 4h10"/>
+    <path d="M17 4v4a5 5 0 0 1-10 0V4"/>
+    <path d="M5 5H3a2 2 0 0 0 2 2"/>
+    <path d="M19 5h2a2 2 0 0 1-2 2"/>
   </symbol>
-  <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+  <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
     <circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/>
   </symbol>
   <symbol id="icon-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12 16.8V21M9.2 4.5h5.6l-.9 6.3 3.4 3.1-1.8 1-1.7-1-1.7 1-1.8-1 3.4-3.1-.9-6.3z"/>
+    <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
+    <circle cx="12" cy="10" r="3"/>
   </symbol>
 </svg>
 <div id="app">
@@ -324,6 +349,7 @@ const SECTION_ICONS = {
   team_gear: "icon-shield",
   gear_t_level: "icon-chart",
   missing_runes: "icon-rune",
+  rune_inventory: "icon-rune-stack",
   spell_list: "icon-book",
   unmade_gear: "icon-anvil",
   missing_collections: "icon-chest",
@@ -348,6 +374,8 @@ const state = {
   searches: {},
   chars: {},
   expansions: {},
+  blocks: {},
+  runes: {},
 };
 
 function el(tag, cls, text) {
@@ -390,16 +418,10 @@ function rowPassesSlotFilter(row) {
   return row.visibility === "Non-visible";
 }
 
-function gearStyle(cell, tierMode) {
+function gearStyle(cell) {
   if (!cell) return "empty";
-  if (tierMode) {
-    const code = cell.tierCode || "";
-    return REPORT.theme.tierCodes[code] ? `background:#${REPORT.theme.tierCodes[code]}` : "";
-  }
-  if (cell.gearSet && REPORT.theme.gearSets[cell.gearSet]) {
-    return `background:#${REPORT.theme.gearSets[cell.gearSet]}`;
-  }
-  return "";
+  const code = cell.tierCode || "";
+  return REPORT.theme.tierCodes[code] ? `background:#${REPORT.theme.tierCodes[code]}` : "";
 }
 
 function compareValues(a, b) {
@@ -440,13 +462,15 @@ function updateToolbar() {
     search.placeholder = "Filter items…";
   } else if (section.type === "missing_runes") {
     search.placeholder = "Search rune tiers…";
+  } else if (section.type === "rune_inventory") {
+    search.placeholder = "Search rune tiers…";
   } else {
     search.placeholder = "Search…";
   }
   search.value = state.searches[section.id] || "";
   search.addEventListener("input", () => {
     state.searches[section.id] = search.value;
-    renderActivePanel();
+    refreshContent();
   });
   searchWrap.appendChild(search);
   toolbar.appendChild(searchWrap);
@@ -461,7 +485,7 @@ function updateToolbar() {
     sel.value = state.slotFilter;
     sel.addEventListener("change", () => {
       state.slotFilter = sel.value;
-      renderActivePanel();
+      refreshContent();
     });
     toolbar.appendChild(label);
     toolbar.appendChild(sel);
@@ -480,9 +504,55 @@ function updateToolbar() {
     sel.value = selected;
     sel.addEventListener("change", () => {
       state.chars[section.id] = sel.value;
-      renderActivePanel();
+      refreshContent();
     });
     toolbar.appendChild(el("label", null, "Character"));
+    toolbar.appendChild(sel);
+  }
+
+  if (section.id === "spell_list" && section.data.rows.length) {
+    const data = section.data;
+    if (data.blockOptions && data.blockOptions.length) {
+      const sel = document.createElement("select");
+      sel.innerHTML =
+        '<option value="">All ranges</option>' +
+        data.blockOptions.map((b) => `<option value="${String(b).replace(/"/g, "&quot;")}">${b}</option>`).join("");
+      sel.value = state.blocks[section.id] || "";
+      sel.addEventListener("change", () => {
+        state.blocks[section.id] = sel.value;
+        refreshContent();
+      });
+      toolbar.appendChild(el("label", null, "Level range"));
+      toolbar.appendChild(sel);
+    }
+    if (data.runeOptions && data.runeOptions.length) {
+      const sel = document.createElement("select");
+      sel.innerHTML =
+        '<option value="">All runes</option>' +
+        data.runeOptions.map((r) => `<option value="${String(r).replace(/"/g, "&quot;")}">${r}</option>`).join("");
+      sel.value = state.runes[section.id] || "";
+      sel.addEventListener("change", () => {
+        state.runes[section.id] = sel.value;
+        refreshContent();
+      });
+      toolbar.appendChild(el("label", null, "Rune type"));
+      toolbar.appendChild(sel);
+    }
+  }
+
+  if (section.type === "rune_inventory" && section.data.expansionOptions?.length) {
+    const sel = document.createElement("select");
+    sel.innerHTML =
+      '<option value="">All expansions</option>' +
+      section.data.expansionOptions
+        .map((x) => `<option value="${String(x).replace(/"/g, "&quot;")}">${x}</option>`)
+        .join("");
+    sel.value = state.expansions[section.id] || "";
+    sel.addEventListener("change", () => {
+      state.expansions[section.id] = sel.value;
+      refreshContent();
+    });
+    toolbar.appendChild(el("label", null, "Expansion"));
     toolbar.appendChild(sel);
   }
 
@@ -497,7 +567,7 @@ function updateToolbar() {
     sel.value = state.expansions[section.id] || "";
     sel.addEventListener("change", () => {
       state.expansions[section.id] = sel.value;
-      renderActivePanel();
+      refreshContent();
     });
     toolbar.appendChild(el("label", null, "Expansion"));
     toolbar.appendChild(sel);
@@ -576,7 +646,7 @@ function updateGearMatrixContent(content, section, tierMode) {
         td.className = "empty";
       } else if (tierMode) {
         td.textContent = cell.label || "";
-        const style = gearStyle(cell, true);
+        const style = gearStyle(cell);
         if (style) td.setAttribute("style", style);
       } else {
         if (cell.url) {
@@ -589,7 +659,7 @@ function updateGearMatrixContent(content, section, tierMode) {
         } else {
           td.textContent = cell.name;
         }
-        const style = gearStyle(cell, false);
+        const style = gearStyle(cell);
         if (style) td.setAttribute("style", style);
       }
       tr.appendChild(td);
@@ -619,6 +689,12 @@ function updateTableContent(content, section) {
   if (data.expansionColumn != null && state.expansions[section.id]) {
     rows = rows.filter((r) => r[data.expansionColumn] === state.expansions[section.id]);
   }
+  if (data.blockColumn != null && state.blocks[section.id]) {
+    rows = rows.filter((r) => r[data.blockColumn] === state.blocks[section.id]);
+  }
+  if (data.runeColumn != null && state.runes[section.id]) {
+    rows = rows.filter((r) => r[data.runeColumn] === state.runes[section.id]);
+  }
   if (sort.col != null) {
     rows.sort((a, b) => sort.dir * compareValues(a[sort.col], b[sort.col]));
   }
@@ -633,7 +709,7 @@ function updateTableContent(content, section) {
       if (sort.col === idx) sort.dir *= -1;
       else { sort.col = idx; sort.dir = 1; }
       state.sorts[section.id] = sort;
-      renderActivePanel();
+      refreshContent();
     });
     headRow.appendChild(th);
   });
@@ -686,6 +762,45 @@ function updateMissingRunesContent(content, section) {
   });
 }
 
+function updateRuneInventoryContent(content, section) {
+  const data = section.data;
+  const q = (state.searches[section.id] || "").trim().toLowerCase();
+  const expansion = state.expansions[section.id] || "";
+  const colIndices = filteredColumnIndices(data.characters);
+  const families = expansion
+    ? data.families.filter((family) => family.label === expansion)
+    : data.families;
+
+  families.forEach((family) => {
+    content.appendChild(el("div", "block-title", family.label));
+    content.appendChild(el("div", "block-sub", `${family.label} · ${family.itemPattern}`));
+    const wrap = el("div", "table-wrap");
+    const table = document.createElement("table");
+    const headRow = document.createElement("tr");
+    headRow.appendChild(el("th", null, "Rune tier"));
+    colIndices.forEach((idx) => headRow.appendChild(el("th", null, data.characters[idx])));
+    table.appendChild(document.createElement("thead")).appendChild(headRow);
+    const tbody = document.createElement("tbody");
+    family.rows.forEach((row) => {
+      if (q && !row.tier.toLowerCase().includes(q)) return;
+      const tr = document.createElement("tr");
+      const tierTd = el("td", null, row.tier);
+      const tierColor = REPORT.theme.spellTiers[row.tier];
+      if (tierColor) tierTd.style.background = "#" + tierColor;
+      tr.appendChild(tierTd);
+      colIndices.forEach((idx) => {
+        const count = row.counts[idx];
+        const td = el("td", count ? "count-cell" : "count-cell count-zero", count ? String(count) : "");
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    content.appendChild(wrap);
+  });
+}
+
 function updatePanelContent(panel, section) {
   panel.innerHTML = "";
   if (section.type === "gear_matrix") {
@@ -694,15 +809,21 @@ function updatePanelContent(panel, section) {
     updateTableContent(panel, section);
   } else if (section.type === "missing_runes") {
     updateMissingRunesContent(panel, section);
+  } else if (section.type === "rune_inventory") {
+    updateRuneInventoryContent(panel, section);
   }
 }
 
-function renderActivePanel() {
+function refreshContent() {
   const section = activeSection();
   const panel = document.getElementById("panel-" + state.activeTab);
   if (section && panel) updatePanelContent(panel, section);
-  updateToolbar();
   updateTierLegend();
+}
+
+function renderActivePanel() {
+  refreshContent();
+  updateToolbar();
 }
 
 function setActiveTab(idx) {
@@ -717,7 +838,7 @@ function setCharacterFilter(key) {
   document.querySelectorAll(".char-chip").forEach((chip) => {
     chip.classList.toggle("active", chip.dataset.key === key);
   });
-  renderActivePanel();
+  refreshContent();
 }
 
 function initCharacterFilter() {

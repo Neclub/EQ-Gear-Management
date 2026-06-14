@@ -3,7 +3,16 @@ from pathlib import Path
 from openpyxl import load_workbook
 
 from inventory_parser.team_report import build_team_report
-from inventory_parser.excel_export import GEAR_T_LEVEL_SHEET_NAME, UNMADE_GEAR_SHEET_NAME, write_team_workbook
+from inventory_parser.excel_export import (
+    GEAR_T_LEVEL_SHEET_NAME,
+    MISSING_SPELLS_SHEET_NAME,
+    RUNE_INVENTORY_SHEET_NAME,
+    UNMADE_GEAR_SHEET_NAME,
+    _matrix_character_col_width,
+    write_team_workbook,
+)
+from inventory_parser.excel_theme import TIER_COLOR_ORANGE
+from inventory_parser.rune_inventory import build_rune_inventory_report
 from inventory_parser.excel_theme import SHEET_BACKGROUND_COLS, SHEET_BACKGROUND_ROWS
 from inventory_parser.spell_report import build_spell_rune_report
 from inventory_parser.parser import extract_equipped_items, parse_inventory_file
@@ -126,7 +135,7 @@ def test_includes_all_example_characters() -> None:
     }
 
 
-def test_gear_legend_on_a26_a35(tmp_path: Path) -> None:
+def test_gear_legend_on_a26_a30(tmp_path: Path) -> None:
     paths = [EXAMPLES / "Deflub_bristle-Inventory.txt"]
     report = build_team_report(paths)
     out = tmp_path / "crew.xlsx"
@@ -134,13 +143,9 @@ def test_gear_legend_on_a26_a35(tmp_path: Path) -> None:
 
     wb = load_workbook(out, data_only=False)
     ws = wb["Team gear"]
-    assert ws.cell(25, 1).value == "Gear sets (newest to oldest)"
-    assert ws.cell(26, 1).fill.start_color.rgb in ("005C4688", "FF5C4688")
-    assert "Evolver" in str(ws.cell(26, 2).value)
-    assert ws.cell(27, 1).fill.start_color.rgb in ("003A3350", "FF3A3350")
-    assert "Fracture" in str(ws.cell(27, 2).value)
-    assert ws.cell(35, 1).fill.start_color.rgb in ("003A3935", "FF3A3935")
-    assert "Luclinite Coagulated" in str(ws.cell(35, 2).value)
+    assert ws.cell(25, 1).value == "Gear tier colors"
+    assert ws.cell(26, 2).value == "Green — SOR-R2 (current SoR raid)"
+    assert ws.cell(30, 2).value == "Purple — Evolver"
 
 
 def test_black_background_to_row_50_column_z(tmp_path: Path) -> None:
@@ -180,7 +185,10 @@ def test_rebellion_cell_has_fill(tmp_path: Path) -> None:
     charm_row = 2 + list(TEAM_GEAR_SLOTS).index("Charm")
     charm_cell = ws.cell(charm_row, _FIRST_CHAR_COL)
     assert charm_cell.value == "Defender's Charm of Rebellion"
-    assert charm_cell.fill.start_color.rgb in ("00542A35", "FF542A35")
+    assert charm_cell.fill.start_color.rgb in (
+        f"00{TIER_COLOR_ORANGE}",
+        f"FF{TIER_COLOR_ORANGE}",
+    )
 
     assert wb.sheetnames == ["Team gear", GEAR_T_LEVEL_SHEET_NAME, UNMADE_GEAR_SHEET_NAME]
 
@@ -255,19 +263,22 @@ def test_spell_tabs_all_examples(tmp_path: Path) -> None:
     team = build_team_report(paths)
     spell = build_spell_rune_report(team, inventory_paths=paths)
     assert spell is not None
+    rune = build_rune_inventory_report(team)
+    assert rune is not None
     out = tmp_path / "crew_spells.xlsx"
-    write_team_workbook(team, out, spell_report=spell)
+    write_team_workbook(team, out, spell_report=spell, rune_inventory_report=rune)
 
     wb = load_workbook(out, data_only=True)
     assert wb.sheetnames == [
         "Team gear",
         GEAR_T_LEVEL_SHEET_NAME,
         "Missing Runes",
-        "Spell List",
+        MISSING_SPELLS_SHEET_NAME,
+        RUNE_INVENTORY_SHEET_NAME,
         UNMADE_GEAR_SHEET_NAME,
     ]
     assert wb["Missing Runes"]["A1"].value == "Missing Runes"
-    ws = wb["Spell List"]
+    ws = wb[MISSING_SPELLS_SHEET_NAME]
     detail_row = next(
         r
         for r in range(1, ws.max_row + 1)
@@ -286,7 +297,7 @@ def test_spell_list_black_background_through_z(tmp_path: Path) -> None:
     write_team_workbook(team, out, spell_report=spell)
 
     wb = load_workbook(out, data_only=False)
-    ws = wb["Spell List"]
+    ws = wb[MISSING_SPELLS_SHEET_NAME]
     last_row = max(
         r
         for r in range(1, ws.max_row + 1)
@@ -324,8 +335,40 @@ def test_character_without_spell_file_has_plain_name(tmp_path: Path) -> None:
 
 def test_no_spell_tabs_without_data(tmp_path: Path) -> None:
     paths = [EXAMPLES / "Deflub_bristle-Inventory.txt"]
+    report = build_team_report(paths)
+    rune = build_rune_inventory_report(report)
+    assert rune is not None
     out = tmp_path / "gear_only.xlsx"
-    write_team_workbook(build_team_report(paths), out, spell_report=None)
+    write_team_workbook(report, out, spell_report=None, rune_inventory_report=rune)
     names = load_workbook(out).sheetnames
     assert "Missing Runes" not in names
-    assert "Spell List" not in names
+    assert MISSING_SPELLS_SHEET_NAME not in names
+    assert RUNE_INVENTORY_SHEET_NAME in names
+
+
+def test_rune_inventory_sheet_counts(tmp_path: Path) -> None:
+    paths = [EXAMPLES / "Deflub_bristle-Inventory.txt"]
+    report = build_team_report(paths)
+    rune_report = build_rune_inventory_report(report)
+    assert rune_report is not None
+    out = tmp_path / "runes.xlsx"
+    write_team_workbook(report, out, rune_inventory_report=rune_report)
+
+    wb = load_workbook(out, data_only=True)
+    assert RUNE_INVENTORY_SHEET_NAME in wb.sheetnames
+    ws = wb[RUNE_INVENTORY_SHEET_NAME]
+    assert ws["A1"].value == "Rune Inventory"
+    assert ws["A4"].value == "NoS"
+    assert ws["A5"].value == "NoS · {Tier} Symbol of Shar Vahl"
+    display_name = report.characters[0].display_name
+    assert ws.column_dimensions["B"].width == _matrix_character_col_width(display_name)
+    assert ws.column_dimensions["B"].width > 11.0
+
+
+def test_rune_inventory_sheet_omitted_without_runes(tmp_path: Path) -> None:
+    paths = [EXAMPLES / "Stablub_bristle-Inventory.txt"]
+    report = build_team_report(paths)
+    assert build_rune_inventory_report(report) is None
+    out = tmp_path / "no_runes.xlsx"
+    write_team_workbook(report, out)
+    assert RUNE_INVENTORY_SHEET_NAME not in load_workbook(out).sheetnames

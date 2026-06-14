@@ -82,6 +82,8 @@ def generate_workbook(
 
             spell_report=bundle.spell_report,
 
+            rune_inventory_report=bundle.rune_inventory_report,
+
             achievement_report=bundle.achievement_report,
 
         )
@@ -178,7 +180,7 @@ def main(argv: list[str] | None = None) -> int:
 
         action="store_true",
 
-        help="Skip Missing Runes and Spell List tabs even if *-MissingSpells.txt files are found",
+        help="Skip Missing Runes and Missing Spells tabs even if *-MissingSpells.txt files are found",
 
     )
 

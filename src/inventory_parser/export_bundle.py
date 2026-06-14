@@ -15,6 +15,7 @@ from inventory_parser.team_report import TeamGearReport, build_team_report
 from inventory_parser.missing_spells import split_input_paths
 from inventory_parser.slots import SlotFilter
 from inventory_parser.spell_report import SpellRuneReport, build_spell_rune_report
+from inventory_parser.rune_inventory import RuneInventoryReport, build_rune_inventory_report
 from inventory_parser.unmade_gear import UnmadeGearEntry, build_unmade_gear_report
 
 
@@ -24,6 +25,7 @@ class ExportBundle:
     spell_report: SpellRuneReport | None = None
     achievement_report: AchievementReport | None = None
     unmade_entries: list[UnmadeGearEntry] = field(default_factory=list)
+    rune_inventory_report: RuneInventoryReport | None = None
     warnings: list[str] = field(default_factory=list)
     slot_filter: SlotFilter = "all"
 
@@ -80,11 +82,13 @@ def build_export_bundle(
         report,
         character_column_order,
     )
+    rune_inventory_report = build_rune_inventory_report(report)
     return ExportBundle(
         team=report,
         spell_report=spell_report,
         achievement_report=achievement_report,
         unmade_entries=unmade_entries,
+        rune_inventory_report=rune_inventory_report,
         warnings=warnings,
         slot_filter=slot_filter,
     )

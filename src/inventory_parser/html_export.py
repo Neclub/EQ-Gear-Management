@@ -14,52 +14,26 @@ from inventory_parser.achievement_parser import (
     format_expansion_label,
 )
 from inventory_parser.team_report import CharacterGear, TeamGearReport
-from inventory_parser.evolver import EVOLVER_GAP_LABEL
 from inventory_parser.excel_export import (
     ACHIEVEMENT_SUMMARY_SHEET_NAME,
     GEAR_T_LEVEL_SHEET_NAME,
     MISSING_COLLECTIONS_SHEET_NAME,
+    MISSING_SPELLS_SHEET_NAME,
     RAID_ACHIEVEMENTS_SHEET_NAME,
+    RUNE_INVENTORY_SHEET_NAME,
     UNMADE_GEAR_SHEET_NAME,
 )
-from inventory_parser.excel_theme import GEAR_SET_FILLS, SPELL_TIER_COLORS
+from inventory_parser.excel_theme import GEAR_SET_FILLS, SPELL_TIER_COLORS, build_gear_legend, build_tier_code_colors
 from inventory_parser.export_bundle import ExportBundle
-from inventory_parser.gear_sets import GEAR_SETS_NEWEST_FIRST, classify_gear_set
-from inventory_parser.gear_tiers import UNKNOWN_TIER_LABEL
 from inventory_parser.items import EQRESOURCE_ITEM_URL, EquippedItem
+from inventory_parser.rune_inventory import RuneInventoryReport
 from inventory_parser.output_paths import default_export_prefix_from_report
 from inventory_parser.package_data import asset_path, read_data_text
 from inventory_parser.slots import slot_visibility, slots_for_export
 from inventory_parser.sor_tier import sor_gap_label
-from inventory_parser.spell_report import SpellRuneReport
+from inventory_parser.spell_runes import load_rune_config
 
 _REPORT_JSON_MARKER = "/*__REPORT_JSON__*/"
-
-_TIER_CODE_COLORS: dict[str, str] = {
-    "SOR-R2": GEAR_SET_FILLS["fracture"],
-    "SOR-R1": GEAR_SET_FILLS["shattered_dominion"],
-    "TOB-R2": GEAR_SET_FILLS["rebellion"],
-    "TOB-R1": GEAR_SET_FILLS["bound"],
-    "LS-R2": GEAR_SET_FILLS["eternal_reverie"],
-    "LS-R1": GEAR_SET_FILLS["heroic_reflections"],
-    "NoS-R2": GEAR_SET_FILLS["spectral_luclinite"],
-    "NoS-R1": GEAR_SET_FILLS["spectral_luminosity"],
-    "SOR-G3": "3A3350",
-    "SOR-G2": "403850",
-    "SOR-G1": "453850",
-    "TOB-G3": "4A3848",
-    "TOB-G2": "503848",
-    "TOB-G1": "543848",
-    "LS-G3": "2E4050",
-    "LS-G2": "344850",
-    "LS-G1": "3A4850",
-    "NoS-G3": "344838",
-    "NoS-G2": "3A4838",
-    "NoS-G1": "404838",
-    "ANI27": "2A4555",
-    EVOLVER_GAP_LABEL: GEAR_SET_FILLS["evolver"],
-    UNKNOWN_TIER_LABEL: "542A35",
-}
 
 
 def _slots_for_tier_sheet(report: TeamGearReport, base_slots: tuple[str, ...]) -> tuple[str, ...]:
@@ -86,12 +60,12 @@ def _item_url(item_id: int) -> str | None:
 def _gear_item_cell(item: EquippedItem | None) -> dict | None:
     if item is None:
         return None
-    gear_set = classify_gear_set(item.name)
+    tier_code = sor_gap_label(item.name, is_evolver=item.is_evolver)
     return {
         "name": item.name,
         "itemId": item.item_id,
         "url": _item_url(item.item_id),
-        "gearSet": gear_set.key if gear_set else None,
+        "tierCode": tier_code,
         "isEvolver": item.is_evolver,
     }
 
@@ -141,10 +115,18 @@ def _serialize_spell_list(spell_report: SpellRuneReport, characters: list[Charac
         ]
         for entry in spell_report.entries
     ]
+    block_options = sorted({entry.block_label for entry in spell_report.entries})
+    tiers_in_data = {entry.rune_tier for entry in spell_report.entries}
+    tier_order = load_rune_config().tiers
+    rune_options = [tier for tier in tier_order if tier in tiers_in_data]
     return {
         "columns": columns,
         "rows": rows,
         "characterColumn": 0,
+        "blockColumn": 1,
+        "runeColumn": 3,
+        "blockOptions": block_options,
+        "runeOptions": rune_options,
         "expansionColumn": None,
     }
 
@@ -176,6 +158,35 @@ def _serialize_missing_runes(
     return {
         "characters": [c.display_name for c in characters],
         "blocks": blocks,
+    }
+
+
+def _serialize_rune_inventory(report: RuneInventoryReport) -> dict:
+    families: list[dict] = []
+    expansion_options: list[str] = []
+    for family in report.families:
+        family_rows: list[dict] = []
+        for tier in family.tiers:
+            counts = [
+                family.counts.get(char.persona_key, {}).get(tier, 0)
+                for char in report.characters
+            ]
+            family_rows.append({"tier": tier, "counts": counts})
+        has_counts = any(count > 0 for row in family_rows for count in row["counts"])
+        if has_counts:
+            expansion_options.append(family.label)
+        families.append(
+            {
+                "id": family.id,
+                "label": family.label,
+                "itemPattern": family.item_pattern,
+                "rows": family_rows,
+            }
+        )
+    return {
+        "characters": [c.display_name for c in report.characters],
+        "families": families,
+        "expansionOptions": expansion_options,
     }
 
 
@@ -244,9 +255,19 @@ def serialize_report(bundle: ExportBundle) -> dict:
         sections.append(
             {
                 "id": "spell_list",
-                "title": "Spell List",
+                "title": MISSING_SPELLS_SHEET_NAME,
                 "type": "table",
                 "data": _serialize_spell_list(bundle.spell_report, spell_chars),
+            }
+        )
+
+    if bundle.rune_inventory_report is not None:
+        sections.append(
+            {
+                "id": "rune_inventory",
+                "title": RUNE_INVENTORY_SHEET_NAME,
+                "type": "rune_inventory",
+                "data": _serialize_rune_inventory(bundle.rune_inventory_report),
             }
         )
 
@@ -382,10 +403,7 @@ def serialize_report(bundle: ExportBundle) -> dict:
                 }
             )
 
-    gear_legend = [
-        {"key": gear_set.key, "label": gear_set.label, "color": GEAR_SET_FILLS[gear_set.key]}
-        for gear_set in GEAR_SETS_NEWEST_FIRST
-    ]
+    gear_legend = build_gear_legend()
 
     prefix = default_export_prefix_from_report(report)
 
@@ -407,7 +425,7 @@ def serialize_report(bundle: ExportBundle) -> dict:
         },
         "theme": {
             "gearSets": GEAR_SET_FILLS,
-            "tierCodes": _TIER_CODE_COLORS,
+            "tierCodes": build_tier_code_colors(),
             "spellTiers": SPELL_TIER_COLORS,
         },
         "gearLegend": gear_legend,

@@ -110,7 +110,7 @@ The file uses a **dark theme** (black background, light text). Item names link t
 
 - One **column per character**, one **row per equipped slot**  
 - Rows are grouped **visible** gear first, then **non-visible**  
-- **Colors** show gear set (Fracture, Rebellion, Evolver, etc.) — see the legend on the sheet (rows 26–35) or **Help** → gear tier colors in the app  
+- **Colors** show tier bucket (green / yellow / orange / red / purple) — same rules as Gear T-Level; see legend on the sheet (rows 26–30) or **Help** → gear tier colors in the app  
 - **Purple** = Evolver (special augment slot, not the “6” in the Slots column)
 
 ### Gear T-Level
@@ -127,13 +127,25 @@ Same layout as Team Gear, but cells show **what tier is equipped** in each slot:
 
 See the legend on the Gear T-Level sheet for the full code list.
 
+**Cell colors** (Team Gear and Gear T-Level — same rules):
+
+| Color | Tier codes |
+|-------|------------|
+| Green | `SOR-R2` (current SoR raid) |
+| Yellow | `SOR-R1`, `ANI27` |
+| Orange | All `TOB-*` |
+| Red | `LS-*`, `NoS-*`, `SOR-G*`, `???`, and other codes |
+| Purple | `Evolver` |
+
+Colors are muted so tier code text stays easy to read.
+
 The **Secondary** row only appears if someone had a secondary weapon on the gear sheet.
 
 ### Missing Runes *(if enabled)*
 
 How many Minor / Lesser / Median / Greater / Glowing runes each character still needs, by level band (121–125 and 126–130).
 
-### Spell List *(if enabled)*
+### Missing Spells *(if enabled)*
 
 Every missing **Rk. III** with character, level band, level, rune tier, and spell name. Use Excel filters to sort by character or rune type.  
 
@@ -147,6 +159,19 @@ Level bands that count runes today:
 `{Tier}` = Minor, Lesser, Median, Greater, or Glowing (one per spell level).
 
 Older bands (111–120) are in config but not shown until enabled in `spell_rune_bands.json`.
+
+### Rune Inventory *(if runes found)*
+
+On-hand raid spell rune items in **General**, **Bank**, and **Shared Bank** — no MissingSpells file required.
+
+Four sections (NoS, LS, ToB, SoR), each with a tier × character matrix. Cells show the stack count when &gt; 0; otherwise blank. Inert and Covariant Engrams are not counted (ToB uses **Energized** engrams only).
+
+| Family | Item pattern |
+|--------|----------------|
+| NoS | `{Tier} Symbol of Shar Vahl` |
+| LS | `{Tier} Emblem of the Forge` |
+| ToB | `Energized {Tier} Engram` |
+| SoR | `{Tier} Mirrorshard of Relic` |
 
 ### Missing Collections *(if enabled)*
 
@@ -166,23 +191,25 @@ When the **HTML** chip is checked (default in the GUI) or **`--also-html`** is p
 
 **Layout**
 
-- **Left sidebar** — EQ logo, section list with icons, then **Character filter** chips (directly under the nav, not at the bottom of the window)
+- **Left sidebar** — EQ logo, Lucide-style section icons, then **Character filter** chips (directly under the nav, not at the bottom of the window)
 - **Main area** — report title (e.g. `Bristlebane Team Inventory`), character count, generation date, toolbar, and the active section’s table
 - **Footer** — gear-tier color legend when viewing **Team Gear**
 
 **Sections**
 
-Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Spell List, Unmade Gear, Missing Collections, Achievement Summary, Raid Achievements.
+Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Rune Inventory, Unmade Gear, Missing Collections, Achievement Summary, Raid Achievements.
 
 **Filters & tools**
 
 | Control | Where | What it does |
 |---------|-------|----------------|
 | **Character filter** (chips) | Sidebar | Filters gear columns and table rows across the report |
-| **Search** | Toolbar | Filters the active section |
+| **Search** | Toolbar | Filters the active section (keeps keyboard focus while typing) |
 | **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
-| **Character** dropdown | Toolbar (table tabs) | Filter Spell List, Raid Achievements, Missing Collections, etc. to one character |
-| **Expansion** dropdown | Toolbar (table tabs) | Filter achievement tables by expansion |
+| **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Raid Achievements, Missing Collections, etc. to one character |
+| **Level range** | Toolbar (Missing Spells) | All / `121-125` / `126-130` |
+| **Rune type** | Toolbar (Missing Spells) | All / Minor / Lesser / Median / Greater / Glowing |
+| **Expansion** dropdown | Toolbar (table tabs) | Filter achievement tables by expansion; on **Rune Inventory**, filter to one rune family (NoS / LS / ToB / SoR) |
 | **Column headers** | Table | Click to sort |
 
 Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.
@@ -267,7 +294,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\InventoryParser-1.7.5.exe
+py -3 scripts\sign_exe.py dist\InventoryParser-1.13.0.exe
 ```
 
 (with the same environment variables set).

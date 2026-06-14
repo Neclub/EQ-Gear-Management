@@ -37,14 +37,16 @@ from inventory_parser.excel_theme import (
     SHEET_BACKGROUND_ROWS,
     spell_block_header_fill,
     spell_tier_fill,
+    tier_code_fill,
+    tier_bucket_legend_rows,
 )
-from inventory_parser.evolver import EVOLVER_GAP_LABEL, EVOLVER_LABEL
-from inventory_parser.gear_sets import GEAR_SETS_NEWEST_FIRST, classify_gear_set
+from inventory_parser.evolver import EVOLVER_GAP_LABEL
 from inventory_parser.items import EquippedItem
 from inventory_parser.slots import SlotFilter, slot_visibility, slots_for_export
 from inventory_parser.excel_theme import GEAR_SET_FILLS
 from inventory_parser.gear_tiers import SOR_GAP_LEGEND_ROWS, UNKNOWN_TIER_LABEL
 from inventory_parser.sor_tier import sor_gap_label
+from inventory_parser.rune_inventory import RuneInventoryReport
 from inventory_parser.unmade_gear import UnmadeGearEntry, build_unmade_gear_report
 
 _ALIGN = Alignment(horizontal="left", vertical="center", wrap_text=True)
@@ -66,10 +68,12 @@ _COL_SPELL_BLOCK = 12.0
 _COL_SPELL_LEVEL = 8.0
 _COL_SPELL_RUNE = 12.0
 _COL_SPELL_NAME = _COL_ITEM_WIDTH
+_COL_MATRIX_CHAR_MIN = 8.0
+_COL_MATRIX_CHAR_MAX = 40.0
 _FIRST_CHAR_COL = 3
 _LEGEND_TITLE_ROW = 25
 _LEGEND_FIRST_ROW = 26
-_LEGEND_LAST_ROW = 35
+_LEGEND_LAST_ROW = 30
 _LEGEND_LABEL_MERGE_COLS = 5  # B through F
 _SOR_LEGEND_TITLE_ROW = 25
 _SOR_LEGEND_FIRST_ROW = 26
@@ -79,6 +83,8 @@ UNMADE_GEAR_SHEET_NAME = "Unmade Gear"
 MISSING_COLLECTIONS_SHEET_NAME = "Missing Collections"
 ACHIEVEMENT_SUMMARY_SHEET_NAME = "Achievement Summary"
 RAID_ACHIEVEMENTS_SHEET_NAME = "Raid Achievements"
+RUNE_INVENTORY_SHEET_NAME = "Rune Inventory"
+MISSING_SPELLS_SHEET_NAME = "Missing Spells"
 
 
 def write_team_workbook(
@@ -87,6 +93,7 @@ def write_team_workbook(
     *,
     slot_filter: SlotFilter = "all",
     spell_report: SpellRuneReport | None = None,
+    rune_inventory_report: RuneInventoryReport | None = None,
     achievement_report: AchievementReport | None = None,
 ) -> Path:
     """Write team gear workbook with item sheet and SOR gap tracking sheet."""
@@ -109,8 +116,12 @@ def write_team_workbook(
     if spell_report is not None:
         ws_runes = wb.create_sheet("Missing Runes")
         _write_missing_runes_sheet(ws_runes, report, spell_report)
-        ws_list = wb.create_sheet("Spell List")
+        ws_list = wb.create_sheet(MISSING_SPELLS_SHEET_NAME)
         _write_spell_list_sheet(ws_list, report, spell_report)
+
+    if rune_inventory_report is not None:
+        ws_inventory = wb.create_sheet(RUNE_INVENTORY_SHEET_NAME)
+        _write_rune_inventory_sheet(ws_inventory, rune_inventory_report)
 
     unmade_entries = build_unmade_gear_report(report)
     if unmade_entries:
@@ -208,41 +219,11 @@ def _write_slot_label_cells(ws: Worksheet, row_idx: int, slot: str) -> None:
 
 
 def _fill_for_tier_code(code: str):
-    from openpyxl.styles import PatternFill
-
     if code == EVOLVER_GAP_LABEL:
         return EVOLVER_FILL
-    color = _TIER_CODE_FILL_COLORS.get(code)
-    if color is not None:
-        return PatternFill("solid", fgColor=color)
-    if code == UNKNOWN_TIER_LABEL:
-        return PatternFill("solid", fgColor="542A35")
+    if code == UNKNOWN_TIER_LABEL or code:
+        return tier_code_fill(code)
     return FILL_ITEM_EMPTY
-
-
-_TIER_CODE_FILL_COLORS: dict[str, str] = {
-    "SOR-R2": GEAR_SET_FILLS["fracture"],
-    "SOR-R1": GEAR_SET_FILLS["shattered_dominion"],
-    "TOB-R2": GEAR_SET_FILLS["rebellion"],
-    "TOB-R1": GEAR_SET_FILLS["bound"],
-    "LS-R2": GEAR_SET_FILLS["eternal_reverie"],
-    "LS-R1": GEAR_SET_FILLS["heroic_reflections"],
-    "NoS-R2": GEAR_SET_FILLS["spectral_luclinite"],
-    "NoS-R1": GEAR_SET_FILLS["spectral_luminosity"],
-    "SOR-G3": "3A3350",
-    "SOR-G2": "403850",
-    "SOR-G1": "453850",
-    "TOB-G3": "4A3848",
-    "TOB-G2": "503848",
-    "TOB-G1": "543848",
-    "LS-G3": "2E4050",
-    "LS-G2": "344850",
-    "LS-G1": "3A4850",
-    "NoS-G3": "344838",
-    "NoS-G2": "3A4838",
-    "NoS-G1": "404838",
-    "ANI27": "2A4555",
-}
 
 
 def _fill_sheet_background(
@@ -258,16 +239,14 @@ def _fill_sheet_background(
 
 
 def _spell_list_last_row(entry_count: int) -> int:
-    """Last row on Spell List: banner, header, entries, spacer, footer note."""
+    """Last row on Missing Spells: banner, header, entries, spacer, footer note."""
     return 6 + entry_count
 
 
 def _fill_for_equipped_item(item: EquippedItem):
-    gear_set = classify_gear_set(item.name)
-    if gear_set is not None:
-        return gear_set.fill
-    if item.is_evolver:
-        return EVOLVER_FILL
+    label = sor_gap_label(item.name, is_evolver=item.is_evolver)
+    if label:
+        return _fill_for_tier_code(label)
     return FILL_ITEM_EMPTY
 
 
@@ -282,7 +261,7 @@ def _write_item_cell(ws: Worksheet, row_idx: int, col: int, item: EquippedItem) 
 
 
 def _write_gear_legend_on_sheet(ws: Worksheet) -> None:
-    title = ws.cell(_LEGEND_TITLE_ROW, 1, "Gear sets (newest to oldest)")
+    title = ws.cell(_LEGEND_TITLE_ROW, 1, "Gear tier colors")
     title.font = FONT_LEGEND_TITLE
     title.fill = FILL_HEADER
     title.alignment = _ALIGN
@@ -295,7 +274,7 @@ def _write_gear_legend_on_sheet(ws: Worksheet) -> None:
     for col in range(1, _LEGEND_LABEL_MERGE_COLS + 1):
         ws.cell(_LEGEND_TITLE_ROW, col).fill = FILL_HEADER
 
-    legend_rows = ((EVOLVER_FILL, EVOLVER_LABEL), *((g.fill, g.label) for g in GEAR_SETS_NEWEST_FIRST))
+    legend_rows = tier_bucket_legend_rows()
     expected = _LEGEND_LAST_ROW - _LEGEND_FIRST_ROW + 1
     if len(legend_rows) != expected:
         raise ValueError(
@@ -389,26 +368,27 @@ def _merge_spell_row(
         ws.cell(row, col).fill = fill
 
 
-def _write_spell_summary_section(
+def _write_rune_tier_matrix_section(
     ws: Worksheet,
     *,
     start_row: int,
-    block,
+    title: str,
+    subtitle: str,
+    header_key: str,
     tiers: tuple[str, ...],
     characters: list[CharacterGear],
-    spell_report: SpellRuneReport,
+    count_for,
 ) -> int:
-    """Rune count matrix for one level block; returns next free row."""
+    """Tier × character count matrix; returns next free row."""
     summary_cols = max(2, 1 + len(characters))
     last_col = summary_cols
-    block_fill = spell_block_header_fill(block.label)
-    expansions = ", ".join(block.expansions)
+    block_fill = spell_block_header_fill(header_key)
 
-    title = ws.cell(start_row, 1, f"Levels {block.label}")
-    title.font = FONT_BLOCK_HEADER
-    title.fill = block_fill
-    title.alignment = _ALIGN_WRAP
-    sub = ws.cell(start_row + 1, 1, f"{expansions} · {block.turn_in_theme}")
+    title_cell = ws.cell(start_row, 1, title)
+    title_cell.font = FONT_BLOCK_HEADER
+    title_cell.fill = block_fill
+    title_cell.alignment = _ALIGN_WRAP
+    sub = ws.cell(start_row + 1, 1, subtitle)
     sub.font = FONT_BLOCK_SUB
     sub.fill = block_fill
     sub.alignment = _ALIGN_WRAP
@@ -437,9 +417,7 @@ def _write_spell_summary_section(
         tier_cell.fill = tier_fill
         tier_cell.alignment = _ALIGN
         for col, char in enumerate(characters, start=2):
-            count = spell_report.counts_by_persona.get(char.persona_key, {}).get(block.label, {}).get(
-                tier, 0
-            )
+            count = count_for(char, tier)
             cell = ws.cell(row, col, count if count else "")
             cell.alignment = _ALIGN_CENTER
             if count:
@@ -452,6 +430,31 @@ def _write_spell_summary_section(
         row += 1
 
     return row + 1
+
+
+def _write_spell_summary_section(
+    ws: Worksheet,
+    *,
+    start_row: int,
+    block,
+    tiers: tuple[str, ...],
+    characters: list[CharacterGear],
+    spell_report: SpellRuneReport,
+) -> int:
+    """Rune count matrix for one level block; returns next free row."""
+    expansions = ", ".join(block.expansions)
+    return _write_rune_tier_matrix_section(
+        ws,
+        start_row=start_row,
+        title=f"Levels {block.label}",
+        subtitle=f"{expansions} · {block.turn_in_theme}",
+        header_key=block.label,
+        tiers=tiers,
+        characters=characters,
+        count_for=lambda char, tier: spell_report.counts_by_persona.get(char.persona_key, {})
+        .get(block.label, {})
+        .get(tier, 0),
+    )
 
 
 def _spell_characters(team: TeamGearReport, spell_report: SpellRuneReport) -> list[CharacterGear]:
@@ -483,6 +486,66 @@ def _write_spell_sheet_banner(
     _merge_spell_row(ws, row + 1, 1, merge_cols, FILL_HEADER)
     ws.row_dimensions[row].height = 24
     return row + 3
+
+
+def _matrix_character_col_width(label: str) -> float:
+    """Excel column width (character units) to fit a matrix header label."""
+    return max(_COL_MATRIX_CHAR_MIN, min(_COL_MATRIX_CHAR_MAX, len(label) + 2.0))
+
+
+def _apply_rune_matrix_column_widths(
+    ws: Worksheet,
+    characters: list[CharacterGear],
+    *,
+    tier_col_width: float = 14.0,
+) -> None:
+    ws.column_dimensions["A"].width = tier_col_width
+    for col, char in enumerate(characters, start=2):
+        ws.column_dimensions[get_column_letter(col)].width = _matrix_character_col_width(
+            char.display_name
+        )
+
+
+def _write_rune_inventory_sheet(
+    ws: Worksheet,
+    report: RuneInventoryReport,
+) -> None:
+    ws.sheet_properties.tabColor = "2A6B5C"
+    _fill_sheet_background(ws)
+    characters = list(report.characters)
+    summary_cols = max(2, 1 + len(characters))
+
+    row = _write_spell_sheet_banner(
+        ws,
+        title="Rune Inventory",
+        subtitle="Raid spell runes on hand · General, Bank, and Shared Bank",
+        merge_cols=summary_cols,
+    )
+
+    for family in report.families:
+        row = _write_rune_tier_matrix_section(
+            ws,
+            start_row=row,
+            title=family.label,
+            subtitle=f"{family.label} · {family.item_pattern}",
+            header_key=family.id,
+            tiers=family.tiers,
+            characters=characters,
+            count_for=lambda char, tier: family.counts.get(char.persona_key, {}).get(tier, 0),
+        )
+
+    note = ws.cell(
+        row,
+        1,
+        "Counts include stacked items in General bags, personal Bank, and Shared Bank. "
+        "Inert and Covariant Engrams are excluded.",
+    )
+    note.font = FONT_LEGEND
+    note.fill = FILL_SHEET
+    note.alignment = _ALIGN_WRAP
+    _merge_spell_row(ws, row, 1, summary_cols)
+
+    _apply_rune_matrix_column_widths(ws, characters)
 
 
 def _write_missing_runes_sheet(
@@ -518,7 +581,7 @@ def _write_missing_runes_sheet(
         row,
         1,
         "Counts are missing Rk. III spells only. Rune tier = turn-in type (Minor → Glowing). "
-        "See Spell List tab for individual spells.",
+        "See Missing Spells tab for individual spells.",
     )
     note.font = FONT_LEGEND
     note.fill = FILL_SHEET
@@ -541,7 +604,7 @@ def _write_spell_list_sheet(
 
     row = _write_spell_sheet_banner(
         ws,
-        title="Spell List",
+        title=MISSING_SPELLS_SHEET_NAME,
         subtitle="Every missing Rank III spell from /outputfile missingspells",
         merge_cols=5,
     )
