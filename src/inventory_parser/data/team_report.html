@@ -377,6 +377,37 @@ const state = {
   blocks: {},
   runes: {},
 };
+const ACHIEVEMENT_EXPANSION_TABS = new Set([
+  "missing_collections",
+  "raid_achievements",
+  "achievement_summary",
+]);
+
+function sectionExpansions(section) {
+  if (section.type !== "table" || section.data.expansionColumn == null) return [];
+  const col = section.data.expansionColumn;
+  return REPORT.expansionOrder.filter((label) =>
+    section.data.rows.some((r) => r[col] === label)
+  );
+}
+
+function expansionFilterOptions(section) {
+  const fromData = sectionExpansions(section);
+  if (!ACHIEVEMENT_EXPANSION_TABS.has(section.id)) return fromData;
+  const current = REPORT.meta.currentExpansion;
+  if (!current || fromData.includes(current)) return fromData;
+  return [current, ...fromData];
+}
+
+function activeExpansionFilter(section) {
+  if (Object.prototype.hasOwnProperty.call(state.expansions, section.id)) {
+    return state.expansions[section.id];
+  }
+  if (ACHIEVEMENT_EXPANSION_TABS.has(section.id)) {
+    return REPORT.meta.currentExpansion || "";
+  }
+  return "";
+}
 
 function el(tag, cls, text) {
   const node = document.createElement(tag);
@@ -558,13 +589,19 @@ function updateToolbar() {
 
   if (section.type === "table" && section.data.expansionColumn != null && section.data.rows.length) {
     const sel = document.createElement("select");
-    const expansions = REPORT.expansionOrder.filter((label) =>
-      section.data.rows.some((r) => r[section.data.expansionColumn] === label)
-    );
+    const expansions = expansionFilterOptions(section);
     sel.innerHTML =
       '<option value="">All expansions</option>' +
       expansions.map((x) => `<option value="${x.replace(/"/g, "&quot;")}">${x}</option>`).join("");
-    sel.value = state.expansions[section.id] || "";
+    const selected = activeExpansionFilter(section);
+    if (
+      !Object.prototype.hasOwnProperty.call(state.expansions, section.id) &&
+      ACHIEVEMENT_EXPANSION_TABS.has(section.id) &&
+      selected
+    ) {
+      state.expansions[section.id] = selected;
+    }
+    sel.value = selected;
     sel.addEventListener("change", () => {
       state.expansions[section.id] = sel.value;
       refreshContent();
@@ -686,8 +723,11 @@ function updateTableContent(content, section) {
   if (data.characterColumn != null && charFilter) {
     rows = rows.filter((r) => r[data.characterColumn] === charFilter);
   }
-  if (data.expansionColumn != null && state.expansions[section.id]) {
-    rows = rows.filter((r) => r[data.expansionColumn] === state.expansions[section.id]);
+  if (data.expansionColumn != null) {
+    const expansionFilter = activeExpansionFilter(section);
+    if (expansionFilter) {
+      rows = rows.filter((r) => r[data.expansionColumn] === expansionFilter);
+    }
   }
   if (data.blockColumn != null && state.blocks[section.id]) {
     rows = rows.filter((r) => r[data.blockColumn] === state.blocks[section.id]);

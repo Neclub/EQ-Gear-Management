@@ -111,6 +111,7 @@ def test_html_achievement_expansion_labels(tmp_path: Path) -> None:
     out = tmp_path / "crew.html"
     write_team_html(bundle, out)
     report = extract_report_json(out.read_text(encoding="utf-8"))
+    assert report["meta"]["currentExpansion"] == "Shattering of Ro (2025)"
     assert "Rain of Fear (2012)" in report["expansionOrder"]
     assert EVERQUEST_BASE_LABEL in report["expansionOrder"]
     raid = next(s for s in report["sections"] if s["title"] == "Raid Achievements")
@@ -136,6 +137,9 @@ def test_html_spell_list_has_character_filter(tmp_path: Path) -> None:
     text = out.read_text(encoding="utf-8")
     assert "All characters" in text
     assert "function refreshContent()" in text
+    assert "ACHIEVEMENT_EXPANSION_TABS" in text
+    assert "activeExpansionFilter" in text
+    assert "expansionFilterOptions" in text
     assert "Level range" in text
     assert "Rune type" in text
     report = extract_report_json(text)

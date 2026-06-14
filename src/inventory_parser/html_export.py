@@ -422,6 +422,7 @@ def serialize_report(bundle: ExportBundle) -> dict:
                 for character in report.characters
             ],
             "logoDataUri": _eq_logo_data_uri(),
+            "currentExpansion": format_expansion_label(EXPANSIONS_NEWEST_FIRST[0][0]),
         },
         "theme": {
             "gearSets": GEAR_SET_FILLS,
