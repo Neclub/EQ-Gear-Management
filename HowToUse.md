@@ -209,7 +209,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 | **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Raid Achievements, Missing Collections, etc. to one character |
 | **Level range** | Toolbar (Missing Spells) | All / `121-125` / `126-130` |
 | **Rune type** | Toolbar (Missing Spells) | All / Minor / Lesser / Median / Greater / Glowing |
-| **Expansion** dropdown | Toolbar (table tabs) | Filter achievement tables by expansion; on **Rune Inventory**, filter to one rune family (NoS / LS / ToB / SoR) |
+| **Expansion** dropdown | Toolbar (table tabs) | Filter achievement tables by expansion (defaults to the **current expansion** on first open); on **Rune Inventory**, filter to one rune family (NoS / LS / ToB / SoR) |
 | **Column headers** | Table | Click to sort |
 
 Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.

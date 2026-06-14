@@ -6,6 +6,18 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.14.0] - 2026-06-14
+
+### Added
+
+- **GitHub Releases automation:** every push to `main` builds `InventoryParser-x.y.z.exe` on Windows and publishes it to [GitHub Releases](https://github.com/Neclub/Inventory-Parser/releases).
+
+### Changed
+
+- **README** simplified for download and quick start; full usage remains in [HowToUse.md](HowToUse.md).
+- **HTML report:** **Expansion** filters on achievement tabs default to the **current expansion** (newest configured) instead of **All**, so large raid lists load a smaller view first.
+- **GUI polish:** refined panel layout and pill-button rendering.
+
 ## [1.13.0] - 2026-06-12
 
 ### Added

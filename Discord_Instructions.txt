@@ -25,8 +25,12 @@ Tip: put achievement files in an `AchievementData` subfolder — same pattern.
 
 ---
 
+**Download the app**
+• Latest build: https://github.com/Neclub/Inventory-Parser/releases
+• Download **`InventoryParser-x.y.z.exe`** — no Python install needed
+
 **Using the app (EXE)**
-1. Double-click **`InventoryParser-<version>.exe`** (from `dist\` after building, or wherever you copied it)
+1. Double-click **`InventoryParser-<version>.exe`**
 2. Click **Add folder…** and pick your dump folder
    • Check the characters you want
    • Use the **Server** dropdown to filter (e.g. Xegony)
@@ -61,6 +65,7 @@ Item names link to EQ Resource when the dump has item IDs.
 • **Character filter** chips under the nav — filter the whole report by toon
 • **Search**, **sort** (click headers), **Visible slots** on gear tabs (search keeps focus while typing)
 • **Character** / **Level range** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Raid Achievements, Rune Inventory, etc.)
+• **Expansion** on achievement tabs defaults to the current expansion (not All) — change the dropdown to see older content
 • Gear colors and EQ Resource links match Excel
 
 ---
