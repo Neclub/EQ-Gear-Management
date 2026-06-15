@@ -6,6 +6,27 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.15.0] - 2026-06-14
+
+### Added
+
+- **HTML GUI (pywebview):** desktop app uses a web-based setup page and in-app report viewer that mirrors the interactive HTML export design (sidebar navigation, filters, tier colors).
+- **Class icons** on roster cards — per-class SVG glyphs with color-themed badges (reference sets in `assets/class-icons/`).
+- **GitHub rollback backup:** branch `backup/pre-pywebview-gui` and tag `backup/pre-pywebview-gui-2026-06-14` preserve the tkinter GUI; see [backup/pre-pywebview-gui/RESTORE.md](backup/pre-pywebview-gui/RESTORE.md).
+- **Tests** for `web_api` helpers and team report HTML mount paths.
+
+### Changed
+
+- **GUI technology:** replaced tkinter + Pillow with pywebview + bundled HTML/CSS/JS. Entry point is now `inventory_parser.web_gui`.
+- **Setup layout:** split pane — **Team characters** sidebar on the left; **Export options** and **Output folder** stacked on the right; roster **Up** / **Down** / **Remove** / **Clear** below Output folder; **EQ Folder** under the roster list.
+- **Default window size** 860×640 for the compact setup layout.
+- **pywebview file dialogs** use `FileDialog.FOLDER` / `FileDialog.SAVE` (replaces deprecated constants).
+- **Dependencies:** added `pywebview`; removed `Pillow` (no longer required).
+
+### Removed
+
+- Tkinter GUI modules (`gui.py`, `pill_button.py`, `gui_theme.py`, `window_chrome.py`) from the active package — preserved in `backup/pre-pywebview-gui/`.
+
 ## [1.14.0] - 2026-06-14
 
 ### Added

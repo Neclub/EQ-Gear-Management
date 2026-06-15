@@ -117,6 +117,20 @@ body {
   padding: 20px 24px 12px;
   border-bottom: 1px solid var(--border);
 }
+.page-header-row { flex: 1; min-width: 200px; }
+.in-app-bar { width: 100%; flex-basis: 100%; }
+.in-app-bar.hidden { display: none; }
+.btn-ghost {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--input);
+  color: var(--link);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.btn-ghost:hover { background: var(--panel-hover); color: var(--text); }
 #pageHeader h1 { margin: 0 0 4px; font-size: 22px; font-weight: 600; }
 #pageHeader .meta { color: var(--muted); font-size: 12px; }
 #toolbar {
@@ -333,7 +347,10 @@ a:hover { text-decoration: underline; }
   </aside>
   <div id="main">
     <header id="pageHeader">
-      <div>
+      <div id="inAppBar" class="in-app-bar hidden">
+        <button type="button" class="btn-ghost" id="backToSetup">← New report</button>
+      </div>
+      <div class="page-header-row">
         <h1 id="reportTitle"></h1>
         <div class="meta" id="reportMeta"></div>
       </div>
@@ -934,7 +951,25 @@ function init() {
   updateToolbar();
   updateTierLegend();
 }
-init();
+
+function showInAppChrome() {
+  const bar = document.getElementById("inAppBar");
+  if (bar) bar.classList.remove("hidden");
+  const btn = document.getElementById("backToSetup");
+  if (btn && !btn.dataset.bound) {
+    btn.dataset.bound = "1";
+    btn.addEventListener("click", () => {
+      if (window.pywebview && pywebview.api.navigate_to_setup) {
+        pywebview.api.navigate_to_setup();
+      }
+    });
+  }
+}
+
+if (REPORT) {
+  init();
+  if (window.pywebview) showInAppChrome();
+}
 </script>
 </body>
 </html>

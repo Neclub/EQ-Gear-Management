@@ -51,7 +51,7 @@ You can put spell files:
 - In the **same folder** as the inventory dumps, or  
 - In a subfolder named **`SpellData`** next to those dumps
 
-You may also add spell files directly in the app with **Add files…** (you still need at least one inventory file to build the workbook).
+You may also add spell files in the same folder as inventory dumps (the **EQ Folder** picker groups them per character). You still need at least one inventory file to build the workbook.
 
 ### Achievement dumps (optional)
 
@@ -74,7 +74,18 @@ The **Missing Collections** tab lists collection items still needed (`owned/tota
 
 ## Quick start (GUI)
 
-The app uses a **dark theme** with unified panel cards, **pill-shaped** buttons (blue **Add files**, teal **Add folder** / **Browse…**), utility ghost buttons (**Remove**, **Up**, **Down**, **Clear**), and chip toggles for **Spells**, **Achievements**, and **HTML** (HTML on by default).
+The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane setup screen and an in-app report viewer after generation.
+
+**Setup layout:**
+
+| Area | Contents |
+|------|----------|
+| **Left** | **Team characters** roster with class icons; **EQ Folder** below the list |
+| **Right (top)** | **Export options** — Slots dropdown; **Spells**, **Achievements**, and **HTML** chips (HTML on by default) |
+| **Right (bottom)** | **Output folder** path and **Browse…**; **Up** / **Down** / **Remove** / **Clear** for the roster |
+| **Footer** | Status line and **Generate Report** |
+
+**Requirements:** Windows 10/11 with **WebView2** (Microsoft Edge runtime — usually already installed).
 
 1. **In EQ:** on each toon, `/outputfile inventory` and (optional) `/outputfile missingspells`; copy the `.txt` files into one folder.
 
@@ -83,22 +94,28 @@ The app uses a **dark theme** with unified panel cards, **pill-shaped** buttons 
    - Double-click **`dist\InventoryParser-<version>.exe`** after building (see [Building the .exe](#building-the-exe))
 
 3. **Add your files**
-   - **Add files** — pick one or more `*-Inventory.txt`, `*-MissingSpells.txt`, and/or `*-Achievements.txt` files  
-   - **Add folder** — load every matching file in a folder at once  
+   - **EQ Folder** (under the roster) — pick a folder; choose which characters to import (inventory, MissingSpells, and Achievements files are grouped per character)
 
-4. **Options** (optional)
+4. **Manage the roster** (optional)
+   - **Up** / **Down** — change column order in the workbook  
+   - **Remove** — drop the selected character from the export list  
+   - **Clear** — empty the roster and start over  
+
+5. **Options** (optional)
    - **Slots** dropdown — `all`, `visible`, or `non_visible` on the gear sheets  
    - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs  
    - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs  
-   - **HTML** chip — on by default; writes a `{prefix}_Team Inventory.html` file next to the Excel workbook (open in your browser; no server needed). Uncheck to skip HTML  
+   - **HTML** chip — on by default; writes a `{prefix}_Team Inventory.html` file next to the Excel workbook and opens the report in the app viewer. Uncheck to skip HTML export  
 
-5. **Output**
+6. **Output**
    - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
    - Use **Browse…** to pick another path  
 
-6. Click **Generate Report**
+7. Click **Generate Report** — the in-app viewer opens when complete. Use **← New report** to return to setup.
 
 If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, etc.
+
+**Rollback:** To restore the previous tkinter GUI, see [backup/pre-pywebview-gui/RESTORE.md](backup/pre-pywebview-gui/RESTORE.md).
 
 ---
 
@@ -220,11 +237,11 @@ No Python or web server is required to view the HTML file.
 
 ## Tips
 
-- **Whole raid in one folder** — use **Add folder…** after everyone drops dumps in the same directory.  
+- **Whole raid in one folder** — use **EQ Folder** after everyone drops dumps in the same directory.  
 - **Spell files in SpellData** — keeps inventory folder tidy; the app finds them automatically.  
 - **Achievement files in AchievementData** — same pattern for `/outputfile achievements` dumps.  
 - **Status bar** — shows how many inventory, MissingSpells, and achievement files are loaded.  
-- **Remove** / **Clear** — fix the file list before regenerating.  
+- **Up** / **Down** / **Remove** / **Clear** — under Output folder on the right; fix the roster before regenerating.  
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
 
 ---
@@ -268,7 +285,7 @@ py -3 -m inventory_parser --folder Examples -o out.xlsx --slots visible
 
 Run **`build_exe.bat`** inside the **`Inventory Parser`** folder (not another project’s batch file).
 
-The batch file runs `pip install -e .` (installs **openpyxl** and **Pillow**) and PyInstaller. Pillow is required for the GUI’s anti-aliased pill buttons and is bundled into the executable.
+The batch file runs `pip install -e .` (installs **openpyxl** and **pywebview**) and PyInstaller. The GUI uses WebView2 on Windows and is bundled into the executable.
 
 Output: `Inventory Parser\dist\InventoryParser-<version>.exe`
 
@@ -306,7 +323,8 @@ py -3 scripts\sign_exe.py dist\InventoryParser-1.13.0.exe
 | Problem | What to do |
 |---------|------------|
 | “Add at least one *-Inventory.txt” | Spell files alone are not enough — add inventory dumps. |
-| `ModuleNotFoundError: No module named 'PIL'` when running from source | Run `py -3 -m pip install -e .` in the project folder (installs Pillow). |
+| `ModuleNotFoundError: No module named 'webview'` when running from source | Run `py -3 -m pip install -e .` in the project folder (installs pywebview). |
+| GUI window is blank or fails to start | Install the [WebView2 runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (Evergreen bootstrapper). |
 | Build fails with “Access is denied” on the exe | Close any running `InventoryParser-*.exe`, then run **`build_exe.bat`** again. |
 | Spell tabs empty | Confirm spell file names match `Name_server-CLASS-MissingSpells.txt` and character names match inventory files. |
 | Achievement tabs empty | Confirm achievement file names match `Name_server-Achievements.txt` and character/server match inventory files. |

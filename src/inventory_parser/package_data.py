@@ -20,12 +20,28 @@ def assets_dir() -> Path:
     return Path(__file__).resolve().parent / "assets"
 
 
+def gui_dir() -> Path:
+    """Directory containing bundled HTML GUI assets."""
+    return data_dir() / "gui"
+
+
 def asset_path(filename: str) -> Path:
     return assets_dir() / filename
+
+
+def gui_asset_path(filename: str) -> Path:
+    return gui_dir() / filename
 
 
 def read_data_text(filename: str) -> str:
     path = data_dir() / filename
     if not path.is_file():
         raise FileNotFoundError(f"Package data file not found: {filename} ({path})")
+    return path.read_text(encoding="utf-8")
+
+
+def read_gui_text(filename: str) -> str:
+    path = gui_asset_path(filename)
+    if not path.is_file():
+        raise FileNotFoundError(f"GUI asset not found: {filename} ({path})")
     return path.read_text(encoding="utf-8")

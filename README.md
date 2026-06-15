@@ -33,8 +33,8 @@ Copy the `.txt` files from your EQ Logs folder into one folder on your PC.
 ### 2. Generate the report
 
 1. Open **Inventory Parser** (the `.exe` or GUI below).
-2. Click **Add folder** and pick the folder with your Output logs.
-3. Leave **Spells**, **Achievements**, and **HTML** on if you want those tabs.
+2. Click **EQ Folder** and pick the folder with your Output logs; select which characters to import.
+3. Adjust **Export options** and **Output folder** on the right if needed.
 4. Click **Generate Report**.
 
 Output: `{Server}_Team Inventory.xlsx` (and `.html` if HTML is enabled).
@@ -52,7 +52,9 @@ cd "Inventory Parser"
 py -3 -m pip install -e .
 ```
 
-**GUI:** double-click `run_gui.bat`, or run `py -3 -m inventory_parser.gui`
+**GUI:** double-click `run_gui.bat`, or run `py -3 -m inventory_parser.web_gui`
+
+The GUI uses **WebView2** (Microsoft Edge). It is preinstalled on most Windows 10/11 systems.
 
 **CLI example:**
 

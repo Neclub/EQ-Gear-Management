@@ -8,5 +8,5 @@ if errorlevel 1 (
   exit /b 1
 )
 
-py -3 -m inventory_parser.gui
+py -3 -m inventory_parser.web_gui
 endlocal
