@@ -24,6 +24,7 @@ from inventory_parser.spell_runes import (
     load_rune_config,
     rune_tier_for_level,
 )
+from inventory_parser.spell_catalog import lookup_expansion_label
 
 
 @dataclass(frozen=True)
@@ -36,6 +37,7 @@ class MissingRankIII:
     block_label: str
     rune_tier: str
     turn_in_theme: str
+    expansion: str = ""
 
 
 @dataclass
@@ -147,6 +149,11 @@ def build_spell_rune_report(
                 block_label=block.label,
                 rune_tier=tier,
                 turn_in_theme=block.turn_in_theme,
+                expansion=lookup_expansion_label(
+                    char_gear.class_abbr,
+                    line.level,
+                    normalize_spell_rank_iii(line.name),
+                ),
             )
             report.entries.append(entry)
             counts[pk][block.label][tier] += 1

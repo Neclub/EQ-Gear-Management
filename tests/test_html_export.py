@@ -140,17 +140,18 @@ def test_html_spell_list_has_character_filter(tmp_path: Path) -> None:
     assert "ACHIEVEMENT_EXPANSION_TABS" in text
     assert "activeExpansionFilter" in text
     assert "expansionFilterOptions" in text
-    assert "Level range" in text
     assert "Rune type" in text
     report = extract_report_json(text)
     spell_section = next(s for s in report["sections"] if s["id"] == "spell_list")
     data = spell_section["data"]
     assert data["characterColumn"] == 0
-    assert data["blockColumn"] == 1
-    assert data["runeColumn"] == 3
-    assert data["blockOptions"]
+    assert data["runeColumn"] == 2
+    assert data["expansionColumn"] == 3
+    assert "blockColumn" not in data
+    assert "blockOptions" not in data
     assert data["runeOptions"]
     assert data["rows"]
+    assert any(row[3] for row in data["rows"])
 
 
 def test_cli_also_html_flag(tmp_path: Path) -> None:

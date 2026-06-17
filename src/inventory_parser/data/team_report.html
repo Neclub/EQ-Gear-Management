@@ -560,19 +560,6 @@ function updateToolbar() {
 
   if (section.id === "spell_list" && section.data.rows.length) {
     const data = section.data;
-    if (data.blockOptions && data.blockOptions.length) {
-      const sel = document.createElement("select");
-      sel.innerHTML =
-        '<option value="">All ranges</option>' +
-        data.blockOptions.map((b) => `<option value="${String(b).replace(/"/g, "&quot;")}">${b}</option>`).join("");
-      sel.value = state.blocks[section.id] || "";
-      sel.addEventListener("change", () => {
-        state.blocks[section.id] = sel.value;
-        refreshContent();
-      });
-      toolbar.appendChild(el("label", null, "Level range"));
-      toolbar.appendChild(sel);
-    }
     if (data.runeOptions && data.runeOptions.length) {
       const sel = document.createElement("select");
       sel.innerHTML =

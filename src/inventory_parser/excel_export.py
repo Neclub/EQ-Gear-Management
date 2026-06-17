@@ -67,6 +67,7 @@ _COL_SPELL_CHAR = 16.0
 _COL_SPELL_BLOCK = 12.0
 _COL_SPELL_LEVEL = 8.0
 _COL_SPELL_RUNE = 12.0
+_COL_SPELL_EXPANSION = 28.0
 _COL_SPELL_NAME = _COL_ITEM_WIDTH
 _COL_MATRIX_CHAR_MIN = 8.0
 _COL_MATRIX_CHAR_MAX = 40.0
@@ -609,7 +610,7 @@ def _write_spell_list_sheet(
         merge_cols=5,
     )
 
-    detail_headers = ("Character", "Levels", "Level", "Rune", "Spell")
+    detail_headers = ("Character", "Level", "Rune", "Expansion", "Spell")
     for col, header in enumerate(detail_headers, start=1):
         cell = ws.cell(row, col, header)
         cell.font = FONT_HEADER
@@ -626,27 +627,26 @@ def _write_spell_list_sheet(
             stripe = 1 - stripe
             prev_display_name = entry.display_name
         row_fill = FILL_SPELL_DETAIL_ALT if stripe else FILL_SPELL_DETAIL
-        block_fill = spell_block_header_fill(entry.block_label)
 
         char_cell = ws.cell(row, 1, entry.display_name)
         char_cell.font = FONT_BODY
         char_cell.alignment = _ALIGN
         char_cell.fill = row_fill
 
-        block_cell = ws.cell(row, 2, entry.block_label)
-        block_cell.font = FONT_BODY
-        block_cell.alignment = _ALIGN_CENTER
-        block_cell.fill = block_fill
-
-        level_cell = ws.cell(row, 3, entry.level)
+        level_cell = ws.cell(row, 2, entry.level)
         level_cell.font = FONT_BODY
         level_cell.alignment = _ALIGN_CENTER
         level_cell.fill = row_fill
 
-        rune_cell = ws.cell(row, 4, entry.rune_tier)
+        rune_cell = ws.cell(row, 3, entry.rune_tier)
         rune_cell.font = FONT_BODY
         rune_cell.alignment = _ALIGN_CENTER
         rune_cell.fill = spell_tier_fill(entry.rune_tier)
+
+        expansion_cell = ws.cell(row, 4, entry.expansion or None)
+        expansion_cell.font = FONT_BODY
+        expansion_cell.alignment = _ALIGN
+        expansion_cell.fill = row_fill
 
         spell_cell = ws.cell(row, 5, entry.spell_name)
         spell_cell.font = FONT_BODY
@@ -677,9 +677,9 @@ def _write_spell_list_sheet(
         ws.cell(row, col).fill = FILL_SHEET
 
     ws.column_dimensions["A"].width = _COL_SPELL_CHAR
-    ws.column_dimensions["B"].width = _COL_SPELL_BLOCK
-    ws.column_dimensions["C"].width = _COL_SPELL_LEVEL
-    ws.column_dimensions["D"].width = _COL_SPELL_RUNE
+    ws.column_dimensions["B"].width = _COL_SPELL_LEVEL
+    ws.column_dimensions["C"].width = _COL_SPELL_RUNE
+    ws.column_dimensions["D"].width = _COL_SPELL_EXPANSION
     ws.column_dimensions["E"].width = _COL_SPELL_NAME
 
 

@@ -104,18 +104,17 @@ def _expansion_filter_order() -> list[str]:
 
 
 def _serialize_spell_list(spell_report: SpellRuneReport, characters: list[CharacterGear]) -> dict:
-    columns = ["Character", "Block", "Level", "Rune", "Spell"]
+    columns = ["Character", "Level", "Rune", "Expansion", "Spell"]
     rows = [
         [
             entry.display_name,
-            entry.block_label,
             entry.level,
             entry.rune_tier,
+            entry.expansion,
             entry.spell_name,
         ]
         for entry in spell_report.entries
     ]
-    block_options = sorted({entry.block_label for entry in spell_report.entries})
     tiers_in_data = {entry.rune_tier for entry in spell_report.entries}
     tier_order = load_rune_config().tiers
     rune_options = [tier for tier in tier_order if tier in tiers_in_data]
@@ -123,11 +122,9 @@ def _serialize_spell_list(spell_report: SpellRuneReport, characters: list[Charac
         "columns": columns,
         "rows": rows,
         "characterColumn": 0,
-        "blockColumn": 1,
-        "runeColumn": 3,
-        "blockOptions": block_options,
+        "runeColumn": 2,
         "runeOptions": rune_options,
-        "expansionColumn": None,
+        "expansionColumn": 3,
     }
 
 

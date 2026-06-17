@@ -284,8 +284,9 @@ def test_spell_tabs_all_examples(tmp_path: Path) -> None:
         for r in range(1, ws.max_row + 1)
         if ws.cell(r, 1).value == "Deflub ( PAL )" and ws.cell(r, 5).value == "Committal Rk. III"
     )
-    assert ws.cell(detail_row, 3).value == 126
-    assert ws.cell(detail_row, 4).value == "Minor"
+    assert ws.cell(detail_row, 2).value == 126
+    assert ws.cell(detail_row, 3).value == "Minor"
+    assert ws.cell(detail_row, 4).value == "Shattering of Ro (2025)"
 
 
 def test_spell_list_black_background_through_z(tmp_path: Path) -> None:
@@ -307,7 +308,7 @@ def test_spell_list_black_background_through_z(tmp_path: Path) -> None:
 
     black = ("00000000", "FF000000")
     assert ws.cell(last_row, SHEET_BACKGROUND_COLS).fill.start_color.rgb in black
-    assert ws.cell(last_row, 6).fill.start_color.rgb in black
+    assert ws.cell(last_row, 5).fill.start_color.rgb in black
     assert ws.cell(1, SHEET_BACKGROUND_COLS).fill.start_color.rgb in black
 
 
