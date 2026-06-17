@@ -37,7 +37,7 @@ Copy the `.txt` files from your EQ Logs folder into one folder on your PC.
 3. Adjust **Export options** and **Output folder** on the right if needed.
 4. Click **Generate Report**.
 
-Output: `{Server}_Team Inventory.xlsx` (and `.html` if HTML is enabled).
+Output: `{Server}_Team Inventory.xlsx` (and `.html` if HTML is enabled). Multi-character HTML exports open in the app viewer; single-character exports stay on the setup screen.
 
 **Need more detail?** See **[HowToUse.md](HowToUse.md)** — file naming, alternate personas, reading each sheet, and troubleshooting.
 
@@ -78,7 +78,7 @@ Output: `dist\InventoryParser-<version>.exe`
 
 - **Team Gear** — equipped items by slot, color-coded by tier
 - **Gear T-Level** — expansion tier codes per slot
-- **Missing Runes / Missing Spells** — Rk. III tracking (needs spell Output logs)
+- **Missing Runes / Missing Spells** — Rk. III tracking with spell expansion data (needs spell Output logs)
 - **Rune Inventory** — raid runes on hand (from inventory Output logs)
 - **Achievements** — collection and raid progress (needs achievement Output logs)
 - **HTML report** — same data in a browser, searchable and filterable

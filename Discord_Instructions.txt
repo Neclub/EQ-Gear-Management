@@ -40,7 +40,7 @@ Tip: put achievement files in an `AchievementData` subfolder — same pattern.
    • Order is remembered for next time
 4. (Optional) Leave **Spells** checked for rune tabs (auto-enabled when spell files are present)
 5. (Optional) Leave **Achievements** checked for collection/summary tabs (auto-enabled when achievement files are present)
-6. (Optional) Leave **HTML** checked for a browser-viewable `.html` file next to the Excel workbook (on by default; uncheck to skip)
+6. (Optional) Leave **HTML** checked for a browser-viewable `.html` file next to the Excel workbook (on by default; uncheck to skip). Multi-character reports open in the app viewer; single-character reports stay on setup.
 7. Click **Generate Report**
 
 Default save location: `Downloads\{Server}_Team Inventory.xlsx`
@@ -64,7 +64,7 @@ Item names link to EQ Resource when the dump has item IDs.
 • **Sidebar** — Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Rune Inventory, …)
 • **Character filter** chips under the nav — filter the whole report by toon
 • **Search**, **sort** (click headers), **Visible slots** on gear tabs (search keeps focus while typing)
-• **Character** / **Level range** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Raid Achievements, Rune Inventory, etc.)
+• **Character** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Raid Achievements, Rune Inventory, etc.)
 • **Expansion** on achievement tabs defaults to the current expansion (not All) — change the dropdown to see older content
 • Gear colors and EQ Resource links match Excel
 

@@ -105,13 +105,13 @@ The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane 
    - **Slots** dropdown — `all`, `visible`, or `non_visible` on the gear sheets  
    - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs  
    - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs  
-   - **HTML** chip — on by default; writes a `{prefix}_Team Inventory.html` file next to the Excel workbook and opens the report in the app viewer. Uncheck to skip HTML export  
+- **HTML** chip — on by default; writes a `{prefix}_Team Inventory.html` file next to the Excel workbook. Multi-character reports open in the in-app viewer; single-character reports stay on the setup screen. Uncheck to skip HTML export  
 
 6. **Output**
    - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
    - Use **Browse…** to pick another path  
 
-7. Click **Generate Report** — the in-app viewer opens when complete. Use **← New report** to return to setup.
+7. Click **Generate Report** — multi-character HTML reports open in the in-app viewer when complete. Single-character exports stay on the setup screen.
 
 If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, etc.
 
@@ -164,7 +164,7 @@ How many Minor / Lesser / Median / Greater / Glowing runes each character still 
 
 ### Missing Spells *(if enabled)*
 
-Every missing **Rk. III** with character, level band, level, rune tier, and spell name. Use Excel filters to sort by character or rune type.  
+Every missing **Rk. III** with character, level, rune tier, expansion, and spell name. Use Excel filters to sort by character, rune type, or expansion.  
 
 Level bands that count runes today:
 
@@ -224,9 +224,8 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 | **Search** | Toolbar | Filters the active section (keeps keyboard focus while typing) |
 | **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
 | **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Raid Achievements, Missing Collections, etc. to one character |
-| **Level range** | Toolbar (Missing Spells) | All / `121-125` / `126-130` |
 | **Rune type** | Toolbar (Missing Spells) | All / Minor / Lesser / Median / Greater / Glowing |
-| **Expansion** dropdown | Toolbar (table tabs) | Filter achievement tables by expansion (defaults to the **current expansion** on first open); on **Rune Inventory**, filter to one rune family (NoS / LS / ToB / SoR) |
+| **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells** by exact spell expansion, filter achievement tables by expansion (defaults to the **current expansion** on first open), or on **Rune Inventory** filter to one rune family (NoS / LS / ToB / SoR) |
 | **Column headers** | Table | Click to sort |
 
 Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.

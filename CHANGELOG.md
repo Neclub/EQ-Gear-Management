@@ -6,6 +6,22 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.16.0] - 2026-06-17
+
+### Added
+
+- **Spell expansion catalog (121-130):** EQ Resource scraper and bundled spell data now tag Missing Spells entries with the exact expansion each Rk. III spell comes from (Laurion's Song, The Outer Brood, or Shattering of Ro).
+
+### Changed
+
+- **Missing Spells** (Excel + HTML) now shows **Character / Level / Rune / Expansion / Spell**; the old **Block / level band** column is removed from that detail list.
+- **HTML Missing Spells filters:** removed the **Level range** dropdown; **Character**, **Rune type**, and **Expansion** remain.
+- **Single-character GUI exports:** when HTML export is enabled, the `.html` file is still written, but the app no longer switches into the in-app report viewer for solo reports.
+
+### Fixed
+
+- **Unmade Gear target slots:** **Fractured Idol Polishing Cloth** now maps to **Range** instead of **Charm**; **Fractured Charm Polishing Cloth** still maps to **Charm**.
+
 ## [1.15.0] - 2026-06-14
 
 ### Added

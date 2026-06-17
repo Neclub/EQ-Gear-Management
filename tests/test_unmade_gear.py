@@ -32,6 +32,18 @@ def test_parse_fractured_sor_mat() -> None:
     assert mat.target_slot == "Face"
 
 
+def test_parse_fractured_idol_polishing_cloth_targets_range() -> None:
+    mat = parse_unmade_material("Fractured Idol Polishing Cloth")
+    assert mat is not None
+    assert mat.target_slot == "Range"
+
+
+def test_parse_fractured_charm_polishing_cloth_targets_charm() -> None:
+    mat = parse_unmade_material("Fractured Charm Polishing Cloth")
+    assert mat is not None
+    assert mat.target_slot == "Charm"
+
+
 def test_parse_rejects_ore() -> None:
     assert parse_unmade_material("Riven Arcana Ore") is None
 

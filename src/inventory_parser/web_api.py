@@ -300,12 +300,13 @@ class WebApi:
         if also_html:
             html_saved = write_team_html(bundle, html_path_for_workbook(saved))
 
+        char_count = len(bundle.team.characters)
         return {
             "ok": True,
             "xlsx": str(saved),
             "html": str(html_saved) if html_saved is not None else None,
             "warnings": warnings,
-            "reportPayload": report_payload,
+            "reportPayload": report_payload if char_count > 1 else None,
         }
 
     def show_report(self, report_payload: dict) -> None:

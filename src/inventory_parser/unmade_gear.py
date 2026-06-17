@@ -52,7 +52,7 @@ _MATERIAL_SLOT_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
     (re.compile(r"\bEarring\b", re.I), "Ear-1"),
     (re.compile(r"\bEar\b", re.I), "Ear-1"),
     (re.compile(r"\bRing\b", re.I), "Fingers-1"),
-    (re.compile(r"\bIdol\b", re.I), "Charm"),
+    (re.compile(r"\bIdol\b", re.I), "Range"),
     (re.compile(r"\bCharm\b", re.I), "Charm"),
     (re.compile(r"\bShield\b", re.I), "Secondary"),
     (re.compile(r"\bEnarmes\b", re.I), "Secondary"),
