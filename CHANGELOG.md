@@ -6,6 +6,13 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.16.1] - 2026-06-18
+
+### Changed
+
+- **Missing Runes** (Excel + HTML) now groups rune counts by spell expansion (Laurion's Song, The Outer Brood, Shattering of Ro) instead of level bands.
+- **Docs:** HowToUse, README, and Discord guide updated for expansion-based runes and spells.
+
 ## [1.16.0] - 2026-06-17
 
 ### Added
@@ -15,7 +22,6 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 ### Changed
 
 - **Missing Spells** (Excel + HTML) now shows **Character / Level / Rune / Expansion / Spell**; the old **Block / level band** column is removed from that detail list.
-- **Missing Runes** (Excel + HTML) now groups rune counts by spell expansion (Laurion's Song, The Outer Brood, Shattering of Ro) instead of level bands.
 - **HTML Missing Spells filters:** removed the **Level range** dropdown; **Character**, **Rune type**, and **Expansion** remain.
 - **Single-character GUI exports:** when HTML export is enabled, the `.html` file is still written, but the app no longer switches into the in-app report viewer for solo reports.
 
