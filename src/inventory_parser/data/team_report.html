@@ -777,8 +777,8 @@ function updateMissingRunesContent(content, section) {
   const colIndices = filteredColumnIndices(data.characters);
 
   data.blocks.forEach((block) => {
-    content.appendChild(el("div", "block-title", `Levels ${block.label}`));
-    content.appendChild(el("div", "block-sub", `${block.expansions} · ${block.theme}`));
+    content.appendChild(el("div", "block-title", block.label));
+    content.appendChild(el("div", "block-sub", block.theme));
     const wrap = el("div", "table-wrap");
     const table = document.createElement("table");
     const headRow = document.createElement("tr");

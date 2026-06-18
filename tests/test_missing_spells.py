@@ -121,7 +121,7 @@ def test_deflub_126_130_rune_counts() -> None:
         inventory_paths=[inv],
     )
     assert report is not None
-    counts = report.counts_by_persona[persona_key("Deflub", "bristle", "PAL")]["126-130"]
+    counts = report.counts_by_persona[persona_key("Deflub", "bristle", "PAL")]["Shattering of Ro (2025)"]
     assert counts["Minor"] == 7
     assert counts["Lesser"] == 7
     assert counts["Median"] == 5
@@ -156,7 +156,7 @@ def test_kawiika_rk2_counts_as_rk3_at_126_130() -> None:
         spell_paths={pk: SPELL_FILES["Kawiika"]},
     )
     assert report is not None
-    counts = report.counts_by_persona[pk]["126-130"]
+    counts = report.counts_by_persona[pk]["Shattering of Ro (2025)"]
     assert counts["Minor"] == 7
     assert counts["Lesser"] == 7
     assert counts["Median"] == 6
@@ -173,6 +173,29 @@ def test_kawiika_rk2_counts_as_rk3_at_126_130() -> None:
         if e.level < 121 and "Rk. III" in e.spell_name
     ]
     assert low_level_rk2 == []
+
+
+def test_kawiika_rune_counts_split_by_expansion() -> None:
+    pk = persona_key("Kawiika", "bristle", "WIZ")
+    team = TeamGearReport(
+        spell_characters=[
+            CharacterGear(
+                character="Kawiika",
+                server="bristle",
+                filepath="",
+                class_abbr="WIZ",
+            )
+        ]
+    )
+    report = build_spell_rune_report(
+        team,
+        spell_paths={pk: SPELL_FILES["Kawiika"]},
+    )
+    assert report is not None
+    counts = report.counts_by_persona[pk]
+    assert counts["Shattering of Ro (2025)"]["Minor"] == 7
+    assert counts["Laurion's Song (2023)"]["Minor"] == 8
+    assert counts["The Outer Brood (2024)"]["Minor"] == 1
 
 
 def test_dedupe_rk2_and_rk3_same_level(tmp_path: Path) -> None:

@@ -52,9 +52,10 @@ Use **Browse…** to pick a different path if you want.
 • **Team Gear** — who is wearing what (tier-bucket colors: green / yellow / orange / red / purple)
 • **Gear T-Level** — tier codes per slot (`SOR-R2`, `TOB-R2`, etc.)
 • **Unmade Gear** — craft mats and T1 containers in General bags that still upgrade a slot
-• **Missing Runes / Missing Spells** — missing Rk. III runes (121–125 & 126–130)
+• **Missing Runes** — Rk. III rune totals by spell expansion (LS / ToB / SoR); one matrix per expansion
+• **Missing Spells** — every missing Rk. III with level, rune tier, expansion, and spell name
+  • Missing Rk. II at levels 121–130 counts too (shown as Rk. III in the report)
 • **Rune Inventory** — on-hand raid runes in bags/bank (NoS, LS, ToB, SoR); no spell file needed
-  • Missing Rk. II at those levels counts too (shown as Rk. III in the report)
 • **Missing Collections / Achievement Summary / Raid Achievements** — when achievement dumps are included
 
 Item names link to EQ Resource when the dump has item IDs.

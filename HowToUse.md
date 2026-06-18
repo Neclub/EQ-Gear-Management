@@ -74,7 +74,7 @@ The **Missing Collections** tab lists collection items still needed (`owned/tota
 
 ## Quick start (GUI)
 
-The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane setup screen and an in-app report viewer after generation.
+The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane setup screen. Multi-character HTML exports can open in the in-app report viewer after generation; single-character exports stay on the setup screen.
 
 **Setup layout:**
 
@@ -160,22 +160,27 @@ The **Secondary** row only appears if someone had a secondary weapon on the gear
 
 ### Missing Runes *(if enabled)*
 
-How many Minor / Lesser / Median / Greater / Glowing runes each character still needs, by level band (121–125 and 126–130).
+How many Minor / Lesser / Median / Greater / Glowing runes each character still needs, grouped by the **spell expansion** each missing Rk. III spell comes from:
+
+| Expansion | Rk. III rune item |
+|-----------|-------------------|
+| Laurion's Song (LS) | `{Tier} Emblem of the Forge` |
+| The Outer Brood (ToB) | `Energized {Tier} Engram` |
+| Shattering of Ro (SoR) | `{Tier} Mirrorshard of Relic` |
+
+`{Tier}` = Minor, Lesser, Median, Greater, or Glowing (one per spell level). Each expansion gets its own matrix on the **Missing Runes** sheet and HTML tab — a character missing both LS and ToB spells at level 123 shows separate LS and ToB rune counts.
 
 ### Missing Spells *(if enabled)*
 
-Every missing **Rk. III** with character, level, rune tier, expansion, and spell name. Use Excel filters to sort by character, rune type, or expansion.  
+Every missing **Rk. III** spell (and missing **Rk. II** at levels 121–130, displayed as Rk. III) with character, level, rune tier, **expansion**, and spell name.
 
-Level bands that count runes today:
+**Columns:** Character · Level · Rune · Expansion · Spell
 
-| Levels | Expansions | Rk. III rune item |
-|--------|------------|-------------------|
-| 121–125 | Laurion's Song (LS), The Outer Brood (ToB) | `{Tier} Emblem of the Forge` (LS); `Energized {Tier} Engram` (ToB) |
-| 126–130 | Shattering of Ro (SoR) | `{Tier} Mirrorshard of Relic` |
+Expansion is looked up from a bundled EQ Resource catalog for levels **121–130**. The same level band can mix expansions — e.g. a level 123 wizard may need Laurion's Song runes for some spells and The Outer Brood runes for others. Use Excel or HTML filters on **Expansion** or **Rune type** to narrow the list.
 
-`{Tier}` = Minor, Lesser, Median, Greater, or Glowing (one per spell level).
+Missing Rk. II lines at rune-relevant levels count toward **Missing Runes** the same as Rk. III. Spells not in the catalog (gates, Mastery lines, etc.) may list with a blank expansion and are not counted on **Missing Runes**.
 
-Older bands (111–120) are in config but not shown until enabled in `spell_rune_bands.json`.
+Older level bands (111–120) are in config but not shown until enabled in `spell_rune_bands.json`.
 
 ### Rune Inventory *(if runes found)*
 
@@ -225,7 +230,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 | **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
 | **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Raid Achievements, Missing Collections, etc. to one character |
 | **Rune type** | Toolbar (Missing Spells) | All / Minor / Lesser / Median / Greater / Glowing |
-| **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells** by exact spell expansion, filter achievement tables by expansion (defaults to the **current expansion** on first open), or on **Rune Inventory** filter to one rune family (NoS / LS / ToB / SoR) |
+| **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells** by exact spell expansion; filter achievement tables by expansion (defaults to the **current expansion** on first open); on **Rune Inventory**, filter to one rune family (NoS / LS / ToB / SoR) |
 | **Column headers** | Table | Click to sort |
 
 Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.

@@ -21,7 +21,7 @@ def test_shared_inventory_spell_only_no_gear_columns(tmp_path: Path) -> None:
     shd_spell = tmp_path / "Deflub_bristle-SHD-MissingSpells.txt"
     inv.write_text(_MINIMAL_INVENTORY, encoding="utf-8")
     pal_spell.write_text("126\tCommittal Rk. III\n", encoding="utf-8")
-    shd_spell.write_text("126\tHarm Touch Rk. III\n", encoding="utf-8")
+    shd_spell.write_text("126\tBanshee Skin VIII Rk. III\n", encoding="utf-8")
 
     report = build_team_report([inv])
     assert len(report.characters) == 0
@@ -37,7 +37,7 @@ def test_explicit_spell_ignores_other_spells_in_folder(tmp_path: Path) -> None:
     shd_spell = tmp_path / "Deflub_bristle-SHD-MissingSpells.txt"
     inv.write_text(_MINIMAL_INVENTORY, encoding="utf-8")
     pal_spell.write_text("126\tCommittal Rk. III\n", encoding="utf-8")
-    shd_spell.write_text("126\tHarm Touch Rk. III\n", encoding="utf-8")
+    shd_spell.write_text("126\tBanshee Skin VIII Rk. III\n", encoding="utf-8")
 
     report = build_team_report([inv], spell_paths=[pal_spell])
     assert len(report.characters) == 1
@@ -70,7 +70,7 @@ def test_subfolder_per_persona_inventory(tmp_path: Path) -> None:
     pal_inv.write_text(_PAL_INVENTORY, encoding="utf-8")
     shd_inv.write_text(_SHD_INVENTORY, encoding="utf-8")
     pal_spell.write_text("126\tCommittal Rk. III\n", encoding="utf-8")
-    shd_spell.write_text("126\tHarm Touch Rk. III\n", encoding="utf-8")
+    shd_spell.write_text("126\tBanshee Skin VIII Rk. III\n", encoding="utf-8")
 
     report = build_team_report([pal_inv, shd_inv], spell_paths=[pal_spell, shd_spell])
     assert len(report.characters) == 2
@@ -119,7 +119,7 @@ def test_spell_report_persona_columns(tmp_path: Path) -> None:
     shd_spell = tmp_path / "Deflub_bristle-SHD-MissingSpells.txt"
     inv.write_text(_MINIMAL_INVENTORY, encoding="utf-8")
     pal_spell.write_text("126\tCommittal Rk. III\n", encoding="utf-8")
-    shd_spell.write_text("126\tHarm Touch Rk. III\n", encoding="utf-8")
+    shd_spell.write_text("126\tBanshee Skin VIII Rk. III\n", encoding="utf-8")
 
     team = build_team_report([inv], spell_paths=[pal_spell, shd_spell])
     spell_report = build_spell_rune_report(
@@ -128,8 +128,8 @@ def test_spell_report_persona_columns(tmp_path: Path) -> None:
     assert spell_report is not None
     pal_pk = persona_key("Deflub", "bristle", "PAL")
     shd_pk = persona_key("Deflub", "bristle", "SHD")
-    assert spell_report.counts_by_persona[pal_pk]["126-130"]["Minor"] == 1
-    assert spell_report.counts_by_persona[shd_pk]["126-130"]["Minor"] == 1
+    assert spell_report.counts_by_persona[pal_pk]["Shattering of Ro (2025)"]["Minor"] == 1
+    assert spell_report.counts_by_persona[shd_pk]["Shattering of Ro (2025)"]["Minor"] == 1
 
 
 def test_excel_auto_discovered_shared_inventory_spell_tabs_only(tmp_path: Path) -> None:
@@ -138,7 +138,7 @@ def test_excel_auto_discovered_shared_inventory_spell_tabs_only(tmp_path: Path) 
     shd_spell = tmp_path / "Deflub_bristle-SHD-MissingSpells.txt"
     inv.write_text(_MINIMAL_INVENTORY, encoding="utf-8")
     pal_spell.write_text("126\tCommittal Rk. III\n", encoding="utf-8")
-    shd_spell.write_text("126\tHarm Touch Rk. III\n", encoding="utf-8")
+    shd_spell.write_text("126\tBanshee Skin VIII Rk. III\n", encoding="utf-8")
 
     team = build_team_report([inv])
     spell_report = build_spell_rune_report(team, inventory_paths=[inv])
@@ -157,7 +157,7 @@ def test_excel_explicit_spell_gets_gear_column(tmp_path: Path) -> None:
     shd_spell = tmp_path / "Deflub_bristle-SHD-MissingSpells.txt"
     inv.write_text(_MINIMAL_INVENTORY, encoding="utf-8")
     pal_spell.write_text("126\tCommittal Rk. III\n", encoding="utf-8")
-    shd_spell.write_text("126\tHarm Touch Rk. III\n", encoding="utf-8")
+    shd_spell.write_text("126\tBanshee Skin VIII Rk. III\n", encoding="utf-8")
 
     team = build_team_report([inv], spell_paths=[pal_spell])
     spell_report = build_spell_rune_report(

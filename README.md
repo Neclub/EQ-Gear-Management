@@ -78,7 +78,8 @@ Output: `dist\InventoryParser-<version>.exe`
 
 - **Team Gear** — equipped items by slot, color-coded by tier
 - **Gear T-Level** — expansion tier codes per slot
-- **Missing Runes / Missing Spells** — Rk. III tracking with spell expansion data (needs spell Output logs)
+- **Missing Runes** — Rk. III rune totals grouped by spell expansion (LS / ToB / SoR; needs spell Output logs)
+- **Missing Spells** — per-spell list with expansion, level, and rune tier (needs spell Output logs)
 - **Rune Inventory** — raid runes on hand (from inventory Output logs)
 - **Achievements** — collection and raid progress (needs achievement Output logs)
 - **HTML report** — same data in a browser, searchable and filterable
@@ -103,3 +104,11 @@ py -3 -m pytest -q
 ```
 
 Bump version in `src/inventory_parser/__init__.py`, update [CHANGELOG.md](CHANGELOG.md), then push to `main` — CI builds and publishes the new release.
+
+Refresh the level 121–130 spell expansion catalog after EQ patches:
+
+```powershell
+py -3 scripts/scrape_spell_expansions.py --cache
+```
+
+Commit the updated `src/inventory_parser/data/spell_expansions_121_130.json`.

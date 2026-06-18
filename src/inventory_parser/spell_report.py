@@ -18,10 +18,12 @@ from inventory_parser.missing_spells import (
     strip_spell_rank,
 )
 from inventory_parser.spell_runes import (
+    MissingRuneExpansionGroup,
     SpellLevelBlock,
     block_for_level,
     enabled_blocks,
     load_rune_config,
+    missing_rune_expansion_groups,
     rune_tier_for_level,
 )
 from inventory_parser.spell_catalog import lookup_expansion_label
@@ -46,6 +48,7 @@ class SpellRuneReport:
     entries: list[MissingRankIII] = field(default_factory=list)
     counts_by_persona: dict[str, dict[str, dict[str, int]]] = field(default_factory=dict)
     blocks: tuple[SpellLevelBlock, ...] = ()
+    expansion_groups: tuple[MissingRuneExpansionGroup, ...] = ()
     warnings: list[str] = field(default_factory=list)
 
     @property
@@ -99,7 +102,12 @@ def build_spell_rune_report(
         return None
 
     persona_order = [c.persona_key for c in personas]
-    report = SpellRuneReport(persona_keys=persona_order, blocks=blocks, warnings=warnings)
+    report = SpellRuneReport(
+        persona_keys=persona_order,
+        blocks=blocks,
+        expansion_groups=missing_rune_expansion_groups(),
+        warnings=warnings,
+    )
     counts: dict[str, dict[str, dict[str, int]]] = defaultdict(
         lambda: defaultdict(lambda: defaultdict(int))
     )
@@ -156,12 +164,13 @@ def build_spell_rune_report(
                 ),
             )
             report.entries.append(entry)
-            counts[pk][block.label][tier] += 1
+            if entry.expansion:
+                counts[pk][entry.expansion][tier] += 1
 
     report.entries.sort(
         key=lambda e: (
             e.persona_key.casefold(),
-            e.block_label,
+            e.expansion.casefold(),
             e.level,
             e.spell_name.casefold(),
         )

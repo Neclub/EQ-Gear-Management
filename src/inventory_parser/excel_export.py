@@ -437,23 +437,22 @@ def _write_spell_summary_section(
     ws: Worksheet,
     *,
     start_row: int,
-    block,
+    group,
     tiers: tuple[str, ...],
     characters: list[CharacterGear],
     spell_report: SpellRuneReport,
 ) -> int:
-    """Rune count matrix for one level block; returns next free row."""
-    expansions = ", ".join(block.expansions)
+    """Rune count matrix for one spell expansion; returns next free row."""
     return _write_rune_tier_matrix_section(
         ws,
         start_row=start_row,
-        title=f"Levels {block.label}",
-        subtitle=f"{expansions} · {block.turn_in_theme}",
-        header_key=block.label,
+        title=group.label,
+        subtitle=group.turn_in_theme,
+        header_key=group.key,
         tiers=tiers,
         characters=characters,
         count_for=lambda char, tier: spell_report.counts_by_persona.get(char.persona_key, {})
-        .get(block.label, {})
+        .get(group.label, {})
         .get(tier, 0),
     )
 
@@ -564,15 +563,15 @@ def _write_missing_runes_sheet(
     row = _write_spell_sheet_banner(
         ws,
         title="Missing Runes",
-        subtitle="Rank III runes still needed per character · counts by level band",
+        subtitle="Rank III runes still needed per character · counts by spell expansion",
         merge_cols=summary_cols,
     )
 
-    for block in spell_report.blocks:
+    for group in spell_report.expansion_groups:
         row = _write_spell_summary_section(
             ws,
             start_row=row,
-            block=block,
+            group=group,
             tiers=tiers,
             characters=characters,
             spell_report=spell_report,

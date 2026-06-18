@@ -29,6 +29,36 @@ class SpellRuneConfig:
     blocks: tuple[SpellLevelBlock, ...]
 
 
+@dataclass(frozen=True)
+class MissingRuneExpansionGroup:
+    key: str
+    label: str
+    turn_in_theme: str
+
+
+MISSING_RUNE_EXPANSION_GROUPS: tuple[MissingRuneExpansionGroup, ...] = (
+    MissingRuneExpansionGroup(
+        "sor",
+        "Shattering of Ro (2025)",
+        "{Tier} Mirrorshard of Relic",
+    ),
+    MissingRuneExpansionGroup(
+        "tob",
+        "The Outer Brood (2024)",
+        "Energized {Tier} Engram",
+    ),
+    MissingRuneExpansionGroup(
+        "ls",
+        "Laurion's Song (2023)",
+        "{Tier} Emblem of the Forge",
+    ),
+)
+
+
+def missing_rune_expansion_groups() -> tuple[MissingRuneExpansionGroup, ...]:
+    return MISSING_RUNE_EXPANSION_GROUPS
+
+
 def _parse_block(raw: dict[str, Any]) -> SpellLevelBlock:
     return SpellLevelBlock(
         level_start=int(raw["level_start"]),

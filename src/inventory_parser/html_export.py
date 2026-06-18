@@ -134,21 +134,20 @@ def _serialize_missing_runes(
     tiers: tuple[str, ...],
 ) -> dict:
     blocks: list[dict] = []
-    for block in spell_report.blocks:
+    for group in spell_report.expansion_groups:
         block_rows: list[dict] = []
         for tier in tiers:
             counts = [
                 spell_report.counts_by_persona.get(char.persona_key, {})
-                .get(block.label, {})
+                .get(group.label, {})
                 .get(tier, 0)
                 for char in characters
             ]
             block_rows.append({"tier": tier, "counts": counts})
         blocks.append(
             {
-                "label": block.label,
-                "expansions": ", ".join(block.expansions),
-                "theme": block.turn_in_theme,
+                "label": group.label,
+                "theme": group.turn_in_theme,
                 "rows": block_rows,
             }
         )
