@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import threading
 import traceback
+import webbrowser
 from pathlib import Path
 
 import webview
@@ -22,7 +23,6 @@ from inventory_parser.eq_servers import server_display_name
 from inventory_parser.excel_export import write_team_workbook
 from inventory_parser.excel_theme import tier_bucket_legend_rows
 from inventory_parser.export_bundle import build_export_bundle, release_export_memory
-from inventory_parser.html_export import serialize_report
 from inventory_parser.html_export import write_team_html
 from inventory_parser.missing_spells import (
     bindings_include_personas,
@@ -38,7 +38,7 @@ from inventory_parser.output_paths import (
 )
 from inventory_parser.slots import NON_VISIBLE_SLOTS, VISIBLE_SLOTS, SlotFilter
 from inventory_parser.team_report import FolderCharacterChoice, discover_folder_character_choices
-from inventory_parser.web_bridge import eq_logo_data_uri, report_viewer_html, setup_url
+from inventory_parser.web_bridge import eq_logo_data_uri, file_url, setup_url
 
 
 def _downloads_dir() -> Path:
@@ -285,7 +285,6 @@ class WebApi:
             return {"ok": False, "error": str(exc)}
 
         warnings = list(bundle.warnings)
-        report_payload = serialize_report(bundle)
 
         output_path = Path(output)
         saved = write_team_workbook(
@@ -300,20 +299,17 @@ class WebApi:
         if also_html:
             html_saved = write_team_html(bundle, html_path_for_workbook(saved))
 
-        char_count = len(bundle.team.characters)
         return {
             "ok": True,
             "xlsx": str(saved),
             "html": str(html_saved) if html_saved is not None else None,
             "warnings": warnings,
-            "reportPayload": report_payload if char_count > 1 else None,
         }
 
-    def show_report(self, report_payload: dict) -> None:
-        """Load the in-app report viewer with the given payload."""
-        window = self._window
-        if window is None:
-            return
-        payload_json = json.dumps(report_payload, ensure_ascii=False)
-        html = report_viewer_html(payload_json)
-        window.load_html(html)
+    def open_html_report(self, html_path: str) -> dict:
+        """Open a saved HTML report in the system default browser."""
+        path = Path(html_path)
+        if not path.is_file():
+            return {"ok": False, "error": f"HTML file not found: {html_path}"}
+        webbrowser.open(file_url(path))
+        return {"ok": True, "path": str(path)}

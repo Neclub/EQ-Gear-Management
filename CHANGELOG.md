@@ -6,6 +6,22 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.16.2] - 2026-07-07
+
+### Changed
+
+- **GUI HTML export:** after generation, the saved `.html` file opens in the system default browser. The setup screen stays open so **Help** and other controls remain available.
+- **Docs:** README, HowToUse, and Discord guide updated for browser-based HTML opening.
+
+### Fixed
+
+- **Help menu** no longer stops working after report generation (setup page re-initializes reliably on load).
+- **pywebview errors** when opening large in-app HTML reports (`load_html` / API callback race on Windows).
+
+### Removed
+
+- **In-app report viewer** from the post-export GUI flow (the HTML file is still written; the GUI opens it in your default browser instead).
+
 ## [1.16.1] - 2026-06-18
 
 ### Changed

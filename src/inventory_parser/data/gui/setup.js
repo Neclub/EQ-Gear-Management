@@ -40,11 +40,28 @@ function closeModal() {
   $("modalRoot").innerHTML = "";
 }
 
+function resetUI() {
+  closeModal();
+  const helpMenu = $("helpMenu");
+  if (helpMenu) helpMenu.classList.add("hidden");
+  clearTimeout(showToast._timer);
+  const toast = $("toast");
+  if (toast) toast.classList.add("hidden");
+}
+
 function toggleChip(el, on) {
   el.classList.toggle("on", on);
 }
 
+let eventsBound = false;
+
 async function initApp() {
+  resetUI();
+  bindEvents();
+  refreshUI();
+
+  if (!window.pywebview || !pywebview.api) return;
+
   try {
     const info = await api("get_version");
     $("versionBadge").textContent = `v${info.version}`;
@@ -52,11 +69,12 @@ async function initApp() {
   } catch (_) {
     $("versionBadge").textContent = "";
   }
-  bindEvents();
-  refreshUI();
 }
 
 function bindEvents() {
+  if (eventsBound) return;
+  eventsBound = true;
+
   $("helpBtn").addEventListener("click", (e) => {
     e.stopPropagation();
     $("helpMenu").classList.toggle("hidden");
@@ -441,6 +459,7 @@ async function generateReport() {
 
 window.onGenerateComplete = async function (result) {
   setGenerating(false);
+  resetUI();
   if (!result.ok) {
     $("status").textContent = "Export failed.";
     const msg = result.traceback || result.error || "Export failed.";
@@ -457,11 +476,11 @@ window.onGenerateComplete = async function (result) {
   }
   showToast(msg.replace(/\n/g, " • "));
 
-  if (result.reportPayload) {
+  if (result.html) {
     try {
-      await api("show_report", result.reportPayload);
+      await api("open_html_report", result.html);
     } catch (err) {
-      showToast(`Report saved but viewer failed: ${err}`, true);
+      showToast(`Report saved but browser failed to open: ${err}`, true);
     }
   }
 };
@@ -516,5 +535,11 @@ function escapeAttr(s) {
   return escapeHtml(s).replace(/'/g, "&#39;");
 }
 
-window.addEventListener("pywebviewready", initApp);
-if (window.pywebview) initApp();
+function bootApp() {
+  void initApp();
+}
+
+window.initApp = initApp;
+document.addEventListener("DOMContentLoaded", bootApp);
+window.addEventListener("pywebviewready", bootApp);
+if (document.readyState !== "loading") bootApp();

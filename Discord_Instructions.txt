@@ -40,7 +40,7 @@ Tip: put achievement files in an `AchievementData` subfolder — same pattern.
    • Order is remembered for next time
 4. (Optional) Leave **Spells** checked for rune tabs (auto-enabled when spell files are present)
 5. (Optional) Leave **Achievements** checked for collection/summary tabs (auto-enabled when achievement files are present)
-6. (Optional) Leave **HTML** checked for a browser-viewable `.html` file next to the Excel workbook (on by default; uncheck to skip). Multi-character reports open in the app viewer; single-character reports stay on setup.
+6. (Optional) Leave **HTML** checked for a browser-viewable `.html` file next to the Excel workbook (on by default; uncheck to skip). The GUI opens it in your default browser when generation finishes.
 7. Click **Generate Report**
 
 Default save location: `Downloads\{Server}_Team Inventory.xlsx`

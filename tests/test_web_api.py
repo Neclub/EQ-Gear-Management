@@ -47,7 +47,7 @@ def test_tier_legend_has_rows() -> None:
     assert data["nonVisibleSlots"]
 
 
-def test_generate_report_single_character_omits_viewer_payload(tmp_path: Path) -> None:
+def test_generate_report_writes_html(tmp_path: Path) -> None:
     root = Path(__file__).resolve().parents[1]
     inv = root / "Examples" / "Deflub_bristle-Inventory.txt"
     out = tmp_path / "solo.xlsx"
@@ -64,10 +64,10 @@ def test_generate_report_single_character_omits_viewer_payload(tmp_path: Path) -
     )
     assert result["ok"] is True
     assert result["html"]
-    assert result["reportPayload"] is None
+    assert Path(result["html"]).is_file()
 
 
-def test_generate_report_multi_character_includes_viewer_payload(tmp_path: Path) -> None:
+def test_generate_report_multi_character_writes_html(tmp_path: Path) -> None:
     root = Path(__file__).resolve().parents[1]
     examples = root / "Examples"
     paths = [
@@ -87,5 +87,12 @@ def test_generate_report_multi_character_includes_viewer_payload(tmp_path: Path)
         }
     )
     assert result["ok"] is True
-    assert result["reportPayload"] is not None
-    assert result["reportPayload"]["meta"]["characterCount"] == 2
+    assert result["html"]
+    assert Path(result["html"]).is_file()
+
+
+def test_open_html_report_missing_file() -> None:
+    api = WebApi()
+    result = api.open_html_report("nonexistent_report.html")
+    assert result["ok"] is False
+    assert "not found" in result["error"]

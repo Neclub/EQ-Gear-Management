@@ -74,7 +74,7 @@ The **Missing Collections** tab lists collection items still needed (`owned/tota
 
 ## Quick start (GUI)
 
-The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane setup screen. Multi-character HTML exports can open in the in-app report viewer after generation; single-character exports stay on the setup screen.
+The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane setup screen. When HTML export is enabled, the saved report opens in your default browser after generation; the setup screen stays open.
 
 **Setup layout:**
 
@@ -105,13 +105,13 @@ The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane 
    - **Slots** dropdown — `all`, `visible`, or `non_visible` on the gear sheets  
    - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs  
    - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs  
-- **HTML** chip — on by default; writes a `{prefix}_Team Inventory.html` file next to the Excel workbook. Multi-character reports open in the in-app viewer; single-character reports stay on the setup screen. Uncheck to skip HTML export  
+- **HTML** chip — on by default; writes a `{prefix}_Team Inventory.html` file next to the Excel workbook and opens it in your default browser when generation finishes. Uncheck to skip HTML export  
 
 6. **Output**
    - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
    - Use **Browse…** to pick another path  
 
-7. Click **Generate Report** — multi-character HTML reports open in the in-app viewer when complete. Single-character exports stay on the setup screen.
+7. Click **Generate Report** — when HTML export is enabled, the saved `.html` file opens in your default browser. The setup screen stays open.
 
 If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, etc.
 
@@ -209,7 +209,7 @@ Incomplete raid **objectives** from each expansion’s **Raids** section. Column
 
 ### HTML report *(optional)*
 
-When the **HTML** chip is checked (default in the GUI) or **`--also-html`** is passed on the CLI, the app saves `{prefix}_Team Inventory.html` next to the `.xlsx` file. Double-click to open in Chrome, Edge, Firefox, etc.
+When the **HTML** chip is checked (default in the GUI) or **`--also-html`** is passed on the CLI, the app saves `{prefix}_Team Inventory.html` next to the `.xlsx` file. In the GUI, that file opens in your default browser when generation finishes; you can also double-click it later in Chrome, Edge, Firefox, etc.
 
 **Layout**
 
