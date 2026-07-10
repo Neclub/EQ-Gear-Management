@@ -19,7 +19,6 @@ from inventory_parser.excel_export import (
     GEAR_T_LEVEL_SHEET_NAME,
     MISSING_COLLECTIONS_SHEET_NAME,
     MISSING_SPELLS_SHEET_NAME,
-    MISSING_USEFUL_SPELLS_SHEET_NAME,
     RAID_ACHIEVEMENTS_SHEET_NAME,
     RUNE_INVENTORY_SHEET_NAME,
     UNMADE_GEAR_SHEET_NAME,
@@ -32,13 +31,7 @@ from inventory_parser.output_paths import default_export_prefix_from_report
 from inventory_parser.package_data import asset_path, read_data_text
 from inventory_parser.slots import slot_visibility, slots_for_export
 from inventory_parser.sor_tier import sor_gap_label
-from inventory_parser.spell_report import SpellRuneReport
 from inventory_parser.spell_runes import load_rune_config
-from inventory_parser.useful_spells import (
-    RACCOO_USEFUL_SPELLS_CREDIT_TEXT,
-    RACCOO_USEFUL_SPELLS_URL,
-    MissingUsefulSpellsReport,
-)
 
 _REPORT_JSON_MARKER = "/*__REPORT_JSON__*/"
 
@@ -132,31 +125,6 @@ def _serialize_spell_list(spell_report: SpellRuneReport, characters: list[Charac
         "runeColumn": 2,
         "runeOptions": rune_options,
         "expansionColumn": 3,
-    }
-
-
-def _serialize_missing_useful(report: MissingUsefulSpellsReport) -> dict:
-    columns = ["Character", "Level", "Expansion", "Spell", "Highest RK", "Comments"]
-    rows = [
-        [
-            entry.display_name,
-            entry.level,
-            entry.expansion,
-            entry.spell_name,
-            entry.highest_rk,
-            entry.comments,
-        ]
-        for entry in report.entries
-    ]
-    return {
-        "columns": columns,
-        "rows": rows,
-        "characterColumn": 0,
-        "expansionColumn": 2,
-        "credit": {
-            "text": RACCOO_USEFUL_SPELLS_CREDIT_TEXT,
-            "url": RACCOO_USEFUL_SPELLS_URL,
-        },
     }
 
 
@@ -286,16 +254,6 @@ def serialize_report(bundle: ExportBundle) -> dict:
                 "title": MISSING_SPELLS_SHEET_NAME,
                 "type": "table",
                 "data": _serialize_spell_list(bundle.spell_report, spell_chars),
-            }
-        )
-
-    if bundle.missing_useful_report is not None and bundle.missing_useful_report.entries:
-        sections.append(
-            {
-                "id": "missing_useful_spells",
-                "title": MISSING_USEFUL_SPELLS_SHEET_NAME,
-                "type": "table",
-                "data": _serialize_missing_useful(bundle.missing_useful_report),
             }
         )
 

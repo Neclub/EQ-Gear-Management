@@ -182,6 +182,14 @@ Missing Rk. II lines at rune-relevant levels count toward **Missing Runes** the 
 
 Older level bands (111–120) are in config but not shown until enabled in `spell_rune_bands.json`.
 
+### Missing Useful Spells *(if enabled)*
+
+Useful spells from [Raccoo’s curated list](https://docs.google.com/spreadsheets/d/1ZqUFZ-WTZvfcBfwu5g6GGEQroEwNLSfK1LMOdMHVHcA/htmlview) that still appear in each character’s MissingSpells dump — **all levels**, not just 121–130.
+
+**Columns:** Character · Level · Expansion · Spell · Highest RK · Comments
+
+Matching is by class (from the MissingSpells filename) against the bundled useful-spell catalog. Use Excel auto-filter or the HTML **Character** / **Expansion** dropdowns to focus on one persona. The sheet includes a credit link: **Based on "SOR - Raccoo's list of useful spells"**.
+
 ### Rune Inventory *(if runes found)*
 
 On-hand raid spell rune items in **General**, **Bank**, and **Shared Bank** — no MissingSpells file required.
@@ -219,7 +227,7 @@ When the **HTML** chip is checked (default in the GUI) or **`--also-html`** is p
 
 **Sections**
 
-Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Rune Inventory, Unmade Gear, Missing Collections, Achievement Summary, Raid Achievements.
+Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Missing Collections, Achievement Summary, Raid Achievements.
 
 **Filters & tools**
 
@@ -228,9 +236,9 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 | **Character filter** (chips) | Sidebar | Filters gear columns and table rows across the report |
 | **Search** | Toolbar | Filters the active section (keeps keyboard focus while typing) |
 | **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
-| **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Raid Achievements, Missing Collections, etc. to one character |
+| **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, etc. to one character |
 | **Rune type** | Toolbar (Missing Spells) | All / Minor / Lesser / Median / Greater / Glowing |
-| **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells** by exact spell expansion; filter achievement tables by expansion (defaults to the **current expansion** on first open); on **Rune Inventory**, filter to one rune family (NoS / LS / ToB / SoR) |
+| **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells** by exact spell expansion; filter **Missing Useful Spells** by short expansion code (SOR, TOB, …); filter achievement tables by expansion (defaults to the **current expansion** on first open); on **Rune Inventory**, filter to one rune family (NoS / LS / ToB / SoR) |
 | **Column headers** | Table | Click to sort |
 
 Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.

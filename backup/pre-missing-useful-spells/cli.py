@@ -82,8 +82,6 @@ def generate_workbook(
 
             spell_report=bundle.spell_report,
 
-            missing_useful_report=bundle.missing_useful_report,
-
             rune_inventory_report=bundle.rune_inventory_report,
 
             achievement_report=bundle.achievement_report,

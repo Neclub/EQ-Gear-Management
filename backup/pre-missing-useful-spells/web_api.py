@@ -292,7 +292,6 @@ class WebApi:
             output_path,
             slot_filter=bundle.slot_filter,
             spell_report=bundle.spell_report,
-            missing_useful_report=bundle.missing_useful_report,
             rune_inventory_report=bundle.rune_inventory_report,
             achievement_report=bundle.achievement_report,
             unmade_entries=bundle.unmade_entries,

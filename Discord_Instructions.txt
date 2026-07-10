@@ -55,6 +55,7 @@ Use **Browse…** to pick a different path if you want.
 • **Missing Runes** — Rk. III rune totals by spell expansion (LS / ToB / SoR); one matrix per expansion
 • **Missing Spells** — every missing Rk. III with level, rune tier, expansion, and spell name
   • Missing Rk. II at levels 121–130 counts too (shown as Rk. III in the report)
+• **Missing Useful Spells** — curated useful spells still missing (Raccoo’s list × your MissingSpells dump; all levels)
 • **Rune Inventory** — on-hand raid runes in bags/bank (NoS, LS, ToB, SoR); no spell file needed
 • **Missing Collections / Achievement Summary / Raid Achievements** — when achievement dumps are included
 
@@ -62,10 +63,10 @@ Item names link to EQ Resource when the dump has item IDs.
 
 **HTML report (optional)** — same data in a single `.html` file beside the Excel workbook (`{Server}_Team Inventory.html`). Open in any browser; no server needed.
 
-• **Sidebar** — Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Rune Inventory, …)
+• **Sidebar** — Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, …)
 • **Character filter** chips under the nav — filter the whole report by toon
 • **Search**, **sort** (click headers), **Visible slots** on gear tabs (search keeps focus while typing)
-• **Character** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Raid Achievements, Rune Inventory, etc.)
+• **Character** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Missing Useful Spells, Raid Achievements, Rune Inventory, etc.)
 • **Expansion** on achievement tabs defaults to the current expansion (not All) — change the dropdown to see older content
 • Gear colors and EQ Resource links match Excel
 

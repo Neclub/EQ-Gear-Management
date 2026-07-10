@@ -6,7 +6,7 @@ from inventory_parser.achievement_parser import EVERQUEST_BASE_LABEL
 from inventory_parser.achievement_report import build_achievement_report
 from inventory_parser.cli import generate_workbook
 from inventory_parser.export_bundle import build_export_bundle
-from inventory_parser.excel_export import MISSING_SPELLS_SHEET_NAME, MISSING_USEFUL_SPELLS_SHEET_NAME
+from inventory_parser.excel_export import MISSING_SPELLS_SHEET_NAME
 from inventory_parser.html_export import extract_report_json, write_team_html
 from inventory_parser.output_paths import html_path_for_workbook
 
@@ -60,7 +60,6 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
     assert "Gear T-Level" in titles
     assert "Missing Runes" in titles
     assert MISSING_SPELLS_SHEET_NAME in titles
-    assert MISSING_USEFUL_SPELLS_SHEET_NAME in titles
 
 
 def test_html_rune_inventory_present(tmp_path: Path) -> None:

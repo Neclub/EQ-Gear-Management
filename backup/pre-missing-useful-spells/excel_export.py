@@ -15,11 +15,6 @@ from inventory_parser.achievement_report import AchievementReport
 from inventory_parser.achievement_parser import format_expansion_label
 from inventory_parser.spell_report import SpellRuneReport
 from inventory_parser.spell_runes import load_rune_config
-from inventory_parser.useful_spells import (
-    RACCOO_USEFUL_SPELLS_CREDIT_TEXT,
-    RACCOO_USEFUL_SPELLS_URL,
-    MissingUsefulSpellsReport,
-)
 from inventory_parser.excel_theme import (
     EVOLVER_FILL,
     FILL_HEADER,
@@ -91,7 +86,6 @@ ACHIEVEMENT_SUMMARY_SHEET_NAME = "Achievement Summary"
 RAID_ACHIEVEMENTS_SHEET_NAME = "Raid Achievements"
 RUNE_INVENTORY_SHEET_NAME = "Rune Inventory"
 MISSING_SPELLS_SHEET_NAME = "Missing Spells"
-MISSING_USEFUL_SPELLS_SHEET_NAME = "Missing Useful Spells"
 
 
 def write_team_workbook(
@@ -100,7 +94,6 @@ def write_team_workbook(
     *,
     slot_filter: SlotFilter = "all",
     spell_report: SpellRuneReport | None = None,
-    missing_useful_report: MissingUsefulSpellsReport | None = None,
     rune_inventory_report: RuneInventoryReport | None = None,
     achievement_report: AchievementReport | None = None,
     unmade_entries: list[UnmadeGearEntry] | None = None,
@@ -127,10 +120,6 @@ def write_team_workbook(
         _write_missing_runes_sheet(ws_runes, report, spell_report)
         ws_list = wb.create_sheet(MISSING_SPELLS_SHEET_NAME)
         _write_spell_list_sheet(ws_list, report, spell_report)
-
-    if missing_useful_report is not None and missing_useful_report.entries:
-        ws_useful = wb.create_sheet(MISSING_USEFUL_SPELLS_SHEET_NAME)
-        _write_missing_useful_spells_sheet(ws_useful, missing_useful_report)
 
     if rune_inventory_report is not None:
         ws_inventory = wb.create_sheet(RUNE_INVENTORY_SHEET_NAME)
@@ -307,11 +296,6 @@ def _fill_sheet_padding(
 def _spell_list_last_row(entry_count: int) -> int:
     """Last row on Missing Spells: banner, header, entries, spacer, footer note."""
     return 6 + entry_count
-
-
-def _missing_useful_last_row(entry_count: int) -> int:
-    """Last row on Missing Useful Spells: banner, header, entries, spacer, notes."""
-    return 7 + entry_count
 
 
 def _fill_for_equipped_item(item: EquippedItem):
@@ -760,110 +744,6 @@ def _write_spell_list_sheet(
         ws,
         content_last_row=max(row, last_row),
         content_last_col=5,
-        pad_rows=max(row, last_row),
-    )
-
-
-def _write_missing_useful_spells_sheet(
-    ws: Worksheet,
-    report: MissingUsefulSpellsReport,
-) -> None:
-    ws.sheet_properties.tabColor = "5A4A6E"
-    last_row = _missing_useful_last_row(len(report.entries))
-    col_count = 6
-
-    row = _write_spell_sheet_banner(
-        ws,
-        title=MISSING_USEFUL_SPELLS_SHEET_NAME,
-        subtitle="Curated useful spells that still appear in /outputfile missingspells (all levels)",
-        merge_cols=col_count,
-    )
-
-    detail_headers = (
-        "Character",
-        "Level",
-        "Expansion",
-        "Spell",
-        "Highest RK",
-        "Comments",
-    )
-    for col, header in enumerate(detail_headers, start=1):
-        cell = ws.cell(row, col, header)
-        cell.font = FONT_HEADER
-        cell.fill = FILL_HEADER
-        cell.alignment = _ALIGN_HEADER
-    detail_header_row = row
-    _apply_spell_table_borders(ws, detail_header_row, detail_header_row, 1, col_count)
-    row += 1
-
-    prev_display_name: str | None = None
-    stripe = 0
-    for entry in report.entries:
-        if entry.display_name != prev_display_name:
-            stripe = 1 - stripe
-            prev_display_name = entry.display_name
-        row_fill = FILL_SPELL_DETAIL_ALT if stripe else FILL_SPELL_DETAIL
-
-        values = (
-            entry.display_name,
-            entry.level,
-            entry.expansion or None,
-            entry.spell_name,
-            entry.highest_rk or None,
-            entry.comments or None,
-        )
-        alignments = (
-            _ALIGN,
-            _ALIGN_CENTER,
-            _ALIGN,
-            _ALIGN,
-            _ALIGN_CENTER,
-            _ALIGN_WRAP,
-        )
-        for col, (value, alignment) in enumerate(zip(values, alignments), start=1):
-            cell = ws.cell(row, col, value)
-            cell.font = FONT_BODY
-            cell.alignment = alignment
-            cell.fill = row_fill
-
-        _apply_spell_table_borders(ws, row, row, 1, col_count)
-        row += 1
-
-    if report.entries:
-        last_detail_row = row - 1
-        ws.auto_filter.ref = f"A{detail_header_row}:F{last_detail_row}"
-        ws.freeze_panes = ws.cell(detail_header_row + 1, 1).coordinate
-
-    row += 1
-    credit = ws.cell(row, 1, RACCOO_USEFUL_SPELLS_CREDIT_TEXT)
-    credit.font = FONT_LINK
-    credit.fill = FILL_SHEET
-    credit.alignment = _ALIGN_WRAP
-    credit.hyperlink = Hyperlink(ref=credit.coordinate, target=RACCOO_USEFUL_SPELLS_URL)
-    _merge_spell_row(ws, row, 1, col_count, FILL_SHEET)
-
-    row += 1
-    note = ws.cell(
-        row,
-        1,
-        "Intersection of the curated useful-spell list with each character's MissingSpells dump. "
-        "Filter the Character column to focus on one persona.",
-    )
-    note.font = FONT_LEGEND
-    note.fill = FILL_SHEET
-    note.alignment = _ALIGN_WRAP
-    _merge_spell_row(ws, row, 1, col_count, FILL_SHEET)
-
-    ws.column_dimensions["A"].width = _COL_SPELL_CHAR
-    ws.column_dimensions["B"].width = _COL_SPELL_LEVEL
-    ws.column_dimensions["C"].width = _COL_SPELL_EXPANSION
-    ws.column_dimensions["D"].width = _COL_SPELL_NAME
-    ws.column_dimensions["E"].width = 12
-    ws.column_dimensions["F"].width = 36
-    _fill_sheet_padding(
-        ws,
-        content_last_row=max(row, last_row),
-        content_last_col=col_count,
         pad_rows=max(row, last_row),
     )
 

@@ -271,15 +271,6 @@ a:hover { text-decoration: underline; }
 }
 .legend-swatch { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--border); }
 .legend-note { margin-left: auto; color: var(--muted); font-size: 11px; }
-.section-credit {
-  margin-top: 12px;
-  font-size: 12px;
-  color: var(--muted);
-}
-.section-credit a {
-  color: #8cb4ff;
-  text-decoration: underline;
-}
 @media (max-width: 900px) {
   #app { flex-direction: column; }
   #sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
@@ -377,7 +368,6 @@ const SECTION_ICONS = {
   missing_runes: "icon-rune",
   rune_inventory: "icon-rune-stack",
   spell_list: "icon-book",
-  missing_useful_spells: "icon-book",
   unmade_gear: "icon-anvil",
   missing_collections: "icon-chest",
   raid_achievements: "icon-trophy",
@@ -413,20 +403,9 @@ const ACHIEVEMENT_EXPANSION_TABS = new Set([
 function sectionExpansions(section) {
   if (section.type !== "table" || section.data.expansionColumn == null) return [];
   const col = section.data.expansionColumn;
-  const fromOrder = REPORT.expansionOrder.filter((label) =>
+  return REPORT.expansionOrder.filter((label) =>
     section.data.rows.some((r) => r[col] === label)
   );
-  if (fromOrder.length) return fromOrder;
-  const seen = new Set();
-  const out = [];
-  for (const row of section.data.rows) {
-    const value = row[col];
-    if (value && !seen.has(value)) {
-      seen.add(value);
-      out.push(value);
-    }
-  }
-  return out;
 }
 
 function expansionFilterOptions(section) {
@@ -790,16 +769,6 @@ function updateTableContent(content, section) {
   table.appendChild(tbody);
   wrap.appendChild(table);
   content.appendChild(wrap);
-  if (data.credit && data.credit.text && data.credit.url) {
-    const credit = el("p", "section-credit");
-    const link = document.createElement("a");
-    link.href = data.credit.url;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = data.credit.text;
-    credit.appendChild(link);
-    content.appendChild(credit);
-  }
 }
 
 function updateMissingRunesContent(content, section) {

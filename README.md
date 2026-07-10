@@ -80,6 +80,7 @@ Output: `dist\InventoryParser-<version>.exe`
 - **Gear T-Level** — expansion tier codes per slot
 - **Missing Runes** — Rk. III rune totals grouped by spell expansion (LS / ToB / SoR; needs spell Output logs)
 - **Missing Spells** — per-spell list with expansion, level, and rune tier (needs spell Output logs)
+- **Missing Useful Spells** — curated useful spells still missing (Raccoo’s list × MissingSpells; needs spell Output logs)
 - **Rune Inventory** — raid runes on hand (from inventory Output logs)
 - **Achievements** — collection and raid progress (needs achievement Output logs)
 - **HTML report** — same data in a browser, searchable and filterable
@@ -112,3 +113,11 @@ py -3 scripts/scrape_spell_expansions.py --cache
 ```
 
 Commit the updated `src/inventory_parser/data/spell_expansions_121_130.json`.
+
+Refresh the curated useful-spell list after updating Raccoo’s xlsx under `Examples/SpellData/`:
+
+```powershell
+py -3 scripts/convert_useful_spells.py
+```
+
+Commit the updated `src/inventory_parser/data/useful_spells.json`.

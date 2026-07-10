@@ -6,7 +6,6 @@ from inventory_parser.team_report import build_team_report
 from inventory_parser.excel_export import (
     GEAR_T_LEVEL_SHEET_NAME,
     MISSING_SPELLS_SHEET_NAME,
-    MISSING_USEFUL_SPELLS_SHEET_NAME,
     RUNE_INVENTORY_SHEET_NAME,
     UNMADE_GEAR_SHEET_NAME,
     _matrix_character_col_width,
@@ -266,29 +265,18 @@ def test_spell_tabs_all_examples(tmp_path: Path) -> None:
     assert spell is not None
     rune = build_rune_inventory_report(team)
     assert rune is not None
-    from inventory_parser.useful_spells import build_missing_useful_spells_report
-
-    useful = build_missing_useful_spells_report(team, inventory_paths=paths)
     out = tmp_path / "crew_spells.xlsx"
-    write_team_workbook(
-        team,
-        out,
-        spell_report=spell,
-        missing_useful_report=useful,
-        rune_inventory_report=rune,
-    )
+    write_team_workbook(team, out, spell_report=spell, rune_inventory_report=rune)
 
     wb = load_workbook(out, data_only=True)
-    expected = [
+    assert wb.sheetnames == [
         "Team gear",
         GEAR_T_LEVEL_SHEET_NAME,
         "Missing Runes",
         MISSING_SPELLS_SHEET_NAME,
+        RUNE_INVENTORY_SHEET_NAME,
+        UNMADE_GEAR_SHEET_NAME,
     ]
-    if useful is not None and useful.entries:
-        expected.append(MISSING_USEFUL_SPELLS_SHEET_NAME)
-    expected.extend([RUNE_INVENTORY_SHEET_NAME, UNMADE_GEAR_SHEET_NAME])
-    assert wb.sheetnames == expected
     assert wb["Missing Runes"]["A1"].value == "Missing Runes"
     ws = wb[MISSING_SPELLS_SHEET_NAME]
     detail_row = next(

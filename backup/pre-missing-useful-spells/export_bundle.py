@@ -17,17 +17,12 @@ from inventory_parser.slots import SlotFilter
 from inventory_parser.spell_report import SpellRuneReport, build_spell_rune_report
 from inventory_parser.rune_inventory import RuneInventoryReport, build_rune_inventory_report
 from inventory_parser.unmade_gear import UnmadeGearEntry, build_unmade_gear_report
-from inventory_parser.useful_spells import (
-    MissingUsefulSpellsReport,
-    build_missing_useful_spells_report,
-)
 
 
 @dataclass
 class ExportBundle:
     team: TeamGearReport
     spell_report: SpellRuneReport | None = None
-    missing_useful_report: MissingUsefulSpellsReport | None = None
     achievement_report: AchievementReport | None = None
     unmade_entries: list[UnmadeGearEntry] = field(default_factory=list)
     rune_inventory_report: RuneInventoryReport | None = None
@@ -63,7 +58,6 @@ def build_export_bundle(
 
     warnings = list(report.warnings)
     spell_report = None
-    missing_useful_report = None
     if include_spells:
         spell_report = build_spell_rune_report(
             report,
@@ -72,13 +66,6 @@ def build_export_bundle(
         )
         if spell_report is not None:
             warnings.extend(spell_report.warnings)
-        missing_useful_report = build_missing_useful_spells_report(
-            report,
-            inventory_paths=inventory_paths,
-            extra_spell_paths=spell_file_paths,
-        )
-        if missing_useful_report is not None:
-            warnings.extend(missing_useful_report.warnings)
 
     achievement_report = None
     if include_achievements:
@@ -99,7 +86,6 @@ def build_export_bundle(
     return ExportBundle(
         team=report,
         spell_report=spell_report,
-        missing_useful_report=missing_useful_report,
         achievement_report=achievement_report,
         unmade_entries=unmade_entries,
         rune_inventory_report=rune_inventory_report,

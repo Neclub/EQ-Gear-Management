@@ -6,6 +6,17 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.17.0] - 2026-07-10
+
+### Added
+
+- **Missing Useful Spells** tab (Excel + HTML): intersects each character’s MissingSpells dump with Raccoo’s curated useful-spell list (all levels), with Character / Expansion filters and a credit link to the source spreadsheet.
+- Bundled `useful_spells.json` plus `scripts/convert_useful_spells.py` to refresh the list from the Raccoo xlsx (`SHK` sheet maps to `SHD`).
+
+### Changed
+
+- **Docs:** README, HowToUse, Discord guide, and changelog updated for the new tab.
+
 ## [1.16.3] - 2026-07-10
 
 ### Changed

@@ -212,7 +212,11 @@ After URLs and `EXPANSION_BY_IMAGE` are filled in:
    ```powershell
    py -3 scripts/scrape_spell_expansions.py --cache
    ```
-6. **Commit** new/updated files under [`src/inventory_parser/data/`](../src/inventory_parser/data/).
+6. **Refresh useful-spell list** if Raccoo’s xlsx under `Examples/SpellData/` was updated for the new expansion:
+   ```powershell
+   py -3 scripts/convert_useful_spells.py
+   ```
+7. **Commit** new/updated files under [`src/inventory_parser/data/`](../src/inventory_parser/data/).
 
 ---
 
