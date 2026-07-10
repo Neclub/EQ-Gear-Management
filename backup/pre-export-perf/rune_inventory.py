@@ -113,7 +113,7 @@ def _scan_character_inventory(
     by_family: dict[str, dict[str, int]] = {
         family.id: {tier: 0 for tier in config.tiers} for family in config.families
     }
-    data = character.inventory_data or parse_inventory_file(character.filepath)
+    data = parse_inventory_file(character.filepath)
     if data is None:
         return by_family
 

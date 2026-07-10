@@ -15,6 +15,8 @@ from inventory_parser.excel_theme import (
     TIER_COLOR_RED,
     TIER_COLOR_YELLOW,
     build_tier_code_colors,
+    spell_tier_fill,
+    tier_code_fill,
     tier_code_fill_color,
 )
 from inventory_parser.export_bundle import build_export_bundle
@@ -43,6 +45,13 @@ def test_tier_code_fill_color_rules() -> None:
     assert tier_code_fill_color("NoS-R1") == TIER_COLOR_RED
     assert tier_code_fill_color("SOR-G2") == TIER_COLOR_RED
     assert tier_code_fill_color(UNKNOWN_TIER_LABEL) == TIER_COLOR_RED
+
+
+def test_pattern_fill_helpers_return_cached_singletons() -> None:
+    assert tier_code_fill("SOR-R2") is tier_code_fill("SOR-R2")
+    assert tier_code_fill("TOB-R1") is tier_code_fill("TOB-G3")
+    assert spell_tier_fill("Minor") is spell_tier_fill("Minor")
+    assert spell_tier_fill("UnknownTier") is spell_tier_fill("AlsoUnknown")
 
 
 def test_build_tier_code_colors_includes_evolver() -> None:

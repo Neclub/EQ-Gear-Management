@@ -69,7 +69,7 @@ def _build_item_holders_by_name(team: TeamGearReport) -> dict[str, list[str]]:
     holders: dict[str, list[str]] = {}
     seen: dict[str, set[str]] = {}
     for character in team.characters:
-        data = character.inventory_data or parse_inventory_file(character.filepath)
+        data = parse_inventory_file(character.filepath)
         if data is None:
             continue
         for item in data.items:

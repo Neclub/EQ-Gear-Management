@@ -86,8 +86,6 @@ def generate_workbook(
 
             achievement_report=bundle.achievement_report,
 
-            unmade_entries=bundle.unmade_entries,
-
         )
 
         html_saved = None

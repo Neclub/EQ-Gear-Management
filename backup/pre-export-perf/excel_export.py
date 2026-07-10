@@ -96,7 +96,6 @@ def write_team_workbook(
     spell_report: SpellRuneReport | None = None,
     rune_inventory_report: RuneInventoryReport | None = None,
     achievement_report: AchievementReport | None = None,
-    unmade_entries: list[UnmadeGearEntry] | None = None,
 ) -> Path:
     """Write team gear workbook with item sheet and SOR gap tracking sheet."""
     output_path = Path(output_path)
@@ -125,14 +124,10 @@ def write_team_workbook(
         ws_inventory = wb.create_sheet(RUNE_INVENTORY_SHEET_NAME)
         _write_rune_inventory_sheet(ws_inventory, rune_inventory_report)
 
-    entries = (
-        unmade_entries
-        if unmade_entries is not None
-        else build_unmade_gear_report(report)
-    )
-    if entries:
+    unmade_entries = build_unmade_gear_report(report)
+    if unmade_entries:
         ws_unmade = wb.create_sheet(UNMADE_GEAR_SHEET_NAME)
-        _write_unmade_gear_sheet(ws_unmade, entries)
+        _write_unmade_gear_sheet(ws_unmade, unmade_entries)
 
     if achievement_report is not None:
         if achievement_report.missing_collections:
@@ -158,6 +153,7 @@ def _slots_for_sor_sheet(report: TeamGearReport, base_slots: tuple[str, ...]) ->
 
 def _write_team_gear_sheet(ws: Worksheet, report: TeamGearReport, slots: tuple[str, ...]) -> None:
     ws.sheet_properties.tabColor = "000000"
+    _fill_sheet_background(ws)
     num_cols = _write_sheet_header(ws, report)
     for row_idx, slot in enumerate(slots, start=2):
         _write_slot_label_cells(ws, row_idx, slot)
@@ -171,20 +167,11 @@ def _write_team_gear_sheet(ws: Worksheet, report: TeamGearReport, slots: tuple[s
     if slots:
         _apply_auto_filter(ws, num_cols, len(slots))
     _write_gear_legend_on_sheet(ws)
-    content_last_col = max(num_cols, _LEGEND_LABEL_MERGE_COLS)
-    _fill_legend_row_overflow(ws, _LEGEND_TITLE_ROW, _LEGEND_LAST_ROW, content_last_col)
-    data_last_row = 1 + len(slots)
-    gap_start = data_last_row + 1
-    _fill_sheet_padding(
-        ws,
-        content_last_row=_LEGEND_LAST_ROW,
-        content_last_col=content_last_col,
-        gap_rows=range(gap_start, _LEGEND_TITLE_ROW) if gap_start < _LEGEND_TITLE_ROW else None,
-    )
 
 
 def _write_sor_gaps_sheet(ws: Worksheet, report: TeamGearReport, slots: tuple[str, ...]) -> None:
     ws.sheet_properties.tabColor = "542A35"
+    _fill_sheet_background(ws)
     num_cols = _write_sheet_header(ws, report)
     for row_idx, slot in enumerate(slots, start=2):
         _write_slot_label_cells(ws, row_idx, slot)
@@ -205,18 +192,6 @@ def _write_sor_gaps_sheet(ws: Worksheet, report: TeamGearReport, slots: tuple[st
     if slots:
         _apply_auto_filter(ws, num_cols, len(slots))
     _write_sor_legend_on_sheet(ws)
-    sor_legend_last = _SOR_LEGEND_FIRST_ROW + len(SOR_GAP_LEGEND_ROWS) - 1
-    content_last_col = max(num_cols, _LEGEND_LABEL_MERGE_COLS)
-    _fill_legend_row_overflow(ws, _SOR_LEGEND_TITLE_ROW, sor_legend_last, content_last_col)
-    data_last_row = 1 + len(slots)
-    gap_start = data_last_row + 1
-    _fill_sheet_padding(
-        ws,
-        content_last_row=sor_legend_last,
-        content_last_col=content_last_col,
-        pad_rows=max(SHEET_BACKGROUND_ROWS, sor_legend_last),
-        gap_rows=range(gap_start, _SOR_LEGEND_TITLE_ROW) if gap_start < _SOR_LEGEND_TITLE_ROW else None,
-    )
 
 
 def _write_sheet_header(ws: Worksheet, report: TeamGearReport) -> int:
@@ -252,45 +227,16 @@ def _fill_for_tier_code(code: str):
     return FILL_ITEM_EMPTY
 
 
-def _fill_legend_row_overflow(
-    ws: Worksheet,
-    first_row: int,
-    last_row: int,
-    content_last_col: int,
-) -> None:
-    """Black-fill legend rows beyond the merged label columns up to content width."""
-    if content_last_col <= _LEGEND_LABEL_MERGE_COLS:
-        return
-    for row in range(first_row, last_row + 1):
-        for col in range(_LEGEND_LABEL_MERGE_COLS + 1, content_last_col + 1):
-            ws.cell(row, col).fill = FILL_SHEET
-
-
-def _fill_sheet_padding(
+def _fill_sheet_background(
     ws: Worksheet,
     *,
-    content_last_row: int,
-    content_last_col: int,
-    pad_rows: int = SHEET_BACKGROUND_ROWS,
-    pad_cols: int = SHEET_BACKGROUND_COLS,
-    gap_rows: range | None = None,
+    max_row: int | None = None,
+    max_col: int = SHEET_BACKGROUND_COLS,
 ) -> None:
-    """Paint unused chrome black without re-styling already filled content cells."""
-    for row in range(1, min(content_last_row, pad_rows) + 1):
-        for col in range(1, content_last_col + 1):
-            cell = ws.cell(row, col)
-            if cell.fill.fill_type is None:
-                cell.fill = FILL_SHEET
-    for row in range(1, pad_rows + 1):
-        for col in range(content_last_col + 1, pad_cols + 1):
+    rows = max_row if max_row is not None else SHEET_BACKGROUND_ROWS
+    for row in range(1, rows + 1):
+        for col in range(1, max_col + 1):
             ws.cell(row, col).fill = FILL_SHEET
-    for row in range(content_last_row + 1, pad_rows + 1):
-        for col in range(1, content_last_col + 1):
-            ws.cell(row, col).fill = FILL_SHEET
-    if gap_rows is not None:
-        for row in gap_rows:
-            for col in range(1, content_last_col + 1):
-                ws.cell(row, col).fill = FILL_SHEET
 
 
 def _spell_list_last_row(entry_count: int) -> int:
@@ -565,6 +511,7 @@ def _write_rune_inventory_sheet(
     report: RuneInventoryReport,
 ) -> None:
     ws.sheet_properties.tabColor = "2A6B5C"
+    _fill_sheet_background(ws)
     characters = list(report.characters)
     summary_cols = max(2, 1 + len(characters))
 
@@ -599,12 +546,6 @@ def _write_rune_inventory_sheet(
     _merge_spell_row(ws, row, 1, summary_cols)
 
     _apply_rune_matrix_column_widths(ws, characters)
-    _fill_sheet_padding(
-        ws,
-        content_last_row=row,
-        content_last_col=summary_cols,
-        pad_rows=max(SHEET_BACKGROUND_ROWS, row),
-    )
 
 
 def _write_missing_runes_sheet(
@@ -613,6 +554,7 @@ def _write_missing_runes_sheet(
     spell_report: SpellRuneReport,
 ) -> None:
     ws.sheet_properties.tabColor = "5C4688"
+    _fill_sheet_background(ws)
     config = load_rune_config()
     tiers = config.tiers
     characters = _spell_characters(team, spell_report)
@@ -649,12 +591,6 @@ def _write_missing_runes_sheet(
     ws.column_dimensions["A"].width = 14.0
     for col in range(2, 2 + len(characters)):
         ws.column_dimensions[get_column_letter(col)].width = 11.0
-    _fill_sheet_padding(
-        ws,
-        content_last_row=row,
-        content_last_col=summary_cols,
-        pad_rows=max(SHEET_BACKGROUND_ROWS, row),
-    )
 
 
 def _write_spell_list_sheet(
@@ -664,6 +600,7 @@ def _write_spell_list_sheet(
 ) -> None:
     ws.sheet_properties.tabColor = "3D4A6E"
     last_row = _spell_list_last_row(len(spell_report.entries))
+    _fill_sheet_background(ws, max_row=last_row)
 
     row = _write_spell_sheet_banner(
         ws,
@@ -735,22 +672,20 @@ def _write_spell_list_sheet(
     note.alignment = _ALIGN_WRAP
     _merge_spell_row(ws, row, 1, 5, FILL_SHEET)
 
+    for col in range(6, SHEET_BACKGROUND_COLS + 1):
+        ws.cell(row, col).fill = FILL_SHEET
+
     ws.column_dimensions["A"].width = _COL_SPELL_CHAR
     ws.column_dimensions["B"].width = _COL_SPELL_LEVEL
     ws.column_dimensions["C"].width = _COL_SPELL_RUNE
     ws.column_dimensions["D"].width = _COL_SPELL_EXPANSION
     ws.column_dimensions["E"].width = _COL_SPELL_NAME
-    _fill_sheet_padding(
-        ws,
-        content_last_row=max(row, last_row),
-        content_last_col=5,
-        pad_rows=max(row, last_row),
-    )
 
 
 def _write_unmade_gear_sheet(ws: Worksheet, entries: list[UnmadeGearEntry]) -> None:
     ws.sheet_properties.tabColor = "4A5A38"
-    last_row = 1 + len(entries)
+    last_row = 2 + len(entries)
+    _fill_sheet_background(ws, max_row=max(last_row, SHEET_BACKGROUND_ROWS))
 
     headers = (
         "Character",
@@ -814,18 +749,13 @@ def _write_unmade_gear_sheet(ws: Worksheet, entries: list[UnmadeGearEntry]) -> N
     ws.column_dimensions["G"].width = 14.0
     ws.column_dimensions["H"].width = 14.0
     ws.column_dimensions["I"].width = 24.0
-    _fill_sheet_padding(
-        ws,
-        content_last_row=last_row,
-        content_last_col=len(headers),
-        pad_rows=max(last_row, SHEET_BACKGROUND_ROWS),
-    )
 
 
 def _write_missing_collections_sheet(ws: Worksheet, report: AchievementReport) -> None:
     ws.sheet_properties.tabColor = "5A4A38"
     entries = report.missing_collections
     last_row = 1 + len(entries)
+    _fill_sheet_background(ws, max_row=max(last_row, SHEET_BACKGROUND_ROWS))
 
     headers = (
         "Character",
@@ -873,18 +803,13 @@ def _write_missing_collections_sheet(ws: Worksheet, report: AchievementReport) -
     ws.column_dimensions["F"].width = 10.0
     ws.column_dimensions["G"].width = 8.0
     ws.column_dimensions["H"].width = 8.0
-    _fill_sheet_padding(
-        ws,
-        content_last_row=last_row,
-        content_last_col=len(headers),
-        pad_rows=max(last_row, SHEET_BACKGROUND_ROWS),
-    )
 
 
 def _write_achievement_summary_sheet(ws: Worksheet, report: AchievementReport) -> None:
     ws.sheet_properties.tabColor = "384A5A"
     entries = report.summaries
     last_row = 1 + len(entries)
+    _fill_sheet_background(ws, max_row=max(last_row, SHEET_BACKGROUND_ROWS))
 
     headers = (
         "Character",
@@ -926,18 +851,13 @@ def _write_achievement_summary_sheet(ws: Worksheet, report: AchievementReport) -
     ws.column_dimensions["D"].width = 12.0
     ws.column_dimensions["E"].width = 10.0
     ws.column_dimensions["F"].width = 14.0
-    _fill_sheet_padding(
-        ws,
-        content_last_row=last_row,
-        content_last_col=len(headers),
-        pad_rows=max(last_row, SHEET_BACKGROUND_ROWS),
-    )
 
 
 def _write_raid_achievements_sheet(ws: Worksheet, report: AchievementReport) -> None:
     ws.sheet_properties.tabColor = "5A384A"
     entries = report.raid_achievements
     last_row = 1 + len(entries)
+    _fill_sheet_background(ws, max_row=max(last_row, SHEET_BACKGROUND_ROWS))
 
     headers = (
         "Character",
@@ -973,12 +893,6 @@ def _write_raid_achievements_sheet(ws: Worksheet, report: AchievementReport) -> 
     ws.column_dimensions["B"].width = 22.0
     ws.column_dimensions["C"].width = _COL_ITEM_WIDTH
     ws.column_dimensions["D"].width = _COL_ITEM_WIDTH
-    _fill_sheet_padding(
-        ws,
-        content_last_row=last_row,
-        content_last_col=len(headers),
-        pad_rows=max(last_row, SHEET_BACKGROUND_ROWS),
-    )
 
 
 def _save_with_fallback(wb: Workbook, target: Path) -> Path:

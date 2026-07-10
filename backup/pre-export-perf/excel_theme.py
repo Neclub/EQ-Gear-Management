@@ -38,23 +38,12 @@ GEAR_SET_FILLS: dict[str, str] = {
 }
 
 EVOLVER_FILL = PatternFill("solid", fgColor=GEAR_SET_FILLS["evolver"])
-_GEAR_SET_FILL_CACHE: dict[str, PatternFill] = {
-    key: PatternFill("solid", fgColor=color) for key, color in GEAR_SET_FILLS.items()
-}
-_GEAR_SET_FILL_CACHE["evolver"] = EVOLVER_FILL
 
 # Gear T-Level tier code buckets (muted — readable with COLOR_TEXT)
 TIER_COLOR_GREEN = "2D4A38"
 TIER_COLOR_YELLOW = "4A4528"
 TIER_COLOR_ORANGE = "4A3520"
 TIER_COLOR_RED = "4A2830"
-
-_TIER_BUCKET_FILLS: dict[str, PatternFill] = {
-    TIER_COLOR_GREEN: PatternFill("solid", fgColor=TIER_COLOR_GREEN),
-    TIER_COLOR_YELLOW: PatternFill("solid", fgColor=TIER_COLOR_YELLOW),
-    TIER_COLOR_ORANGE: PatternFill("solid", fgColor=TIER_COLOR_ORANGE),
-    TIER_COLOR_RED: PatternFill("solid", fgColor=TIER_COLOR_RED),
-}
 
 # Missing Spells sheet
 SPELL_BLOCK_HEADER_COLORS: dict[str, str] = {
@@ -72,20 +61,6 @@ SPELL_TIER_COLORS: dict[str, str] = {
     "Greater": "3A3850",
     "Glowing": "453848",
 }
-_SPELL_BLOCK_HEADER_DEFAULT = "2D2D32"
-_SPELL_TIER_DEFAULT = "252528"
-_SPELL_BLOCK_HEADER_FILL_CACHE: dict[str, PatternFill] = {
-    key: PatternFill("solid", fgColor=color)
-    for key, color in SPELL_BLOCK_HEADER_COLORS.items()
-}
-_SPELL_BLOCK_HEADER_FILL_CACHE[_SPELL_BLOCK_HEADER_DEFAULT] = PatternFill(
-    "solid", fgColor=_SPELL_BLOCK_HEADER_DEFAULT
-)
-_SPELL_TIER_FILL_CACHE: dict[str, PatternFill] = {
-    key: PatternFill("solid", fgColor=color) for key, color in SPELL_TIER_COLORS.items()
-}
-_SPELL_TIER_FILL_CACHE[_SPELL_TIER_DEFAULT] = PatternFill("solid", fgColor=_SPELL_TIER_DEFAULT)
-
 FILL_SPELL_DETAIL = PatternFill("solid", fgColor="1A1A1E")
 FILL_SPELL_DETAIL_ALT = PatternFill("solid", fgColor="222228")
 FILL_SPELL_COUNT = PatternFill("solid", fgColor="2E3340")
@@ -97,18 +72,17 @@ FONT_BLOCK_SUB = Font(name="Calibri", size=10, color=COLOR_TEXT_MUTED)
 
 
 def gear_set_fill(key: str) -> PatternFill:
-    return _GEAR_SET_FILL_CACHE[key]
+    return PatternFill("solid", fgColor=GEAR_SET_FILLS[key])
 
 
 def spell_block_header_fill(block_label: str) -> PatternFill:
-    return (
-        _SPELL_BLOCK_HEADER_FILL_CACHE.get(block_label)
-        or _SPELL_BLOCK_HEADER_FILL_CACHE[_SPELL_BLOCK_HEADER_DEFAULT]
-    )
+    color = SPELL_BLOCK_HEADER_COLORS.get(block_label, "2D2D32")
+    return PatternFill("solid", fgColor=color)
 
 
 def spell_tier_fill(tier: str) -> PatternFill:
-    return _SPELL_TIER_FILL_CACHE.get(tier) or _SPELL_TIER_FILL_CACHE[_SPELL_TIER_DEFAULT]
+    color = SPELL_TIER_COLORS.get(tier, "252528")
+    return PatternFill("solid", fgColor=color)
 
 
 def tier_code_fill_color(code: str) -> str:
@@ -123,7 +97,7 @@ def tier_code_fill_color(code: str) -> str:
 
 
 def tier_code_fill(code: str) -> PatternFill:
-    return _TIER_BUCKET_FILLS[tier_code_fill_color(code)]
+    return PatternFill("solid", fgColor=tier_code_fill_color(code))
 
 
 def build_tier_code_colors() -> dict[str, str]:

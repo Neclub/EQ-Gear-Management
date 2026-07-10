@@ -6,6 +6,17 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.16.3] - 2026-07-10
+
+### Changed
+
+- **Export performance:** each inventory dump is parsed once per report and reused for Unmade Gear, Rune Inventory, and achievement “Char Has” lookups (including shared-inventory personas).
+- **Excel styling:** sheet backgrounds use end-of-sheet padding instead of painting every cell up front; tier/spell `PatternFill` colors are cached singletons.
+
+### Fixed
+
+- **Unmade Gear column order:** Excel now uses the same prebuilt, roster-ordered Unmade Gear rows as HTML (no second rebuild that ignored **Up** / **Down** order).
+
 ## [1.16.2] - 2026-07-07
 
 ### Changed

@@ -294,7 +294,6 @@ class WebApi:
             spell_report=bundle.spell_report,
             rune_inventory_report=bundle.rune_inventory_report,
             achievement_report=bundle.achievement_report,
-            unmade_entries=bundle.unmade_entries,
         )
         html_saved = None
         if also_html:

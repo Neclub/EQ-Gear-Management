@@ -75,3 +75,79 @@ def test_save_and_load_character_column_order(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(module, "settings_path", lambda: settings_file)
     save_character_column_order(["Tank_bristle", "Heal_bristle_CLR"])
     assert saved_character_column_order() == ["Tank_bristle", "Heal_bristle_CLR"]
+
+
+def test_excel_unmade_matches_bundle_character_column_order(tmp_path: Path) -> None:
+    from openpyxl import load_workbook
+
+    from inventory_parser.excel_export import UNMADE_GEAR_SHEET_NAME, write_team_workbook
+
+    paths = [Path(p) for p in _example_paths()]
+    inventory_paths, spell_paths, _ = split_input_paths(paths)
+    base = build_team_report(inventory_paths, spell_paths=spell_paths or None)
+    custom_order = [character.persona_key for character in reversed(base.characters)]
+    bundle = build_export_bundle(
+        paths,
+        character_column_order=custom_order,
+        include_spells=False,
+        include_achievements=False,
+    )
+    if not bundle.unmade_entries:
+        return
+
+    out = tmp_path / "unmade_order.xlsx"
+    write_team_workbook(
+        bundle.team,
+        out,
+        unmade_entries=bundle.unmade_entries,
+    )
+    wb = load_workbook(out, data_only=True)
+    ws = wb[UNMADE_GEAR_SHEET_NAME]
+    excel_names = [
+        ws.cell(row, 1).value
+        for row in range(2, ws.max_row + 1)
+        if ws.cell(row, 1).value
+    ]
+    expected = [entry.display_name for entry in bundle.unmade_entries]
+    assert excel_names == expected
+
+
+def test_export_bundle_parses_each_inventory_once(monkeypatch) -> None:
+    from collections import Counter
+
+    from inventory_parser import achievement_report as achievement_report_module
+    from inventory_parser import parser as parser_module
+    from inventory_parser import rune_inventory as rune_inventory_module
+    from inventory_parser import team_report as team_report_module
+    from inventory_parser import unmade_gear as unmade_gear_module
+
+    paths = [Path(p) for p in _example_paths()]
+    inventory_paths, _, _ = split_input_paths(paths)
+    assert inventory_paths
+
+    calls: list[str] = []
+    real_parse = parser_module.parse_inventory_file
+
+    def counting_parse(filepath):
+        calls.append(str(Path(filepath).resolve()))
+        return real_parse(filepath)
+
+    for module in (
+        parser_module,
+        team_report_module,
+        unmade_gear_module,
+        rune_inventory_module,
+        achievement_report_module,
+    ):
+        monkeypatch.setattr(module, "parse_inventory_file", counting_parse)
+
+    build_export_bundle(
+        paths,
+        include_spells=False,
+        include_achievements=True,
+    )
+
+    counts = Counter(calls)
+    assert counts
+    for path, count in counts.items():
+        assert count == 1, f"{path} parsed {count} times"

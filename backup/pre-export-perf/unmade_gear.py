@@ -174,7 +174,7 @@ def build_unmade_gear_report(report: TeamGearReport) -> list[UnmadeGearEntry]:
     entries: list[UnmadeGearEntry] = []
 
     for char in report.characters:
-        data = char.inventory_data or parse_inventory_file(char.filepath)
+        data = parse_inventory_file(char.filepath)
         if data is None:
             continue
 

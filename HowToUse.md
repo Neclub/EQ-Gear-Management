@@ -97,7 +97,7 @@ The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane 
    - **EQ Folder** (under the roster) — pick a folder; choose which characters to import (inventory, MissingSpells, and Achievements files are grouped per character)
 
 4. **Manage the roster** (optional)
-   - **Up** / **Down** — change column order in the workbook  
+   - **Up** / **Down** — change character column order in Excel and HTML (including Unmade Gear row order)  
    - **Remove** — drop the selected character from the export list  
    - **Clear** — empty the roster and start over  
 

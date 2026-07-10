@@ -30,7 +30,6 @@ class CharacterGear:
     filepath: str
     slots: dict[str, EquippedItem] = field(default_factory=dict)
     class_abbr: str | None = None
-    inventory_data: InventoryData | None = None
 
     @property
     def persona_key(self) -> str:
@@ -79,7 +78,6 @@ def build_team_report(
     discovery = discover_persona_bindings(inventory_paths, spell_paths=spell_paths)
     gear_by_persona: dict[str, CharacterGear] = {}
     spell_by_persona: dict[str, CharacterGear] = {}
-    inventory_by_path: dict[str, InventoryData] = {}
     warnings = list(discovery.warnings)
 
     for binding in discovery.bindings:
@@ -93,22 +91,17 @@ def build_team_report(
             )
             continue
 
-        resolved = str(binding.inventory_path.resolve())
-        data = inventory_by_path.get(resolved)
+        data = parse_inventory_file(binding.inventory_path)
         if data is None:
-            data = parse_inventory_file(binding.inventory_path)
-            if data is None:
-                warnings.append(f"Could not read inventory file: {binding.inventory_path}")
-                continue
-            inventory_by_path[resolved] = data
+            warnings.append(f"Could not read inventory file: {binding.inventory_path}")
+            continue
 
         char_gear = CharacterGear(
             character=binding.character,
             server=binding.server,
-            filepath=resolved,
+            filepath=str(binding.inventory_path.resolve()),
             slots=_equipped_slots(data),
             class_abbr=binding.class_abbr,
-            inventory_data=data,
         )
         if binding.spell_path is not None:
             spell_by_persona[pk] = char_gear
