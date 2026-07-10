@@ -1,0 +1,366 @@
+60	Ancient: Lcea's Lament
+60	Ancient: Lullaby of Shadow
+64	Minohten's Purifying Panpipes Rk. II
+65	Ancient: Chaos Chant
+65	Staccato Rhythms Rk. II
+70	Ancient: Call of Power
+71	Aelfric's Last Lullaby Rk. II
+71	Erollisi's Cantata Rk. II
+71	Jonthan's Mightful Caretaker Rk. II
+71	Whispersong of Veshma Rk. II
+72	Ervaj's Defensive Refrain Rk. II
+72	Song of the Dryads Rk. II
+72	Weshlu's Chillsong Aria Rk. II
+73	Aviak's Wondrous Warble Rk. II
+73	Erollisi's Chorus Rk. II
+73	Fermata of Preservation Rk. II
+73	Performer's Psalm of Pyrotechnics Rk. II
+74	Beckon of the Tuffein Rk. II
+74	Queen Eletyl's Screech Rk. II
+75	Denon's Dirge of Destruction Rk. II
+75	Staccato Cadence Rk. II
+75	Veshma's Lively Crescendo Rk. II
+76	Amber's Last Lullaby Rk. II
+76	Aria of the Artist Rk. II
+76	Cantata of Restoration Rk. II
+76	Elddar's Dawnsong Rk. II
+76	Vyskudra's Chant of Disease Rk. II
+77	Dirge of the Darkvine Rk. II
+77	Garadell's Fatesong Rk. II
+77	Rhythm of Restoration Rk. II
+77	Zeixshi-Kar's Chant of Frost Rk. II
+78	Chorus of Restoration Rk. II
+78	Coldcrow's Spry Sonata Rk. II
+78	Erradien's Psalm of Potency Rk. II
+78	Kildrukaun's Chant of Poison Rk. II
+78	Performer's Explosive Aria Rk. II
+79	Command of Queen Veneneu Rk. II
+79	Kirathas' Cleansing Clarinet Rk. II
+79	War March of Meldrath Rk. II
+79	Yowl of the Bloodmoon Rk. II
+80	Arcane Anthem Rk. II
+80	Aura of the Artist Rk. II
+80	Denon's Dirge of Devastation Rk. II
+80	Kaerra's Spirited Crescendo Rk. II
+80	Tjudawos' Chant of Flame Rk. II
+81	Aria of the Poet Rk.II
+81	Cantata of Rodcet Rk.II
+81	Requiem for the Lost Rk. II
+81	Serenity of Oceangreen Rk.II
+81	Silence of the Void Rk.II
+81	Trakanon's Chant of Disease Rk.II
+82	Aura of Rodcet Rk. II
+82	Dirge of the Fallen Rathe Rk.II
+82	Fatesong of the Gelidran Rk.II
+82	Gorenaire's Chant of Frost Rk.II
+82	Pulse of Rodcet Rk.II
+83	Chorus of Rodcet Rk.II
+83	Dance of the Dragorn Rk.II
+83	Druzzil's Psalm of Potency Rk.II
+83	Pests of the Piper Rk. II
+83	Severilous' Chant of Poison Rk.II
+83	Talendor's Aria Rk.II
+84	Firiona's Blessed Clarinet Rk.II
+84	Mirror Melody Rk. II
+84	Slumber of the Mindshear Rk.II
+84	Voice of the Mindshear Rk.II
+84	War March of Brekt Rk.II
+85	Arcane Arietta Rk.II
+85	Aura of the Poet Rk.II
+85	Autarchian Mindwrack Rk. II
+85	Cantata of Courage Rk. II
+85	Denon's Dirge of Discord Rk.II
+85	Gruber's Lively Crescendo Rk.II
+85	Talendor's Chant of Flame Rk.II
+85	Venimor's Insult Rk. II
+85	Wave of Slumber Rk. II
+86	Aria of Amelioration Rk. II
+86	Aria of the Composer Rk. II
+86	Lullaby of the Lost Rk. II
+86	Pulse of Renewal Rk. II
+86	Rumbling Barrier Rk. II
+86	Shiverback's Chant of Disease Rk. II
+86	Silence of the Dreamer Rk. II
+86	Song of Recalcitrance Rk. II
+87	Aura of Renewal Rk. II
+87	Dirge of Dreams Rk. II
+87	Echo of Renewal Rk. II
+87	Fatesong of Fergar Rk. II
+87	Fergar's Chant of Frost Rk. II
+87	Sionachie's Sympathetic Psalm Rk. II
+88	Alleviating Accelerando Rk. II
+88	Chorus of Renewal Rk. II
+88	Lyrin's Psalm of Potency Rk. II
+88	Sionachie's Spry Sonata Rk. II
+88	Sotor's Aria Rk. II
+88	Spinechiller's Chant of Poison Rk. II
+89	Noira's Song of Suffering Rk. II
+89	Slumber of Sionachie Rk. II
+89	Voice of Sionachie Rk. II
+89	War March of Dagda Rk. II
+90	Arcane Chorus Rk. II
+90	Aura of the Composer Rk. II
+90	Denon's Dirge of Disruption Rk. II
+90	Echo of the Composer Rk. II
+90	Lyrin's Insult Rk. II
+90	Lyrin's Spiteful Lyric Rk. II
+90	Lyssa's Lively Crescendo Rk. II
+90	Sotor's Chant of Flame Rk. II
+90	Wave of Dreams Rk. II
+91	Aria of Impeccability Rk. II
+91	Aria of the Orator Rk. II
+91	Lullaby of the Forlorn Rk. II
+91	Pulse of Lunanyn Rk. II
+91	Silence of the Windsong Rk. II
+91	Thunderous Barrier Rk. II
+91	Wasinai's Chant of Disease Rk. II
+92	Aura of Lunanyn Rk. II
+92	Echo of Lunanyn Rk. II
+92	Fatesong of Illdaera Rk. II
+92	Kalbrok's Chant of Frost Rk. II
+92	Lapsing Lullaby Rk. II
+93	Assuaging Accelerando Rk. II
+93	Chorus of Lunanyn Rk. II
+93	Daevan's Aria Rk. II
+93	Hiqork's Chant of Poison Rk. II
+93	Ryken's Reckless Renewal Rk. II
+93	Terasal's Spry Sonata Rk. II
+93	Wasinai's Psalm of Potency Rk. II
+94	Hykast's Song of Suffering Rk. II
+94	Oratory of Invitation Rk. II
+94	Oratory of Opposition Rk. II
+94	Slumber of Kolain Rk. II
+94	Voice of Kolain Rk. II
+94	War March of Illdaera Rk. II
+95	Arcane Address Rk. II
+95	Aura of the Orator Rk. II
+95	Daevan's Chant of Flame Rk. II
+95	Echo of the Orator Rk. II
+95	Hykast's Insult Rk. II
+95	Hykast's Spiteful Lyric Rk. II
+95	Kolain's Lively Crescendo Rk. II
+95	Wave of the Conductor Rk. II
+96	Aria of Absolution Rk. II
+96	Aria of Va'Ker Rk. II
+96	Lullaby of the Forsaken Rk. II
+96	Pulse of Salarra Rk. II
+96	Resounding Barrier Rk. II
+96	Siavonn's Chant of Disease Rk. II
+96	Silence of the Forsaken Rk. II
+96	War Chorus of Protan Rk. II
+97	Aura of Salarra Rk. II
+97	Echo of Salarra Rk. II
+97	Edoth's Chant of Frost Rk. II
+97	Fatesong of Protan Rk. II
+97	Garath's Insult Rk. II
+97	Harmony of Tone Rk. II
+98	Ameliorating Accelerando Rk. II
+98	Chorus of Salarra Rk. II
+98	Doben's Spry Sonata Rk. II
+98	Gosik's Aria Rk. II
+98	Psalm of the Forsaken Rk. II
+98	Ruaabri's Reckless Renewal Rk. II
+98	Siavonn's Psalm of Potency Rk. II
+98	Slaunk's Chant of Poison Rk. II
+99	Corpseflower's Assonant Binding Rk. II
+99	Dirge of Salubra Rk. II
+99	Kaficus' Song of Suffering Rk. II
+99	Protan's Melodic Binding Rk. II
+99	Slumber of Motlak Rk. II
+99	Voice of Motlak Rk. II
+99	War March of Protan Rk. II
+100	Arcane Hymn Rk. II
+100	Aura of Va'Ker Rk. II
+100	Brusco's Burning Call Rk. II
+100	Echo of Va'Ker Rk. II
+100	Gosik's Chant of Flame Rk. II
+100	Kaficus' Insult Rk. II
+100	Kaficus' Spiteful Lyric Rk. II
+100	Motlak's Lively Crescendo Rk. II
+100	Reflexive Retort Rk. II
+100	Wave of Quietude Rk. II
+101	Aria of Maetanrus Rk. II
+101	Echoing Barrier Rk. II
+101	Horthin's Chant of Disease Rk. II
+101	Lullaby of Silisia Rk. II
+101	Pulse of Sionachie Rk. II
+101	Silence of Silisia Rk. II
+102	Alliance of Sticks and Stones Rk. II
+102	Aura of Sionachie Rk. II
+102	Echo of Sionachie Rk. II
+102	Fatesong of Jocelyn Rk. II
+102	Fjilnauk's Insult Rk. II
+102	Kirchen's Chant of Frost Rk. II
+102	Silisia's Demand Rk. II
+103	Allaying Accelerando Rk. II
+103	Chorus of Sionachie Rk. II
+103	Horthin's Psalm of Potency Rk. II
+103	Nilsara's Aria Rk. II
+103	Plague of the Piper Rk. II
+103	Rytan's Reckless Renewal Rk. II
+103	Serisaria's Chant of Poison Rk. II
+104	Fjilnauk's Song of Suffering Rk. II
+104	Requiem for the Dead Rk. II
+104	Silisia's Lively Crescendo Rk. II
+104	Slumber of Silisia Rk. II
+104	Voice of Silisia Rk. II
+104	War March of Jocelyn Rk. II
+105	Arcane Melody Rk. II
+105	Aura of Maetanrus Rk. II
+105	Echo of Maetanrus Rk. II
+105	Fjilnauk's Spiteful Lyric Rk. II
+105	Nilsara's Chant of Flame Rk. II
+105	Reflexive Rejoinder Rk. II
+105	Tsaph's Insult Rk. II
+105	Wave of Torpor Rk. II
+106	Aria of Begalru Rk. II
+106	Hoshkar's Chant of Disease Rk. II
+106	Lullaby of Jembel Rk. II
+106	Pulse of Xigam Rk. II
+106	Reverberating Barrier Rk. II
+106	Silence of Jembel Rk. II
+107	Aura of Xigam Rk. II
+107	Dirge of Lost Horizons Rk. II
+107	Echo of Xigam Rk. II
+107	Ekron's Chant of Frost Rk. II
+107	Fatesong of Dekloaz Rk. II
+107	Travenro's Insult Rk. II
+108	Akett's Psalm of Potency Rk. II
+108	Atoning Accelerando Rk. II
+108	Chorus of Xigam Rk. II
+108	Kluzen's Spry Sonata Rk. II
+108	Nexona's Chant of Poison Rk. II
+108	Qunard's Aria Rk. II
+108	Rigelon's Reckless Renewal Rk. II
+108	Second Psalm of Veeshan Rk. II
+109	Dawnbreeze's Demand Rk. II
+109	Dekloaz's Melodic Binding Rk. II
+109	Jembel's Lively Crescendo Rk. II
+109	Shardstubble's Assonant Binding Rk. II
+109	Slumber of Jembel Rk. II
+109	Travenro's Song of Suffering Rk. II
+109	Voice of Jembel Rk. II
+109	War March of Dekloaz Rk. II
+110	Arcane Ballad Rk. II
+110	Aura of Begalru Rk. II
+110	Covenant of Sticks and Stones Rk. II
+110	Echo of Begalru Rk. II
+110	Magmalisk's Burning Call Rk. II
+110	Qunard's Chant of Flame Rk. II
+110	Sathir's Insult Rk. II
+110	Travenro's Spiteful Lyric Rk. II
+110	Wave of Somnolence Rk. II
+111	Aria of Margidor Rk. III
+111	Lullaby of Zburator Rk. II
+111	Pulse of Vhal`Sera Rk. II
+111	Requiem for the Cursed Rk. II
+111	Silence of Zburator Rk. II
+111	Tonitruous Barrier Rk. II
+111	Zlexak's Chant of Disease Rk. II
+112	Aura of Vhal`Sera Rk. III
+112	Dirge of the Restless Rk. II
+112	Echo of Vhal`Sera Rk. II
+112	Fatesong of Radiwol Rk. II
+112	Omorden's Insult Rk. II
+112	Yelinak's Chant of Frost Rk. II
+113	Chorus of Vhal`Sera Rk. II
+113	Kellek's Spry Sonata Rk. II
+113	Malvus's Chant of Poison Rk. II
+113	Placating Accelerando Rk. II
+113	Psalm of the Restless Rk. II
+113	Reflexive Rebuttal Rk. II
+113	Reivaj's Reckless Renewal Rk. II
+113	Sontalak's Aria Rk. II
+113	Velketor's Psalm of Potency Rk. II
+114	Desirae's Demand Rk. II
+114	Mahaha's Assonant Binding Rk. II
+114	Omorden's Song of Suffering Rk. II
+114	Radiwol's Melodic Binding Rk. II
+114	Slumber of Zburator Rk. II
+114	Voice of Zburator Rk. II
+114	War March of Radiwol Rk. II
+114	Zburator's Lively Crescendo Rk. II
+115	Arcane Symphony Rk. II
+115	Aura of Margidor Rk. III
+115	Coalition of Sticks and Stones Rk. II
+115	Echo of Margidor Rk. III
+115	Omorden's Spiteful Lyric Rk. II
+115	Sofia's Burning Call Rk. II
+115	Sontalak's Chant of Flame Rk. II
+115	Wave of Sleep Rk. II
+115	Yelinak's Insult Rk. II
+116	Aria of Pli Xin Liako Rk. III
+116	Coagulus' Chant of Disease Rk. III
+116	Ecliptic Psalm
+116	Lullaby of Nightfall Rk. III
+116	Pulse of Nikolas Rk. III
+116	Silence of Quietus Rk. III
+116	Vibrato Barrier Rk. III
+117	Aura of Shei Vinitras Rk. II
+117	Dirge of the Onokiwan Rk. III
+117	Echo of Shei Vinitras Rk. III
+117	Fatesong of Lucca Rk. III
+117	Sogran's Insult Rk. III
+117	Sylra Fris' Chant of Frost Rk. III
+118	Chorus of Shei Vinitras Rk. III
+118	Constance's Aria Rk. III
+118	Cruor's Chant of Poison Rk. III
+118	Fyrthek Fior's Psalm of Potency Rk. III
+118	Kai's Reckless Renewal Rk. III
+118	Nord's Disdain Rk. III
+118	Psalm of the Pious Rk. III
+118	Satisfying Accelerando Rk. III
+118	Xetheg's Spry Sonata Rk. III
+119	Namdrows' Assonant Binding Rk. III
+119	Omiyad's Demand Rk. III
+119	Shojralen's Song of Suffering Rk. III
+119	Slumber of the Diabo Rk. III
+119	Voice of the Diabo Rk. III
+119	War March of Centien Xi Va Xakra Rk. III
+119	Zelinstein's Lively Crescendo Rk. III
+120	Arcane Harmony Rk. III
+120	Aura of Pli Xin Liako Rk. III
+120	Conjunction of Sticks and Stones Rk. III
+120	Echo of Pli Xin Liako Rk. III
+120	Luclin's Burning Call Rk. III
+120	Shak Dathor's Chant of Flame Rk. III
+120	Von Deek's Spiteful Lyric Rk. III
+120	War Chorus of the Bloodbeast Rk. III
+120	Wave of Nocturn Rk. III
+121	Reciprocal Psalm
+121	Silence of the Forgotten Rk. III
+122	Aura of Shalowain Rk. III
+122	Echo of Shalowain Rk. III
+122	Eoreg's Insult Rk. III
+122	Fatesong of Zoraxmen Rk. III
+122	Flariton's Aria Rk. III
+123	Chorus of Shalowain
+124	Slumber of Suja Rk. III
+124	Yaran's Demand Rk. III
+125	Covariance of Sticks and Stones Rk. III
+125	Firethorn's Burning Call Rk. III
+125	Tatalros' Spiteful Lyric Rk. III
+126	Lullaby of the Sundered
+126	Mastery: Aria of Absolution
+126	Pulse of Quellious Rk. III
+126	Rumbling Barrier XI
+126	Silence of the Vortex
+127	Aura of Quellious Rk. III
+127	Cutting Insult X Rk. III
+127	Echo of Quellious Rk. III
+127	Fatesong of the Polar Vortex Rk. III
+127	Severyn's Aria Rk. III
+128	Alleviating Accelerando VIII Rk. III
+128	Boberstler's Spry Sonata Rk. III
+128	Chorus of Quellious Rk. III
+128	Onkrin's Reckless Renewal
+129	Alliana's Crescendo Effect II
+129	Alliana's Lively Crescendo
+129	Slumber of Keftlik
+129	Tallongast's Assonant Binding
+129	Voice of Keftlik
+130	Matriarch's Spiteful Lyric
+130	Severyn's Burning Call
+130	Severyn's Chant of Flame Rk. III
+130	Sorrowful Song of Suffering IX
+130	Wave of Slumber X

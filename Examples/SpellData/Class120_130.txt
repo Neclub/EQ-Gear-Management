@@ -1,0 +1,16 @@
+BRDd: https://spells.eqresource.com/spellsearch.php?name=&class=brd&level=121&range=greater&expac=&source=live&searchname=true
+BST: https://spells.eqresource.com/spellsearch.php?name=&class=bst&level=121&range=greater&expac=&source=live&searchname=true
+BER: https://spells.eqresource.com/spellsearch.php?name=&class=ber&level=121&range=greater&expac=&source=live&searchname=true
+CLR: https://spells.eqresource.com/spellsearch.php?name=&class=clr&level=121&range=greater&expac=&source=live&searchname=true
+DRU: https://spells.eqresource.com/spellsearch.php?name=&class=dru&level=121&range=greater&expac=&source=live&searchname=true
+ENC: https://spells.eqresource.com/spellsearch.php?name=&class=enc&level=121&range=greater&expac=&source=live&searchname=true
+MAG: https://spells.eqresource.com/spellsearch.php?name=&class=mag&level=121&range=greater&expac=&source=live&searchname=true
+MNK: https://spells.eqresource.com/spellsearch.php?name=&class=mnk&level=121&range=greater&expac=&source=live&searchname=true
+NEC: https://spells.eqresource.com/spellsearch.php?name=&class=nec&level=121&range=greater&expac=&source=live&searchname=true
+PAL: https://spells.eqresource.com/spellsearch.php?name=&class=pal&level=121&range=greater&expac=&source=live&searchname=true
+RNG: https://spells.eqresource.com/spellsearch.php?name=&class=rng&level=121&range=greater&expac=&source=live&searchname=true
+ROG: https://spells.eqresource.com/spellsearch.php?name=&class=rog&level=121&range=greater&expac=&source=live&searchname=true
+SHD: https://spells.eqresource.com/spellsearch.php?name=&class=shd&level=121&range=greater&expac=&source=live&searchname=true
+SHM: https://spells.eqresource.com/spellsearch.php?name=&class=shm&level=121&range=greater&expac=&source=live&searchname=true
+WAR: https://spells.eqresource.com/spellsearch.php?name=&class=war&level=121&range=greater&expac=&source=live&searchname=true
+WIZ: https://spells.eqresource.com/spellsearch.php?name=&class=wiz&level=121&range=greater&expac=&source=live&searchname=true
