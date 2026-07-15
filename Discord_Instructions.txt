@@ -66,7 +66,7 @@ Item names link to EQ Resource when the dump has item IDs.
 **HTML report (optional)** — same data in a single `.html` file beside the Excel workbook (`{Server}_Team_Inventory.html`). Open in any browser; no server needed.
 
 • **Sidebar** — Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, …)
-• **Character filter** chips under the nav — filter the whole report by toon
+• **Character filter** chips under the nav — multi-select by toon/persona (All clears; personas labeled when shared)
 • **Search**, **sort** (click headers), **Visible slots** on gear tabs (search keeps focus while typing)
 • **Character** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Missing Useful Spells, Raid Achievements, Rune Inventory, etc.)
 • **Expansion** on achievement tabs defaults to the current expansion (not All) — change the dropdown to see older content

@@ -6,6 +6,18 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.18.2] - 2026-07-15
+
+### Changed
+
+- **HTML Character filter** chips support multi-select. Unselected chips dim only while a filter is active; default (All) stays full strength.
+- Persona chips use full display names when the same character has multiple classes (e.g. `Deflub ( PAL )`), so each persona can be toggled independently.
+- **Docs:** HowToUse and Discord guide updated for multi-select and persona filter chips.
+
+### Fixed
+
+- Selecting a multi-persona character no longer collapses to the first persona only.
+
 ## [1.18.1] - 2026-07-15
 
 ### Changed

@@ -99,8 +99,12 @@ body {
   font: inherit;
   font-size: 12px;
   cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.15s ease;
 }
 .char-chip.active { font-weight: 600; }
+#characterFilter.has-filter .char-chip { opacity: 0.45; }
+#characterFilter.has-filter .char-chip.active { opacity: 1; }
 .char-chip[data-idx="all"].active { border-color: var(--muted); }
 #main {
   flex: 1;
@@ -395,7 +399,7 @@ const CHAR_COLORS = [
 ];
 const state = {
   activeTab: 0,
-  characterFilter: "all",
+  characterFilters: [],
   slotFilter: "all",
   sorts: {},
   searches: {},
@@ -467,18 +471,48 @@ function charColor(index) {
   return CHAR_COLORS[index % CHAR_COLORS.length];
 }
 
-function characterDisplayName(filterKey) {
-  if (filterKey === "all") return null;
-  const match = (REPORT.meta.characters || []).find(
-    (c) => c.shortName === filterKey || c.name === filterKey
+function filterChipLabel(character, all) {
+  const shared = all.some(
+    (other) => other !== character && other.shortName === character.shortName
   );
-  return match ? match.name : filterKey;
+  return shared ? character.name : character.shortName;
+}
+
+function resolveCharacter(filterKey) {
+  if (!filterKey || filterKey === "all") return null;
+  const chars = REPORT.meta.characters || [];
+  return (
+    chars.find((c) => c.name === filterKey) ||
+    chars.find((c) => c.shortName === filterKey) ||
+    null
+  );
+}
+
+function selectedCharacterFilters() {
+  const keys = state.characterFilters || [];
+  if (!keys.length) return null;
+  return keys.map((key) => {
+    const match = resolveCharacter(key);
+    return match ? { name: match.name, shortName: match.shortName } : { name: key, shortName: key };
+  });
+}
+
+function selectedCharacterNames() {
+  const filters = selectedCharacterFilters();
+  return filters ? filters.map((f) => f.name) : null;
+}
+
+function rowMatchesCharacterFilter(rowValue) {
+  const filters = selectedCharacterFilters();
+  if (!filters) return true;
+  return filters.some((f) => rowValue === f.name || rowValue === f.shortName);
 }
 
 function filteredColumnIndices(characters) {
-  const target = characterDisplayName(state.characterFilter);
-  if (!target) return characters.map((_, i) => i);
-  return characters.map((name, i) => (name === target ? i : -1)).filter((i) => i >= 0);
+  const targets = selectedCharacterNames();
+  if (!targets) return characters.map((_, i) => i);
+  const wanted = new Set(targets);
+  return characters.map((name, i) => (wanted.has(name) ? i : -1)).filter((i) => i >= 0);
 }
 
 function rowPassesSlotFilter(row) {
@@ -510,7 +544,9 @@ function characterFilterOptions(section) {
   const options = [{ value: "", label: "All characters" }];
   const matched = (REPORT.meta.characters || []).filter((c) => namesInRows.has(c.name));
   if (matched.length) {
-    matched.forEach((c) => options.push({ value: c.name, label: c.shortName }));
+    matched.forEach((c) =>
+      options.push({ value: c.name, label: filterChipLabel(c, matched) })
+    );
     return options;
   }
   [...namesInRows].sort().forEach((name) => options.push({ value: name, label: name }));
@@ -567,8 +603,12 @@ function updateToolbar() {
       .map((opt) => `<option value="${String(opt.value).replace(/"/g, "&quot;")}">${opt.label}</option>`)
       .join("");
     let selected = state.chars[section.id] || "";
-    if (!selected && state.characterFilter !== "all") {
-      selected = characterDisplayName(state.characterFilter) || "";
+    if (!selected) {
+      const targets = selectedCharacterNames();
+      if (targets && targets.length === 1) {
+        const candidate = targets[0];
+        if (options.some((opt) => opt.value === candidate)) selected = candidate;
+      }
     }
     sel.value = selected;
     sel.addEventListener("change", () => {
@@ -741,12 +781,13 @@ function updateTableContent(content, section) {
   const q = (state.searches[section.id] || "").trim().toLowerCase();
   if (q) rows = rows.filter((r) => r.join(" ").toLowerCase().includes(q));
 
-  let charFilter = state.chars[section.id] || "";
-  if (!charFilter && state.characterFilter !== "all") {
-    charFilter = characterDisplayName(state.characterFilter) || "";
-  }
-  if (data.characterColumn != null && charFilter) {
-    rows = rows.filter((r) => r[data.characterColumn] === charFilter);
+  const charFilter = state.chars[section.id] || "";
+  if (data.characterColumn != null) {
+    if (charFilter) {
+      rows = rows.filter((r) => r[data.characterColumn] === charFilter);
+    } else {
+      rows = rows.filter((r) => rowMatchesCharacterFilter(r[data.characterColumn]));
+    }
   }
   if (data.expansionColumn != null) {
     const expansionFilter = activeExpansionFilter(section);
@@ -908,11 +949,29 @@ function setActiveTab(idx) {
   renderActivePanel();
 }
 
-function setCharacterFilter(key) {
-  state.characterFilter = key;
+function syncCharacterChips() {
+  const filters = state.characterFilters || [];
+  const allActive = filters.length === 0;
+  const container = document.getElementById("characterFilter");
+  if (container) container.classList.toggle("has-filter", !allActive);
   document.querySelectorAll(".char-chip").forEach((chip) => {
-    chip.classList.toggle("active", chip.dataset.key === key);
+    const key = chip.dataset.key;
+    const active = key === "all" ? allActive : filters.includes(key);
+    chip.classList.toggle("active", active);
   });
+}
+
+function setCharacterFilter(key) {
+  if (key === "all") {
+    state.characterFilters = [];
+  } else {
+    const filters = state.characterFilters || [];
+    const idx = filters.indexOf(key);
+    if (idx >= 0) filters.splice(idx, 1);
+    else filters.push(key);
+    state.characterFilters = filters;
+  }
+  syncCharacterChips();
   refreshContent();
 }
 
@@ -922,21 +981,22 @@ function initCharacterFilter() {
   characters.forEach((character, idx) => {
     const chip = el("button", "char-chip");
     chip.type = "button";
-    chip.dataset.key = character.shortName;
+    chip.dataset.key = character.name;
     chip.dataset.idx = String(idx);
-    chip.textContent = character.shortName;
+    chip.textContent = filterChipLabel(character, characters);
     const color = charColor(idx);
     chip.style.borderColor = color.border;
-    chip.addEventListener("click", () => setCharacterFilter(character.shortName));
+    chip.addEventListener("click", () => setCharacterFilter(character.name));
     container.appendChild(chip);
   });
-  const allChip = el("button", "char-chip active");
+  const allChip = el("button", "char-chip");
   allChip.type = "button";
   allChip.dataset.key = "all";
   allChip.dataset.idx = "all";
   allChip.textContent = "All";
   allChip.addEventListener("click", () => setCharacterFilter("all"));
   container.appendChild(allChip);
+  syncCharacterChips();
 }
 
 function init() {

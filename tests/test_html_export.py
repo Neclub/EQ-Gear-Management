@@ -36,6 +36,9 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
     assert 'id="navList"' in text
     assert 'id="characterFilter"' in text
     assert 'id="tierLegend"' in text
+    assert "chip.dataset.key = character.name" in text
+    assert "function filterChipLabel" in text
+    assert "function rowMatchesCharacterFilter" in text
     assert ">Visibility<" not in text
     for symbol_id in (
         "icon-shield",

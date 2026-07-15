@@ -241,7 +241,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 
 | Control | Where | What it does |
 |---------|-------|----------------|
-| **Character filter** (chips) | Sidebar | Filters gear columns and table rows across the report |
+| **Character filter** (chips) | Sidebar | Multi-select filter for gear columns and table rows. Toggle any combination of characters/personas; **All** clears the filter. Shared-name personas show full labels (e.g. `Deflub ( PAL )`). Unselected chips dim only while a filter is active |
 | **Search** | Toolbar | Filters the active section (keeps keyboard focus while typing) |
 | **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
 | **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, etc. to one character |

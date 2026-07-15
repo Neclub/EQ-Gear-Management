@@ -205,6 +205,38 @@ def test_class_tagged_inventories_ignore_generic(tmp_path: Path) -> None:
     )
 
 
+def test_html_character_filter_uses_persona_names(tmp_path: Path) -> None:
+    from inventory_parser.export_bundle import build_export_bundle
+    from inventory_parser.html_export import extract_report_json, write_team_html
+
+    war_inv = tmp_path / "Deflub_bristle-WAR-Inventory.txt"
+    pal_inv = tmp_path / "Deflub_bristle-PAL-Inventory.txt"
+    shd_inv = tmp_path / "Deflub_bristle-SHD-Inventory.txt"
+    war_inv.write_text(_WAR_INVENTORY, encoding="utf-8")
+    pal_inv.write_text(_PAL_INVENTORY, encoding="utf-8")
+    shd_inv.write_text(_SHD_INVENTORY, encoding="utf-8")
+
+    bundle = build_export_bundle(
+        [war_inv, pal_inv, shd_inv],
+        include_spells=False,
+        include_achievements=False,
+    )
+    out = tmp_path / "crew.html"
+    write_team_html(bundle, out)
+    text = out.read_text(encoding="utf-8")
+    assert "chip.dataset.key = character.name" in text
+    assert "function filterChipLabel" in text
+    report = extract_report_json(text)
+    chars = report["meta"]["characters"]
+    assert len(chars) == 3
+    assert {c["shortName"] for c in chars} == {"Deflub"}
+    assert {c["name"] for c in chars} == {
+        "Deflub ( WAR )",
+        "Deflub ( PAL )",
+        "Deflub ( SHD )",
+    }
+
+
 def test_class_tagged_inventory_without_spells_gets_gear_column(tmp_path: Path) -> None:
     war_inv = tmp_path / "Deflub_bristle-WAR-Inventory.txt"
     war_inv.write_text(_WAR_INVENTORY, encoding="utf-8")
