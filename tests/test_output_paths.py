@@ -4,6 +4,7 @@ from inventory_parser.team_report import build_team_report
 from inventory_parser.eq_servers import server_display_name, server_slug_from_eqlog_filename
 from inventory_parser.output_paths import (
     team_inventory_filename,
+    team_inventory_html_filename,
     default_export_prefix_from_input_paths,
     default_export_prefix_from_report,
     is_auto_team_inventory_path,
@@ -28,6 +29,12 @@ def test_team_inventory_filename_with_prefix() -> None:
     assert team_inventory_filename("Bristlebane") == "Bristlebane_Team Inventory.xlsx"
     assert team_inventory_filename("Deflub") == "Deflub_Team Inventory.xlsx"
     assert team_inventory_filename() == "Team Inventory.xlsx"
+
+
+def test_team_inventory_html_filename_with_prefix() -> None:
+    assert team_inventory_html_filename("Bristlebane") == "Bristlebane_Team_Inventory.html"
+    assert team_inventory_html_filename("Deflub") == "Deflub_Team_Inventory.html"
+    assert team_inventory_html_filename() == "Team_Inventory.html"
 
 
 def test_default_export_prefix_single_character() -> None:

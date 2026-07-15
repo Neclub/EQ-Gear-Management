@@ -37,7 +37,7 @@ Copy the `.txt` files from your EQ Logs folder into one folder on your PC. For A
 3. Adjust **Export options** and **Output folder** on the right if needed.
 4. Click **Generate Report**.
 
-Output: `{Server}_Team Inventory.xlsx` (and `.html` if HTML is enabled). When HTML export is on, the saved `.html` file opens in your default browser; the setup screen stays open.
+Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HTML is enabled). When HTML export is on, the saved `.html` file opens in your default browser; the setup screen stays open.
 
 **Need more detail?** See **[HowToUse.md](HowToUse.md)** — file naming, alternate personas, reading each sheet, and troubleshooting.
 

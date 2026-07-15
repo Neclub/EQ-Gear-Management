@@ -18,7 +18,7 @@ SHAMLUB_ACH = ACHIEVEMENTS / "Shamlub_xegony-Achievements.txt"
 
 def test_html_path_for_workbook() -> None:
     xlsx = Path("D:/out/Bristlebane_Team Inventory.xlsx")
-    assert html_path_for_workbook(xlsx) == Path("D:/out/Bristlebane_Team Inventory.html")
+    assert html_path_for_workbook(xlsx) == Path("D:/out/Bristlebane_Team_Inventory.html")
 
 
 def test_write_team_html_structure(tmp_path: Path) -> None:

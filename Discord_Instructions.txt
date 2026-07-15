@@ -59,11 +59,11 @@ Use **Browse…** to pick a different path if you want.
   • Missing Rk. II at levels 121–130 counts too (shown as Rk. III in the report)
 • **Missing Useful Spells** — curated useful spells still missing (Raccoo’s list × your MissingSpells dump; all levels)
 • **Rune Inventory** — on-hand raid runes in bags/bank (NoS, LS, ToB, SoR); no spell file needed
-• **Missing Collections / Achievement Summary / Raid Achievements** — when achievement dumps are included
+• **Missing Collections / Achievement Summary / Raid Achievements** — when achievement dumps are included (once per character; personas share achievements/collections)
 
 Item names link to EQ Resource when the dump has item IDs.
 
-**HTML report (optional)** — same data in a single `.html` file beside the Excel workbook (`{Server}_Team Inventory.html`). Open in any browser; no server needed.
+**HTML report (optional)** — same data in a single `.html` file beside the Excel workbook (`{Server}_Team_Inventory.html`). Open in any browser; no server needed.
 
 • **Sidebar** — Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, …)
 • **Character filter** chips under the nav — filter the whole report by toon

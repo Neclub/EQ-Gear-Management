@@ -6,6 +6,17 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.18.1] - 2026-07-15
+
+### Changed
+
+- **HTML export filename** uses underscores throughout (e.g. `Bristlebane_Team_Inventory.html`). Excel names are unchanged (`Bristlebane_Team Inventory.xlsx`).
+- **Docs:** HowToUse, README, and Discord guide updated for HTML naming and shared persona achievements.
+
+### Fixed
+
+- **Missing Collections / Achievement Summary / Raid Achievements** are counted once per character when multiple Alternate Persona inventory dumps exist. Classes share achievements and collections; Char Has also lists each character once.
+
 ## [1.18.0] - 2026-07-15
 
 ### Added

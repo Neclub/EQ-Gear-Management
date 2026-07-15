@@ -36,7 +36,7 @@ You can also use class-tagged inventory names (same pattern as MissingSpells), f
 
 Example: `Deflub_bristle-PAL-Inventory.txt`
 
-**Alternate personas:** EQ’s Alternate Persona system lets one character swap class while sharing bank, bags, and other data. Each persona’s worn gear can be tracked as its own Team Gear column when you have a separate inventory dump per class.
+**Alternate personas:** EQ’s Alternate Persona system lets one character swap class while sharing bank, bags, and other data. Each persona’s worn gear can be tracked as its own Team Gear column when you have a separate inventory dump per class. Achievements and collections are shared across personas — they appear once per character, not once per class column.
 
 **Class-tagged inventories (preferred for personas):** put `CharacterName_server-CLASS-Inventory.txt` files in the same folder with matching `CharacterName_server-CLASS-MissingSpells.txt` files. Each class dump becomes its own column (e.g. `Deflub ( PAL )`, `Deflub ( SHD )`). If any class-tagged inventory exists for a character, the generic `CharacterName_server-Inventory.txt` for that character is ignored.
 
@@ -76,7 +76,7 @@ You can put achievement files:
 - In the **same folder** as the inventory dumps, or  
 - In a subfolder named **`AchievementData`** next to those dumps
 
-The **Missing Collections** tab lists collection items still needed (`owned/total` progress under **Collections** sections). **Achievement Summary** counts completed vs incomplete top-level achievements per section.
+The **Missing Collections** tab lists collection items still needed (`owned/total` progress under **Collections** sections). **Achievement Summary** counts completed vs incomplete top-level achievements per section. Achievement files are named by character only (no class segment); with multiple persona inventories, those tabs still list each character once.
 
 ---
 
@@ -113,7 +113,7 @@ The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane 
    - **Slots** dropdown — `all`, `visible`, or `non_visible` on the gear sheets  
    - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs  
    - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs  
-- **HTML** chip — on by default; writes a `{prefix}_Team Inventory.html` file next to the Excel workbook and opens it in your default browser when generation finishes. Uncheck to skip HTML export  
+- **HTML** chip — on by default; writes a `{prefix}_Team_Inventory.html` file next to the Excel workbook and opens it in your default browser when generation finishes. Uncheck to skip HTML export  
 
 6. **Output**
    - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
@@ -213,7 +213,7 @@ Four sections (NoS, LS, ToB, SoR), each with a tier × character matrix. Cells s
 
 ### Missing Collections *(if enabled)*
 
-Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from the collection name), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed.
+Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from the collection name), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed. Personas of the same character share one inventory for collections — rows and **Char Has** names are once per character, not per class.
 
 ### Achievement Summary *(if enabled)*
 
@@ -225,7 +225,7 @@ Incomplete raid **objectives** from each expansion’s **Raids** section. Column
 
 ### HTML report *(optional)*
 
-When the **HTML** chip is checked (default in the GUI) or **`--also-html`** is passed on the CLI, the app saves `{prefix}_Team Inventory.html` next to the `.xlsx` file. In the GUI, that file opens in your default browser when generation finishes; you can also double-click it later in Chrome, Edge, Firefox, etc.
+When the **HTML** chip is checked (default in the GUI) or **`--also-html`** is passed on the CLI, the app saves `{prefix}_Team_Inventory.html` next to the `.xlsx` file (e.g. `Bristlebane_Team_Inventory.html`). In the GUI, that file opens in your default browser when generation finishes; you can also double-click it later in Chrome, Edge, Firefox, etc.
 
 **Layout**
 

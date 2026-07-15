@@ -15,6 +15,7 @@ from inventory_parser.missing_spells import (
 from inventory_parser.parser import parse_character_from_filename
 
 TEAM_INVENTORY_BASENAME = "Team Inventory"
+TEAM_INVENTORY_HTML_BASENAME = "Team_Inventory"
 LEGACY_CREW_INVENTORY_BASENAME = "Crew Inventory"
 TEAM_INVENTORY_SUFFIX = ".xlsx"
 TEAM_INVENTORY_HTML_SUFFIX = ".html"
@@ -28,10 +29,10 @@ def team_inventory_filename(prefix: str | None = None) -> str:
 
 
 def team_inventory_html_filename(prefix: str | None = None) -> str:
-    """Return export HTML filename, e.g. ``Deflub_Team Inventory.html``."""
+    """Return export HTML filename, e.g. ``Deflub_Team_Inventory.html``."""
     if prefix:
-        return f"{prefix}_{TEAM_INVENTORY_BASENAME}{TEAM_INVENTORY_HTML_SUFFIX}"
-    return f"{TEAM_INVENTORY_BASENAME}{TEAM_INVENTORY_HTML_SUFFIX}"
+        return f"{prefix}_{TEAM_INVENTORY_HTML_BASENAME}{TEAM_INVENTORY_HTML_SUFFIX}"
+    return f"{TEAM_INVENTORY_HTML_BASENAME}{TEAM_INVENTORY_HTML_SUFFIX}"
 
 
 def team_inventory_path(directory: Path, prefix: str | None = None) -> Path:
@@ -43,9 +44,10 @@ def team_inventory_html_path(directory: Path, prefix: str | None = None) -> Path
 
 
 def html_path_for_workbook(workbook_path: Path | str) -> Path:
-    """Sibling HTML path for an Excel export (same stem, ``.html`` extension)."""
+    """Sibling HTML path for an Excel export (spaces in stem become underscores)."""
     path = Path(workbook_path)
-    return path.with_suffix(TEAM_INVENTORY_HTML_SUFFIX)
+    html_stem = path.stem.replace(" ", "_")
+    return path.with_name(f"{html_stem}{TEAM_INVENTORY_HTML_SUFFIX}")
 
 
 def _server_slug_from_path(path: Path) -> str | None:

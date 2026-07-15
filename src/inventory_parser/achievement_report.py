@@ -65,22 +65,28 @@ def _character_key(character: str, server: str) -> str:
 
 
 def _build_item_holders_by_name(team: TeamGearReport) -> dict[str, list[str]]:
-    """Map item name (casefold) to team display names that have it in inventory."""
+    """Map item name (casefold) to character names that have it in inventory.
+
+    Personas of the same character share one inventory/collections, so holders are
+    keyed by character+server (base name once), not per class column.
+    """
     holders: dict[str, list[str]] = {}
     seen: dict[str, set[str]] = {}
     for character in team.characters:
         data = character.inventory_data or parse_inventory_file(character.filepath)
         if data is None:
             continue
+        holder_name = character.character
+        holder_key = _character_key(character.character, character.server)
         for item in data.items:
             if not item.name or item.name == "Empty":
                 continue
             key = item.name.casefold()
-            seen_names = seen.setdefault(key, set())
-            if character.display_name in seen_names:
+            seen_holders = seen.setdefault(key, set())
+            if holder_key in seen_holders:
                 continue
-            seen_names.add(character.display_name)
-            holders.setdefault(key, []).append(character.display_name)
+            seen_holders.add(holder_key)
+            holders.setdefault(key, []).append(holder_name)
     for names in holders.values():
         names.sort(key=str.casefold)
     return holders
@@ -202,16 +208,19 @@ def build_achievement_report(
         path = achievement_paths.get(key)
         if path is None:
             continue
+        # Achievements/collections are character-level; personas share one dump.
+        if key in seen_characters:
+            continue
         seen_characters.add(key)
         try:
             parsed = parse_achievements_file(path)
         except OSError as exc:
             report.warnings.append(
-                f"Could not read achievements for {character.display_name}: {exc}"
+                f"Could not read achievements for {character.character}: {exc}"
             )
             continue
         missing, raids, summaries = _rows_from_parse(
-            character.display_name,
+            character.character,
             parsed,
             item_holders,
         )

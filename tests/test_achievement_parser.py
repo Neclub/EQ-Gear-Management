@@ -158,6 +158,67 @@ def test_missing_collections_char_has_from_team_inventory(tmp_path: Path) -> Non
     assert strange_row.char_has == "Tanklub"
 
 
+def test_achievement_report_once_per_character_across_personas(tmp_path: Path) -> None:
+    """Personas share achievements/collections — emit one row set per character."""
+    pal_inv = tmp_path / "Shamlub_bristle-PAL-Inventory.txt"
+    shd_inv = tmp_path / "Shamlub_bristle-SHD-Inventory.txt"
+    pal_inv.write_text(
+        "Location\tName\tID\tCount\tSlots\nHead\tPAL Helm\t1\t1\t0\n",
+        encoding="utf-8",
+    )
+    shd_inv.write_text(
+        "Location\tName\tID\tCount\tSlots\n"
+        "Head\tSHD Helm\t2\t1\t0\n"
+        "General1-Slot1\tStrange Black Rock\t12345\t1\t6\n",
+        encoding="utf-8",
+    )
+    report = build_team_report([pal_inv, shd_inv])
+    assert len(report.characters) == 2
+
+    parsed = parse_achievements_file(SHAMLUB_ACH)
+    ach_report = build_achievement_report(
+        report,
+        achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
+    )
+    assert ach_report is not None
+    assert len(ach_report.missing_collections) == len(parsed.missing_collections)
+    assert len(ach_report.summaries) == len(
+        [s for s in parsed.section_summaries if s.total > 0]
+    )
+    assert len(ach_report.raid_achievements) == len(parsed.missing_raid_achievements)
+    assert {row.character for row in ach_report.missing_collections} == {"Shamlub"}
+    assert {row.character for row in ach_report.summaries} == {"Shamlub"}
+    assert {row.character for row in ach_report.raid_achievements} == {"Shamlub"}
+
+    strange_row = next(
+        row for row in ach_report.missing_collections if row.missing_item == "Strange Black Rock"
+    )
+    # Char Has lists the character once even when multiple persona dumps hold the item.
+    assert strange_row.char_has == "Shamlub"
+
+
+def test_char_has_dedupes_personas_of_holder(tmp_path: Path) -> None:
+    holder_pal = tmp_path / "Tanklub_bristle-PAL-Inventory.txt"
+    holder_shd = tmp_path / "Tanklub_bristle-SHD-Inventory.txt"
+    for path in (holder_pal, holder_shd):
+        path.write_text(
+            "Location\tName\tID\tCount\tSlots\n"
+            "General1-Slot1\tStrange Black Rock\t12345\t1\t6\n",
+            encoding="utf-8",
+        )
+    missing_inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    report = build_team_report([missing_inv, holder_pal, holder_shd])
+    ach_report = build_achievement_report(
+        report,
+        achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
+    )
+    assert ach_report is not None
+    strange_row = next(
+        row for row in ach_report.missing_collections if row.missing_item == "Strange Black Rock"
+    )
+    assert strange_row.char_has == "Tanklub"
+
+
 def test_collect_achievement_paths_from_achievementdata(tmp_path: Path) -> None:
     inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
     data_dir = tmp_path / "AchievementData"
