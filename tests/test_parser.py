@@ -19,7 +19,34 @@ def test_parse_inventory_filename() -> None:
     assert parse_inventory_filename("Deflub_bristle-Inventory.txt") == (
         "Deflub",
         "bristle",
+        None,
     )
+
+
+def test_parse_inventory_filename_with_class() -> None:
+    assert parse_inventory_filename("Deflub_bristle-PAL-Inventory.txt") == (
+        "Deflub",
+        "bristle",
+        "PAL",
+    )
+    assert parse_inventory_filename("Deflub_bristle-WAR-Inventory.txt") == (
+        "Deflub",
+        "bristle",
+        "WAR",
+    )
+    assert parse_character_from_filename("Deflub_bristle-SHD-Inventory.txt") == (
+        "Deflub",
+        "bristle",
+    )
+
+
+def test_parse_inventory_file_stores_class_abbr() -> None:
+    special = EXAMPLES / "SpecialNaming" / "Deflub_bristle-WAR-Inventory.txt"
+    data = parse_inventory_file(special)
+    assert data is not None
+    assert data.character == "Deflub"
+    assert data.server == "bristle"
+    assert data.class_abbr == "WAR"
 
 
 def test_extract_equipped_deflub_arms() -> None:

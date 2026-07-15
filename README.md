@@ -24,11 +24,11 @@ On each character, run in EverQuest chat:
 
 | Command | What it creates |
 |---------|-----------------|
-| `/outputfile inventory` | Required — `Name_server-Inventory.txt` |
+| `/outputfile inventory` | Required — `Name_server-Inventory.txt` (or `Name_server-CLASS-Inventory.txt` for personas) |
 | `/outputfile missingspells` | Optional — spell/rune tabs |
 | `/outputfile achievements` | Optional — achievement tabs |
 
-Copy the `.txt` files from your EQ Logs folder into one folder on your PC.
+Copy the `.txt` files from your EQ Logs folder into one folder on your PC. For Alternate Personas, class-tagged inventory names (`Name_server-CLASS-Inventory.txt`) each become their own gear column; see [HowToUse.md](HowToUse.md).
 
 ### 2. Generate the report
 

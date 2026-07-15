@@ -168,3 +168,59 @@ def test_excel_explicit_spell_gets_gear_column(tmp_path: Path) -> None:
 
     wb = load_workbook(out, data_only=True)
     assert wb["Team gear"].cell(1, 3).value == "Deflub ( PAL )"
+
+
+_WAR_INVENTORY = "Location\tName\tID\tCount\tSlots\nHead\tWAR Helm\t3\t1\t0\n"
+
+
+def test_class_tagged_inventories_ignore_generic(tmp_path: Path) -> None:
+    generic = tmp_path / "Deflub_bristle-Inventory.txt"
+    war_inv = tmp_path / "Deflub_bristle-WAR-Inventory.txt"
+    pal_inv = tmp_path / "Deflub_bristle-PAL-Inventory.txt"
+    shd_inv = tmp_path / "Deflub_bristle-SHD-Inventory.txt"
+    war_spell = tmp_path / "Deflub_bristle-WAR-MissingSpells.txt"
+    pal_spell = tmp_path / "Deflub_bristle-PAL-MissingSpells.txt"
+    shd_spell = tmp_path / "Deflub_bristle-SHD-MissingSpells.txt"
+    generic.write_text(_MINIMAL_INVENTORY, encoding="utf-8")
+    war_inv.write_text(_WAR_INVENTORY, encoding="utf-8")
+    pal_inv.write_text(_PAL_INVENTORY, encoding="utf-8")
+    shd_inv.write_text(_SHD_INVENTORY, encoding="utf-8")
+    war_spell.write_text("126\tWar Cry Rk. III\n", encoding="utf-8")
+    pal_spell.write_text("126\tCommittal Rk. III\n", encoding="utf-8")
+    shd_spell.write_text("126\tBanshee Skin VIII Rk. III\n", encoding="utf-8")
+
+    inventories = [generic, war_inv, pal_inv, shd_inv]
+    report = build_team_report(inventories)
+    assert len(report.characters) == 3
+    assert len(report.spell_characters) == 3
+    assert not any("Skipping team gear" in w for w in report.warnings)
+    names = {c.display_name for c in report.characters}
+    assert names == {"Deflub ( WAR )", "Deflub ( PAL )", "Deflub ( SHD )"}
+    gear_by_class = {c.class_abbr: c.slots["Head"].name for c in report.characters}
+    assert gear_by_class["WAR"] == "WAR Helm"
+    assert gear_by_class["PAL"] == "PAL Helm"
+    assert gear_by_class["SHD"] == "SHD Helm"
+    assert all(
+        Path(c.filepath).name != "Deflub_bristle-Inventory.txt" for c in report.characters
+    )
+
+
+def test_class_tagged_inventory_without_spells_gets_gear_column(tmp_path: Path) -> None:
+    war_inv = tmp_path / "Deflub_bristle-WAR-Inventory.txt"
+    war_inv.write_text(_WAR_INVENTORY, encoding="utf-8")
+    report = build_team_report([war_inv])
+    assert len(report.characters) == 1
+    assert len(report.spell_characters) == 0
+    assert report.characters[0].display_name == "Deflub ( WAR )"
+    assert report.characters[0].class_abbr == "WAR"
+    assert report.characters[0].slots["Head"].name == "WAR Helm"
+
+
+def test_special_naming_examples_folder() -> None:
+    special = Path(__file__).resolve().parents[1] / "Examples" / "SpecialNaming"
+    inventories = sorted(special.glob("*-Inventory.txt"))
+    report = build_team_report(inventories)
+    assert len(report.characters) == 3
+    assert len(report.spell_characters) == 3
+    assert {c.class_abbr for c in report.characters} == {"WAR", "PAL", "SHD"}
+    assert not any("Skipping team gear" in w for w in report.warnings)

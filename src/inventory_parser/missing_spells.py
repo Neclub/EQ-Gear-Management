@@ -118,13 +118,14 @@ def is_missing_spells_file(path: str | Path) -> bool:
 
 def inventory_character_key(path: str | Path) -> str:
     """``Deflub_bristle-Inventory.txt`` -> ``Deflub_bristle``."""
-    character, server = parse_inventory_filename(path)
+    character, server, _class_abbr = parse_inventory_filename(path)
     return persona_key(character, server)
 
 
 def inventory_persona_key(path: str | Path) -> str:
-    """Persona key from an inventory filename (character + server only)."""
-    return inventory_character_key(path)
+    """Persona key from an inventory filename (includes class when present)."""
+    character, server, class_abbr = parse_inventory_filename(path)
+    return persona_key(character, server, class_abbr)
 
 
 def missing_spells_persona_key(path: str | Path) -> str | None:
@@ -194,10 +195,54 @@ def _glob_spell_candidates(folder: Path, pattern: str) -> list[Path]:
     )
 
 
-def _find_inventory_for_spell(spell_path: Path, character: str, server: str) -> Path | None:
-    pattern = f"{character}_{server}-Inventory.txt"
-    for folder in _inventory_search_dirs_for_spell(spell_path):
-        candidate = folder / pattern
+def _char_server_key(character: str, server: str) -> str:
+    return f"{character.casefold()}\0{server.casefold()}"
+
+
+def superseded_generic_inventory_keys(inventory_paths: list[Path]) -> set[str]:
+    """Char+server keys that have at least one class-tagged inventory among inputs."""
+    keys: set[str] = set()
+    for raw in inventory_paths:
+        character, server, class_abbr = parse_inventory_filename(raw)
+        if class_abbr:
+            keys.add(_char_server_key(character, server))
+    return keys
+
+
+def filter_inventories_for_bindings(inventory_paths: list[Path]) -> list[Path]:
+    """Drop generic inventories when class-tagged dumps exist for the same character."""
+    superseded = superseded_generic_inventory_keys(inventory_paths)
+    if not superseded:
+        return list(inventory_paths)
+    filtered: list[Path] = []
+    for raw in inventory_paths:
+        character, server, class_abbr = parse_inventory_filename(raw)
+        if class_abbr is None and _char_server_key(character, server) in superseded:
+            continue
+        filtered.append(raw)
+    return filtered
+
+
+def _find_inventory_for_spell(
+    spell_path: Path,
+    character: str,
+    server: str,
+    class_abbr: str,
+    *,
+    superseded_generics: set[str],
+) -> Path | None:
+    """Prefer class-tagged inventory; fall back to generic unless superseded."""
+    class_name = f"{character}_{server}-{class_abbr}-Inventory.txt"
+    generic_name = f"{character}_{server}-Inventory.txt"
+    search_dirs = _inventory_search_dirs_for_spell(spell_path)
+    for folder in search_dirs:
+        candidate = folder / class_name
+        if candidate.is_file():
+            return candidate.resolve()
+    if _char_server_key(character, server) in superseded_generics:
+        return None
+    for folder in search_dirs:
+        candidate = folder / generic_name
         if candidate.is_file():
             return candidate.resolve()
     return None
@@ -215,16 +260,12 @@ def _collect_spell_paths(
                 spells[str(path)] = path
         return sorted(spells.values(), key=lambda p: p.name.casefold())
     for inv_path in inventory_paths:
-        character, server = parse_inventory_filename(inv_path)
+        character, server, _class_abbr = parse_inventory_filename(inv_path)
         pattern = f"{character}_{server}-*-MissingSpells.txt"
         for folder in _search_dirs_for_inventory(inv_path):
             for candidate in _glob_spell_candidates(folder, pattern):
                 spells[str(candidate.resolve())] = candidate.resolve()
     return sorted(spells.values(), key=lambda p: p.name.casefold())
-
-
-def _char_server_key(character: str, server: str) -> str:
-    return f"{character.casefold()}\0{server.casefold()}"
 
 
 def _persona_display_label(character: str, class_abbr: str | None) -> str:
@@ -262,19 +303,24 @@ def discover_persona_bindings(
     spell_paths: list[Path] | None = None,
 ) -> PersonaDiscoveryResult:
     """
-    Pair MissingSpells files (class source) with co-located inventory dumps.
+    Pair inventory dumps with MissingSpells files into persona bindings.
 
-    Subfolders: each spell pairs with inventory in its directory. When multiple
-    spell files share one inventory path and are auto-discovered (not explicitly
-    selected), those personas appear on spell tabs only (not Team Gear / Gear T-Level).
-    Explicitly selected MissingSpells files always produce gear columns labeled with
-    that class.
+    Class-tagged inventories (``{Char}_{Server}-{CLASS}-Inventory.txt``) each form
+    their own persona. When any class-tagged dump exists for a character+server,
+    the generic ``{Char}_{Server}-Inventory.txt`` is ignored for that character.
+
+    When multiple spell files share one generic inventory and are auto-discovered
+    (not explicitly selected), those personas appear on spell tabs only (not Team
+    Gear / Gear T-Level). Explicitly selected MissingSpells files always produce
+    gear columns labeled with that class.
     """
     warnings: list[str] = []
     explicit_spell_selection = bool(spell_paths)
     bindings: list[PersonaBinding] = []
     seen_persona_keys: set[str] = set()
     char_servers_with_spell_bindings: set[str] = set()
+    superseded_generics = superseded_generic_inventory_keys(inventory_paths)
+    usable_inventories = filter_inventories_for_bindings(inventory_paths)
 
     for spell_path in _collect_spell_paths(inventory_paths, spell_paths):
         parsed = parse_missing_spells_filename(spell_path)
@@ -289,11 +335,18 @@ def discover_persona_bindings(
             )
             continue
 
-        inventory_path = _find_inventory_for_spell(spell_path, character, server)
+        inventory_path = _find_inventory_for_spell(
+            spell_path,
+            character,
+            server,
+            class_abbr,
+            superseded_generics=superseded_generics,
+        )
         if inventory_path is None:
             warnings.append(
                 f"No inventory file for {character} ({class_abbr}) "
-                f"(expected {character}_{server}-Inventory.txt near {spell_path.name})"
+                f"(expected {character}_{server}-{class_abbr}-Inventory.txt or "
+                f"{character}_{server}-Inventory.txt near {spell_path.name})"
             )
             continue
 
@@ -309,33 +362,26 @@ def discover_persona_bindings(
         seen_persona_keys.add(pk)
         char_servers_with_spell_bindings.add(_char_server_key(character, server))
 
-    for inv_path in inventory_paths:
+    for inv_path in usable_inventories:
         path = Path(inv_path).resolve()
         if not path.is_file():
             warnings.append(f"Could not read inventory file: {path}")
             continue
 
-        character, server = parse_inventory_filename(path)
+        character, server, class_abbr = parse_inventory_filename(path)
         cs_key = _char_server_key(character, server)
-        if cs_key in char_servers_with_spell_bindings:
-            continue
-
-        pk = persona_key(character, server, None)
+        pk = persona_key(character, server, class_abbr)
         if pk in seen_persona_keys:
-            prev = next(
-                b for b in bindings if persona_key(b.character, b.server, b.class_abbr) == pk
-            )
-            warnings.append(
-                f"Duplicate persona '{character}': keeping {path.name}, "
-                f"skipping {prev.inventory_path.name}"
-            )
+            continue
+        # Generic inventory already covered by spell-driven bindings for this character
+        if class_abbr is None and cs_key in char_servers_with_spell_bindings:
             continue
 
         bindings.append(
             PersonaBinding(
                 character=character,
                 server=server,
-                class_abbr=None,
+                class_abbr=class_abbr,
                 inventory_path=path,
                 spell_path=None,
             )

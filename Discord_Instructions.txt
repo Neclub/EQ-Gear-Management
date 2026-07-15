@@ -15,6 +15,8 @@ Copy the `.txt` files from your EQ Logs folder into one raid folder.
 **File names**
 • Inventory (required): `CharacterName_server-Inventory.txt`
   Example: `Deflub_bristle-Inventory.txt`
+• Personas (optional): `CharacterName_server-CLASS-Inventory.txt` — one file per class/persona
+  Example: `Deflub_bristle-PAL-Inventory.txt` (pairs with matching MissingSpells; ignores the generic inventory when present)
 • Missing spells (optional): `CharacterName_server-CLASS-MissingSpells.txt`
   Example: `Healub_bristle-CLR-MissingSpells.txt`
 • Achievements (optional): `CharacterName_server-Achievements.txt`

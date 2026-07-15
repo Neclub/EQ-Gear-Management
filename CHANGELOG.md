@@ -6,6 +6,19 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ## [Unreleased]
 
+## [1.18.0] - 2026-07-15
+
+### Added
+
+- **Class-tagged inventory filenames** for Alternate Personas: `CharacterName_server-CLASS-Inventory.txt` (same pattern as MissingSpells). Each class dump is its own Team Gear column with that persona’s equipped gear.
+- When any class-tagged inventory exists for a character, the generic `CharacterName_server-Inventory.txt` for that character is ignored.
+- Class-tagged inventory without a Matching MissingSpells file still produces a labeled gear column.
+- Example dumps under `Examples/SpecialNaming/`.
+
+### Changed
+
+- **Docs:** HowToUse, README, and Discord guide updated for class-tagged inventory naming and persona columns.
+
 ## [1.17.0] - 2026-07-10
 
 ### Added

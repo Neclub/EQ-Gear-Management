@@ -9,7 +9,7 @@ from pathlib import Path
 from inventory_parser.slots import EQUIPMENT_SLOT_BASES
 
 _INVENTORY_FILENAME_RE = re.compile(
-    r"^(.+)_([^-]+)-Inventory\.txt$",
+    r"^(.+)_([^-]+)(?:-([A-Za-z]+))?-Inventory\.txt$",
     re.IGNORECASE,
 )
 
@@ -29,26 +29,37 @@ class InventoryData:
     server: str
     filepath: str
     items: list[InventoryItem] = field(default_factory=list)
+    class_abbr: str | None = None
 
 
-def parse_inventory_filename(filepath: str | Path) -> tuple[str, str]:
-    """Extract character and server from ``{Char}_{Server}-Inventory.txt``."""
+def parse_inventory_filename(filepath: str | Path) -> tuple[str, str, str | None]:
+    """Extract character, server, and optional class from an inventory filename.
+
+    Supports ``{Char}_{Server}-Inventory.txt`` and
+    ``{Char}_{Server}-{CLASS}-Inventory.txt``.
+    """
     name = Path(filepath).name
     match = _INVENTORY_FILENAME_RE.match(name)
     if match:
-        return match.group(1), match.group(2)
+        class_abbr = match.group(3)
+        return match.group(1), match.group(2), class_abbr.upper() if class_abbr else None
     stem = Path(filepath).stem
     if stem.endswith("-Inventory"):
         stem = stem[: -len("-Inventory")]
+    # Fallback: try trailing -CLASS before treating rest as Char_Server
+    class_match = re.match(r"^(.+)_([^-]+)-([A-Za-z]+)$", stem)
+    if class_match:
+        return class_match.group(1), class_match.group(2), class_match.group(3).upper()
     parts = stem.rsplit("_", 1)
     if len(parts) == 2:
-        return parts[0], parts[1]
-    return stem, ""
+        return parts[0], parts[1], None
+    return stem, "", None
 
 
 def parse_character_from_filename(filepath: str | Path) -> tuple[str, str]:
-    """Extract character and server from ``{Char}_{Server}-Inventory.txt``."""
-    return parse_inventory_filename(filepath)
+    """Extract character and server from an inventory filename (class ignored)."""
+    character, server, _class_abbr = parse_inventory_filename(filepath)
+    return character, server
 
 
 def parse_inventory_file(filepath: str | Path) -> InventoryData | None:
@@ -57,7 +68,7 @@ def parse_inventory_file(filepath: str | Path) -> InventoryData | None:
     if not path.is_file():
         return None
 
-    character, server = parse_inventory_filename(path)
+    character, server, class_abbr = parse_inventory_filename(path)
     items: list[InventoryItem] = []
 
     try:
@@ -117,6 +128,7 @@ def parse_inventory_file(filepath: str | Path) -> InventoryData | None:
         server=server,
         filepath=str(path.resolve()),
         items=items,
+        class_abbr=class_abbr,
     )
 
 

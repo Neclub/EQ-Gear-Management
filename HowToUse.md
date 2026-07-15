@@ -28,13 +28,21 @@ At least one file named like:
 
 Example: `Deflub_bristle-Inventory.txt`
 
-Tab-separated text from `/outputfile inventory`. One file per character (`CharacterName_server-Inventory.txt`). The filename never includes class. The dump reflects **equipped items for the active persona only**.
+Tab-separated text from `/outputfile inventory`. The dump reflects **equipped items for the active persona only**.
 
-**Alternate personas:** EQ’s Alternate Persona system lets one character swap class while sharing bank, bags, and other data. Class is defined **only** by the MissingSpells filename (`CharacterName_server-CLASS-MissingSpells.txt`).
+You can also use class-tagged inventory names (same pattern as MissingSpells), for example after renaming exports or if the client names them this way:
 
-**Same folder:** one inventory plus MissingSpells file(s). Add the spell file for the active persona to get a Team Gear column labeled with that class. If you add only the inventory and multiple spell files are auto-discovered, Team Gear is skipped (spell tabs only).
+`CharacterName_server-CLASS-Inventory.txt`
 
-**Subfolders (separate worn gear per persona):** each persona’s folder contains the standard inventory name plus its spell file — e.g. `PAL/Deflub_bristle-Inventory.txt` + `PAL/Deflub_bristle-PAL-MissingSpells.txt`.
+Example: `Deflub_bristle-PAL-Inventory.txt`
+
+**Alternate personas:** EQ’s Alternate Persona system lets one character swap class while sharing bank, bags, and other data. Each persona’s worn gear can be tracked as its own Team Gear column when you have a separate inventory dump per class.
+
+**Class-tagged inventories (preferred for personas):** put `CharacterName_server-CLASS-Inventory.txt` files in the same folder with matching `CharacterName_server-CLASS-MissingSpells.txt` files. Each class dump becomes its own column (e.g. `Deflub ( PAL )`, `Deflub ( SHD )`). If any class-tagged inventory exists for a character, the generic `CharacterName_server-Inventory.txt` for that character is ignored.
+
+**Same folder with only a generic inventory:** one inventory plus MissingSpells file(s). Add the spell file for the active persona to get a Team Gear column labeled with that class. If you add only the inventory and multiple spell files are auto-discovered, Team Gear is skipped (spell tabs only).
+
+**Subfolders (also supported):** each persona’s folder contains the standard inventory name plus its spell file — e.g. `PAL/Deflub_bristle-Inventory.txt` + `PAL/Deflub_bristle-PAL-MissingSpells.txt`. Same-folder class-tagged names are preferred when available.
 
 ### Missing Spells logs (optional)
 
@@ -44,7 +52,7 @@ Files named like:
 
 Example: `Healub_bristle-CLR-MissingSpells.txt`
 
-From `/outputfile missingspells`. One line per spell: `level` + tab + `spell name`. Only **Rk. III** lines are counted. The **CLASS** in the filename is the only way the parser knows a character’s class or persona.
+From `/outputfile missingspells`. One line per spell: `level` + tab + `spell name`. Only **Rk. III** lines are counted. The **CLASS** in the MissingSpells filename identifies the persona; class-tagged inventory filenames use the same abbreviation.
 
 You can put spell files:
 
@@ -323,7 +331,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\InventoryParser-1.13.0.exe
+py -3 scripts\sign_exe.py dist\InventoryParser-1.18.0.exe
 ```
 
 (with the same environment variables set).

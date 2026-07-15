@@ -75,7 +75,7 @@ def build_team_report(
     *,
     spell_paths: list[Path] | None = None,
 ) -> TeamGearReport:
-    """Parse inventory files and collect equipped items per persona (class from spells)."""
+    """Parse inventory files and collect equipped items per persona."""
     discovery = discover_persona_bindings(inventory_paths, spell_paths=spell_paths)
     gear_by_persona: dict[str, CharacterGear] = {}
     spell_by_persona: dict[str, CharacterGear] = {}
@@ -149,6 +149,7 @@ class FolderCharacterChoice:
     @property
     def class_abbrs(self) -> tuple[str, ...]:
         from inventory_parser.missing_spells import parse_missing_spells_filename
+        from inventory_parser.parser import parse_inventory_filename
 
         classes: list[str] = []
         seen: set[str] = set()
@@ -160,6 +161,12 @@ class FolderCharacterChoice:
             if abbr not in seen:
                 seen.add(abbr)
                 classes.append(abbr)
+        for inv_path in self.inventory_paths:
+            _character, _server, class_abbr = parse_inventory_filename(inv_path)
+            if not class_abbr or class_abbr in seen:
+                continue
+            seen.add(class_abbr)
+            classes.append(class_abbr)
         return tuple(classes)
 
     @property
@@ -214,11 +221,12 @@ def discover_folder_character_choices(folder: Path) -> list[FolderCharacterChoic
     )
     from inventory_parser.missing_spells import (
         discover_missing_spells_files,
+        filter_inventories_for_bindings,
         parse_missing_spells_filename,
     )
     from inventory_parser.parser import parse_inventory_filename
 
-    inventories = discover_inventory_files(folder)
+    inventories = filter_inventories_for_bindings(discover_inventory_files(folder))
     spells: list[Path] = []
     for search_dir in _folder_spell_search_dirs(folder):
         spells.extend(discover_missing_spells_files(search_dir))
@@ -243,7 +251,7 @@ def discover_folder_character_choices(folder: Path) -> list[FolderCharacterChoic
     achievement_lists: dict[tuple[str, str], list[Path]] = {}
 
     for inv_path in inventories:
-        character, server = parse_inventory_filename(inv_path)
+        character, server, _class_abbr = parse_inventory_filename(inv_path)
         key = (character.casefold(), server.casefold())
         ensure_choice(character, server)
         inventory_lists.setdefault(key, []).append(inv_path.resolve())

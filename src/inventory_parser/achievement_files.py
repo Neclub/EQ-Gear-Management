@@ -70,10 +70,7 @@ def collect_achievement_paths(
         return achievements
 
     for inventory_path in inventory_paths:
-        parsed = parse_inventory_filename(inventory_path)
-        if parsed is None:
-            continue
-        character, server = parsed
+        character, server, _class_abbr = parse_inventory_filename(inventory_path)
         key = f"{character}_{server}"
         if key.casefold() in achievements:
             continue

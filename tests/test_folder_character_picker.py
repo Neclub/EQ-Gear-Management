@@ -40,3 +40,21 @@ def test_discover_folder_character_choices_spelldata_only(tmp_path: Path) -> Non
     assert choices[0].display_name == "Orphan ( WIZ )"
     assert choices[0].inventory_paths == ()
     assert len(choices[0].spell_paths) == 1
+
+
+def test_special_naming_folder_ignores_generic_inventory() -> None:
+    special = EXAMPLES / "SpecialNaming"
+    choices = discover_folder_character_choices(special)
+    assert len(choices) == 1
+    deflub = choices[0]
+    assert deflub.character == "Deflub"
+    assert deflub.server == "bristle"
+    assert {p.name for p in deflub.inventory_paths} == {
+        "Deflub_bristle-PAL-Inventory.txt",
+        "Deflub_bristle-SHD-Inventory.txt",
+        "Deflub_bristle-WAR-Inventory.txt",
+    }
+    assert set(deflub.class_abbrs) == {"PAL", "SHD", "WAR"}
+    assert "PAL" in deflub.display_name
+    assert "WAR" in deflub.display_name
+    assert "SHD" in deflub.display_name
