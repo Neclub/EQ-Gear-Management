@@ -42,3 +42,19 @@ jobs:
           files: dist/EQGM-${{ steps.version.outputs.version }}.exe
           generate_release_notes: true
           make_latest: true
+
+      - name: Notify Discord
+        continue-on-error: true
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        shell: bash
+        run: |
+          if [ -z "$DISCORD_WEBHOOK_URL" ]; then
+            echo "Skipping Discord notify (DISCORD_WEBHOOK_URL secret is not set)"
+            exit 0
+          fi
+          version="${{ steps.version.outputs.version }}"
+          repo="${{ github.repository }}"
+          payload=$(printf '{"content":"**EQ Gear Management %s** released.\\nRelease: https://github.com/%s/releases/tag/v%s\\nDownload: https://github.com/%s/releases/latest/download/EQGM-%s.exe"}' \
+            "$version" "$repo" "$version" "$repo" "$version")
+          curl -fsS -H "Content-Type: application/json" -d "$payload" "$DISCORD_WEBHOOK_URL"
