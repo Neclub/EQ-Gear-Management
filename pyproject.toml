@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "inventory-parser"
 dynamic = ["version"]
 description = "EQ Gear Management (EQGM) — EverQuest multi-character inventory dumps to equipped-gear Excel and optional interactive HTML reports"
-license = { text = "MIT" }
+license = { text = "Apache-2.0" }
 requires-python = ">=3.10"
 dependencies = [
     "openpyxl>=3.1",

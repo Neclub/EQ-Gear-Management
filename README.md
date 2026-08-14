@@ -58,4 +58,4 @@ For file naming, Alternate Personas, reading each sheet, and troubleshooting, se
 
 ## License
 
-MIT. See [LICENSE](LICENSE).
+Apache License 2.0. See [LICENSE](LICENSE).
