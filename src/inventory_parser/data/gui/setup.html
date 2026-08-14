@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Inventory Parser</title>
+<title>EQ Gear Management</title>
+<link rel="icon" id="favicon" href="">
 <link rel="stylesheet" href="shared.css">
 </head>
 <body>
@@ -65,10 +66,10 @@
 <div id="app">
   <header class="app-header">
     <div class="header-brand">
-      <img id="logo" alt="EQ" width="44" height="44">
+      <img id="logo" alt="EQGM" width="56" height="56">
       <div>
-        <h1>Inventory Parser <span class="badge" id="versionBadge"></span></h1>
-        <div class="subtitle">Team gear workbook • color-coded tiers • EQ Resource links</div>
+        <h1>EQ Gear Management <span class="badge" id="versionBadge"></span></h1>
+        <div class="subtitle">EQGM • team gear workbook • color-coded tiers • EQ Resource links</div>
       </div>
     </div>
     <button type="button" class="help-link" id="helpBtn">Help ▾</button>
@@ -76,7 +77,7 @@
 
   <div id="helpMenu" class="help-menu hidden">
     <button type="button" id="helpTiers">Gear tier colors…</button>
-    <button type="button" id="helpAbout">About Inventory Parser…</button>
+    <button type="button" id="helpAbout">About EQGM…</button>
   </div>
 
   <div class="workspace">
@@ -110,7 +111,39 @@
           <div class="chip-row">
             <button type="button" class="chip" id="chipSpells" disabled>Spells</button>
             <button type="button" class="chip" id="chipAchievements" disabled>Achievements</button>
-            <button type="button" class="chip on" id="chipHtml">HTML</button>
+            <button type="button" class="chip on" id="chipSlot2Augs" disabled>Type 7/8 Augs</button>
+          </div>
+          <div id="slot2Options" class="slot2-options hidden">
+            <div class="options-tabs" role="tablist" aria-label="Type 7/8 Augs settings">
+              <button type="button" class="options-tab on" id="tabAugOptions" role="tab" aria-selected="true">Aug options</button>
+              <span class="options-tab-wrap" id="tabAdvancedWeightsWrap">
+                <button type="button" class="options-tab" id="tabAdvancedWeights" role="tab" aria-selected="false" disabled>Advanced weights</button>
+              </span>
+            </div>
+            <div id="paneAugOptions" role="tabpanel">
+              <label class="check-row">
+                <input type="checkbox" id="includeAnniversary">
+                <span>Include Anniversary augs</span>
+              </label>
+              <div class="hint">Gems of Distant Echoes. Leave unchecked to exclude them.</div>
+            </div>
+            <div id="paneAdvancedWeights" class="hidden" role="tabpanel">
+              <div class="advanced-pane">
+                <div class="hint" id="advancedWeightsHint">Single character only — edit class default scoring weights for this generate.</div>
+                <label class="check-row">
+                  <input type="checkbox" id="useWeightOverrides">
+                  <span>Use weight overrides</span>
+                </label>
+                <div class="advanced-meta-row">
+                  <div class="advanced-meta" id="advancedWeightsMeta">Profile: —</div>
+                  <div class="advanced-actions">
+                    <span class="advanced-reset-status" id="advancedResetStatus" aria-live="polite"></span>
+                    <button type="button" class="btn btn-secondary" id="btnResetWeights">Reset defaults</button>
+                  </div>
+                </div>
+                <div class="weight-grid" id="weightGrid"></div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -135,8 +168,20 @@
   </div>
 
   <div class="action-bar">
-    <div class="status" id="status">Ready • No files loaded</div>
-    <button type="button" class="btn btn-primary" id="btnGenerate">Generate Report</button>
+    <div class="action-bar-status">
+      <div class="status" id="status">Ready • No files loaded</div>
+      <div class="gen-progress hidden" id="genProgress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-hidden="true">
+        <div class="gen-progress-bar" id="genProgressBar"></div>
+      </div>
+    </div>
+    <div class="action-bar-right">
+      <div class="chip-row output-format" id="outputFormatChips" role="group" aria-label="Output format">
+        <button type="button" class="chip" id="chipFormatExcel" data-format="excel">Excel</button>
+        <button type="button" class="chip" id="chipFormatHtml" data-format="html">HTML</button>
+        <button type="button" class="chip on" id="chipFormatBoth" data-format="both">Both</button>
+      </div>
+      <button type="button" class="btn btn-primary" id="btnGenerate">Generate Report</button>
+    </div>
   </div>
 </div>
 

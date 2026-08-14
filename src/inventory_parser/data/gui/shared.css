@@ -54,6 +54,12 @@ body {
   justify-content: space-between;
   gap: 16px;
   flex-shrink: 0;
+  cursor: grab;
+}
+
+.app-header button,
+.app-header .help-link {
+  cursor: pointer;
 }
 
 .header-brand {
@@ -63,9 +69,10 @@ body {
 }
 
 .header-brand img {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 
 .header-brand h1 {
@@ -443,9 +450,153 @@ select, .text-input {
   flex-shrink: 0;
 }
 
+.action-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.output-format {
+  flex-wrap: nowrap;
+}
+
 .status {
   color: var(--muted);
   font-size: 12px;
+}
+
+.action-bar-status {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  flex: 1;
+}
+
+.gen-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--panel-border);
+  overflow: hidden;
+}
+
+.gen-progress-bar {
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 0.15s ease;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  font-size: 13px;
+}
+.check-row:first-child { margin-top: 8px; }
+.check-row input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+.hint {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 6px;
+  line-height: 1.35;
+}
+.slot2-options { margin-top: 10px; }
+.options-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  background: var(--header);
+}
+.options-tab {
+  flex: 1 1 0;
+  margin: 0;
+  padding: 8px 10px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.options-tab:hover:not(:disabled) { color: var(--text); background: var(--panel-hover); }
+.options-tab.on {
+  color: var(--accent-slots);
+  border-bottom-color: var(--accent-slots);
+}
+.options-tab:disabled { opacity: 0.4; cursor: not-allowed; }
+.options-tab-wrap {
+  flex: 1 1 0;
+  position: relative;
+  display: flex;
+  min-width: 0;
+}
+.options-tab-wrap .options-tab {
+  flex: 1;
+  width: 100%;
+}
+.info-bubble {
+  position: fixed;
+  z-index: 2000;
+  transform: translateX(-50%);
+  width: max-content;
+  max-width: 240px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #151b24;
+  border: 1px solid var(--panel-border);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+}
+.info-bubble::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-bottom-color: #151b24;
+}
+.weight-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 10px;
+  max-height: 180px;
+  overflow-y: auto;
+  padding: 2px 0;
+}
+.weight-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 56px;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+}
+.weight-row input {
+  width: 56px;
+  background: var(--input);
+  color: var(--text);
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+.advanced-meta { font-size: 11px; color: var(--muted); }
+.advanced-meta-row { display: flex; gap: 10px; align-items: center; justify-content: space-between; }
+.advanced-reset-status { font-size: 11px; color: #86efac; opacity: 0; }
+.advanced-reset-status.on { opacity: 1; }
   flex: 1;
 }
 
@@ -468,17 +619,19 @@ select, .text-input {
   border-radius: 10px;
   max-width: 560px;
   width: 100%;
-  max-height: 90vh;
+  max-height: calc(100vh - 24px);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-.modal.wide { max-width: 600px; }
+.modal.wide { max-width: min(720px, calc(100vw - 24px)); }
 
 .modal-header {
   padding: 16px 18px 12px;
   border-bottom: 1px solid var(--panel-border);
+  flex-shrink: 0;
+  cursor: grab;
 }
 
 .modal-header h2 {
@@ -505,6 +658,7 @@ select, .text-input {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .picker-filter {
@@ -517,7 +671,7 @@ select, .text-input {
   background: var(--recessed);
   border: 1px solid var(--input-border);
   border-radius: 6px;
-  max-height: 320px;
+  max-height: min(52vh, calc(100vh - 260px));
   overflow-y: auto;
 }
 

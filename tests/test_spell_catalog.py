@@ -9,13 +9,7 @@ from inventory_parser.spell_catalog import (
 )
 from inventory_parser.spell_scrape import parse_spell_search_html
 
-WIZ_HTML = (
-    Path(__file__).resolve().parents[1]
-    / "Examples"
-    / "SpellData"
-    / "scrape_cache"
-    / "wiz.html"
-)
+WIZ_HTML = Path(__file__).resolve().parent / "fixtures" / "eqresource_spellsearch_wiz.html"
 
 
 def test_parse_spell_search_html_rk3_only() -> None:

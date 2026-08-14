@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import gc
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -21,6 +22,7 @@ from inventory_parser.useful_spells import (
     MissingUsefulSpellsReport,
     build_missing_useful_spells_report,
 )
+from inventory_parser.slot2_augs.build import Slot2Export, build_slot2_export
 
 
 @dataclass
@@ -33,6 +35,7 @@ class ExportBundle:
     rune_inventory_report: RuneInventoryReport | None = None
     warnings: list[str] = field(default_factory=list)
     slot_filter: SlotFilter = "all"
+    slot2: Slot2Export | None = None
 
 
 def release_export_memory() -> None:
@@ -46,7 +49,12 @@ def build_export_bundle(
     slot_filter: SlotFilter = "all",
     include_spells: bool = True,
     include_achievements: bool = True,
+    include_slot2: bool = True,
+    include_anniversary: bool = False,
+    session_weights: dict[str, float] | None = None,
+    on_progress: Callable[[dict], None] | None = None,
     character_column_order: list[str] | None = None,
+    **slot2_kwargs,
 ) -> ExportBundle:
     """Parse inputs and build reports for Excel/HTML export."""
     inventory_paths, spell_file_paths, achievement_file_paths = split_input_paths(input_paths)
@@ -96,6 +104,18 @@ def build_export_bundle(
         character_column_order,
     )
     rune_inventory_report = build_rune_inventory_report(report)
+
+    slot2 = None
+    if include_slot2:
+        slot2 = build_slot2_export(
+            report,
+            include_anniversary=include_anniversary,
+            session_weights=session_weights,
+            on_progress=on_progress,
+            **slot2_kwargs,
+        )
+        warnings.extend(slot2.warnings)
+
     return ExportBundle(
         team=report,
         spell_report=spell_report,
@@ -105,4 +125,5 @@ def build_export_bundle(
         rune_inventory_report=rune_inventory_report,
         warnings=warnings,
         slot_filter=slot_filter,
+        slot2=slot2,
     )

@@ -7,7 +7,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from inventory_parser import __version__
+from inventory_parser import APP_NAME, __version__
 from inventory_parser.achievement_parser import (
     EVERQUEST_BASE_LABEL,
     EXPANSIONS_NEWEST_FIRST,
@@ -441,6 +441,18 @@ def serialize_report(bundle: ExportBundle) -> dict:
                 }
             )
 
+    if bundle.slot2 is not None:
+        from inventory_parser.slot2_augs.html import serialize_slot2_section
+
+        sections.append(
+            {
+                "id": "slot2_augs",
+                "title": "Type 7/8 Augs",
+                "type": "slot2_augs",
+                "data": serialize_slot2_section(bundle.slot2),
+            }
+        )
+
     gear_legend = build_gear_legend()
 
     prefix = default_export_prefix_from_report(report)
@@ -448,6 +460,7 @@ def serialize_report(bundle: ExportBundle) -> dict:
     return {
         "meta": {
             "version": __version__,
+            "appName": APP_NAME,
             "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             "reportTitle": f"{prefix} Team Inventory" if prefix else "Team Inventory",
             "characterCount": len(report.characters),

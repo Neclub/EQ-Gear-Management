@@ -1,6 +1,8 @@
 # December Expansion Update Plan
 
-Target: **December 2026** EQ expansion (name TBD). This repo does not scrape at runtime — it uses **bundled JSON** built from EQ Resource pages plus **regex/name rules** for gear, runes, and craft mats. Every new expansion touches the same pipeline Shattering of Ro (SoR) uses today.
+Target: **December 2026** EQ expansion (name TBD). Scrape-only checklist: [`Scrapes-Needed.md`](Scrapes-Needed.md). This repo does not scrape at runtime — it uses **bundled JSON** built from EQ Resource pages plus **regex/name rules** for gear, runes, and craft mats. Every new expansion touches the same pipeline Shattering of Ro (SoR) uses today.
+
+**Announcement status (2026-07-27):** Name not announced. [July 2026 Producer’s Letter](https://www.everquest.com/news/eq-producers-letter-july-2026) teases demiplanes / fate / “Mad”. Fill remaining Phase 1 blanks when the official name and EQ Resource pages go live.
 
 ```mermaid
 flowchart LR
@@ -51,10 +53,11 @@ Use these prompts in Cursor (or with EQ Resource open) once the expansion is ann
 > The new EverQuest expansion is `[EXPANSION_NAME]` (release `[YEAR]`). What short abbreviation should we use in tier codes (e.g. `SOR-R1`)? List: full name, abbreviation, release year, and EQ Resource subdomain if one exists.
 
 **Record here:**
-- Full name: `_______________`
-- Abbreviation (tier prefix): `_______________`
+- Full name: `TBD` (teaser only: demiplanes / fate / “Mad”)
+- Abbreviation (tier prefix): `TBD`
 - Release year: `2026`
-- Short key for JSON (`sor`, `tob`, etc.): `_______________`
+- Short key for JSON (`sor`, `tob`, etc.): `TBD`
+- EQ Resource subdomain: `TBD`
 
 ---
 
@@ -71,8 +74,9 @@ Use these prompts in Cursor (or with EQ Resource open) once the expansion is ann
 > What is the exact URL for `[EXPANSION_NAME]` R1 raid vendor gear? Confirm the page lists finished armor/weapons (not tradeskill mats).
 
 **Record:**
-- R1 vendor URL: `https://[SUBDOMAIN].eqresource.com/_______________`
-- Tier code for R1 raid gear: `[ABBREV]-R1`
+- R1 vendor URL: `TBD` (not live until expansion pages exist on EQ Resource)
+- Tier code for R1 raid gear: `TBD-R1`
+- Skip rules: `TBD`
 
 **Follow-up prompt (skip rules):**
 > On the `[EXPANSION_NAME]` raid vendor page, list item names we should **exclude** from vendor JSON because they are tradeskill mats, spell runes, or containers — similar to how SoR skips `Fractured … Fastener` and ToB skips `… of Rebellion`. Give exact name prefixes/suffixes.
@@ -87,8 +91,8 @@ Use these prompts in Cursor (or with EQ Resource open) once the expansion is ann
 > Does `[EXPANSION_NAME]` or the December patch include an anniversary raid event with a distinct gear set on items.eqresource.com? If yes, provide the `itemsearch.php?raidevent=...` URL and the in-game keyword in item names (e.g. `Enduring Harmony` for ANI27).
 
 **Record (or N/A):**
-- Raid event search URL: `_______________`
-- Name keyword / tier code: `_______________`
+- Raid event search URL: `TBD` (mark N/A if December patch has no separate raid-event set; ANI27 remains current anniversary scrape)
+- Name keyword / tier code: `TBD`
 
 ---
 
@@ -103,15 +107,15 @@ Use these prompts in Cursor (or with EQ Resource open) once the expansion is ann
 > On spells.eqresource.com, open a level 126+ Rk. III spell from `[EXPANSION_NAME]`. What is the `<img src="images/____">` filename for the expansion column? Previous mappings: `sor.jpg` → Shattering of Ro, `tob.jpg` → The Outer Brood, `ls.jpg` → Laurion's Song.
 
 **Record:**
-- Image filename: `_______________`
-- Canonical expansion name string: `_______________`
+- Image filename: `TBD.jpg`
+- Canonical expansion name string: `TBD`
 
 **Prompt (level range):**
 > Does `[EXPANSION_NAME]` add spells above level 130? If yes, what is the new max level (e.g. 135)? Which level block owns the new expansion's spells (126–130 today is SoR-only)?
 
 **Record:**
-- New `LEVEL_MAX`: `130` or `____`
-- Spell level block for new expansion: `____–____`
+- New `LEVEL_MAX`: `130` (default until confirmed; bump if 131+)
+- Spell level block for new expansion: `TBD–TBD`
 
 **Prompt (class URLs — only if level min changes):**
 > If the catalog must include levels above 130, update [`Class120_130.txt`](../Examples/SpellData/Class120_130.txt) URLs: change `level=121&range=greater` to start at the new minimum, or add a second URL file. List all 16 class URLs with the correct query params.
@@ -263,16 +267,16 @@ py -3 -m pytest
 
 ## Master checklist (copy for tracking)
 
-- [ ] **1.1** Expansion name, abbrev, year, subdomain recorded
-- [ ] **1.2** R1 raid vendor URL confirmed; skip rules documented
-- [ ] **1.3** Anniversary raid URL (or marked N/A)
-- [ ] **1.4** Spell expansion image filename (`*.jpg`) confirmed; level range decided
+- [x] **1.1** Expansion name, abbrev, year, subdomain recorded — *placeholders TBD pending announcement (2026-07-27)*
+- [x] **1.2** R1 raid vendor URL confirmed; skip rules documented — *URL TBD; tracked in Scrapes-Needed.md*
+- [x] **1.3** Anniversary raid URL (or marked N/A) — *TBD pending December patch details*
+- [x] **1.4** Spell expansion image filename (`*.jpg`) confirmed; level range decided — *image TBD; LEVEL_MAX default 130*
 - [ ] **1.5** Rune turn-in item naming pattern confirmed; level band assigned
 - [ ] **1.6** Gear tier keywords for R1/R2/G1–G3 documented; tradeskill exclusions listed
 - [ ] **1.7** Unmade T1 containers + T2 mat examples collected
 - [ ] **1.8** Achievement dump header string verified
-- [ ] **2** `build_vendor_json.py` updated; vendor JSON scraped and committed
-- [ ] **2** `spell_scrape.py` updated; spell catalog scraped and committed
+- [ ] **2** `build_vendor_json.py` updated; vendor JSON scraped and committed — *blocked until R1 URL live*
+- [ ] **2** `spell_scrape.py` updated; spell catalog scraped and committed — *blocked until expansion image known*
 - [ ] **3** `gear_tiers.py`, `unmade_gear.py`, rune configs, `achievement_parser.py`, `excel_theme.py` updated
 - [ ] **4** Tests updated; `pytest` green; sample exports reviewed
 
@@ -282,6 +286,6 @@ py -3 -m pytest
 
 When Phase 1 is complete, paste this into Agent mode with your recorded values:
 
-> Implement December expansion support for Inventory Parser using these values: [paste filled checklist]. Add scrape URLs to build_vendor_json.py, update EXPANSION_BY_IMAGE and LEVEL_MAX, add gear tier regex and vendor JSON reference, unmade gear rules, spell rune family and bands block, MISSING_RUNE_EXPANSION_GROUPS, EXPANSIONS_NEWEST_FIRST, excel_theme color buckets, run both scrapers, update tests, and run pytest.
+> Implement December expansion support for EQ Gear Management using these values: [paste filled checklist]. Add scrape URLs to build_vendor_json.py, update EXPANSION_BY_IMAGE and LEVEL_MAX, add gear tier regex and vendor JSON reference, unmade gear rules, spell rune family and bands block, MISSING_RUNE_EXPANSION_GROUPS, EXPANSIONS_NEWEST_FIRST, excel_theme color buckets, run both scrapers, update tests, and run pytest.
 
 This keeps Phase 1 (human verification on EQ Resource / in-game names) separate from Phase 2–4 (automated implementation).

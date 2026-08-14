@@ -14,7 +14,7 @@ from package_version import exe_name_for_version
 
 
 def test_exe_name_includes_version() -> None:
-    assert exe_name_for_version(__version__) == f"InventoryParser-{__version__}"
+    assert exe_name_for_version(__version__) == f"EQGM-{__version__}"
 
 
 def test_version_is_semver_like() -> None:

@@ -1,8 +1,8 @@
-# How to Use — Inventory Parser
+# How to Use — EQ Gear Management (EQGM)
 
-Turn your raid’s EverQuest inventory dumps into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, optional missing Rank III spell runes, and (optionally) achievement collection progress.
+Turn your raid’s EverQuest inventory dumps into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, unmade craft mats, optional missing Rank III spell runes, optional achievement collection progress, and optional Type 7/8 aug recommendations.
 
-The app version is shown in the window title and under **Help → About**. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details).
+The app version is shown in the window title and under **Help → About EQGM**. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details).
 
 ---
 
@@ -82,16 +82,16 @@ The **Missing Collections** tab lists collection items still needed (`owned/tota
 
 ## Quick start (GUI)
 
-The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane setup screen. When HTML export is enabled, the saved report opens in your default browser after generation; the setup screen stays open.
+The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane setup screen. When HTML export is selected, the saved report opens in your default browser after generation; the setup screen stays open.
 
 **Setup layout:**
 
 | Area | Contents |
 |------|----------|
 | **Left** | **Team characters** roster with class icons; **EQ Folder** below the list |
-| **Right (top)** | **Export options** — Slots dropdown; **Spells**, **Achievements**, and **HTML** chips (HTML on by default) |
+| **Right (top)** | **Export options** — Slots dropdown; **Spells**, **Achievements**, and **Type 7/8 Augs** chips |
 | **Right (bottom)** | **Output folder** path and **Browse…**; **Up** / **Down** / **Remove** / **Clear** for the roster |
-| **Footer** | Status line and **Generate Report** |
+| **Footer** | Status line; **Excel** / **HTML** / **Both** output chips; **Generate Report** |
 
 **Requirements:** Windows 10/11 with **WebView2** (Microsoft Edge runtime — usually already installed).
 
@@ -99,10 +99,10 @@ The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane 
 
 2. **Run the app**
    - Double-click **`run_gui.bat`**, or  
-   - Double-click **`dist\InventoryParser-<version>.exe`** after building (see [Building the .exe](#building-the-exe))
+   - Double-click **`dist\EQGM-<version>.exe`** after building (see [Building the .exe](#building-the-exe))
 
 3. **Add your files**
-   - **EQ Folder** (under the roster) — pick a folder; choose which characters to import (inventory, MissingSpells, and Achievements files are grouped per character)
+   - **EQ Folder** (under the roster) — pick a folder; in the picker, check the characters you want (optional **Server** filter), then **Add selected**. Inventory, MissingSpells, and Achievements files are grouped per character.
 
 4. **Manage the roster** (optional)
    - **Up** / **Down** — change character column order in Excel and HTML (including Unmade Gear row order)  
@@ -111,19 +111,18 @@ The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane 
 
 5. **Options** (optional)
    - **Slots** dropdown — `all`, `visible`, or `non_visible` on the gear sheets  
-   - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs  
-   - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs  
-- **HTML** chip — on by default; writes a `{prefix}_Team_Inventory.html` file next to the Excel workbook and opens it in your default browser when generation finishes. Uncheck to skip HTML export  
+   - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs
+   - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs
+   - **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Artisan's Prize is recommended for Ear when it is in the inventory dump. Generate shows a progress bar while sockets and catalogs are fetched.
 
 6. **Output**
    - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
    - Use **Browse…** to pick another path  
+   - **Excel** / **HTML** / **Both** chips next to **Generate Report** — choose workbook only, HTML only, or both (default **Both**). The choice is remembered for next time.
 
-7. Click **Generate Report** — when HTML export is enabled, the saved `.html` file opens in your default browser. The setup screen stays open.
+7. Click **Generate Report** — when HTML is included, the saved `.html` file opens in your default browser. The setup screen stays open.
 
 If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, etc.
-
-**Rollback:** To restore the previous tkinter GUI, see [backup/pre-pywebview-gui/RESTORE.md](backup/pre-pywebview-gui/RESTORE.md).
 
 ---
 
@@ -211,6 +210,10 @@ Four sections (NoS, LS, ToB, SoR), each with a tier × character matrix. Cells s
 | ToB | `Energized {Tier} Engram` |
 | SoR | `{Tier} Mirrorshard of Relic` |
 
+### Unmade Gear *(if mats found)*
+
+Craft materials and T1 containers sitting in **General** bags that would still upgrade an equipped slot (SoR / ToB). Items already matched by a better-or-equal equipped tier are omitted. Rows follow the same character order as Team Gear.
+
 ### Missing Collections *(if enabled)*
 
 Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from the collection name), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed. Personas of the same character share one inventory for collections — rows and **Char Has** names are once per character, not per class.
@@ -223,19 +226,23 @@ Top-level achievement counts per section (expansion or category): completed, inc
 
 Incomplete raid **objectives** from each expansion’s **Raids** section. Columns: Character, Expansion, Raid, Objective. Expansions show release year (e.g. `Shattering of Ro (2025)`) and rows are sorted **newest to oldest**; use Excel filters on **Expansion** to narrow the list.
 
+### Type 7/8 Augs *(if enabled)*
+
+Type 7/8 (usually dump Slot2) recommendations vs a live EQ Resource catalog (raidloot fallback). Artisan's Prize is treated as owned when it appears in the inventory dump. Excel adds **Stat Summary**, **Augs**, **Need to Farm**, **Ranked Augs**, and **Aug Legend**. HTML adds a **Type 7/8 Augs** section with the same cards. Needs a network fetch the first time; later runs use disk cache under `%LOCALAPPDATA%\EQGM\`. Uncheck the chip to skip this entirely.
+
 ### HTML report *(optional)*
 
-When the **HTML** chip is checked (default in the GUI) or **`--also-html`** is passed on the CLI, the app saves `{prefix}_Team_Inventory.html` next to the `.xlsx` file (e.g. `Bristlebane_Team_Inventory.html`). In the GUI, that file opens in your default browser when generation finishes; you can also double-click it later in Chrome, Edge, Firefox, etc.
+When **HTML** or **Both** is selected next to **Generate Report** (default **Both**), or **`--also-html`** is passed on the CLI, the app saves `{prefix}_Team_Inventory.html` next to the Excel path stem (e.g. `Bristlebane_Team_Inventory.html`). HTML-only mode writes that file without creating a workbook. In the GUI, the `.html` opens in your default browser when generation finishes; you can also double-click it later in Chrome, Edge, Firefox, etc.
 
 **Layout**
 
-- **Left sidebar** — EQ logo, Lucide-style section icons, then **Character filter** chips (directly under the nav, not at the bottom of the window)
+- **Left sidebar** — EQGM crest, Lucide-style section icons, then **Character filter** chips (directly under the nav, not at the bottom of the window)
 - **Main area** — report title (e.g. `Bristlebane Team Inventory`), character count, generation date, toolbar, and the active section’s table
 - **Footer** — gear-tier color legend when viewing **Team Gear**
 
 **Sections**
 
-Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Missing Collections, Achievement Summary, Raid Achievements.
+Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Missing Collections, Achievement Summary, Raid Achievements, and **Type 7/8 Augs** when that chip is on.
 
 **Filters & tools**
 
@@ -263,12 +270,13 @@ No Python or web server is required to view the HTML file.
 - **Status bar** — shows how many inventory, MissingSpells, and achievement files are loaded.  
 - **Up** / **Down** / **Remove** / **Clear** — under Output folder on the right; fix the roster before regenerating.  
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
+- **Help** (top right) — gear tier colors and **About EQGM** (shows the app version).
 
 ---
 
 ## Command line (optional)
 
-From the `Inventory Parser` folder:
+From the `EQ Gear Management` folder:
 
 ```powershell
 py -3 -m pip install -e .
@@ -299,19 +307,31 @@ Only visible slots:
 py -3 -m inventory_parser --folder Examples -o out.xlsx --slots visible
 ```
 
+Skip Type 7/8 aug sheets (no catalog fetch):
+
+```powershell
+py -3 -m inventory_parser --folder Examples -o out.xlsx --no-slot2
+```
+
+Include Gem of Distant Echoes anniversary augs in Type 7/8 recommendations:
+
+```powershell
+py -3 -m inventory_parser --folder Examples -o out.xlsx --include-anniversary
+```
+
 ---
 
 ## Building the .exe
 
-Run **`build_exe.bat`** inside the **`Inventory Parser`** folder (not another project’s batch file).
+Run **`build_exe.bat`** inside the **`EQ Gear Management`** folder (not another project’s batch file).
 
 The batch file runs `pip install -e .` (installs **openpyxl** and **pywebview**) and PyInstaller. The GUI uses WebView2 on Windows and is bundled into the executable.
 
-Output: `Inventory Parser\dist\InventoryParser-<version>.exe`
+Output: `EQ Gear Management\dist\EQGM-<version>.exe`
 
 Copy that `.exe` to any Windows PC; Python does not need to be installed there.
 
-**Before rebuilding:** close any running `InventoryParser-*.exe`. If the old exe is still open, PyInstaller may fail with “Access is denied” when writing to `dist\`.
+**Before rebuilding:** close any running `EQGM-*.exe`. If the old exe is still open, PyInstaller may fail with “Access is denied” when writing to `dist\`.
 
 ### Code signing (optional, recommended for release builds)
 
@@ -331,7 +351,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\InventoryParser-1.18.0.exe
+py -3 scripts\sign_exe.py dist\EQGM-1.21.0.exe
 ```
 
 (with the same environment variables set).
@@ -345,16 +365,11 @@ py -3 scripts\sign_exe.py dist\InventoryParser-1.18.0.exe
 | “Add at least one *-Inventory.txt” | Spell files alone are not enough — add inventory dumps. |
 | `ModuleNotFoundError: No module named 'webview'` when running from source | Run `py -3 -m pip install -e .` in the project folder (installs pywebview). |
 | GUI window is blank or fails to start | Install the [WebView2 runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (Evergreen bootstrapper). |
-| Build fails with “Access is denied” on the exe | Close any running `InventoryParser-*.exe`, then run **`build_exe.bat`** again. |
+| Build fails with “Access is denied” on the exe | Close any running `EQGM-*.exe`, then run **`build_exe.bat`** again. |
 | Spell tabs empty | Confirm spell file names match `Name_server-CLASS-MissingSpells.txt` and character names match inventory files. |
 | Achievement tabs empty | Confirm achievement file names match `Name_server-Achievements.txt` and character/server match inventory files. |
-| Checkbox for spells is grayed out | No inventory files in the list yet. |
+| Include chips are grayed out | No inventory files in the roster yet. |
 | “Permission denied” / save failed | Close the workbook in Excel and try again. |
 | Wrong characters in columns | Each inventory file should be one character; check filenames. |
-| HTML looks outdated after an update | Regenerate the report, or run `pip install -e .` if using source install. |
-
----
-
-## More detail
-
-Technical reference, development setup, and config files: **[README.md](README.md)**
+| Type 7/8 Augs sheets missing or empty | Leave the **Type 7/8 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
+| HTML looks outdated after an update | Regenerate the report. |

@@ -220,6 +220,7 @@ def test_html_character_filter_uses_persona_names(tmp_path: Path) -> None:
         [war_inv, pal_inv, shd_inv],
         include_spells=False,
         include_achievements=False,
+        include_slot2=False,
     )
     out = tmp_path / "crew.html"
     write_team_html(bundle, out)

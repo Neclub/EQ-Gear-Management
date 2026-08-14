@@ -81,7 +81,7 @@ def test_excel_gear_t_level_tier_bucket_colors(tmp_path: Path) -> None:
 
 def test_html_theme_tier_codes_match_buckets(tmp_path: Path) -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
-    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False)
+    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False, include_slot2=False)
     out = tmp_path / "tiers.html"
     write_team_html(bundle, out)
     report = extract_report_json(out.read_text(encoding="utf-8"))

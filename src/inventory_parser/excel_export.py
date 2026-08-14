@@ -104,6 +104,7 @@ def write_team_workbook(
     rune_inventory_report: RuneInventoryReport | None = None,
     achievement_report: AchievementReport | None = None,
     unmade_entries: list[UnmadeGearEntry] | None = None,
+    slot2=None,
 ) -> Path:
     """Write team gear workbook with item sheet and SOR gap tracking sheet."""
     output_path = Path(output_path)
@@ -155,6 +156,11 @@ def write_team_workbook(
         if achievement_report.raid_achievements:
             ws_raids = wb.create_sheet(RAID_ACHIEVEMENTS_SHEET_NAME)
             _write_raid_achievements_sheet(ws_raids, achievement_report)
+
+    if slot2 is not None:
+        from inventory_parser.slot2_augs.excel import append_slot2_sheets
+
+        append_slot2_sheets(wb, slot2)
 
     return _save_with_fallback(wb, output_path)
 

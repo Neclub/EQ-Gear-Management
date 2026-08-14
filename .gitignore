@@ -10,3 +10,12 @@ build/
 codesign.local.bat
 *.pfx
 *.p12
+
+# OS
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Regenerated local artifacts
+Examples/SpellData/scrape_cache/
+Examples/Outputs/

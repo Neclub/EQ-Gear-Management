@@ -1,10 +1,46 @@
 # Changelog
 
-All notable changes to Inventory Parser are documented here. Version numbers follow [Semantic Versioning](https://semver.org/).
+All notable changes to EQ Gear Management (EQGM) are documented here. Version numbers follow [Semantic Versioning](https://semver.org/).
 
 **To release a new version:** edit `__version__` in `src/inventory_parser/__init__.py`, then add an entry below.
 
 ## [Unreleased]
+
+## [1.21.0] - 2026-08-14
+
+### Changed
+
+- Rebranded the app to **EQ Gear Management** (**EQGM**). Settings and caches now live under `%LOCALAPPDATA%\EQGM\` (existing Inventory Parser settings are copied on first run). Release exe is `EQGM-x.y.z.exe`.
+- Replaced the Windows icon, GUI header badge, and HTML report logo/favicon with the EQGM crest.
+- **Docs:** README, HowToUse, Discord guide, and expansion-update notes updated for EQGM, Type 7/8 Augs, Unmade Gear, CLI flags, and current GUI labels.
+
+### Removed
+
+- Unused design mockups, class-icon reference sets, local backup snapshots, and generated example workbooks from the repository.
+
+## [1.20.0] - 2026-08-14
+
+### Added
+
+- **Type 7/8 Augs** optional export: type 7/8 BiS recommendations, Need to farm, ranked reference, and stat summary. Toggle with the **Type 7/8 Augs** Include chip (on by default when inventories are loaded). Extra Excel sheets and an HTML section are added only when the chip is on.
+- **Artisan's Prize** Ear recommendations use the inventory dump (no checkbox). **Include Anniversary augs** plus session-only Advanced weights for a single character.
+- Generate progress bar while Slot2 catalogs and sockets are fetched (EQ Resource, with raidloot fallback). Caches live under `%LOCALAPPDATA%\EQGM\`.
+- CLI: `--slot2` / `--no-slot2`, `--include-anniversary`.
+- **Type 7/8 Augs HTML:** Character dropdown when the report includes more than one character; sidebar chips filter those rows by persona display name.
+- **Type 7/8 Augs HTML:** Need to farm table columns are sortable (click Aug to group the same item). Missing Focus/ore components show **Need** plus the item name; owned components still show **Have**. The Include chip and HTML tab are labeled **Type 7/8 Augs**.
+- **GUI:** Folder picker and roster grow with the window, but stay inside the Windows work area (above the taskbar). Drag the EQGM header or a dialog title to move the window.
+
+## [1.19.0] - 2026-07-27
+
+### Added
+
+- **Output format selector** next to **Generate Report**: Excel, HTML, or Both. Choice is remembered between sessions.
+
+### Changed
+
+- Removed the Export-options **HTML** chip (format is chosen beside Generate).
+- HTML-only export writes the `.html` report without creating an Excel workbook.
+- **Docs:** HowToUse and Discord guide updated for the output format selector.
 
 ## [1.18.2] - 2026-07-15
 
@@ -108,8 +144,8 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 ### Added
 
 - **HTML GUI (pywebview):** desktop app uses a web-based setup page and in-app report viewer that mirrors the interactive HTML export design (sidebar navigation, filters, tier colors).
-- **Class icons** on roster cards — per-class SVG glyphs with color-themed badges (reference sets in `assets/class-icons/`).
-- **GitHub rollback backup:** branch `backup/pre-pywebview-gui` and tag `backup/pre-pywebview-gui-2026-06-14` preserve the tkinter GUI; see [backup/pre-pywebview-gui/RESTORE.md](backup/pre-pywebview-gui/RESTORE.md).
+- **Class icons** on roster cards — per-class SVG glyphs with color-themed badges.
+- **GitHub rollback backup:** branch `backup/pre-pywebview-gui` and tag `backup/pre-pywebview-gui-2026-06-14` preserve the tkinter GUI.
 - **Tests** for `web_api` helpers and team report HTML mount paths.
 
 ### Changed
@@ -122,7 +158,7 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ### Removed
 
-- Tkinter GUI modules (`gui.py`, `pill_button.py`, `gui_theme.py`, `window_chrome.py`) from the active package — preserved in `backup/pre-pywebview-gui/`.
+- Tkinter GUI modules (`gui.py`, `pill_button.py`, `gui_theme.py`, `window_chrome.py`) from the active package.
 
 ## [1.14.0] - 2026-06-14
 
@@ -169,7 +205,7 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 ### Added
 
-- Backup snapshot before HTML redesign: [`backup/pre-html-redesign/`](backup/pre-html-redesign/) (restore via [`RESTORE.md`](backup/pre-html-redesign/RESTORE.md)).
+- Backup snapshot before HTML redesign (later removed from the tree; git history still has it).
 
 ## [1.11.0] - 2026-06-13
 
@@ -178,7 +214,7 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 - **GUI redesign (calm unified layout):** unified blue accent, subtle panel cards, **Team characters** list with side action buttons (Add files / Add folder, Remove, Up, Down, Clear), horizontal **Spells** / **Achievements** / **HTML** chip toggles, layered dark backgrounds (window, cards, recessed list/path fields), EQ app icon, dark Windows title bar, and **Help** link in the header.
 - **Generate Report** — primary action button renamed from **Generate Excel** (still writes the `.xlsx` workbook; HTML too when enabled).
 - **HTML export** is **on by default** in the GUI (**HTML** chip); uncheck to skip the browser report.
-- Shared GUI palette in [`gui_theme.py`](src/inventory_parser/gui_theme.py).
+- Shared GUI palette in `gui_theme.py` (later replaced by the HTML GUI).
 
 ## [1.10.0] - 2026-06-12
 
@@ -200,7 +236,7 @@ All notable changes to Inventory Parser are documented here. Version numbers fol
 
 - **Character column order:** the main file list is now a **Crew characters (column order)** roster showing toon names (e.g. `Deflub ( PAL )`) instead of log file paths.
   - **Move up** / **Move down** choose which character appears in the first Excel/HTML column — useful when you always want your tank (or main) first.
-  - Order is saved automatically to `%LOCALAPPDATA%\Inventory Parser\settings.json` (Windows) and restored the next time you run the app.
+  - Order is saved automatically to `%LOCALAPPDATA%\EQGM\settings.json` (Windows) and restored the next time you run the app.
   - New characters are appended at the bottom until you reorder them.
 
 ### Changed

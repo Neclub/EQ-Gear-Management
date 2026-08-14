@@ -3,10 +3,13 @@ from pathlib import Path
 from inventory_parser.character_column_order import (
     apply_character_column_order,
     build_column_roster,
+    normalize_output_format,
     order_roster_entries,
     paths_for_roster_removal,
     save_character_column_order,
+    save_output_format,
     saved_character_column_order,
+    saved_output_format,
 )
 from inventory_parser.team_report import build_team_report
 from inventory_parser.export_bundle import build_export_bundle
@@ -49,7 +52,7 @@ def test_build_export_bundle_honors_character_column_order() -> None:
     inventory_paths, spell_paths, _ = split_input_paths(paths)
     base = build_team_report(inventory_paths, spell_paths=spell_paths or None)
     custom_order = [character.persona_key for character in reversed(base.characters)]
-    bundle = build_export_bundle(paths, character_column_order=custom_order)
+    bundle = build_export_bundle(paths, character_column_order=custom_order, include_slot2=False)
     assert [character.persona_key for character in bundle.team.characters] == custom_order
     if bundle.spell_report is not None:
         spell_keys = bundle.spell_report.persona_keys
@@ -77,6 +80,20 @@ def test_save_and_load_character_column_order(tmp_path, monkeypatch) -> None:
     assert saved_character_column_order() == ["Tank_bristle", "Heal_bristle_CLR"]
 
 
+def test_save_and_load_output_format(tmp_path, monkeypatch) -> None:
+    from inventory_parser import character_column_order as module
+
+    settings_file = tmp_path / "settings.json"
+    monkeypatch.setattr(module, "settings_path", lambda: settings_file)
+    assert saved_output_format() == "both"
+    assert normalize_output_format("nope") == "both"
+    assert save_output_format("html") == "html"
+    assert saved_output_format() == "html"
+    save_character_column_order(["Tank_bristle"])
+    assert saved_output_format() == "html"
+    assert saved_character_column_order() == ["Tank_bristle"]
+
+
 def test_excel_unmade_matches_bundle_character_column_order(tmp_path: Path) -> None:
     from openpyxl import load_workbook
 
@@ -91,6 +108,7 @@ def test_excel_unmade_matches_bundle_character_column_order(tmp_path: Path) -> N
         character_column_order=custom_order,
         include_spells=False,
         include_achievements=False,
+        include_slot2=False,
     )
     if not bundle.unmade_entries:
         return
@@ -145,9 +163,19 @@ def test_export_bundle_parses_each_inventory_once(monkeypatch) -> None:
         paths,
         include_spells=False,
         include_achievements=True,
+        include_slot2=False,
     )
 
     counts = Counter(calls)
     assert counts
     for path, count in counts.items():
         assert count == 1, f"{path} parsed {count} times"
+
+
+def test_settings_path_uses_eqgm_appdata(tmp_path: Path, monkeypatch) -> None:
+    from inventory_parser.character_column_order import settings_path
+
+    monkeypatch.setattr("inventory_parser.character_column_order.sys.platform", "win32")
+    monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
+    path = settings_path()
+    assert path == tmp_path / "EQGM" / "settings.json"

@@ -13,7 +13,7 @@ def test_report_viewer_html_injects_payload() -> None:
     root = Path(__file__).resolve().parents[1]
     examples = root / "Examples"
     inv_files = sorted(examples.glob("*-Inventory.txt"))[:2]
-    bundle = build_export_bundle([p.resolve() for p in inv_files], include_spells=False, include_achievements=False)
+    bundle = build_export_bundle([p.resolve() for p in inv_files], include_spells=False, include_achievements=False, include_slot2=False)
     payload = serialize_report(bundle)
     html = report_viewer_html(json.dumps(payload, ensure_ascii=False))
     assert "/*__REPORT_JSON__*/" not in html
@@ -29,7 +29,7 @@ def test_write_team_html_still_boots() -> None:
     root = Path(__file__).resolve().parents[1]
     examples = root / "Examples"
     inv = next(examples.glob("*-Inventory.txt"))
-    bundle = build_export_bundle([inv.resolve()], include_spells=False, include_achievements=False)
+    bundle = build_export_bundle([inv.resolve()], include_spells=False, include_achievements=False, include_slot2=False)
     with tempfile.TemporaryDirectory() as tmp:
         out = Path(tmp) / "Team.html"
         write_team_html(bundle, out)

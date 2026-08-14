@@ -24,7 +24,7 @@ def test_html_path_for_workbook() -> None:
 def test_write_team_html_structure(tmp_path: Path) -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
     spell = SPELL_DATA / "Deflub_bristle-PAL-MissingSpells.txt"
-    bundle = build_export_bundle([inv, spell], include_achievements=False)
+    bundle = build_export_bundle([inv, spell], include_achievements=False, include_slot2=False)
     out = tmp_path / "crew.html"
     write_team_html(bundle, out)
 
@@ -49,6 +49,7 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
         "icon-anvil",
         "icon-chest",
         "icon-trophy",
+        "icon-gem",
     ):
         assert f'id="{symbol_id}"' in text
 
@@ -58,6 +59,9 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
     assert report["meta"]["characterCount"] >= 1
     assert report["meta"]["characters"]
     assert report["meta"]["logoDataUri"].startswith("data:image/png;base64,")
+    assert 'rel="icon"' in text
+    assert report["meta"]["logoDataUri"] in text
+    assert "favicon.href = meta.logoDataUri" in text
     titles = [section["title"] for section in report["sections"]]
     assert "Team Gear" in titles
     assert "Gear T-Level" in titles
@@ -68,7 +72,7 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
 
 def test_html_rune_inventory_present(tmp_path: Path) -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
-    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False)
+    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False, include_slot2=False)
     out = tmp_path / "crew.html"
     write_team_html(bundle, out)
     text = out.read_text(encoding="utf-8")
@@ -87,7 +91,7 @@ def test_html_rune_inventory_present(tmp_path: Path) -> None:
 
 def test_html_rune_inventory_omitted_without_runes(tmp_path: Path) -> None:
     inv = EXAMPLES / "Stablub_bristle-Inventory.txt"
-    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False)
+    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False, include_slot2=False)
     out = tmp_path / "crew.html"
     write_team_html(bundle, out)
     report = extract_report_json(out.read_text(encoding="utf-8"))
@@ -96,7 +100,7 @@ def test_html_rune_inventory_omitted_without_runes(tmp_path: Path) -> None:
 
 def test_html_includes_item_link(tmp_path: Path) -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
-    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False)
+    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False, include_slot2=False)
     out = tmp_path / "crew.html"
     write_team_html(bundle, out)
     text = out.read_text(encoding="utf-8")
@@ -105,7 +109,7 @@ def test_html_includes_item_link(tmp_path: Path) -> None:
 
 def test_html_achievement_expansion_labels(tmp_path: Path) -> None:
     inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
-    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False)
+    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False, include_slot2=False)
     ach_report = build_achievement_report(
         bundle.team,
         achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
@@ -125,7 +129,7 @@ def test_html_achievement_expansion_labels(tmp_path: Path) -> None:
 
 def test_html_unmade_gear_omitted_when_empty(tmp_path: Path) -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
-    bundle = replace(build_export_bundle([inv], include_spells=False, include_achievements=False), unmade_entries=[])
+    bundle = replace(build_export_bundle([inv], include_spells=False, include_achievements=False, include_slot2=False), unmade_entries=[])
     out = tmp_path / "crew.html"
     write_team_html(bundle, out)
     report = extract_report_json(out.read_text(encoding="utf-8"))
@@ -135,7 +139,7 @@ def test_html_unmade_gear_omitted_when_empty(tmp_path: Path) -> None:
 def test_html_spell_list_has_character_filter(tmp_path: Path) -> None:
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
     spell = SPELL_DATA / "Deflub_bristle-PAL-MissingSpells.txt"
-    bundle = build_export_bundle([inv, spell], include_achievements=False)
+    bundle = build_export_bundle([inv, spell], include_achievements=False, include_slot2=False)
     out = tmp_path / "crew.html"
     write_team_html(bundle, out)
     text = out.read_text(encoding="utf-8")
@@ -166,6 +170,7 @@ def test_cli_also_html_flag(tmp_path: Path) -> None:
         xlsx,
         include_spells=False,
         include_achievements=False,
+        include_slot2=False,
         also_html=True,
     )
     assert saved == xlsx
@@ -177,7 +182,7 @@ def test_cli_also_html_flag(tmp_path: Path) -> None:
 def test_embedded_json_row_counts_match_bundle(tmp_path: Path) -> None:
     inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
     spell = SPELL_DATA / "Shamlub_bristle-SHM-MissingSpells.txt"
-    bundle = build_export_bundle([inv, spell], include_achievements=False)
+    bundle = build_export_bundle([inv, spell], include_achievements=False, include_slot2=False)
     ach_report = build_achievement_report(
         bundle.team,
         achievement_paths={"shamlub_bristle": SHAMLUB_ACH},

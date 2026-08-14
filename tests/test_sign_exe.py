@@ -9,7 +9,7 @@ from sign_exe import sign_executable
 
 
 def test_sign_skips_when_not_configured(tmp_path: Path, monkeypatch) -> None:
-    exe = tmp_path / "InventoryParser-1.0.0.exe"
+    exe = tmp_path / "EQGM-1.0.0.exe"
     exe.write_bytes(b"MZ")
     monkeypatch.delenv("IP_SIGN_PFX", raising=False)
     monkeypatch.delenv("IP_SIGN_THUMBPRINT", raising=False)
@@ -18,7 +18,7 @@ def test_sign_skips_when_not_configured(tmp_path: Path, monkeypatch) -> None:
 
 
 def test_sign_required_fails_without_config(tmp_path: Path, monkeypatch) -> None:
-    exe = tmp_path / "InventoryParser-1.0.0.exe"
+    exe = tmp_path / "EQGM-1.0.0.exe"
     exe.write_bytes(b"MZ")
     monkeypatch.delenv("IP_SIGN_PFX", raising=False)
     monkeypatch.delenv("IP_SIGN_THUMBPRINT", raising=False)

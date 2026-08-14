@@ -120,7 +120,7 @@ def sign_executable(exe_path: Path, *, required: bool = False) -> int:
 
 
 def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Sign an Inventory Parser release exe.")
+    parser = argparse.ArgumentParser(description="Sign an EQGM release exe.")
     parser.add_argument("exe", type=Path, help="Path to the .exe to sign")
     parser.add_argument(
         "--require",

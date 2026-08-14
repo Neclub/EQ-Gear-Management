@@ -1,4 +1,4 @@
-"""Invoke PyInstaller for the Inventory Parser GUI (paths with spaces)."""
+"""Invoke PyInstaller for the EQ Gear Management GUI (paths with spaces)."""
 from __future__ import annotations
 
 import subprocess
@@ -55,12 +55,12 @@ VSVersionInfo(
         '040904B0',
         [
         StringStruct('CompanyName', ''),
-        StringStruct('FileDescription', 'Inventory Parser'),
+        StringStruct('FileDescription', 'EQ Gear Management'),
         StringStruct('FileVersion', '{file_ver_str}'),
         StringStruct('InternalName', '{exe_name}'),
         StringStruct('LegalCopyright', ''),
         StringStruct('OriginalFilename', '{orig}'),
-        StringStruct('ProductName', 'Inventory Parser'),
+        StringStruct('ProductName', 'EQ Gear Management'),
         StringStruct('ProductVersion', '{version}')])
       ]),
     VarFileInfo([VarStruct('Translation', [1033, 1200])])
@@ -74,7 +74,7 @@ VSVersionInfo(
 def main() -> int:
     version = read_package_version(_ROOT)
     exe_name = exe_name_for_version(version)
-    version_info = _ROOT / "build" / "InventoryParser_version_info.txt"
+    version_info = _ROOT / "build" / "EQGM_version_info.txt"
     _write_version_info(version_info, version, exe_name)
 
     entry = _ROOT / "scripts" / "pyinstaller_gui.py"

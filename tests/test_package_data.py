@@ -1,6 +1,6 @@
 """Tests for bundled package data loading."""
 
-from inventory_parser.package_data import data_dir, gui_asset_path, read_data_text, read_gui_text
+from inventory_parser.package_data import asset_path, data_dir, gui_asset_path, read_data_text, read_gui_text
 
 
 def test_data_dir_exists() -> None:
@@ -12,8 +12,13 @@ def test_gui_assets_exist() -> None:
     assert gui_asset_path("setup.js").is_file()
     assert gui_asset_path("shared.css").is_file()
     assert gui_asset_path("class_visuals.js").is_file()
-    assert "Inventory Parser" in read_gui_text("setup.html")
+    assert "EQ Gear Management" in read_gui_text("setup.html")
     assert "ClassVisuals" in read_gui_text("class_visuals.js")
+
+
+def test_app_icon_assets_exist() -> None:
+    assert asset_path("eq-icon.png").is_file()
+    assert asset_path("eq-icon.ico").is_file()
 
 
 def test_read_spell_rune_config() -> None:

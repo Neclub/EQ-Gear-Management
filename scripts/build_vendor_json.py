@@ -42,6 +42,8 @@ LINK_RE = re.compile(
 def should_skip(name: str, expansion: str) -> bool:
     if expansion == "sor" and name.startswith("Fractured"):
         return any(suffix in name for suffix in TRADESKILL_SUFFIXES)
+    if expansion == "sor" and " Mirrorshard of Relic" in name:
+        return True
     if expansion == "tob" and " of Rebellion" in name:
         return True
     if expansion == "tob" and name.startswith("Energized ") and " Engram" in name:

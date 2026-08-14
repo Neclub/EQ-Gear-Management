@@ -1,4 +1,4 @@
-/* Inventory Parser — HTML setup page */
+/* EQ Gear Management — HTML setup page */
 
 const state = {
   filePaths: [],
@@ -6,9 +6,18 @@ const state = {
   selectedRoster: new Set(),
   includeSpells: false,
   includeAchievements: false,
-  alsoHtml: true,
+  includeSlot2: true,
+  includeAnniversary: false,
+  optionsTab: "options",
+  useWeightOverrides: false,
+  weightDefaults: null,
+  weightEdits: null,
+  weightsClassKey: null,
+  outputFormat: "both",
   generating: false,
 };
+
+const OUTPUT_FORMATS = ["excel", "html", "both"];
 
 const $ = (id) => document.getElementById(id);
 
@@ -25,7 +34,8 @@ function showToast(message, isError = false) {
   el.classList.toggle("error", isError);
   el.classList.remove("hidden");
   clearTimeout(showToast._timer);
-  showToast._timer = setTimeout(() => el.classList.add("hidden"), 6000);
+  const ms = isError ? 4500 : 2200;
+  showToast._timer = setTimeout(() => el.classList.add("hidden"), ms);
 }
 
 function showModal(html) {
@@ -34,10 +44,71 @@ function showModal(html) {
   backdrop.addEventListener("click", (e) => {
     if (e.target === backdrop) closeModal();
   });
+  const modalHeader = document.querySelector("#modalRoot .modal-header");
+  if (modalHeader) modalHeader.addEventListener("mousedown", startWindowDrag);
 }
 
 function closeModal() {
   $("modalRoot").innerHTML = "";
+}
+
+async function fitWindowTo(size) {
+  if (!size) return;
+  const availW = screen.availWidth || screen.width || 0;
+  const availH = screen.availHeight || screen.height || 0;
+  if (
+    availW &&
+    availH &&
+    window.outerWidth >= availW - 16 &&
+    window.outerHeight >= availH - 16
+  ) {
+    return;
+  }
+  try {
+    await api("fit_window", size.width, size.height);
+  } catch (_) {
+    /* window resize is best-effort outside pywebview */
+  }
+}
+
+function folderPickerNeededSize() {
+  const modal = document.querySelector("#modalRoot .modal");
+  const list = $("pickerList");
+  if (!modal || !list) return null;
+  const header = modal.querySelector(".modal-header");
+  const footer = modal.querySelector(".modal-footer");
+  const filter = modal.querySelector(".picker-filter");
+  const toolbar = modal.querySelector(".modal-body .toolbar");
+  const labels = modal.querySelectorAll(".modal-body .field-label");
+  let labelH = 0;
+  labels.forEach((el) => { labelH += el.offsetHeight; });
+  const chrome =
+    (header ? header.offsetHeight : 0) +
+    (footer ? footer.offsetHeight : 0) +
+    (filter ? filter.offsetHeight : 0) +
+    (toolbar ? toolbar.offsetHeight : 0) +
+    labelH +
+    56;
+  const frame = Math.max(0, (window.outerHeight || 0) - (window.innerHeight || 0)) || 72;
+  const availH = screen.availHeight || screen.height || 1080;
+  return {
+    width: Math.max(860, Math.ceil((modal.scrollWidth || 600) + 64)),
+    height: Math.min(availH, Math.ceil(chrome + list.scrollHeight + frame)),
+  };
+}
+
+function rosterNeededSize() {
+  const list = $("rosterList");
+  const shell = $("rosterShell");
+  if (!list || !shell || !state.roster.length) return null;
+  const overflow = list.scrollHeight - shell.clientHeight;
+  if (overflow <= 8) return null;
+  const frame = Math.max(0, (window.outerHeight || 0) - (window.innerHeight || 0)) || 72;
+  const availH = screen.availHeight || screen.height || 1080;
+  return {
+    width: Math.max(860, window.outerWidth || 860),
+    height: Math.min(availH, Math.ceil((window.innerHeight || 640) + overflow + frame)),
+  };
 }
 
 function resetUI() {
@@ -53,11 +124,84 @@ function toggleChip(el, on) {
   el.classList.toggle("on", on);
 }
 
+function escapeHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
+  );
+}
+
+function escapeAttr(s) {
+  return escapeHtml(s).replace(/`/g, "&#96;");
+}
+
+function formatElapsed(seconds) {
+  const s = Number(seconds);
+  if (!Number.isFinite(s) || s < 0) return "";
+  if (s < 60) return `${s.toFixed(1)}s`;
+  const m = Math.floor(s / 60);
+  const rem = Math.round(s % 60);
+  return `${m}m ${String(rem).padStart(2, "0")}s`;
+}
+
+function showGenProgress(fraction, message) {
+  const wrap = $("genProgress");
+  const bar = $("genProgressBar");
+  if (!wrap || !bar) return;
+  const pct = Math.max(0, Math.min(100, Math.round((Number(fraction) || 0) * 1000) / 10));
+  wrap.classList.remove("hidden");
+  wrap.setAttribute("aria-hidden", "false");
+  wrap.setAttribute("aria-valuenow", String(Math.round(pct)));
+  bar.style.width = `${pct}%`;
+  if (message) {
+    $("status").textContent = message;
+    $("status").classList.remove("ok");
+  }
+}
+
+function hideGenProgress() {
+  const wrap = $("genProgress");
+  const bar = $("genProgressBar");
+  if (wrap) {
+    wrap.classList.add("hidden");
+    wrap.setAttribute("aria-hidden", "true");
+    wrap.setAttribute("aria-valuenow", "0");
+  }
+  if (bar) bar.style.width = "0%";
+}
+
+function syncOutputFormatChips() {
+  OUTPUT_FORMATS.forEach((fmt) => {
+    const chip = $(`chipFormat${fmt[0].toUpperCase()}${fmt.slice(1)}`);
+    if (chip) toggleChip(chip, state.outputFormat === fmt);
+  });
+}
+
+function buildingStatusText() {
+  if (state.outputFormat === "html") return "Building HTML…";
+  if (state.outputFormat === "excel") return "Building workbook…";
+  return "Building workbook and HTML…";
+}
+
+async function setOutputFormat(format, { persist = true } = {}) {
+  if (!OUTPUT_FORMATS.includes(format)) return;
+  state.outputFormat = format;
+  syncOutputFormatChips();
+  if (!persist) return;
+  try {
+    const result = await api("set_output_format", format);
+    if (result && result.outputFormat) state.outputFormat = result.outputFormat;
+    syncOutputFormatChips();
+  } catch (_) {
+    /* preference save is best-effort */
+  }
+}
+
 let eventsBound = false;
 
 async function initApp() {
   resetUI();
   bindEvents();
+  syncOutputFormatChips();
   refreshUI();
 
   if (!window.pywebview || !pywebview.api) return;
@@ -65,15 +209,38 @@ async function initApp() {
   try {
     const info = await api("get_version");
     $("versionBadge").textContent = `v${info.version}`;
-    if (info.logoDataUri) $("logo").src = info.logoDataUri;
+    if (info.logoDataUri) {
+      $("logo").src = info.logoDataUri;
+      const favicon = $("favicon");
+      if (favicon) favicon.href = info.logoDataUri;
+    }
   } catch (_) {
     $("versionBadge").textContent = "";
   }
+
+  try {
+    const prefs = await api("get_gui_prefs");
+    if (prefs && prefs.outputFormat) {
+      await setOutputFormat(prefs.outputFormat, { persist: false });
+    }
+  } catch (_) {
+    /* defaults already applied */
+  }
+}
+
+function startWindowDrag(event) {
+  if (event.button !== 0) return;
+  if (event.target.closest("button, a, input, select, textarea, label")) return;
+  event.preventDefault();
+  void api("start_window_drag");
 }
 
 function bindEvents() {
   if (eventsBound) return;
   eventsBound = true;
+
+  const header = document.querySelector(".app-header");
+  if (header) header.addEventListener("mousedown", startWindowDrag);
 
   $("helpBtn").addEventListener("click", (e) => {
     e.stopPropagation();
@@ -91,9 +258,9 @@ function bindEvents() {
     const info = await api("get_version");
     showModal(`
       <div class="modal">
-        <div class="modal-header"><h2>About Inventory Parser</h2></div>
+        <div class="modal-header"><h2>About EQ Gear Management</h2></div>
         <div class="modal-body">
-          <p>Version ${info.version}</p>
+          <p>EQGM ${info.version}</p>
           <p style="margin-top:12px;color:var(--muted);font-size:12px">
             Builds team Excel workbooks and optional HTML reports from EverQuest
             /outputfile inventory, spell, and achievement dumps.
@@ -126,9 +293,31 @@ function bindEvents() {
     toggleChip($("chipAchievements"), state.includeAchievements);
     updateStatus();
   });
-  $("chipHtml").addEventListener("click", () => {
-    state.alsoHtml = !state.alsoHtml;
-    toggleChip($("chipHtml"), state.alsoHtml);
+  $("chipSlot2Augs").addEventListener("click", () => {
+    if ($("chipSlot2Augs").disabled) return;
+    state.includeSlot2 = !state.includeSlot2;
+    toggleChip($("chipSlot2Augs"), state.includeSlot2);
+    syncSlot2Options();
+    updateStatus();
+  });
+  $("includeAnniversary").addEventListener("change", () => {
+    state.includeAnniversary = $("includeAnniversary").checked;
+  });
+  $("tabAugOptions").addEventListener("click", () => setOptionsTab("options"));
+  $("tabAdvancedWeights").addEventListener("click", () => setOptionsTab("advanced"));
+  bindAdvancedWeightsTip();
+  $("useWeightOverrides").addEventListener("change", () => {
+    state.useWeightOverrides = $("useWeightOverrides").checked;
+    renderWeightGrid();
+    syncOptionsTabs(state.roster.length === 1);
+  });
+  $("btnResetWeights").addEventListener("click", () => { void resetWeightDefaults(); });
+  OUTPUT_FORMATS.forEach((fmt) => {
+    const chip = $(`chipFormat${fmt[0].toUpperCase()}${fmt.slice(1)}`);
+    if (!chip) return;
+    chip.addEventListener("click", () => {
+      void setOutputFormat(fmt);
+    });
   });
 }
 
@@ -208,8 +397,10 @@ function showFolderPicker(data) {
       const match = !slug || row.dataset.server.toLowerCase() === slug.toLowerCase();
       row.classList.toggle("hidden-row", !match);
     });
+    void fitWindowTo(folderPickerNeededSize());
   };
   $("pickerServer").addEventListener("change", filterRows);
+  filterRows();
 
   $("pickerAll").addEventListener("click", () => {
     visiblePickerItems().forEach((row) => {
@@ -271,20 +462,30 @@ async function refreshToggles() {
   if (!state.filePaths.length) {
     state.includeSpells = false;
     state.includeAchievements = false;
+    state.includeSlot2 = false;
     spellsBtn.disabled = true;
     achBtn.disabled = true;
+    const slot2Btn = $("chipSlot2Augs");
+    slot2Btn.disabled = true;
     toggleChip(spellsBtn, false);
     toggleChip(achBtn, false);
+    toggleChip(slot2Btn, false);
+    syncSlot2Options();
     return;
   }
   const spellInfo = await api("spell_bindings", state.filePaths);
   const achInfo = await api("achievement_info", state.filePaths);
   spellsBtn.disabled = false;
   achBtn.disabled = false;
+  const slot2Btn = $("chipSlot2Augs");
+  slot2Btn.disabled = false;
   state.includeSpells = spellInfo.hasSpells;
   state.includeAchievements = achInfo.hasAchievements;
+  state.includeSlot2 = true;
   toggleChip(spellsBtn, state.includeSpells);
   toggleChip(achBtn, state.includeAchievements);
+  toggleChip(slot2Btn, state.includeSlot2);
+  syncSlot2Options();
 }
 
 async function refreshOutputDefault() {
@@ -323,6 +524,7 @@ function renderRoster() {
     list.appendChild(li);
   });
   $("emptyState").classList.toggle("hidden", state.roster.length > 0);
+  void fitWindowTo(rosterNeededSize());
 }
 
 async function moveRoster(delta) {
@@ -407,6 +609,7 @@ async function updateStatus() {
       text += ` • ${achInfo.achievementCount} ${label}`;
     }
   }
+  if (state.includeSlot2) text += " • Type 7/8 Augs";
   status.textContent = text;
 }
 
@@ -419,6 +622,176 @@ function setGenerating(on) {
   $("btnRemove").disabled = on;
   $("btnClear").disabled = on;
   $("btnBrowse").disabled = on;
+  OUTPUT_FORMATS.forEach((fmt) => {
+    const chip = $(`chipFormat${fmt[0].toUpperCase()}${fmt.slice(1)}`);
+    if (chip) chip.disabled = on;
+  });
+  syncSlot2Options();
+}
+
+function hideInfoBubble() {
+  const bubble = $("infoBubble");
+  if (bubble) bubble.classList.add("hidden");
+}
+
+function bindAdvancedWeightsTip() {
+  const wrap = $("tabAdvancedWeightsWrap");
+  if (!wrap || wrap.dataset.tipBound) return;
+  wrap.dataset.tipBound = "1";
+  wrap.addEventListener("mouseenter", () => {
+    if (!wrap.classList.contains("show-tip")) return;
+    let bubble = $("infoBubble");
+    if (!bubble) {
+      bubble = document.createElement("div");
+      bubble.id = "infoBubble";
+      bubble.className = "info-bubble hidden";
+      document.body.appendChild(bubble);
+    }
+    bubble.textContent = wrap.dataset.tip || "Only used for single characters.";
+    bubble.classList.remove("hidden");
+    const r = wrap.getBoundingClientRect();
+    bubble.style.left = `${Math.round(r.left + r.width / 2)}px`;
+    bubble.style.top = `${Math.round(r.bottom + 8)}px`;
+  });
+  wrap.addEventListener("mouseleave", hideInfoBubble);
+}
+
+function syncSlot2Options() {
+  const wrap = $("slot2Options");
+  if (!wrap) return;
+  wrap.classList.toggle("hidden", !state.includeSlot2 || !state.filePaths.length);
+  syncOptionsTabs(state.roster.length === 1);
+}
+
+function setOptionsTab(tab) {
+  const single = state.roster.length === 1;
+  if (tab === "advanced" && !single) tab = "options";
+  state.optionsTab = tab;
+  syncOptionsTabs(single);
+  if (tab === "advanced") void ensureWeightDefaultsLoaded();
+}
+
+function syncOptionsTabs(single) {
+  const tabOptions = $("tabAugOptions");
+  const tabAdvanced = $("tabAdvancedWeights");
+  const paneOptions = $("paneAugOptions");
+  const paneAdvanced = $("paneAdvancedWeights");
+  const hint = $("advancedWeightsHint");
+  if (!tabOptions || !tabAdvanced || !paneOptions || !paneAdvanced) return;
+
+  if (!single && state.optionsTab === "advanced") {
+    state.optionsTab = "options";
+    state.useWeightOverrides = false;
+    state.weightDefaults = null;
+    state.weightEdits = null;
+    state.weightsClassKey = null;
+  }
+
+  tabAdvanced.disabled = !single || state.generating || !state.includeSlot2;
+  const useOv = $("useWeightOverrides");
+  if (useOv) {
+    useOv.disabled = !single || state.generating || !state.includeSlot2;
+    useOv.checked = state.useWeightOverrides && single;
+  }
+  const resetBtn = $("btnResetWeights");
+  if (resetBtn) {
+    resetBtn.disabled = !single || state.generating || !state.useWeightOverrides;
+  }
+  const onAdvanced = state.optionsTab === "advanced" && single && state.includeSlot2;
+  tabOptions.classList.toggle("on", !onAdvanced);
+  tabAdvanced.classList.toggle("on", onAdvanced);
+  tabOptions.setAttribute("aria-selected", String(!onAdvanced));
+  tabAdvanced.setAttribute("aria-selected", String(onAdvanced));
+  const tipWrap = $("tabAdvancedWeightsWrap");
+  if (tipWrap) {
+    const showMultiTip = !single && state.includeSlot2 && state.filePaths.length;
+    tipWrap.classList.toggle("show-tip", showMultiTip);
+    if (showMultiTip) {
+      tipWrap.dataset.tip = "Only used for single characters.";
+    } else {
+      delete tipWrap.dataset.tip;
+      hideInfoBubble();
+    }
+  }
+  paneOptions.classList.toggle("hidden", onAdvanced);
+  paneAdvanced.classList.toggle("hidden", !onAdvanced);
+  if (hint) {
+    hint.textContent = single
+      ? "Edit class default scoring weights for this generate only."
+      : "Available with exactly one character on the roster.";
+  }
+  if (onAdvanced) void ensureWeightDefaultsLoaded();
+}
+
+async function ensureWeightDefaultsLoaded() {
+  if (state.optionsTab !== "advanced" || state.roster.length !== 1) return;
+  const entry = state.roster[0];
+  const classKey = entry.classAbbr || "";
+  if (state.weightsClassKey === classKey && state.weightDefaults && state.weightEdits) {
+    renderWeightGrid();
+    return;
+  }
+  try {
+    const info = await api("get_class_weight_defaults", classKey || null, null);
+    state.weightDefaults = info;
+    state.weightEdits = { ...(info.weights || {}) };
+    state.weightsClassKey = classKey;
+    renderWeightGrid();
+  } catch (err) {
+    showToast(String(err.message || err), true);
+  }
+}
+
+function renderWeightGrid() {
+  const grid = $("weightGrid");
+  const meta = $("advancedWeightsMeta");
+  if (!grid || !meta) return;
+  const info = state.weightDefaults;
+  if (!info) {
+    meta.textContent = "Loading defaults…";
+    grid.innerHTML = "";
+    return;
+  }
+  const cls = info.classAbbr || "unknown";
+  const role = info.role || "—";
+  meta.innerHTML = `Profile: <strong>${escapeHtml(info.profileLabel || info.profile)}</strong>
+    · Class: <strong>${escapeHtml(cls)}</strong>
+    · Role: <strong>${escapeHtml(role)}</strong>`;
+  const labels = info.labels || {};
+  const edits = state.weightEdits || {};
+  const keys = Object.keys(info.weights || {});
+  grid.innerHTML = "";
+  keys.forEach((key) => {
+    const row = document.createElement("label");
+    row.className = "weight-row";
+    const label = labels[key] || key;
+    const val = edits[key] != null ? edits[key] : 0;
+    row.innerHTML = `<span title="${escapeAttr(key)}">${escapeHtml(label)}</span>
+      <input type="number" step="0.1" data-stat="${escapeAttr(key)}" value="${escapeAttr(val)}">`;
+    const input = row.querySelector("input");
+    input.disabled = !state.useWeightOverrides || state.generating;
+    input.addEventListener("change", () => {
+      const n = Number(input.value);
+      if (!Number.isFinite(n)) return;
+      state.weightEdits = state.weightEdits || {};
+      state.weightEdits[key] = n;
+    });
+    grid.appendChild(row);
+  });
+}
+
+async function resetWeightDefaults() {
+  if (state.optionsTab !== "advanced" || state.roster.length !== 1) return;
+  state.weightsClassKey = null;
+  await ensureWeightDefaultsLoaded();
+  const status = $("advancedResetStatus");
+  if (!status) return;
+  status.textContent = "Weights reset to class defaults";
+  status.classList.add("on");
+  clearTimeout(resetWeightDefaults._timer);
+  resetWeightDefaults._timer = setTimeout(() => {
+    status.classList.remove("on");
+  }, 2200);
 }
 
 async function generateReport() {
@@ -430,21 +803,32 @@ async function generateReport() {
     return;
   }
   if (!outputPath) {
-    showToast("Choose where to save the Excel file.", true);
+    showToast("Choose where to save the report.", true);
     return;
   }
 
   setGenerating(true);
   $("status").classList.remove("ok");
-  $("status").textContent = state.alsoHtml ? "Building workbook and HTML…" : "Building workbook…";
+  $("status").textContent = buildingStatusText();
+  if (state.includeSlot2) showGenProgress(0, "Building Type 7/8 aug catalog and report…");
 
+  const useAdvanced =
+    state.includeSlot2 &&
+    state.roster.length === 1 &&
+    state.useWeightOverrides &&
+    state.weightEdits &&
+    Object.keys(state.weightEdits).length > 0;
   const config = {
     paths: state.filePaths,
     outputPath,
     slotFilter: $("slotFilter").value,
     includeSpells: state.includeSpells,
     includeAchievements: state.includeAchievements,
-    alsoHtml: state.alsoHtml,
+    includeSlot2: state.includeSlot2,
+    includeAnniversary: state.includeAnniversary,
+    advancedWeights: !!useAdvanced,
+    sessionWeights: useAdvanced ? { ...(state.weightEdits || {}) } : null,
+    outputFormat: state.outputFormat,
     characterColumnOrder: state.roster.map((e) => e.personaKey),
   };
 
@@ -452,13 +836,20 @@ async function generateReport() {
     await api("generate_report", config);
   } catch (err) {
     setGenerating(false);
+    hideGenProgress();
     showToast(String(err), true);
     $("status").textContent = "Export failed.";
   }
 }
 
+window.onGenerateProgress = function (payload) {
+  if (!payload) return;
+  showGenProgress(payload.fraction, payload.message);
+};
+
 window.onGenerateComplete = async function (result) {
   setGenerating(false);
+  hideGenProgress();
   resetUI();
   if (!result.ok) {
     $("status").textContent = "Export failed.";
@@ -467,10 +858,22 @@ window.onGenerateComplete = async function (result) {
     return;
   }
   $("status").classList.add("ok");
-  $("status").textContent = `Done — ${basename(result.xlsx)}`;
+  const n = (state.roster && state.roster.length) || 0;
+  const elapsed = formatElapsed(result.elapsedSeconds);
+  const doneName = result.xlsx
+    ? basename(result.xlsx)
+    : result.html
+      ? basename(result.html)
+      : "report";
+  const extra = elapsed
+    ? `Done • ${n} character(s) • ${elapsed}`
+    : `Done — ${doneName}`;
+  $("status").textContent = extra;
 
-  let msg = `Saved:\n${result.xlsx}`;
-  if (result.html) msg += `\n${result.html}`;
+  const savedLines = [];
+  if (result.xlsx) savedLines.push(result.xlsx);
+  if (result.html) savedLines.push(result.html);
+  let msg = savedLines.length ? `Saved:\n${savedLines.join("\n")}` : "Saved.";
   if (result.warnings && result.warnings.length) {
     msg += "\n\n" + result.warnings.join("\n");
   }
@@ -487,6 +890,7 @@ window.onGenerateComplete = async function (result) {
 
 function refreshUI() {
   renderRoster();
+  syncSlot2Options();
   updateStatus();
 }
 
@@ -521,18 +925,6 @@ async function showHelpTiers() {
 function basename(p) {
   const parts = p.replace(/\\/g, "/").split("/");
   return parts[parts.length - 1] || p;
-}
-
-function escapeHtml(s) {
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-
-function escapeAttr(s) {
-  return escapeHtml(s).replace(/'/g, "&#39;");
 }
 
 function bootApp() {

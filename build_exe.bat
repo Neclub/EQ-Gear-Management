@@ -5,9 +5,9 @@ cd /d "%~dp0"
 set "OUT_EXE="
 echo.
 for /f "delims=" %%V in ('py "%~dp0scripts\print_package_version.py"') do set "IP_VER=%%V"
-set "OUT_EXE=%~dp0dist\InventoryParser-%IP_VER%.exe"
+set "OUT_EXE=%~dp0dist\EQGM-%IP_VER%.exe"
 
-echo Inventory Parser - build executable
+echo EQ Gear Management - build executable
 echo Version: %IP_VER%
 echo Project folder: %~dp0
 echo.

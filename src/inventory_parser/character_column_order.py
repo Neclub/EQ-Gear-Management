@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -33,7 +34,15 @@ def settings_path() -> Path:
         base = Path(os.environ.get("LOCALAPPDATA", Path.home() / "AppData" / "Local"))
     else:
         base = Path.home() / ".local" / "share"
-    return base / "Inventory Parser" / "settings.json"
+    path = base / "EQGM" / "settings.json"
+    legacy = base / "Inventory Parser" / "settings.json"
+    if not path.is_file() and legacy.is_file():
+        path.parent.mkdir(parents=True, exist_ok=True)
+        try:
+            shutil.copy2(legacy, path)
+        except OSError:
+            return legacy
+    return path
 
 
 def load_settings() -> dict:
@@ -60,6 +69,30 @@ def saved_character_column_order() -> list[str]:
     if not isinstance(raw, list):
         return []
     return [str(key) for key in raw if key]
+
+
+OUTPUT_FORMATS = frozenset({"excel", "html", "both"})
+DEFAULT_OUTPUT_FORMAT = "both"
+
+
+def normalize_output_format(value: object) -> str:
+    if isinstance(value, str) and value in OUTPUT_FORMATS:
+        return value
+    return DEFAULT_OUTPUT_FORMAT
+
+
+def save_output_format(value: str) -> str:
+    path = settings_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    settings = load_settings()
+    normalized = normalize_output_format(value)
+    settings["output_format"] = normalized
+    path.write_text(json.dumps(settings, indent=2) + "\n", encoding="utf-8")
+    return normalized
+
+
+def saved_output_format() -> str:
+    return normalize_output_format(load_settings().get("output_format"))
 
 
 def order_by_persona_keys(items: list[T], order: list[str], *, key_fn) -> list[T]:

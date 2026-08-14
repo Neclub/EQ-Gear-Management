@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import threading
+import time
 import traceback
 import webbrowser
 from pathlib import Path
@@ -15,14 +16,19 @@ from inventory_parser.achievement_files import collect_achievement_paths
 from inventory_parser.character_column_order import (
     ColumnRosterEntry,
     build_column_roster,
+    normalize_output_format,
     paths_for_roster_removal,
     save_character_column_order,
+    save_output_format,
     saved_character_column_order,
+    saved_output_format,
 )
 from inventory_parser.eq_servers import server_display_name
 from inventory_parser.excel_export import write_team_workbook
 from inventory_parser.excel_theme import tier_bucket_legend_rows
 from inventory_parser.export_bundle import build_export_bundle, release_export_memory
+from inventory_parser.slot2_augs.build import report_progress
+from inventory_parser.slot2_augs.weights import default_class_weights, sanitize_weight_map
 from inventory_parser.html_export import write_team_html
 from inventory_parser.missing_spells import (
     bindings_include_personas,
@@ -43,6 +49,62 @@ from inventory_parser.web_bridge import eq_logo_data_uri, file_url, setup_url
 
 def _downloads_dir() -> Path:
     return Path.home() / "Downloads"
+
+
+def _native_hwnd(window) -> int | None:
+    native = getattr(window, "native", None)
+    if native is None:
+        return None
+    handle = getattr(native, "Handle", None)
+    if handle is None:
+        return None
+    try:
+        return int(handle)
+    except (TypeError, ValueError):
+        return None
+
+
+def _work_area_for_hwnd(hwnd: int | None) -> tuple[int, int, int, int]:
+    """Monitor work area (left, top, right, bottom), excluding the taskbar."""
+    try:
+        import ctypes
+        from ctypes import wintypes
+
+        class RECT(ctypes.Structure):
+            _fields_ = [
+                ("left", wintypes.LONG),
+                ("top", wintypes.LONG),
+                ("right", wintypes.LONG),
+                ("bottom", wintypes.LONG),
+            ]
+
+        class MONITORINFO(ctypes.Structure):
+            _fields_ = [
+                ("cbSize", wintypes.DWORD),
+                ("rcMonitor", RECT),
+                ("rcWork", RECT),
+                ("dwFlags", wintypes.DWORD),
+            ]
+
+        user32 = ctypes.windll.user32
+        MONITOR_DEFAULTTONEAREST = 2
+        if hwnd:
+            monitor = user32.MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST)
+        else:
+            point = wintypes.POINT(0, 0)
+            monitor = user32.MonitorFromPoint(point, MONITOR_DEFAULTTONEAREST)
+        info = MONITORINFO()
+        info.cbSize = ctypes.sizeof(MONITORINFO)
+        if not user32.GetMonitorInfoW(monitor, ctypes.byref(info)):
+            raise OSError("GetMonitorInfoW failed")
+        work = info.rcWork
+        return int(work.left), int(work.top), int(work.right), int(work.bottom)
+    except Exception:
+        screens = getattr(webview, "screens", None) or []
+        if screens:
+            screen = screens[0]
+            return 0, 0, int(screen.width), max(640, int(screen.height) - 48)
+        return 0, 0, 1920, 1040
 
 
 def _roster_entry_dict(entry: ColumnRosterEntry) -> dict:
@@ -103,8 +165,72 @@ class WebApi:
     def bind_window(self, window: webview.Window) -> None:
         self._window = window
 
+    def fit_window(self, min_width: int = 0, min_height: int = 0) -> dict:
+        """Grow the GUI window so content stays visible within the work area."""
+        window = self._window
+        if window is None:
+            return {"ok": False}
+        if getattr(window, "maximized", False) or getattr(window, "fullscreen", False):
+            return {"ok": True, "skipped": True}
+        hwnd = _native_hwnd(window)
+        left, top, right, bottom = _work_area_for_hwnd(hwnd)
+        max_w = max(860, right - left)
+        max_h = max(640, bottom - top)
+        width = min(max(860, int(min_width or 0)), max_w)
+        height = min(max(640, int(min_height or 0)), max_h)
+        window.resize(width, height)
+        x = int(getattr(window, "x", 0) or 0)
+        y = int(getattr(window, "y", 0) or 0)
+        if x + width > right:
+            x = right - width
+        if y + height > bottom:
+            y = bottom - height
+        if x < left:
+            x = left
+        if y < top:
+            y = top
+        try:
+            window.move(x, y)
+        except Exception:
+            pass
+        return {"ok": True, "width": width, "height": height, "x": x, "y": y}
+
+    def start_window_drag(self) -> dict:
+        """Begin a native title-bar drag from the custom header or modal."""
+        window = self._window
+        if window is None:
+            return {"ok": False}
+        if getattr(window, "maximized", False) or getattr(window, "fullscreen", False):
+            return {"ok": True, "skipped": True}
+        hwnd = _native_hwnd(window)
+        if not hwnd:
+            return {"ok": False}
+        try:
+            import ctypes
+
+            user32 = ctypes.windll.user32
+            WM_NCLBUTTONDOWN = 0x00A1
+            HTCAPTION = 2
+            user32.ReleaseCapture()
+            user32.SendMessageW(hwnd, WM_NCLBUTTONDOWN, HTCAPTION, 0)
+            return {"ok": True}
+        except Exception:
+            return {"ok": False}
+
     def get_version(self) -> dict:
         return {"version": __version__, "logoDataUri": eq_logo_data_uri()}
+
+    def get_gui_prefs(self) -> dict:
+        return {"outputFormat": saved_output_format()}
+
+    def set_output_format(self, value: str) -> dict:
+        return {"outputFormat": save_output_format(value)}
+
+    def get_class_weight_defaults(
+        self, class_abbr: str | None = None, profile: str | None = None
+    ) -> dict:
+        """Return Head-slot default weights for Advanced Slot2 options."""
+        return default_class_weights(class_abbr, profile=profile)
 
     def pick_folder(self) -> str | None:
         window = self._window
@@ -231,6 +357,17 @@ class WebApi:
         if window is not None:
             window.load_url(setup_url())
 
+    def _notify_progress(self, payload: dict) -> None:
+        window = self._window
+        if window is None:
+            return
+        try:
+            window.evaluate_js(
+                f"window.onGenerateProgress && window.onGenerateProgress({json.dumps(payload)})"
+            )
+        except Exception:
+            pass
+
     def generate_report(self, config: dict) -> dict:
         """Start report generation on a background thread."""
         window = self._window
@@ -262,7 +399,7 @@ class WebApi:
                 "error": "Add at least one *-Inventory.txt file (MissingSpells alone is not enough).",
             }
         if not output:
-            return {"ok": False, "error": "Choose where to save the Excel file."}
+            return {"ok": False, "error": "Choose where to save the report."}
 
         raw_slots = (config.get("slotFilter") or "all").strip()
         slot_filter: SlotFilter = (
@@ -270,8 +407,24 @@ class WebApi:
         )
         include_spells = bool(config.get("includeSpells"))
         include_achievements = bool(config.get("includeAchievements"))
-        also_html = bool(config.get("alsoHtml", True))
+        include_slot2 = bool(config.get("includeSlot2"))
+        include_anniversary = bool(config.get("includeAnniversary"))
+        session_weights = None
+        if include_slot2 and config.get("advancedWeights") and config.get("sessionWeights"):
+            session_weights = sanitize_weight_map(config.get("sessionWeights") or {})
+        if "outputFormat" in config:
+            output_format = normalize_output_format(config.get("outputFormat"))
+        elif "alsoHtml" in config:
+            output_format = "both" if config.get("alsoHtml") else "excel"
+        else:
+            output_format = normalize_output_format(None)
+        write_excel = output_format in ("excel", "both")
+        write_html = output_format in ("html", "both")
         column_order = config.get("characterColumnOrder") or None
+        started = time.perf_counter()
+
+        def on_progress(payload: dict) -> None:
+            self._notify_progress(payload)
 
         try:
             bundle = build_export_bundle(
@@ -279,6 +432,10 @@ class WebApi:
                 slot_filter=slot_filter,
                 include_spells=include_spells,
                 include_achievements=include_achievements,
+                include_slot2=include_slot2,
+                include_anniversary=include_anniversary,
+                session_weights=session_weights,
+                on_progress=on_progress if include_slot2 else None,
                 character_column_order=column_order,
             )
         except ValueError as exc:
@@ -287,25 +444,43 @@ class WebApi:
         warnings = list(bundle.warnings)
 
         output_path = Path(output)
-        saved = write_team_workbook(
-            bundle.team,
-            output_path,
-            slot_filter=bundle.slot_filter,
-            spell_report=bundle.spell_report,
-            missing_useful_report=bundle.missing_useful_report,
-            rune_inventory_report=bundle.rune_inventory_report,
-            achievement_report=bundle.achievement_report,
-            unmade_entries=bundle.unmade_entries,
-        )
+        saved = None
         html_saved = None
-        if also_html:
-            html_saved = write_team_html(bundle, html_path_for_workbook(saved))
+        if include_slot2:
+            report_progress(on_progress, "Writing Excel/HTML…", 0.95, 1.0, 0, 1)
+        if write_excel:
+            saved = write_team_workbook(
+                bundle.team,
+                output_path,
+                slot_filter=bundle.slot_filter,
+                spell_report=bundle.spell_report,
+                missing_useful_report=bundle.missing_useful_report,
+                rune_inventory_report=bundle.rune_inventory_report,
+                achievement_report=bundle.achievement_report,
+                unmade_entries=bundle.unmade_entries,
+                slot2=bundle.slot2,
+            )
+            if write_html:
+                html_saved = write_team_html(bundle, html_path_for_workbook(saved))
+        elif write_html:
+            if output_path.suffix.lower() == ".xlsx":
+                html_target = html_path_for_workbook(output_path)
+            elif output_path.suffix.lower() == ".html":
+                html_target = output_path
+            else:
+                html_target = html_path_for_workbook(output_path.with_suffix(".xlsx"))
+            html_saved = write_team_html(bundle, html_target)
+        if include_slot2:
+            report_progress(on_progress, "Done", 0.95, 1.0, 1, 1)
 
+        elapsed = round(time.perf_counter() - started, 1)
         return {
             "ok": True,
-            "xlsx": str(saved),
+            "xlsx": str(saved) if saved is not None else None,
             "html": str(html_saved) if html_saved is not None else None,
             "warnings": warnings,
+            "elapsedSeconds": elapsed,
+            "characterCount": len(bundle.team.characters),
         }
 
     def open_html_report(self, html_path: str) -> dict:

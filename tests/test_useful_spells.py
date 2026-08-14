@@ -66,7 +66,7 @@ def test_build_missing_useful_for_deflub_pal() -> None:
 
 def test_excel_missing_useful_tab(tmp_path: Path) -> None:
     paths = sorted(EXAMPLES.glob("*-Inventory.txt"))
-    bundle = build_export_bundle(paths)
+    bundle = build_export_bundle(paths, include_slot2=False)
     assert bundle.missing_useful_report is not None
     assert bundle.missing_useful_report.entries
 
@@ -107,7 +107,7 @@ def test_excel_missing_useful_tab(tmp_path: Path) -> None:
 
 def test_html_missing_useful_has_character_filter() -> None:
     paths = [EXAMPLES / "Deflub_bristle-Inventory.txt"]
-    bundle = build_export_bundle(paths)
+    bundle = build_export_bundle(paths, include_slot2=False)
     payload = serialize_report(bundle)
     section = next(s for s in payload["sections"] if s["id"] == "missing_useful_spells")
     assert section["title"] == MISSING_USEFUL_SPELLS_SHEET_NAME
@@ -121,7 +121,7 @@ def test_html_missing_useful_has_character_filter() -> None:
 
 def test_excel_missing_useful_credit_hyperlink(tmp_path: Path) -> None:
     paths = [EXAMPLES / "Deflub_bristle-Inventory.txt"]
-    bundle = build_export_bundle(paths)
+    bundle = build_export_bundle(paths, include_slot2=False)
     out = tmp_path / "useful_credit.xlsx"
     write_team_workbook(
         bundle.team,

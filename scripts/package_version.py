@@ -1,4 +1,4 @@
-"""Read Inventory Parser package version from src for build scripts."""
+"""Read EQGM package version from src for build scripts."""
 from __future__ import annotations
 
 import re
@@ -16,5 +16,5 @@ def read_package_version(root: Path | None = None) -> str:
     return m.group(1).strip()
 
 
-def exe_name_for_version(version: str, basename: str = "InventoryParser") -> str:
+def exe_name_for_version(version: str, basename: str = "EQGM") -> str:
     return f"{basename}-{version}"

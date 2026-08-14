@@ -23,7 +23,7 @@ CLASS_URLS_FILE = ROOT / "Examples" / "SpellData" / "Class120_130.txt"
 OUTPUT_FILE = ROOT / "src" / "inventory_parser" / "data" / "spell_expansions_121_130.json"
 CACHE_DIR = ROOT / "Examples" / "SpellData" / "scrape_cache"
 
-USER_AGENT = "InventoryParser/1.0 (spell catalog scraper; local dev tool)"
+USER_AGENT = "EQGM/1.0 (spell catalog scraper; local dev tool)"
 REQUEST_DELAY_SEC = 1.0
 
 CLASS_URL_RE = re.compile(
