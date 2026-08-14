@@ -55,3 +55,7 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 - **HTML report** — the same data in a browser, searchable and filterable
 
 For file naming, Alternate Personas, reading each sheet, and troubleshooting, see **[HowToUse.md](HowToUse.md)**.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
