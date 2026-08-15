@@ -14,6 +14,8 @@ Turn EverQuest inventory Output logs into a team **Excel workbook** and optional
 2. Download **`EQGM-x.y.z.exe`** from the latest release.
 3. Double-click to run. No Python install needed.
 
+Installed copies can use **Help → Check for Updates** to see if a newer GitHub Release is available.
+
 ---
 
 ## How to use

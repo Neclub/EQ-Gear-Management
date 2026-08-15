@@ -13,6 +13,8 @@ import webview
 
 from inventory_parser import __version__
 from inventory_parser.achievement_files import collect_achievement_paths
+from inventory_parser.app_updates import check_for_updates as fetch_app_updates
+from inventory_parser.app_updates import is_allowed_download_url
 from inventory_parser.character_column_order import (
     ColumnRosterEntry,
     build_column_roster,
@@ -219,6 +221,15 @@ class WebApi:
 
     def get_version(self) -> dict:
         return {"version": __version__, "logoDataUri": eq_logo_data_uri()}
+
+    def check_for_updates(self) -> dict:
+        return fetch_app_updates()
+
+    def open_update_download(self, url: str) -> dict:
+        if not is_allowed_download_url(url):
+            return {"ok": False, "error": "Unexpected download URL."}
+        webbrowser.open(url)
+        return {"ok": True}
 
     def get_gui_prefs(self) -> dict:
         return {"outputFormat": saved_output_format()}

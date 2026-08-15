@@ -253,6 +253,10 @@ function bindEvents() {
     $("helpMenu").classList.add("hidden");
     showHelpTiers();
   });
+  $("helpUpdates").addEventListener("click", () => {
+    $("helpMenu").classList.add("hidden");
+    checkForUpdates();
+  });
   $("helpAbout").addEventListener("click", async () => {
     $("helpMenu").classList.add("hidden");
     const info = await api("get_version");
@@ -892,6 +896,71 @@ function refreshUI() {
   renderRoster();
   syncSlot2Options();
   updateStatus();
+}
+
+async function checkForUpdates() {
+  showModal(`
+    <div class="modal">
+      <div class="modal-header"><h2>Check for Updates</h2></div>
+      <div class="modal-body"><p>Checking for updates…</p></div>
+    </div>`);
+  let info;
+  try {
+    info = await api("check_for_updates");
+  } catch (err) {
+    info = { ok: false, status: "error", message: err && err.message ? err.message : String(err) };
+  }
+  if (!info || info.status === "error" || info.ok === false) {
+    const detail = info && info.message ? escapeHtml(info.message) : "Could not reach GitHub Releases.";
+    showModal(`
+      <div class="modal">
+        <div class="modal-header"><h2>Check for Updates</h2></div>
+        <div class="modal-body">
+          <p>Could not check for updates.</p>
+          <p style="margin-top:12px;color:var(--muted);font-size:12px">${detail}</p>
+        </div>
+        <div class="modal-footer"><button type="button" class="btn" id="modalClose">Close</button></div>
+      </div>`);
+    $("modalClose").addEventListener("click", closeModal);
+    return;
+  }
+  if (info.status === "latest") {
+    showModal(`
+      <div class="modal">
+        <div class="modal-header"><h2>Check for Updates</h2></div>
+        <div class="modal-body"><p>You have the latest version.</p></div>
+        <div class="modal-footer"><button type="button" class="btn" id="modalClose">Close</button></div>
+      </div>`);
+    $("modalClose").addEventListener("click", closeModal);
+    return;
+  }
+  const latest = escapeHtml(info.latest || "");
+  const current = escapeHtml(info.current || "");
+  showModal(`
+    <div class="modal">
+      <div class="modal-header"><h2>Check for Updates</h2></div>
+      <div class="modal-body">
+        <p>Version ${latest} is available (you have ${current}).</p>
+        <p style="margin-top:12px">Would you like to download?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="updateNo">No</button>
+        <button type="button" class="btn btn-primary" id="updateYes">Yes</button>
+      </div>
+    </div>`);
+  $("updateNo").addEventListener("click", closeModal);
+  $("updateYes").addEventListener("click", async () => {
+    try {
+      const result = await api("open_update_download", info.downloadUrl);
+      if (!result || !result.ok) {
+        showToast((result && result.error) || "Could not open the download.", true);
+        return;
+      }
+      closeModal();
+    } catch (err) {
+      showToast(err && err.message ? err.message : String(err), true);
+    }
+  });
 }
 
 async function showHelpTiers() {

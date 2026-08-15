@@ -2,7 +2,7 @@
 
 Turn your raid’s EverQuest inventory dumps into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, unmade craft mats, optional missing Rank III spell runes, optional achievement collection progress, and optional Type 7/8 aug recommendations.
 
-The app version is shown in the window title and under **Help → About EQGM**. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details).
+The app version is shown in the window title and under **Help → About EQGM**. **Help → Check for Updates** compares that version to the latest GitHub Release. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details).
 
 ---
 
@@ -270,7 +270,7 @@ No Python or web server is required to view the HTML file.
 - **Status bar** — shows how many inventory, MissingSpells, and achievement files are loaded.  
 - **Up** / **Down** / **Remove** / **Clear** — under Output folder on the right; fix the roster before regenerating.  
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
-- **Help** (top right) — gear tier colors and **About EQGM** (shows the app version).
+- **Help** (top right) — gear tier colors, **Check for Updates** (compares this build to the latest GitHub Release), and **About EQGM** (shows the app version).
 
 ---
 
@@ -351,7 +351,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\EQGM-1.21.0.exe
+py -3 scripts\sign_exe.py dist\EQGM-1.22.0.exe
 ```
 
 (with the same environment variables set).
