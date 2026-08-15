@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.23.2] - 2026-08-15
+
+### Removed
+
+- Local `Examples/` inventory dumps are no longer in the GitHub repository (kept on disk for development only).
+
 ## [1.23.1] - 2026-08-15
 
 ### Fixed

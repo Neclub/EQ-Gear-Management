@@ -16,6 +16,5 @@ Thumbs.db
 .DS_Store
 desktop.ini
 
-# Regenerated local artifacts
-Examples/SpellData/scrape_cache/
-Examples/Outputs/
+# Local coding dumps only — never publish
+Examples/

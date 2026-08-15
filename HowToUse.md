@@ -292,37 +292,37 @@ py -3 -m inventory_parser --folder "D:\EQ Dumps" -o "D:\EQ Dumps\Team Inventory.
 Skip the spell tabs:
 
 ```powershell
-py -3 -m inventory_parser --folder Examples -o out.xlsx --no-spells
+py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --no-spells
 ```
 
 Skip the achievement tabs:
 
 ```powershell
-py -3 -m inventory_parser --folder Examples -o out.xlsx --no-achievements
+py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --no-achievements
 ```
 
 Also write an interactive HTML report (same folder, same name stem):
 
 ```powershell
-py -3 -m inventory_parser --folder Examples -o out.xlsx --also-html
+py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --also-html
 ```
 
 Only visible slots:
 
 ```powershell
-py -3 -m inventory_parser --folder Examples -o out.xlsx --slots visible
+py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --slots visible
 ```
 
 Skip Type 7/8 aug sheets (no catalog fetch):
 
 ```powershell
-py -3 -m inventory_parser --folder Examples -o out.xlsx --no-slot2
+py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --no-slot2
 ```
 
 Include Gem of Distant Echoes anniversary augs in Type 7/8 recommendations:
 
 ```powershell
-py -3 -m inventory_parser --folder Examples -o out.xlsx --include-anniversary
+py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --include-anniversary
 ```
 
 ---
@@ -357,7 +357,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\EQGM-1.23.1.exe
+py -3 scripts\sign_exe.py dist\EQGM-1.23.2.exe
 ```
 
 (with the same environment variables set).
