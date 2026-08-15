@@ -97,6 +97,8 @@ The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane 
 | **Right (bottom)** | **Output folder** path and **Browse…**; **Up** / **Down** / **Remove** / **Clear** for the roster |
 | **Footer** | Status line; **Excel** / **HTML** / **Both** output chips; **Generate Report** |
 
+The main window grows (within the Windows work area, above the taskbar) so Export options stay fully visible, including **Include Anniversary augs**.
+
 **Requirements:** Windows 10/11 with **WebView2** (Microsoft Edge runtime — usually already installed).
 
 1. **In EQ:** on each toon, `/outputfile inventory` and (optional) `/outputfile missingspells`; copy the `.txt` files into one folder.
@@ -355,7 +357,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\EQGM-1.23.0.exe
+py -3 scripts\sign_exe.py dist\EQGM-1.23.1.exe
 ```
 
 (with the same environment variables set).

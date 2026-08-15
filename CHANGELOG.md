@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.23.1] - 2026-08-15
+
+### Fixed
+
+- The setup window grows to fit **Export options** (including **Include Anniversary augs** and Advanced weights) instead of clipping those controls.
+
 ## [1.23.0] - 2026-08-15
 
 ### Added

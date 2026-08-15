@@ -81,6 +81,7 @@ Item names link to EQ Resource when the dump has item IDs.
 ---
 
 **Quick tips**
+• The main window grows so Export options (including Anniversary augs) stay fully visible
 • You need at least one `*-Inventory.txt` — spell files alone aren't enough
 • First character in the list = first column in Excel and HTML (reorder with **Up** / **Down**)
 • Close the Excel file before exporting if save fails

@@ -97,6 +97,45 @@ function folderPickerNeededSize() {
   };
 }
 
+function columnContentHeight(el) {
+  if (!el) return 0;
+  const style = getComputedStyle(el);
+  const gap = parseFloat(style.rowGap || style.gap) || 0;
+  const kids = [...el.children].filter((c) => !c.classList.contains("hidden"));
+  let h = 0;
+  kids.forEach((child, i) => {
+    h += Math.max(child.scrollHeight, child.offsetHeight);
+    if (i) h += gap;
+  });
+  return h;
+}
+
+function setupNeededSize() {
+  const app = $("app");
+  if (!app) return null;
+  const header = document.querySelector(".app-header");
+  const action = document.querySelector(".action-bar");
+  const settings = document.querySelector(".settings-column");
+  const appStyle = getComputedStyle(app);
+  const padY =
+    (parseFloat(appStyle.paddingTop) || 0) + (parseFloat(appStyle.paddingBottom) || 0);
+  const gap = parseFloat(appStyle.rowGap || appStyle.gap) || 0;
+  const workspaceH = Math.max(columnContentHeight(settings), 280);
+  const inner =
+    (header ? header.offsetHeight : 0) +
+    workspaceH +
+    (action ? action.offsetHeight : 0) +
+    padY +
+    gap * 2 +
+    8;
+  const frame = Math.max(0, (window.outerHeight || 0) - (window.innerHeight || 0)) || 72;
+  const availH = screen.availHeight || screen.height || 1080;
+  return {
+    width: Math.max(860, window.outerWidth || 860),
+    height: Math.min(availH, Math.ceil(inner + frame)),
+  };
+}
+
 function rosterNeededSize() {
   const list = $("rosterList");
   const shell = $("rosterShell");
@@ -107,8 +146,26 @@ function rosterNeededSize() {
   const availH = screen.availHeight || screen.height || 1080;
   return {
     width: Math.max(860, window.outerWidth || 860),
-    height: Math.min(availH, Math.ceil((window.innerHeight || 640) + overflow + frame)),
+    height: Math.min(availH, Math.ceil((window.innerHeight || 760) + overflow + frame)),
   };
+}
+
+function fitSetupWindow() {
+  const setup = setupNeededSize();
+  const roster = rosterNeededSize();
+  const size = {
+    width: Math.max(setup?.width || 0, roster?.width || 0, 860),
+    height: Math.max(setup?.height || 0, roster?.height || 0, 760),
+  };
+  return fitWindowTo(size);
+}
+
+let fitSetupTimer = 0;
+function scheduleFitSetupWindow() {
+  clearTimeout(fitSetupTimer);
+  fitSetupTimer = setTimeout(() => {
+    void fitSetupWindow();
+  }, 16);
 }
 
 function resetUI() {
@@ -528,7 +585,6 @@ function renderRoster() {
     list.appendChild(li);
   });
   $("emptyState").classList.toggle("hidden", state.roster.length > 0);
-  void fitWindowTo(rosterNeededSize());
 }
 
 async function moveRoster(delta) {
@@ -725,6 +781,7 @@ function syncOptionsTabs(single) {
       : "Available with exactly one character on the roster.";
   }
   if (onAdvanced) void ensureWeightDefaultsLoaded();
+  scheduleFitSetupWindow();
 }
 
 async function ensureWeightDefaultsLoaded() {
@@ -782,6 +839,7 @@ function renderWeightGrid() {
     });
     grid.appendChild(row);
   });
+  scheduleFitSetupWindow();
 }
 
 async function resetWeightDefaults() {
@@ -896,6 +954,7 @@ function refreshUI() {
   renderRoster();
   syncSlot2Options();
   updateStatus();
+  scheduleFitSetupWindow();
 }
 
 async function checkForUpdates() {

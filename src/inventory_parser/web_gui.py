@@ -17,7 +17,7 @@ def main() -> None:
         url=setup_url(),
         js_api=api,
         width=860,
-        height=640,
+        height=760,
         min_size=(640, 480),
         background_color="#0b0e11",
     )
