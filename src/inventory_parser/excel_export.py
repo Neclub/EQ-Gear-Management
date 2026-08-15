@@ -50,7 +50,7 @@ from inventory_parser.items import EquippedItem
 from inventory_parser.slots import SlotFilter, slot_visibility, slots_for_export
 from inventory_parser.excel_theme import GEAR_SET_FILLS
 from inventory_parser.gear_tiers import SOR_GAP_LEGEND_ROWS, UNKNOWN_TIER_LABEL
-from inventory_parser.sor_tier import sor_gap_label
+from inventory_parser.sor_tier import equipped_tier_label
 from inventory_parser.rune_inventory import RuneInventoryReport
 from inventory_parser.unmade_gear import UnmadeGearEntry, build_unmade_gear_report
 
@@ -208,10 +208,7 @@ def _write_sor_gaps_sheet(ws: Worksheet, report: TeamGearReport, slots: tuple[st
         for col in range(_FIRST_CHAR_COL, num_cols + 1):
             char_row = report.characters[col - _FIRST_CHAR_COL]
             item = char_row.slots.get(slot)
-            label = sor_gap_label(
-                item.name if item else None,
-                is_evolver=item.is_evolver if item else False,
-            )
+            label = equipped_tier_label(item)
             if label:
                 cell = ws.cell(row_idx, col, label)
                 cell.font = FONT_BODY
@@ -321,7 +318,7 @@ def _missing_useful_last_row(entry_count: int) -> int:
 
 
 def _fill_for_equipped_item(item: EquippedItem):
-    label = sor_gap_label(item.name, is_evolver=item.is_evolver)
+    label = equipped_tier_label(item)
     if label:
         return _fill_for_tier_code(label)
     return FILL_ITEM_EMPTY

@@ -18,6 +18,7 @@ from inventory_parser.missing_spells import (
     parse_missing_spells_file,
     parse_missing_spells_filename,
     persona_key,
+    spell_path_for_persona,
     split_input_paths,
     strip_spell_rank,
 )
@@ -220,3 +221,13 @@ def test_dedupe_rk2_and_rk3_same_level(tmp_path: Path) -> None:
     matches = [e for e in report.entries if e.level == 126]
     assert len(matches) == 1
     assert matches[0].spell_name == "Example Spell Rk. III"
+
+
+def test_spell_path_for_persona_falls_back_to_unique_character() -> None:
+    spell = SPELL_FILES["Deflub"]
+    paths = {persona_key("Deflub", "bristle", "PAL"): spell}
+    assert spell_path_for_persona("Deflub", "bristle", "PAL", paths) == spell
+    assert spell_path_for_persona("Deflub", "bristle", "SHD", paths) == spell
+    assert spell_path_for_persona("Deflub", "bristle", None, paths) == spell
+    paths[persona_key("Deflub", "bristle", "SHD")] = spell
+    assert spell_path_for_persona("Deflub", "bristle", "WIZ", paths) is None

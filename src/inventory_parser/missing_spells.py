@@ -421,11 +421,10 @@ def spell_path_for_persona(
     key = persona_key(character, server, class_abbr)
     if key in spell_paths:
         return spell_paths[key]
-    if class_abbr is None:
-        prefix = f"{character}_{server}_"
-        matches = {k: v for k, v in spell_paths.items() if k.startswith(prefix)}
-        if len(matches) == 1:
-            return next(iter(matches.values()))
+    prefix = f"{character}_{server}_"
+    matches = {k: v for k, v in spell_paths.items() if k.startswith(prefix)}
+    if len(matches) == 1:
+        return next(iter(matches.values()))
     return None
 
 

@@ -2,6 +2,8 @@
 
 Turn EQ inventory dumps into one Excel team workbook (gear, tier levels, unmade craft mats, optional missing rune tracking, optional achievement collection progress, optional Type 7/8 aug recommendations). Optionally generate an interactive HTML report in the same folder.
 
+**Live only** (not TLP/progression). Tracking goes back as far as **Laurion's Song**.
+
 ---
 
 **In-game (per character)**
@@ -24,6 +26,7 @@ Copy the `.txt` files from your EQ Logs folder into one raid folder.
 
 Tip: put spell files in a `SpellData` subfolder — the app groups them with the right character.
 Tip: put achievement files in an `AchievementData` subfolder — same pattern.
+Tip: class labels come from the worn Chest (BP) in each inventory dump; filenames are the fallback.
 
 ---
 
@@ -54,7 +57,7 @@ Use **Browse…** to pick a different path if you want.
 
 **What you get (Excel)**
 • **Team Gear** — who is wearing what (tier-bucket colors: green / yellow / orange / red / purple)
-• **Gear T-Level** — tier codes per slot (`SOR-R2`, `TOB-R2`, etc.)
+• **Gear T-Level** — tier codes per slot (`SOR-R2`, `TOB-R2`, etc.); unknown names are looked up on EQ Resource
 • **Unmade Gear** — craft mats and T1 containers in General bags that still upgrade a slot
 • **Missing Runes** — Rk. III rune totals by spell expansion (LS / ToB / SoR); one matrix per expansion
 • **Missing Spells** — every missing Rk. III with level, rune tier, expansion, and spell name

@@ -12,6 +12,7 @@ class EquippedItem:
     name: str
     item_id: int
     is_evolver: bool = False
+    resolved_tier: str | None = None
 
     @property
     def eqresource_url(self) -> str | None:

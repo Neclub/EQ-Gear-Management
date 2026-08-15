@@ -31,7 +31,7 @@ from inventory_parser.rune_inventory import RuneInventoryReport
 from inventory_parser.output_paths import default_export_prefix_from_report
 from inventory_parser.package_data import asset_path, read_data_text
 from inventory_parser.slots import slot_visibility, slots_for_export
-from inventory_parser.sor_tier import sor_gap_label
+from inventory_parser.sor_tier import equipped_tier_label
 from inventory_parser.spell_report import SpellRuneReport
 from inventory_parser.spell_runes import load_rune_config
 from inventory_parser.useful_spells import (
@@ -67,7 +67,7 @@ def _item_url(item_id: int) -> str | None:
 def _gear_item_cell(item: EquippedItem | None) -> dict | None:
     if item is None:
         return None
-    tier_code = sor_gap_label(item.name, is_evolver=item.is_evolver)
+    tier_code = equipped_tier_label(item)
     return {
         "name": item.name,
         "itemId": item.item_id,
@@ -80,7 +80,7 @@ def _gear_item_cell(item: EquippedItem | None) -> dict | None:
 def _tier_cell(item: EquippedItem | None) -> dict | None:
     if item is None:
         return None
-    label = sor_gap_label(item.name, is_evolver=item.is_evolver)
+    label = equipped_tier_label(item)
     if not label:
         return None
     return {"label": label, "tierCode": label}

@@ -3,14 +3,20 @@
 from __future__ import annotations
 
 from inventory_parser.evolver import EVOLVER_GAP_LABEL
-from inventory_parser.gear_tiers import UNKNOWN_TIER_LABEL, classify_gear_tier
+from inventory_parser.gear_tiers import GEAR_TIER_BY_CODE, UNKNOWN_TIER_LABEL, classify_gear_tier
+from inventory_parser.items import EquippedItem
 
 # Kept for callers/tests that still import legacy marker names.
 MARKER_BELOW_SOR_T2 = "SOR T2<"
 MARKER_BELOW_SOR_T1 = "SOR T1/<"
 
 
-def sor_gap_label(item_name: str | None, *, is_evolver: bool = False) -> str | None:
+def sor_gap_label(
+    item_name: str | None,
+    *,
+    is_evolver: bool = False,
+    resolved_tier: str | None = None,
+) -> str | None:
     """
     Return a tier code for equipped gear on the Gear T-Level sheet.
 
@@ -27,9 +33,29 @@ def sor_gap_label(item_name: str | None, *, is_evolver: bool = False) -> str | N
         return tier.code
     if is_evolver:
         return EVOLVER_GAP_LABEL
+    if resolved_tier and resolved_tier in GEAR_TIER_BY_CODE:
+        return resolved_tier
     return UNKNOWN_TIER_LABEL
 
 
-def sor_gap_marker(item_name: str | None, *, is_evolver: bool = False) -> str | None:
+def equipped_tier_label(item: EquippedItem | None) -> str | None:
+    """Tier label for an equipped item, including EQ Resource fallback."""
+    if item is None:
+        return None
+    return sor_gap_label(
+        item.name,
+        is_evolver=item.is_evolver,
+        resolved_tier=item.resolved_tier,
+    )
+
+
+def sor_gap_marker(
+    item_name: str | None,
+    *,
+    is_evolver: bool = False,
+    resolved_tier: str | None = None,
+) -> str | None:
     """Backward-compatible alias for :func:`sor_gap_label`."""
-    return sor_gap_label(item_name, is_evolver=is_evolver)
+    return sor_gap_label(
+        item_name, is_evolver=is_evolver, resolved_tier=resolved_tier
+    )

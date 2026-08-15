@@ -13,7 +13,7 @@ from inventory_parser.gear_tiers import (
     tier_rank,
 )
 from inventory_parser.parser import parse_inventory_file
-from inventory_parser.sor_tier import sor_gap_label
+from inventory_parser.sor_tier import equipped_tier_label
 
 _FRACTURED_WEAPON_ESSENCES = frozenset(
     {
@@ -166,7 +166,7 @@ def _equipped_tier_label(char: CharacterGear, slot: str | None) -> tuple[str | N
     item = char.slots.get(slot)
     if item is None:
         return None, False
-    return sor_gap_label(item.name, is_evolver=item.is_evolver), item.is_evolver
+    return equipped_tier_label(item), item.is_evolver
 
 
 def build_unmade_gear_report(report: TeamGearReport) -> list[UnmadeGearEntry]:

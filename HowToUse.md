@@ -2,6 +2,8 @@
 
 Turn your raid’s EverQuest inventory dumps into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, unmade craft mats, optional missing Rank III spell runes, optional achievement collection progress, and optional Type 7/8 aug recommendations.
 
+Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
+
 The app version is shown in the window title and under **Help → About EQGM**. **Help → Check for Updates** compares that version to the latest GitHub Release. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details).
 
 ---
@@ -26,7 +28,7 @@ At least one file named like:
 
 `CharacterName_server-Inventory.txt`
 
-Example: `Deflub_bristle-Inventory.txt`
+Example: `CharN_bristle-Inventory.txt`
 
 Tab-separated text from `/outputfile inventory`. The dump reflects **equipped items for the active persona only**.
 
@@ -34,15 +36,17 @@ You can also use class-tagged inventory names (same pattern as MissingSpells), f
 
 `CharacterName_server-CLASS-Inventory.txt`
 
-Example: `Deflub_bristle-PAL-Inventory.txt`
+Example: `CharN_bristle-PAL-Inventory.txt`
 
 **Alternate personas:** EQ’s Alternate Persona system lets one character swap class while sharing bank, bags, and other data. Each persona’s worn gear can be tracked as its own Team Gear column when you have a separate inventory dump per class. Achievements and collections are shared across personas — they appear once per character, not once per class column.
 
-**Class-tagged inventories (preferred for personas):** put `CharacterName_server-CLASS-Inventory.txt` files in the same folder with matching `CharacterName_server-CLASS-MissingSpells.txt` files. Each class dump becomes its own column (e.g. `Deflub ( PAL )`, `Deflub ( SHD )`). If any class-tagged inventory exists for a character, the generic `CharacterName_server-Inventory.txt` for that character is ignored.
+**Class-tagged inventories (preferred for personas):** put `CharacterName_server-CLASS-Inventory.txt` files in the same folder with matching `CharacterName_server-CLASS-MissingSpells.txt` files. Each class dump becomes its own column (e.g. `CharN ( PAL )`, `CharN ( SHD )`). If any class-tagged inventory exists for a character, the generic `CharacterName_server-Inventory.txt` for that character is ignored.
 
 **Same folder with only a generic inventory:** one inventory plus MissingSpells file(s). Add the spell file for the active persona to get a Team Gear column labeled with that class. If you add only the inventory and multiple spell files are auto-discovered, Team Gear is skipped (spell tabs only).
 
-**Subfolders (also supported):** each persona’s folder contains the standard inventory name plus its spell file — e.g. `PAL/Deflub_bristle-Inventory.txt` + `PAL/Deflub_bristle-PAL-MissingSpells.txt`. Same-folder class-tagged names are preferred when available.
+**Subfolders (also supported):** each persona’s folder contains the standard inventory name plus its spell file — e.g. `PAL/CharN_bristle-Inventory.txt` + `PAL/CharN_bristle-PAL-MissingSpells.txt`. Same-folder class-tagged names are preferred when available.
+
+**How class is determined:** reports label each column from the **worn Chest (breastplate)** in that inventory dump (looked up on raidloot, then EQ Resource, and cached). MissingSpells and class-tagged inventory filenames still pair personas and are used when the chest is empty or the lookup cannot name a class.
 
 ### Missing Spells logs (optional)
 
@@ -52,7 +56,7 @@ Files named like:
 
 Example: `Healub_bristle-CLR-MissingSpells.txt`
 
-From `/outputfile missingspells`. One line per spell: `level` + tab + `spell name`. Only **Rk. III** lines are counted. The **CLASS** in the MissingSpells filename identifies the persona; class-tagged inventory filenames use the same abbreviation.
+From `/outputfile missingspells`. One line per spell: `level` + tab + `spell name`. Only **Rk. III** lines are counted. The **CLASS** in the MissingSpells filename identifies the persona for pairing files; class-tagged inventory filenames use the same abbreviation. Column labels and useful-spell matching prefer the worn Chest class when it can be resolved.
 
 You can put spell files:
 
@@ -147,9 +151,9 @@ Same layout as Team Gear, but cells show **what tier is equipped** in each slot:
 | `SOR-R2` | Shattering of Ro R2 (Resonant Fracture) |
 | `Evolver` | Evolver item (final augment row in dump) |
 | `SOR-R1`, `TOB-R2`, `LS-G2`, etc. | Expansion tier code (`SOR`, `TOB`, `LS`, `NoS` + `G` group or `R` raid + tier number) |
-| `???` | Equipped but not recognized (e.g. Legacies Lost, Selenelion) |
+| `???` | Equipped but not recognized after name matching and EQ Resource lookup (e.g. pre-LS expansions) |
 
-See the legend on the Gear T-Level sheet for the full code list.
+See the legend on the Gear T-Level sheet for the full code list. Items whose names are not in the bundled patterns are looked up on EQ Resource; if the page lists an expansion and Raid/Group tier that maps to a known code, that T-code is used instead of `???`.
 
 **Cell colors** (Team Gear and Gear T-Level — same rules):
 
@@ -195,7 +199,7 @@ Useful spells from [Raccoo’s curated list](https://docs.google.com/spreadsheet
 
 **Columns:** Character · Level · Expansion · Spell · Highest RK · Comments
 
-Matching is by class (from the MissingSpells filename) against the bundled useful-spell catalog. Use Excel auto-filter or the HTML **Character** / **Expansion** dropdowns to focus on one persona. The sheet includes a credit link: **Based on "SOR - Raccoo's list of useful spells"**.
+Matching is by class (worn Chest when known, otherwise the MissingSpells filename) against the bundled useful-spell catalog. Use Excel auto-filter or the HTML **Character** / **Expansion** dropdowns to focus on one persona. The sheet includes a credit link: **Based on "SOR - Raccoo's list of useful spells"**.
 
 ### Rune Inventory *(if runes found)*
 
@@ -248,7 +252,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 
 | Control | Where | What it does |
 |---------|-------|----------------|
-| **Character filter** (chips) | Sidebar | Multi-select filter for gear columns and table rows. Toggle any combination of characters/personas; **All** clears the filter. Shared-name personas show full labels (e.g. `Deflub ( PAL )`). Unselected chips dim only while a filter is active |
+| **Character filter** (chips) | Sidebar | Multi-select filter for gear columns and table rows. Toggle any combination of characters/personas; **All** clears the filter. Shared-name personas show full labels (e.g. `CharN ( PAL )`). Unselected chips dim only while a filter is active |
 | **Search** | Toolbar | Filters the active section (keeps keyboard focus while typing) |
 | **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
 | **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, etc. to one character |
@@ -351,7 +355,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\EQGM-1.22.0.exe
+py -3 scripts\sign_exe.py dist\EQGM-1.23.0.exe
 ```
 
 (with the same environment variables set).

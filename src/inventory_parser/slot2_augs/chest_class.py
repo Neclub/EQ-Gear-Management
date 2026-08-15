@@ -1,4 +1,4 @@
-"""Detect character class from equipped Chest armor (raidloot / EQ Resource)."""
+"""Detect character class from equipped Chest / breastplate (raidloot / EQ Resource)."""
 
 from __future__ import annotations
 
@@ -207,16 +207,37 @@ def fetch_item_classes(
     return classes
 
 
+def canonical_class_abbr(value: str | None) -> str | None:
+    """Return a known class abbr or None."""
+    if not value:
+        return None
+    abbr = value.strip().upper()
+    return abbr if abbr in CLASS_TO_PROFILE else None
+
+
 def primary_class_from_list(classes: list[str]) -> str | None:
     """Pick a single class abbr when the item lists one (or more) classes."""
-    usable = [c for c in classes if c in CLASS_TO_PROFILE]
-    if not usable:
-        return None
-    # Single-class armor is the common Chest case.
+    return choose_class_abbr(classes)
+
+
+def choose_class_abbr(
+    chest_classes: list[str],
+    fallback: str | None = None,
+) -> str | None:
+    """Prefer worn-chest class; use filename/roster class only as fallback.
+
+    A single-class chest always wins. Multi-class chests keep ``fallback`` when
+    it is one of the listed classes; otherwise the first listed class is used.
+    """
+    usable = [c for c in chest_classes if c in CLASS_TO_PROFILE]
+    fallback_abbr = canonical_class_abbr(fallback)
     if len(usable) == 1:
         return usable[0]
-    # Multi-class: prefer first listed (raidloot / EQR order).
-    return usable[0]
+    if len(usable) > 1:
+        if fallback_abbr and fallback_abbr in usable:
+            return fallback_abbr
+        return usable[0]
+    return fallback_abbr
 
 
 def detect_class_from_chest(
@@ -257,23 +278,26 @@ def resolve_character_class(
     overrides: dict[int, tuple[str | None, str | None]] | None = None,
     allow_network: bool = True,
 ) -> str | None:
-    """
-    Prefer filename/roster class; otherwise look up Chest armor class.
-    """
-    if explicit_class:
-        abbr = explicit_class.strip().upper()
-        if abbr in CLASS_TO_PROFILE:
-            return abbr
-    if data.class_abbr:
-        abbr = data.class_abbr.strip().upper()
-        if abbr in CLASS_TO_PROFILE:
-            return abbr
-    return detect_class_from_chest(
-        data,
-        force_refresh=force_refresh,
-        overrides=overrides,
-        allow_network=allow_network,
+    """Prefer worn Chest (BP) class; fall back to filename/roster class."""
+    fallback = canonical_class_abbr(explicit_class) or canonical_class_abbr(
+        data.class_abbr
     )
+    chest = equipped_chest_item(data)
+    if chest is None:
+        return fallback
+    overrides = overrides or {}
+    ov = overrides.get(chest.item_id)
+    if ov is not None:
+        classes = fetch_item_classes(
+            chest.item_id,
+            raidloot_html=ov[0],
+            eqr_html=ov[1],
+        )
+    elif allow_network:
+        classes = fetch_item_classes(chest.item_id, force_refresh=force_refresh)
+    else:
+        classes = []
+    return choose_class_abbr(classes, fallback)
 
 
 def profile_from_class(class_abbr: str | None, fallback: ProfileId = "dex") -> ProfileId:
@@ -292,37 +316,33 @@ def resolve_classes_for_inventories(
     """
     Map inventory filepath → class abbr.
 
+    Always looks up equipped Chest (BP) class. Filename/roster class is
+    fallback when the chest is missing or the lookup has no usable class.
+
     Batches unique Chest item ids so each armor is fetched once.
     ``on_progress(done, total)`` is called after each chest fetch (1-based done).
     """
     explicit_by_path = {
-        str(Path(k)): (v.strip().upper() if v else None)
+        str(Path(k)): canonical_class_abbr(v)
         for k, v in (explicit_by_path or {}).items()
     }
     overrides = overrides or {}
     result: dict[str, str | None] = {}
-
+    fallback_by_path: dict[str, str | None] = {}
     need_fetch: dict[int, list[str]] = {}
 
     for data in inventories:
         path = str(Path(data.filepath))
-        chosen: str | None = None
-        for candidate in (explicit_by_path.get(path), data.class_abbr):
-            if candidate and candidate.strip().upper() in CLASS_TO_PROFILE:
-                chosen = candidate.strip().upper()
-                break
-        if chosen:
-            result[path] = chosen
-            continue
-
+        fallback = explicit_by_path.get(path) or canonical_class_abbr(data.class_abbr)
+        fallback_by_path[path] = fallback
         chest = equipped_chest_item(data)
         if chest is None:
-            result[path] = None
+            result[path] = fallback
             continue
         need_fetch.setdefault(chest.item_id, []).append(path)
 
     fetched_live = 0
-    class_by_item: dict[int, str | None] = {}
+    classes_by_item: dict[int, list[str]] = {}
     fetch_ids = sorted(need_fetch)
     total = len(fetch_ids)
     if total == 0 and on_progress is not None:
@@ -341,13 +361,56 @@ def resolve_classes_for_inventories(
             fetched_live += 1
         else:
             classes = []
-        class_by_item[item_id] = primary_class_from_list(classes)
+        classes_by_item[item_id] = [c for c in classes if c in CLASS_TO_PROFILE]
         if on_progress is not None:
             on_progress(i, total)
 
     for item_id, paths in need_fetch.items():
-        abbr = class_by_item.get(item_id)
+        chest_classes = classes_by_item.get(item_id, [])
         for path in paths:
-            result[path] = abbr
+            result[path] = choose_class_abbr(chest_classes, fallback_by_path[path])
 
     return result
+
+
+def apply_resolved_classes_to_team(
+    team: object,
+    *,
+    overrides: dict[int, tuple[str | None, str | None]] | None = None,
+    allow_network: bool = True,
+    on_progress: Callable[[int, int], None] | None = None,
+) -> dict[str, str | None]:
+    """Set each team/spell persona's class from worn Chest, then filenames."""
+    characters = list(getattr(team, "characters", []) or [])
+    spell_characters = list(getattr(team, "spell_characters", []) or [])
+    inventories: list[InventoryData] = []
+    seen_data: set[int] = set()
+    explicit_by_path: dict[str, str | None] = {}
+    all_chars = characters + spell_characters
+    for ch in all_chars:
+        data = getattr(ch, "inventory_data", None)
+        if data is None:
+            continue
+        path = str(Path(data.filepath))
+        if path not in explicit_by_path:
+            explicit_by_path[path] = getattr(ch, "class_abbr", None) or data.class_abbr
+        if id(data) not in seen_data:
+            seen_data.add(id(data))
+            inventories.append(data)
+
+    class_by_path = resolve_classes_for_inventories(
+        inventories,
+        explicit_by_path=explicit_by_path,
+        overrides=overrides,
+        allow_network=allow_network,
+        on_progress=on_progress,
+    )
+    for ch in all_chars:
+        data = getattr(ch, "inventory_data", None)
+        if data is None:
+            continue
+        path = str(Path(data.filepath))
+        abbr = class_by_path.get(path) or data.class_abbr
+        data.class_abbr = abbr
+        ch.class_abbr = abbr
+    return class_by_path

@@ -6,6 +6,17 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.23.0] - 2026-08-15
+
+### Added
+
+- Equipped items with no name/vendor T-code are looked up on EQ Resource (expansion + Raid/Group tier). Known codes such as `SOR-R2` replace `???`; older or unmapped pages stay `???`.
+
+### Changed
+
+- Character class is taken from the **worn Chest (BP)** on each inventory dump (raidloot, then EQ Resource). MissingSpells and class-tagged inventory filenames are fallback when the chest is empty or the lookup has no class.
+- **Docs:** README, HowToUse, and Discord guide note Live-only / Laurion's Song scope, class from worn Chest, and EQ Resource T-codes for unknown gear.
+
 ## [1.22.0] - 2026-08-15
 
 ### Added

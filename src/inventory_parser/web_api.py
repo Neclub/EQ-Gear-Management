@@ -446,7 +446,7 @@ class WebApi:
                 include_slot2=include_slot2,
                 include_anniversary=include_anniversary,
                 session_weights=session_weights,
-                on_progress=on_progress if include_slot2 else None,
+                on_progress=on_progress,
                 character_column_order=column_order,
             )
         except ValueError as exc:

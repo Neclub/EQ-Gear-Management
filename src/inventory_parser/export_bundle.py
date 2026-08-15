@@ -23,6 +23,8 @@ from inventory_parser.useful_spells import (
     build_missing_useful_spells_report,
 )
 from inventory_parser.slot2_augs.build import Slot2Export, build_slot2_export
+from inventory_parser.slot2_augs.chest_class import apply_resolved_classes_to_team
+from inventory_parser.slot2_augs.eqresource_gear_tier import apply_resolved_gear_tiers_to_team
 
 
 @dataclass
@@ -66,6 +68,22 @@ def build_export_bundle(
     report = build_team_report(inventory_paths, spell_paths=spell_file_paths)
     if not report.characters:
         raise ValueError("No inventory files were parsed successfully.")
+
+    fetch_chest_class = slot2_kwargs.get("fetch_chest_class", True)
+    chest_class_overrides = slot2_kwargs.get("chest_class_overrides")
+    apply_resolved_classes_to_team(
+        report,
+        overrides=chest_class_overrides,
+        allow_network=bool(fetch_chest_class),
+    )
+
+    fetch_eqr_gear_tiers = slot2_kwargs.pop("fetch_eqr_gear_tiers", True)
+    eqr_gear_tier_html = slot2_kwargs.pop("eqr_gear_tier_html", None)
+    apply_resolved_gear_tiers_to_team(
+        report,
+        html_overrides=eqr_gear_tier_html,
+        allow_network=bool(fetch_eqr_gear_tiers),
+    )
 
     apply_character_column_order(report, character_column_order)
 

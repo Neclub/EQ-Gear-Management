@@ -6,6 +6,8 @@
 
 Turn EverQuest inventory Output logs into a team **Excel workbook** and optional **HTML report** — equipped gear, tier levels, unmade craft mats, runes, spells, achievements, and optional Type 7/8 aug recommendations.
 
+Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
+
 ---
 
 ## Download
@@ -48,7 +50,7 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 ### What you get
 
 - **Team Gear** — equipped items by slot, color-coded by tier
-- **Gear T-Level** — expansion tier codes per slot
+- **Gear T-Level** — expansion tier codes per slot (unknown items looked up on EQ Resource)
 - **Unmade Gear** — craft mats in bags that still upgrade a slot
 - **Missing Runes / Spells / Useful Spells** — from MissingSpells Output logs
 - **Rune Inventory** — raid runes on hand
