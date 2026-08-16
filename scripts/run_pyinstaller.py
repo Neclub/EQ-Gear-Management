@@ -54,11 +54,11 @@ VSVersionInfo(
       StringTable(
         '040904B0',
         [
-        StringStruct('CompanyName', ''),
+        StringStruct('CompanyName', 'Lubworks'),
         StringStruct('FileDescription', 'EQ Gear Management'),
         StringStruct('FileVersion', '{file_ver_str}'),
         StringStruct('InternalName', '{exe_name}'),
-        StringStruct('LegalCopyright', ''),
+        StringStruct('LegalCopyright', 'Copyright © 2026 Lubworks'),
         StringStruct('OriginalFilename', '{orig}'),
         StringStruct('ProductName', 'EQ Gear Management'),
         StringStruct('ProductVersion', '{version}')])

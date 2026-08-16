@@ -52,7 +52,7 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 - **Team Gear** — equipped items by slot, color-coded by tier
 - **Gear T-Level** — expansion tier codes per slot (unknown items looked up on EQ Resource)
 - **Unmade Gear** — craft mats in bags that still upgrade a slot
-- **Missing Runes / Spells / Useful Spells** — from MissingSpells Output logs
+- **Missing Runes / Spells / Useful Spells** — from MissingSpells Output logs; HTML Missing Runes can sort columns (roster, name, class, most missing) and filter by expansion
 - **Rune Inventory** — raid runes on hand
 - **Achievements** — collection and raid progress (from achievement Output logs)
 - **Type 7/8 Augs** — optional type 7/8 recommendations (on by default); only augs that fit type 7/8 holes; equipped Velium Empowered Gem of Freezing is kept as a must-have

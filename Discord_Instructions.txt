@@ -61,7 +61,7 @@ Use **Browse…** to pick a different path if you want.
 • **Team Gear** — who is wearing what (tier-bucket colors: green / yellow / orange / red / purple)
 • **Gear T-Level** — tier codes per slot (`SOR-R2`, `TOB-R2`, etc.); unknown names are looked up on EQ Resource
 • **Unmade Gear** — craft mats and T1 containers in General bags that still upgrade a slot
-• **Missing Runes** — Rk. III rune totals by spell expansion (LS / ToB / SoR); one matrix per expansion
+• **Missing Runes** — Rk. III rune totals by spell expansion (LS / ToB / SoR); one matrix per expansion. HTML **Sort** reorders columns (roster, name, class, most missing); **Expansion** filters to one expansion
 • **Missing Spells** — every missing Rk. III with level, rune tier, expansion, and spell name
   • Missing Rk. II at levels 121–130 counts too (shown as Rk. III in the report)
 • **Missing Useful Spells** — curated useful spells still missing (Raccoo’s list × your MissingSpells dump; all levels)
@@ -76,7 +76,8 @@ Item names link to EQ Resource when the dump has item IDs.
 • **Sidebar** — Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Type 7/8 Augs, …)
 • **Character filter** chips under the nav — multi-select by toon/persona (All clears; personas labeled when shared)
 • **Search**, **sort** (click headers), **Visible slots** on gear tabs (search keeps focus while typing)
-• **Character** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Missing Useful Spells, Raid Achievements, Rune Inventory, etc.)
+• **Character** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Missing Useful Spells, Raid Achievements, Missing Runes, Rune Inventory, etc.)
+• **Sort** on Missing Runes — roster order, name, class, or most missing (uses the Expansion filter when one is selected)
 • **Expansion** on achievement tabs defaults to the current expansion (not All) — change the dropdown to see older content
 • Gear colors and EQ Resource links match Excel
 

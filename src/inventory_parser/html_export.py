@@ -185,7 +185,9 @@ def _serialize_missing_runes(
         )
     return {
         "characters": [c.display_name for c in characters],
+        "classAbbrs": [(c.class_abbr or "") for c in characters],
         "blocks": blocks,
+        "expansionOptions": [group.label for group in spell_report.expansion_groups],
     }
 
 
@@ -469,6 +471,7 @@ def serialize_report(bundle: ExportBundle) -> dict:
                     "name": character.display_name,
                     "shortName": character.character,
                     "server": character.server,
+                    "classAbbr": character.class_abbr or "",
                 }
                 for character in report.characters
             ],

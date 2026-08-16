@@ -39,6 +39,9 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
     assert "chip.dataset.key = character.name" in text
     assert "function filterChipLabel" in text
     assert "function rowMatchesCharacterFilter" in text
+    assert "function sortedColumnIndices" in text
+    assert "Most missing" in text
+    assert "Roster order" in text
     assert ">Visibility<" not in text
     for symbol_id in (
         "icon-shield",
@@ -68,6 +71,10 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
     assert "Missing Runes" in titles
     assert MISSING_SPELLS_SHEET_NAME in titles
     assert MISSING_USEFUL_SPELLS_SHEET_NAME in titles
+    assert report["meta"]["characters"][0]["classAbbr"]
+    missing_runes = next(s for s in report["sections"] if s["id"] == "missing_runes")
+    assert missing_runes["data"]["classAbbrs"]
+    assert missing_runes["data"]["expansionOptions"]
 
 
 def test_html_rune_inventory_present(tmp_path: Path) -> None:

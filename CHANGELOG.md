@@ -6,6 +6,16 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.25.0] - 2026-08-16
+
+### Added
+
+- **HTML Missing Runes:** **Sort** dropdown reorders character columns (roster order, name, class, most missing). **Expansion** filter matches Rune Inventory so “most missing” can target one expansion.
+
+### Changed
+
+- Windows `.exe` file properties now list **Lubworks** as company and copyright (`Copyright © 2026 Lubworks`).
+
 ## [1.24.1] - 2026-08-16
 
 ### Fixed

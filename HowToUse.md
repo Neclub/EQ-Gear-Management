@@ -4,7 +4,7 @@ Turn your raid’s EverQuest inventory dumps into one Excel workbook (and option
 
 Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
 
-The app version is shown in the window title and under **Help → About EQGM**. **Help → Check for Updates** compares that version to the latest GitHub Release. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details).
+The app version is shown in the window title and under **Help → About EQGM**. **Help → Check for Updates** compares that version to the latest GitHub Release. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details), with company **Lubworks**.
 
 ---
 
@@ -181,7 +181,7 @@ How many Minor / Lesser / Median / Greater / Glowing runes each character still 
 | The Outer Brood (ToB) | `Energized {Tier} Engram` |
 | Shattering of Ro (SoR) | `{Tier} Mirrorshard of Relic` |
 
-`{Tier}` = Minor, Lesser, Median, Greater, or Glowing (one per spell level). Each expansion gets its own matrix on the **Missing Runes** sheet and HTML tab — a character missing both LS and ToB spells at level 123 shows separate LS and ToB rune counts.
+`{Tier}` = Minor, Lesser, Median, Greater, or Glowing (one per spell level). Each expansion gets its own matrix on the **Missing Runes** sheet and HTML tab — a character missing both LS and ToB spells at level 123 shows separate LS and ToB rune counts. In HTML, **Sort** reorders character columns (roster, name, class, or most missing); **Expansion** narrows to one expansion.
 
 ### Missing Spells *(if enabled)*
 
@@ -259,7 +259,8 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 | **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
 | **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, etc. to one character |
 | **Rune type** | Toolbar (Missing Spells) | All / Minor / Lesser / Median / Greater / Glowing |
-| **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells** by exact spell expansion; filter **Missing Useful Spells** by short expansion code (SOR, TOB, …); filter achievement tables by expansion (defaults to the **current expansion** on first open); on **Rune Inventory**, filter to one rune family (NoS / LS / ToB / SoR) |
+| **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells** by exact spell expansion; filter **Missing Useful Spells** by short expansion code (SOR, TOB, …); filter achievement tables by expansion (defaults to the **current expansion** on first open); on **Missing Runes** and **Rune Inventory**, filter to one expansion / rune family |
+| **Sort** | Toolbar (Missing Runes) | Reorder character columns: roster order, name, class, or most missing (uses the Expansion filter when one is selected) |
 | **Column headers** | Table | Click to sort |
 
 Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.
@@ -357,7 +358,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\EQGM-1.24.1.exe
+py -3 scripts\sign_exe.py dist\EQGM-1.25.0.exe
 ```
 
 (with the same environment variables set).

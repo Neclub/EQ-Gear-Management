@@ -567,6 +567,7 @@ const state = {
   characterFilters: [],
   slotFilter: "all",
   sorts: {},
+  colSorts: {},
   searches: {},
   chars: {},
   expansions: {},
@@ -678,6 +679,47 @@ function filteredColumnIndices(characters) {
   if (!targets) return characters.map((_, i) => i);
   const wanted = new Set(targets);
   return characters.map((name, i) => (wanted.has(name) ? i : -1)).filter((i) => i >= 0);
+}
+
+function classAbbrForColumn(data, idx) {
+  const listed = (data.classAbbrs || [])[idx];
+  if (listed) return listed;
+  const name = data.characters[idx];
+  const match = (REPORT.meta.characters || []).find((c) => c.name === name);
+  return (match && match.classAbbr) || "";
+}
+
+function columnMissingTotal(data, idx, blocks) {
+  let sum = 0;
+  blocks.forEach((block) => {
+    (block.rows || []).forEach((row) => {
+      sum += row.counts[idx] || 0;
+    });
+  });
+  return sum;
+}
+
+function sortedColumnIndices(section, blocks) {
+  const data = section.data;
+  const indices = filteredColumnIndices(data.characters);
+  const mode = state.colSorts[section.id] || "roster";
+  if (mode === "roster" || indices.length < 2) return indices;
+
+  const nameOf = (idx) => data.characters[idx] || "";
+  const sorted = indices.slice();
+  sorted.sort((a, b) => {
+    if (mode === "name") return compareValues(nameOf(a), nameOf(b));
+    if (mode === "class") {
+      const byClass = compareValues(classAbbrForColumn(data, a), classAbbrForColumn(data, b));
+      return byClass || compareValues(nameOf(a), nameOf(b));
+    }
+    if (mode === "missing") {
+      const byCount = columnMissingTotal(data, b, blocks) - columnMissingTotal(data, a, blocks);
+      return byCount || compareValues(nameOf(a), nameOf(b));
+    }
+    return 0;
+  });
+  return sorted;
 }
 
 function rowPassesSlotFilter(row) {
@@ -837,7 +879,10 @@ function updateToolbar() {
     }
   }
 
-  if (section.type === "rune_inventory" && section.data.expansionOptions?.length) {
+  if (
+    (section.type === "rune_inventory" || section.type === "missing_runes") &&
+    section.data.expansionOptions?.length
+  ) {
     const sel = document.createElement("select");
     sel.innerHTML =
       '<option value="">All expansions</option>' +
@@ -850,6 +895,26 @@ function updateToolbar() {
       refreshContent();
     });
     toolbar.appendChild(el("label", null, "Expansion"));
+    toolbar.appendChild(sel);
+  }
+
+  if (section.type === "missing_runes" && (section.data.characters || []).length) {
+    const sel = document.createElement("select");
+    const options = [
+      ["roster", "Roster order"],
+      ["name", "Name"],
+      ["class", "Class"],
+      ["missing", "Most missing"],
+    ];
+    sel.innerHTML = options
+      .map(([value, label]) => `<option value="${value}">${label}</option>`)
+      .join("");
+    sel.value = state.colSorts[section.id] || "roster";
+    sel.addEventListener("change", () => {
+      state.colSorts[section.id] = sel.value;
+      refreshContent();
+    });
+    toolbar.appendChild(el("label", null, "Sort"));
     toolbar.appendChild(sel);
   }
 
@@ -1047,9 +1112,13 @@ function updateTableContent(content, section) {
 function updateMissingRunesContent(content, section) {
   const data = section.data;
   const q = (state.searches[section.id] || "").trim().toLowerCase();
-  const colIndices = filteredColumnIndices(data.characters);
+  const expansion = state.expansions[section.id] || "";
+  const blocks = expansion
+    ? data.blocks.filter((block) => block.label === expansion)
+    : data.blocks;
+  const colIndices = sortedColumnIndices(section, blocks);
 
-  data.blocks.forEach((block) => {
+  blocks.forEach((block) => {
     content.appendChild(el("div", "block-title", block.label));
     content.appendChild(el("div", "block-sub", block.theme));
     const wrap = el("div", "table-wrap");
