@@ -15,7 +15,13 @@ from inventory_parser.slot2_augs.compare import (
     upgrade_stat_delta_note,
 )
 from inventory_parser.parser import InventoryData, InventoryItem, Slot2Aug, parse_inventory_file
-from inventory_parser.slot2_augs.profiles import ARTISANS_PRIZE_ID, ARTISANS_PRIZE_NAME
+from inventory_parser.slot2_augs.profiles import (
+    ARTISANS_PRIZE_ID,
+    ARTISANS_PRIZE_NAME,
+    VELIUM_FREEZING_GEM_ALLOWED_BASES,
+    VELIUM_FREEZING_GEM_ID,
+    VELIUM_FREEZING_GEM_NAME,
+)
 from inventory_parser.slot2_augs.raidloot import (
     AugCandidate,
     CatalogResult,
@@ -953,3 +959,126 @@ def test_lore_group_same_slot_upgrade_ok():
     )
     assert assigned["Head"] is not None
     assert assigned["Head"].item_id == 175573
+
+
+def _freezing_gem(**stats: int) -> AugCandidate:
+    stats = stats or {"hdex": 10, "hp": 100, "ac": 10}
+    return AugCandidate(
+        item_id=VELIUM_FREEZING_GEM_ID,
+        name=VELIUM_FREEZING_GEM_NAME,
+        profile="dex",
+        focus_heroic=int(stats.get("hdex", 0)),
+        ac=int(stats.get("ac", 0)),
+        hp=int(stats.get("hp", 0)),
+        atk=int(stats.get("atk", 0)),
+        allowed_bases=VELIUM_FREEZING_GEM_ALLOWED_BASES,
+        lore=True,
+        stats=dict(stats),
+    )
+
+
+def _empty(slot: str) -> Slot2Aug:
+    return Slot2Aug(gear_slot=slot, name=None, item_id=None)
+
+
+def test_equipped_freezing_gem_is_kept_in_loadout():
+    gem = _freezing_gem()
+    cat = list(_catalog().augs) + [gem]
+    slots = ["Head", "Ear-1", "Range", "Charm"]
+    current = {
+        "Head": Slot2Aug(
+            gear_slot="Head",
+            name=VELIUM_FREEZING_GEM_NAME,
+            item_id=VELIUM_FREEZING_GEM_ID,
+        ),
+        "Ear-1": _empty("Ear-1"),
+        "Range": _empty("Range"),
+        "Charm": _empty("Charm"),
+    }
+    assigned = assign_slot_recommendations(
+        slots, cat, artisans_prize_owned=False, current_by_slot=current
+    )
+    gem_slots = [s for s, a in assigned.items() if a and a.item_id == VELIUM_FREEZING_GEM_ID]
+    assert len(gem_slots) == 1
+    assert gem_slots[0] in slots
+
+
+def test_freezing_gem_leaves_charm_when_charm_bis_is_exclusive():
+    """Occupying Charm with a weak must-have costs the unique Charm BiS."""
+    gem = _freezing_gem(hdex=5, hp=50, ac=5)
+    charm_only = AugCandidate(
+        item_id=999010,
+        name="Charm Only Monster",
+        profile="dex",
+        focus_heroic=80,
+        ac=200,
+        hp=2000,
+        atk=80,
+        allowed_bases=frozenset({"Charm"}),
+        lore=True,
+        stats={"hdex": 80, "hp": 2000, "ac": 200, "atk": 80},
+    )
+    general = AugCandidate(
+        item_id=999011,
+        name="General Head Gem",
+        profile="dex",
+        focus_heroic=70,
+        ac=150,
+        hp=1500,
+        allowed_bases=VELIUM_FREEZING_GEM_ALLOWED_BASES,
+        lore=True,
+        stats={"hdex": 70, "hp": 1500, "ac": 150},
+    )
+    cat = [charm_only, general, gem]
+    current = {
+        "Charm": Slot2Aug(
+            gear_slot="Charm",
+            name=VELIUM_FREEZING_GEM_NAME,
+            item_id=VELIUM_FREEZING_GEM_ID,
+        ),
+        "Head": _empty("Head"),
+    }
+    assigned = assign_slot_recommendations(
+        ["Charm", "Head"],
+        cat,
+        artisans_prize_owned=False,
+        current_by_slot=current,
+    )
+    assert assigned["Charm"] is not None
+    assert assigned["Charm"].item_id == 999010
+    assert assigned["Head"] is not None
+    assert assigned["Head"].item_id == VELIUM_FREEZING_GEM_ID
+
+
+def test_freezing_gem_stays_when_already_on_best_tradeoff_slot():
+    gem = _freezing_gem(hdex=5, hp=50, ac=5)
+    charm_only = AugCandidate(
+        item_id=999010,
+        name="Charm Only Monster",
+        profile="dex",
+        focus_heroic=80,
+        ac=200,
+        hp=2000,
+        allowed_bases=frozenset({"Charm"}),
+        lore=True,
+        stats={"hdex": 80, "hp": 2000, "ac": 200},
+    )
+    cat = [charm_only, gem]
+    current = {
+        "Charm": _empty("Charm"),
+        "Head": Slot2Aug(
+            gear_slot="Head",
+            name=VELIUM_FREEZING_GEM_NAME,
+            item_id=VELIUM_FREEZING_GEM_ID,
+        ),
+    }
+    assigned = assign_slot_recommendations(
+        ["Charm", "Head"],
+        cat,
+        artisans_prize_owned=False,
+        current_by_slot=current,
+    )
+    assert assigned["Head"] is not None
+    assert assigned["Head"].item_id == VELIUM_FREEZING_GEM_ID
+    assert assigned["Charm"] is not None
+    assert assigned["Charm"].item_id == 999010

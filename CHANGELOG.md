@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.24.0] - 2026-08-16
+
+### Added
+
+- Equipped **Velium Empowered Gem of Freezing** (item 163584) is treated as a must-have type 7/8 aug. It stays in the loadout on a legal slot (Arms, Back, Charm, Chest, Ear, Face, Feet, Finger, Hands, Head, Legs, Neck, Range, Shoulder, Waist, Wrist). The hole is the one that keeps the best weighted stat trade-off versus true BiS for the rest of the set.
+
 ## [1.23.2] - 2026-08-15
 
 ### Removed

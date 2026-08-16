@@ -119,7 +119,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
    - **Slots** dropdown — `all`, `visible`, or `non_visible` on the gear sheets  
    - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs
    - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs
-   - **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Artisan's Prize is recommended for Ear when it is in the inventory dump. Generate shows a progress bar while sockets and catalogs are fetched.
+   - **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Artisan's Prize is recommended for Ear when it is in the inventory dump. An equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off. Generate shows a progress bar while sockets and catalogs are fetched.
 
 6. **Output**
    - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
@@ -234,7 +234,7 @@ Incomplete raid **objectives** from each expansion’s **Raids** section. Column
 
 ### Type 7/8 Augs *(if enabled)*
 
-Type 7/8 (usually dump Slot2) recommendations vs a live EQ Resource catalog (raidloot fallback). Artisan's Prize is treated as owned when it appears in the inventory dump. Excel adds **Stat Summary**, **Augs**, **Need to Farm**, **Ranked Augs**, and **Aug Legend**. HTML adds a **Type 7/8 Augs** section with the same cards. Needs a network fetch the first time; later runs use disk cache under `%LOCALAPPDATA%\EQGM\`. Uncheck the chip to skip this entirely.
+Type 7/8 (usually dump Slot2) recommendations vs a live EQ Resource catalog (raidloot fallback). Artisan's Prize is treated as owned when it appears in the inventory dump. If **Velium Empowered Gem of Freezing** is equipped, it is kept and assigned to the legal slot with the best weighted trade-off against other BiS augs. Excel adds **Stat Summary**, **Augs**, **Need to Farm**, **Ranked Augs**, and **Aug Legend**. HTML adds a **Type 7/8 Augs** section with the same cards. Needs a network fetch the first time; later runs use disk cache under `%LOCALAPPDATA%\EQGM\`. Uncheck the chip to skip this entirely.
 
 ### HTML report *(optional)*
 
@@ -357,7 +357,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\EQGM-1.23.2.exe
+py -3 scripts\sign_exe.py dist\EQGM-1.24.0.exe
 ```
 
 (with the same environment variables set).

@@ -47,6 +47,7 @@ Tip: class labels come from the worn Chest (BP) in each inventory dump; filename
 5. (Optional) Leave **Achievements** checked for collection/summary tabs (auto-enabled when achievement files are present)
 6. (Optional) Leave **Type 7/8 Augs** checked (on by default) for type 7/8 BiS / farm sheets; uncheck to skip the catalog fetch
    • When on, optional **Include Anniversary augs** (Gems of Distant Echoes) and **Advanced weights** for a single-character roster
+   • Equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off
 7. Choose **Excel** / **HTML** / **Both** next to **Generate Report** (default **Both**; remembered next time)
 8. Click **Generate Report**
 

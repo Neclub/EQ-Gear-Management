@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from typing import Literal
 
 from inventory_parser.slot2_augs.aug_stats import STAT_DISPLAY
@@ -21,6 +21,9 @@ from inventory_parser.slot2_augs.profiles import (
     ARTISANS_PRIZE_NAME,
     PROFILE_FOCUS_LABEL,
     PROFILE_FOCUS_STAT,
+    VELIUM_FREEZING_GEM_ALLOWED_BASES,
+    VELIUM_FREEZING_GEM_ID,
+    VELIUM_FREEZING_GEM_NAME,
     ProfileId,
 )
 from inventory_parser.slot2_augs.raidloot import AugCandidate, CatalogResult, augs_for_slot
@@ -53,6 +56,12 @@ def owns_artisans_prize(data: InventoryData) -> bool:
     if ARTISANS_PRIZE_ID in collect_owned_item_ids(data):
         return True
     return ARTISANS_PRIZE_NAME.casefold() in collect_owned_item_names(data)
+
+
+def is_velium_freezing_gem(*, item_id: int | None = None, name: str | None = None) -> bool:
+    if item_id is not None and item_id == VELIUM_FREEZING_GEM_ID:
+        return True
+    return (name or "").casefold() == VELIUM_FREEZING_GEM_NAME.casefold()
 
 # Keys rolled into the "if all suggested augs equipped" summary.
 SUMMARY_STAT_KEYS: tuple[str, ...] = (
@@ -300,6 +309,126 @@ def upgrade_stat_delta_note(
     return ", ".join(parts)
 
 
+def _normalize_freezing_gem(aug: AugCandidate) -> AugCandidate:
+    return replace(
+        aug,
+        item_id=VELIUM_FREEZING_GEM_ID,
+        name=aug.name or VELIUM_FREEZING_GEM_NAME,
+        allowed_bases=VELIUM_FREEZING_GEM_ALLOWED_BASES,
+        excluded_bases=frozenset(),
+        ear_only=False,
+        shield_only=False,
+        slot_text=(
+            "Arms, Back, Charm, Chest, Ear, Face, Feet, Finger, Hands, "
+            "Head, Legs, Neck, Range, Shoulder, Waist, Wrist"
+        ),
+    )
+
+
+def _freezing_gem_candidate(
+    catalog: list[AugCandidate],
+    *,
+    profile: ProfileId | None = None,
+) -> AugCandidate:
+    found = next((a for a in catalog if is_velium_freezing_gem(item_id=a.item_id, name=a.name)), None)
+    if found is not None:
+        return _normalize_freezing_gem(found)
+    used: ProfileId = profile or (catalog[0].profile if catalog else "dex")
+    return _normalize_freezing_gem(
+        AugCandidate(
+            item_id=VELIUM_FREEZING_GEM_ID,
+            name=VELIUM_FREEZING_GEM_NAME,
+            profile=used,
+            focus_heroic=0,
+            lore=True,
+            stats={},
+        )
+    )
+
+
+def _equipped_freezing_gem_slot(
+    current_by_slot: dict[str, Slot2Aug],
+) -> str | None:
+    for slot, cur in current_by_slot.items():
+        if cur is None:
+            continue
+        if is_velium_freezing_gem(item_id=cur.item_id, name=cur.name):
+            return slot
+    return None
+
+
+def _loadout_score(
+    assigned: dict[str, AugCandidate | None],
+    class_abbr: str | None,
+    *,
+    shield_secondary: bool = False,
+) -> float:
+    total = 0.0
+    for slot, aug in assigned.items():
+        if aug is None:
+            continue
+        skip = _weapon_slot_skip_note(slot, None)
+        if skip is not None and not (slot == "Secondary" and shield_secondary):
+            continue
+        weights = resolve_weights(
+            class_abbr,
+            slot,
+            secondary_is_shield=shield_secondary and slot == "Secondary",
+            profile=aug.profile,
+        )
+        total += score_aug(aug, weights)
+    return total
+
+
+def _choose_freezing_gem_slot(
+    gem: AugCandidate,
+    gear_slots: list[str],
+    catalog: list[AugCandidate],
+    *,
+    artisans_prize_owned: bool,
+    class_abbr: str | None,
+    shield_secondary: bool,
+    current_slot: str | None,
+) -> str | None:
+    """Pick the legal hole that maximizes remaining loadout score with the gem pinned."""
+    order = _slot_order(gear_slots, class_abbr)
+    eligible = [
+        slot
+        for slot in order
+        if gem.fits_gear_slot(slot)
+        and not (
+            _weapon_slot_skip_note(slot, None) is not None
+            and not (slot == "Secondary" and shield_secondary)
+        )
+    ]
+    if not eligible:
+        return None
+    if current_slot in eligible and len(eligible) == 1:
+        return current_slot
+
+    best_slot: str | None = None
+    best_score: float | None = None
+    for slot in eligible:
+        pinned = build_ideal_loadout(
+            gear_slots,
+            catalog,
+            artisans_prize_owned=artisans_prize_owned,
+            class_abbr=class_abbr,
+            shield_secondary=shield_secondary,
+            pinned={slot: gem},
+        )
+        score = _loadout_score(
+            pinned, class_abbr, shield_secondary=shield_secondary
+        )
+        if best_score is None or score > best_score + 1e-6:
+            best_score = score
+            best_slot = slot
+        elif best_score is not None and abs(score - best_score) <= 1e-6:
+            if slot == current_slot:
+                best_slot = slot
+    return best_slot
+
+
 def _prize_candidate(catalog: list[AugCandidate]) -> AugCandidate:
     prize = next((a for a in catalog if a.item_id == ARTISANS_PRIZE_ID), None)
     if prize is not None:
@@ -478,19 +607,30 @@ def build_ideal_loadout(
     artisans_prize_owned: bool,
     class_abbr: str | None = None,
     shield_secondary: bool = False,
+    pinned: dict[str, AugCandidate] | None = None,
 ) -> dict[str, AugCandidate | None]:
     """Absolute BiS unique assignment ignoring what is currently equipped."""
     order = _slot_order(gear_slots, class_abbr)
     unavailable: set[int] = set()
     ideal: dict[str, AugCandidate | None] = {}
 
+    for slot, aug in (pinned or {}).items():
+        if slot not in order:
+            continue
+        ideal[slot] = aug
+        _claim_item(unavailable, aug.item_id, catalog)
+
     # Empty-first is irrelevant with no currents; use report order.
     # Prefer putting Artisan's Prize on an Ear when owned.
     if artisans_prize_owned:
         for slot in order:
+            if slot in ideal:
+                continue
             if not _is_ear_slot(slot):
                 continue
             prize = _prize_candidate(catalog)
+            if prize.item_id in unavailable:
+                break
             ideal[slot] = prize
             _claim_item(unavailable, prize.item_id, catalog)
             break
@@ -525,9 +665,12 @@ def assign_slot_recommendations(
     Recommend only ideal BiS augs the character is missing.
 
     1. Build the ideal unique loadout (Range/Charm/Feet-when-needed first).
+       An equipped Velium Empowered Gem of Freezing is pinned first to the
+       legal slot that maximizes remaining weighted loadout score.
     2. Priority slots pull their ideal aug even when it is currently equipped
-       in another slot (suggest a move). Priority = Range, Charm, and Feet
-       when the high-AC overlay applies — few augs fit those holes.
+       in another slot (suggest a move). Priority = the freezing-gem pin
+       (when worn), then Range, Charm, and Feet when the high-AC overlay
+       applies — few augs fit those holes.
     3. Other slots claim their ideal only when it sits on a priority slot that
        does not need it (displaced piece moves into the general pool).
     4. General slots keep any equipped ideal-loadout piece (no general↔general
@@ -539,6 +682,26 @@ def assign_slot_recommendations(
     current_by_slot = current_by_slot or {}
     order = _slot_order(gear_slots, class_abbr)
     priority_slots = tuple(s for s in priority_aug_slots(class_abbr) if s in order)
+
+    gem_slot = _equipped_freezing_gem_slot(current_by_slot)
+    pinned: dict[str, AugCandidate] | None = None
+    if gem_slot is not None:
+        gem = _freezing_gem_candidate(catalog)
+        pin = _choose_freezing_gem_slot(
+            gem,
+            gear_slots,
+            catalog,
+            artisans_prize_owned=artisans_prize_owned,
+            class_abbr=class_abbr,
+            shield_secondary=shield_secondary,
+            current_slot=gem_slot,
+        )
+        if pin is not None:
+            pinned = {pin: gem}
+            if pin not in priority_slots:
+                priority_slots = (pin,) + priority_slots
+            elif pin != priority_slots[0]:
+                priority_slots = (pin,) + tuple(s for s in priority_slots if s != pin)
     priority = set(priority_slots)
 
     ideal = build_ideal_loadout(
@@ -547,6 +710,7 @@ def assign_slot_recommendations(
         artisans_prize_owned=artisans_prize_owned,
         class_abbr=class_abbr,
         shield_secondary=shield_secondary,
+        pinned=pinned,
     )
     ideal_ids = {a.item_id for a in ideal.values() if a is not None}
 
@@ -738,6 +902,12 @@ def classify_status(
     if current.item_id == ARTISANS_PRIZE_ID and _is_ear_slot(current.gear_slot):
         return "bis", "Artisan's Prize (Ear BiS)"
 
+    if is_velium_freezing_gem(item_id=current.item_id, name=current.name) and (
+        recommended.item_id == VELIUM_FREEZING_GEM_ID
+        or is_velium_freezing_gem(name=recommended.name)
+    ):
+        return "bis", "Must-have Velium Empowered Gem of Freezing"
+
     return "upgrade", f"Recommended: {recommended.name}"
 
 
@@ -770,7 +940,14 @@ def _finalize_comparison(
         note = "Current aug not in raidloot catalog (EQ Resource miss)"
 
     # Guard: never list an upgrade that ranks worse than current.
-    if status == "upgrade" and recommended is not None and cur_aug is not None:
+    # Must-have freezing gem may occupy a hole whose catalog BiS scores higher.
+    if (
+        status == "upgrade"
+        and recommended is not None
+        and recommended.item_id == VELIUM_FREEZING_GEM_ID
+    ):
+        pass
+    elif status == "upgrade" and recommended is not None and cur_aug is not None:
         if _aug_rank_tuple(
             recommended,
             current.gear_slot,
@@ -1008,9 +1185,20 @@ def compare_character(
         secondary and _is_secondary_shield(secondary.gear_slot, secondary.parent_name)
     )
 
+    working_catalog = list(catalog)
+    seen_ids = {a.item_id for a in working_catalog}
+    for aug in external_augs.values():
+        if aug.item_id not in seen_ids:
+            working_catalog.append(aug)
+            seen_ids.add(aug.item_id)
+    if _equipped_freezing_gem_slot(by_slot) is not None and VELIUM_FREEZING_GEM_ID not in seen_ids:
+        working_catalog.append(
+            _freezing_gem_candidate(working_catalog, profile=used_profile)
+        )
+
     assigned = assign_slot_recommendations(
         gear_slots,
-        catalog,
+        working_catalog,
         artisans_prize_owned=artisans_prize_owned,
         class_abbr=used_class,
         shield_secondary=shield_secondary,
@@ -1022,7 +1210,7 @@ def compare_character(
         _finalize_comparison(
             by_slot[slot],
             assigned.get(slot),
-            catalog,
+            working_catalog,
             used_class,
             profile=used_profile,
             move_from_slot=move_from.get(slot),

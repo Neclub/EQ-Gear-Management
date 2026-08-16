@@ -102,6 +102,30 @@ FEET_HIGH_AC_CLASSES: frozenset[str] = frozenset(
 ARTISANS_PRIZE_ID = 88785
 ARTISANS_PRIZE_NAME = "Artisan's Prize"
 
+# Equipped type 7/8 must-have: player chose to wear it; keep it in a legal hole.
+VELIUM_FREEZING_GEM_ID = 163584
+VELIUM_FREEZING_GEM_NAME = "Velium Empowered Gem of Freezing"
+VELIUM_FREEZING_GEM_ALLOWED_BASES: frozenset[str] = frozenset(
+    {
+        "Arms",
+        "Back",
+        "Charm",
+        "Chest",
+        "Ear",
+        "Face",
+        "Feet",
+        "Fingers",
+        "Hands",
+        "Head",
+        "Legs",
+        "Neck",
+        "Range",
+        "Shoulders",
+        "Waist",
+        "Wrist",
+    }
+)
+
 
 @dataclass(frozen=True)
 class ProfileInfo:
