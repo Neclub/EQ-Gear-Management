@@ -4,7 +4,7 @@
 
 # EQ Gear Management (EQGM)
 
-Turn EverQuest inventory Output logs into a team **Excel workbook** and optional **HTML report** — equipped gear, tier levels, unmade craft mats, runes, spells, achievements, and optional Type 7/8 aug recommendations.
+Turn EverQuest inventory output files into a team **Excel workbook** and optional **HTML report** — equipped gear, tier levels, unmade craft mats, runes, spells, achievements, and optional Type 7/8 aug recommendations.
 
 Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
 
@@ -22,7 +22,7 @@ Installed copies can use **Help → Check for Updates** to see if a newer GitHub
 
 ## How to use
 
-### 1. Get Output logs in-game
+### 1. Get output files in-game
 
 On each character, run in EverQuest chat:
 
@@ -37,7 +37,7 @@ Copy the `.txt` files from your EQ Logs folder into one folder on your PC.
 ### 2. Generate the report
 
 1. Open **EQ Gear Management**.
-2. Click **EQ Folder** and pick the folder with your Output logs; select which characters to import.
+2. Click **EQ Folder** and pick the folder with your output files; select which characters to import.
 3. Adjust **Export options** and **Output folder** on the right if needed.
 4. Choose **Excel**, **HTML**, or **Both**, then click **Generate Report**.
 
@@ -52,9 +52,9 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 - **Team Gear** — equipped items by slot, color-coded by tier
 - **Gear T-Level** — expansion tier codes per slot (unknown items looked up on EQ Resource)
 - **Unmade Gear** — craft mats in bags that still upgrade a slot
-- **Missing Runes / Spells / Useful Spells** — from MissingSpells Output logs; HTML Missing Runes can sort columns (roster, name, class, most missing) and filter by expansion
+- **Missing Runes / Spells / Useful Spells** — from MissingSpells output files; HTML Missing Runes can sort columns (roster, name, class, most missing) and filter by expansion
 - **Rune Inventory** — raid runes on hand
-- **Achievements** — collection and raid progress (from achievement Output logs)
+- **Achievements** — collection and raid progress (from achievement output files)
 - **Type 7/8 Augs** — optional type 7/8 recommendations (on by default); only augs that fit type 7/8 holes; equipped Velium Empowered Gem of Freezing is kept as a must-have
 - **HTML report** — the same data in a browser, searchable and filterable
 

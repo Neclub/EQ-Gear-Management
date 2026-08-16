@@ -324,7 +324,7 @@ function bindEvents() {
           <p>EQGM ${info.version}</p>
           <p style="margin-top:12px;color:var(--muted);font-size:12px">
             Builds team Excel workbooks and optional HTML reports from EverQuest
-            /outputfile inventory, spell, and achievement dumps.
+            /outputfile inventory, spell, and achievement files.
           </p>
           <p style="margin-top:8px;font-size:12px">Sheets: Team Gear, Gear T-Level, Missing Runes,
           Missing Spells, Rune Inventory, Unmade Gear, achievements, and more.</p>
@@ -1037,7 +1037,7 @@ async function showHelpTiers() {
         <p style="color:var(--muted);font-size:12px;margin-top:0">Semantic tier buckets. Team Gear and Gear T-Level use the same cell colors.</p>
         ${rows}
         <p style="margin-top:12px;font-size:12px;color:var(--muted)">
-          Evolver: equipped items whose dump includes the final augment row. Tier is resolved first;
+          Evolver: equipped items whose inventory file includes the final augment row. Tier is resolved first;
           Evolver only when the item has no recognized tier pattern.
         </p>
         <p style="font-size:12px;color:var(--muted)">Unlisted items show as red (???). Item names link to EQ Resource.</p>

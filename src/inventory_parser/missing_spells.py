@@ -290,7 +290,7 @@ def _apply_gear_eligibility(bindings: list[PersonaBinding]) -> tuple[list[Person
             updated.append(replace(binding, include_gear=False))
             warnings.append(
                 f"Skipping team gear for {_persona_display_label(binding.character, binding.class_abbr)}: "
-                "inventory dump is shared with other personas (equipped gear reflects the active persona only)."
+                "inventory file is shared with other personas (equipped gear reflects the active persona only)."
             )
         else:
             updated.append(binding)

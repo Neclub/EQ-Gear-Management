@@ -849,7 +849,7 @@ def _write_missing_useful_spells_sheet(
     note = ws.cell(
         row,
         1,
-        "Intersection of the curated useful-spell list with each character's MissingSpells dump. "
+        "Intersection of the curated useful-spell list with each character's MissingSpells file. "
         "Filter the Character column to focus on one persona.",
     )
     note.font = FONT_LEGEND

@@ -62,7 +62,7 @@ def build_export_bundle(
     inventory_paths, spell_file_paths, achievement_file_paths = split_input_paths(input_paths)
     if not inventory_paths:
         raise ValueError(
-            "No inventory files were provided. Add *-Inventory.txt dumps."
+            "No inventory files were provided. Add *-Inventory.txt files."
         )
 
     report = build_team_report(inventory_paths, spell_paths=spell_file_paths)

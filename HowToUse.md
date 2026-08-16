@@ -1,6 +1,6 @@
 # How to Use — EQ Gear Management (EQGM)
 
-Turn your raid’s EverQuest inventory dumps into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, unmade craft mats, optional missing Rank III spell runes, optional achievement collection progress, and optional Type 7/8 aug recommendations.
+Turn your raid’s EverQuest inventory files into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, unmade craft mats, optional missing Rank III spell runes, optional achievement collection progress, and optional Type 7/8 aug recommendations.
 
 Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
 
@@ -10,19 +10,19 @@ The app version is shown in the window title and under **Help → About EQGM**. 
 
 ## What you need
 
-### Getting dumps in-game
+### Getting output files in-game
 
 On each character, run these chat commands in EverQuest:
 
 | Command | Creates |
 |---------|---------|
-| `/outputfile inventory` | Inventory dump (`*-Inventory.txt`) |
-| `/outputfile missingspells` | Missing spells log (`*-MissingSpells.txt`) |
-| `/outputfile achievements` | Achievement dump (`*-Achievements.txt`) |
+| `/outputfile inventory` | Inventory file (`*-Inventory.txt`) |
+| `/outputfile missingspells` | Missing spells file (`*-MissingSpells.txt`) |
+| `/outputfile achievements` | Achievement file (`*-Achievements.txt`) |
 
-EQ writes the files to your **`EverQuest/Logs`** folder (or the path your client uses for `/outputfile`). Copy those `.txt` files into one folder for the parser — each character needs their own inventory file; add spell and/or achievement files when you want those tabs.
+EQ writes the files to your **`EverQuest/Logs`** folder (or the path your client uses for `/outputfile`). Copy those `.txt` files into one folder for the app — each character needs their own inventory file; add spell and/or achievement files when you want those tabs.
 
-### Inventory dumps (required)
+### Inventory files (required)
 
 At least one file named like:
 
@@ -30,7 +30,7 @@ At least one file named like:
 
 Example: `CharN_bristle-Inventory.txt`
 
-Tab-separated text from `/outputfile inventory`. The dump reflects **equipped items for the active persona only**.
+Tab-separated text from `/outputfile inventory`. The file reflects **equipped items for the active persona only**.
 
 You can also use class-tagged inventory names (same pattern as MissingSpells), for example after renaming exports or if the client names them this way:
 
@@ -38,17 +38,17 @@ You can also use class-tagged inventory names (same pattern as MissingSpells), f
 
 Example: `CharN_bristle-PAL-Inventory.txt`
 
-**Alternate personas:** EQ’s Alternate Persona system lets one character swap class while sharing bank, bags, and other data. Each persona’s worn gear can be tracked as its own Team Gear column when you have a separate inventory dump per class. Achievements and collections are shared across personas — they appear once per character, not once per class column.
+**Alternate personas:** EQ’s Alternate Persona system lets one character swap class while sharing bank, bags, and other data. Each persona’s worn gear can be tracked as its own Team Gear column when you have a separate inventory file per class. Achievements and collections are shared across personas — they appear once per character, not once per class column.
 
-**Class-tagged inventories (preferred for personas):** put `CharacterName_server-CLASS-Inventory.txt` files in the same folder with matching `CharacterName_server-CLASS-MissingSpells.txt` files. Each class dump becomes its own column (e.g. `CharN ( PAL )`, `CharN ( SHD )`). If any class-tagged inventory exists for a character, the generic `CharacterName_server-Inventory.txt` for that character is ignored.
+**Class-tagged inventories (preferred for personas):** put `CharacterName_server-CLASS-Inventory.txt` files in the same folder with matching `CharacterName_server-CLASS-MissingSpells.txt` files. Each class file becomes its own column (e.g. `CharN ( PAL )`, `CharN ( SHD )`). If any class-tagged inventory exists for a character, the generic `CharacterName_server-Inventory.txt` for that character is ignored.
 
 **Same folder with only a generic inventory:** one inventory plus MissingSpells file(s). Add the spell file for the active persona to get a Team Gear column labeled with that class. If you add only the inventory and multiple spell files are auto-discovered, Team Gear is skipped (spell tabs only).
 
 **Subfolders (also supported):** each persona’s folder contains the standard inventory name plus its spell file — e.g. `PAL/CharN_bristle-Inventory.txt` + `PAL/CharN_bristle-PAL-MissingSpells.txt`. Same-folder class-tagged names are preferred when available.
 
-**How class is determined:** reports label each column from the **worn Chest (breastplate)** in that inventory dump (looked up on raidloot, then EQ Resource, and cached). MissingSpells and class-tagged inventory filenames still pair personas and are used when the chest is empty or the lookup cannot name a class.
+**How class is determined:** reports label each column from the **worn Chest (breastplate)** in that inventory file (looked up on raidloot, then EQ Resource, and cached). MissingSpells and class-tagged inventory filenames still pair personas and are used when the chest is empty or the lookup cannot name a class.
 
-### Missing Spells logs (optional)
+### Missing Spells files (optional)
 
 Files named like:
 
@@ -60,12 +60,12 @@ From `/outputfile missingspells`. One line per spell: `level` + tab + `spell nam
 
 You can put spell files:
 
-- In the **same folder** as the inventory dumps, or  
-- In a subfolder named **`SpellData`** next to those dumps
+- In the **same folder** as the inventory files, or  
+- In a subfolder named **`SpellData`** next to those files
 
-You may also add spell files in the same folder as inventory dumps (the **EQ Folder** picker groups them per character). You still need at least one inventory file to build the workbook.
+You may also add spell files in the same folder as inventory files (the **EQ Folder** picker groups them per character). You still need at least one inventory file to build the workbook.
 
-### Achievement dumps (optional)
+### Achievement files (optional)
 
 Files named like:
 
@@ -77,8 +77,8 @@ From `/outputfile achievements`. Tab-separated text with section headers (`Expan
 
 You can put achievement files:
 
-- In the **same folder** as the inventory dumps, or  
-- In a subfolder named **`AchievementData`** next to those dumps
+- In the **same folder** as the inventory files, or  
+- In a subfolder named **`AchievementData`** next to those files
 
 The **Missing Collections** tab lists collection items still needed (`owned/total` progress under **Collections** sections). **Achievement Summary** counts completed vs incomplete top-level achievements per section. Achievement files are named by character only (no class segment); with multiple persona inventories, those tabs still list each character once.
 
@@ -101,7 +101,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
 
 **Requirements:** Windows 10/11 with **WebView2** (Microsoft Edge runtime — usually already installed).
 
-1. **In EQ:** on each toon, `/outputfile inventory` and (optional) `/outputfile missingspells`; copy the `.txt` files into one folder.
+1. **In EQ:** on each character, `/outputfile inventory` and (optional) `/outputfile missingspells`; copy the `.txt` files into one folder.
 
 2. **Run the app**
    - Double-click **`run_gui.bat`**, or  
@@ -112,14 +112,14 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
 
 4. **Manage the roster** (optional)
    - **Up** / **Down** — change character column order in Excel and HTML (including Unmade Gear row order)  
-   - **Remove** — drop the selected character from the export list  
+   - **Remove** — take the selected character off the export list  
    - **Clear** — empty the roster and start over  
 
 5. **Options** (optional)
    - **Slots** dropdown — `all`, `visible`, or `non_visible` on the gear sheets  
    - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs
    - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs
-   - **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Artisan's Prize is recommended for Ear when it is in the inventory dump. An equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off. Only augs that fit type 7/8 holes are recommended (type 5 and similar are excluded). Generate shows a progress bar while sockets and catalogs are fetched.
+   - **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Artisan's Prize is recommended for Ear when it is in the inventory file. An equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off. Only augs that fit type 7/8 holes are recommended (type 5 and similar are excluded). Generate shows a progress bar while sockets and catalogs are fetched.
 
 6. **Output**
    - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
@@ -134,7 +134,7 @@ If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, et
 
 ## Reading the workbook
 
-The file uses a **dark theme** (black background, light text). Item names link to [EQ Resource](https://items.eqresource.com/) when the dump includes item IDs.
+The file uses a **dark theme** (black background, light text). Item names link to [EQ Resource](https://items.eqresource.com/) when the inventory file includes item IDs.
 
 ### Team Gear
 
@@ -151,7 +151,7 @@ Same layout as Team Gear, but cells show **what tier is equipped** in each slot:
 |------------|---------|
 | *(blank)* | Empty slot |
 | `SOR-R2` | Shattering of Ro R2 (Resonant Fracture) |
-| `Evolver` | Evolver item (final augment row in dump) |
+| `Evolver` | Evolver item (final augment row in the inventory file) |
 | `SOR-R1`, `TOB-R2`, `LS-G2`, etc. | Expansion tier code (`SOR`, `TOB`, `LS`, `NoS` + `G` group or `R` raid + tier number) |
 | `???` | Equipped but not recognized after name matching and EQ Resource lookup (e.g. pre-LS expansions) |
 
@@ -197,7 +197,7 @@ Older level bands (111–120) are in config but not shown until enabled in `spel
 
 ### Missing Useful Spells *(if enabled)*
 
-Useful spells from [Raccoo’s curated list](https://docs.google.com/spreadsheets/d/1ZqUFZ-WTZvfcBfwu5g6GGEQroEwNLSfK1LMOdMHVHcA/htmlview) that still appear in each character’s MissingSpells dump — **all levels**, not just 121–130.
+Useful spells from [Raccoo’s curated list](https://docs.google.com/spreadsheets/d/1ZqUFZ-WTZvfcBfwu5g6GGEQroEwNLSfK1LMOdMHVHcA/htmlview) that still appear in each character’s MissingSpells file — **all levels**, not just 121–130.
 
 **Columns:** Character · Level · Expansion · Spell · Highest RK · Comments
 
@@ -234,7 +234,7 @@ Incomplete raid **objectives** from each expansion’s **Raids** section. Column
 
 ### Type 7/8 Augs *(if enabled)*
 
-Type 7/8 (usually dump Slot2) recommendations vs a live EQ Resource catalog (raidloot fallback). Only augs that **fit type 7/8 holes** are recommended (type 5 and similar are excluded). Artisan's Prize is treated as owned when it appears in the inventory dump. If **Velium Empowered Gem of Freezing** is equipped, it is kept and assigned to the legal slot with the best weighted trade-off against other BiS augs. Excel adds **Stat Summary**, **Augs**, **Need to Farm**, **Ranked Augs**, and **Aug Legend**. HTML adds a **Type 7/8 Augs** section with the same cards. Needs a network fetch the first time; later runs use disk cache under `%LOCALAPPDATA%\EQGM\`. Uncheck the chip to skip this entirely.
+Type 7/8 (usually inventory Slot2) recommendations vs a live EQ Resource catalog (raidloot fallback). Only augs that **fit type 7/8 holes** are recommended (type 5 and similar are excluded). Artisan's Prize is treated as owned when it appears in the inventory file. If **Velium Empowered Gem of Freezing** is equipped, it is kept and assigned to the legal slot with the best weighted trade-off against other BiS augs. Excel adds **Stat Summary**, **Augs**, **Need to Farm**, **Ranked Augs**, and **Aug Legend**. HTML adds a **Type 7/8 Augs** section with the same cards. Needs a network fetch the first time; later runs use disk cache under `%LOCALAPPDATA%\EQGM\`. Uncheck the chip to skip this entirely.
 
 ### HTML report *(optional)*
 
@@ -271,9 +271,9 @@ No Python or web server is required to view the HTML file.
 
 ## Tips
 
-- **Whole raid in one folder** — use **EQ Folder** after everyone drops dumps in the same directory.  
-- **Spell files in SpellData** — keeps inventory folder tidy; the app finds them automatically.  
-- **Achievement files in AchievementData** — same pattern for `/outputfile achievements` dumps.  
+- **Whole raid in one folder** — use **EQ Folder** after everyone copies output files into the same directory.  
+- **Spell files in SpellData** — keeps the inventory folder organized; the app finds them automatically.  
+- **Achievement files in AchievementData** — same pattern for `/outputfile achievements` files.  
 - **Status bar** — shows how many inventory, MissingSpells, and achievement files are loaded.  
 - **Up** / **Down** / **Remove** / **Clear** — under Output folder on the right; fix the roster before regenerating.  
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
@@ -287,43 +287,43 @@ From the `EQ Gear Management` folder:
 
 ```powershell
 py -3 -m pip install -e .
-py -3 -m inventory_parser --folder "D:\EQ Dumps" -o "D:\EQ Dumps\Team Inventory.xlsx"
+py -3 -m inventory_parser --folder "D:\EQ Files" -o "D:\EQ Files\Team Inventory.xlsx"
 ```
 
 Skip the spell tabs:
 
 ```powershell
-py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --no-spells
+py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --no-spells
 ```
 
 Skip the achievement tabs:
 
 ```powershell
-py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --no-achievements
+py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --no-achievements
 ```
 
 Also write an interactive HTML report (same folder, same name stem):
 
 ```powershell
-py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --also-html
+py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --also-html
 ```
 
 Only visible slots:
 
 ```powershell
-py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --slots visible
+py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --slots visible
 ```
 
 Skip Type 7/8 aug sheets (no catalog fetch):
 
 ```powershell
-py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --no-slot2
+py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --no-slot2
 ```
 
 Include Gem of Distant Echoes anniversary augs in Type 7/8 recommendations:
 
 ```powershell
-py -3 -m inventory_parser --folder "D:\EQ Dumps" -o out.xlsx --include-anniversary
+py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --include-anniversary
 ```
 
 ---
@@ -358,7 +358,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\EQGM-1.25.0.exe
+py -3 scripts\sign_exe.py dist\EQGM-1.25.1.exe
 ```
 
 (with the same environment variables set).
@@ -369,7 +369,7 @@ py -3 scripts\sign_exe.py dist\EQGM-1.25.0.exe
 
 | Problem | What to do |
 |---------|------------|
-| “Add at least one *-Inventory.txt” | Spell files alone are not enough — add inventory dumps. |
+| “Add at least one *-Inventory.txt” | Spell files alone are not enough — add inventory files. |
 | `ModuleNotFoundError: No module named 'webview'` when running from source | Run `py -3 -m pip install -e .` in the project folder (installs pywebview). |
 | GUI window is blank or fails to start | Install the [WebView2 runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (Evergreen bootstrapper). |
 | Build fails with “Access is denied” on the exe | Close any running `EQGM-*.exe`, then run **`build_exe.bat`** again. |

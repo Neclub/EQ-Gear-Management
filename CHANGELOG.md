@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.25.1] - 2026-08-16
+
+### Changed
+
+- User-facing copy uses **output files** / **inventory files** instead of **dumps**, and drops casual wording such as **toon** in docs and the GUI.
+
 ## [1.25.0] - 2026-08-16
 
 ### Added

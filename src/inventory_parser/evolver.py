@@ -1,11 +1,11 @@
-"""Evolver items — equipped gear whose dump includes the final augment row."""
+"""Evolver items — equipped gear whose inventory file includes the final augment row."""
 
 from __future__ import annotations
 
-EVOLVER_LABEL = "Evolver (final augment row in dump)"
+EVOLVER_LABEL = "Evolver (final augment row in inventory file)"
 EVOLVER_GAP_LABEL = "Evolver"
 
-# Highest-numbered ``{slot}-SlotN`` row for an evolver in inventory dumps.
+# Highest-numbered ``{slot}-SlotN`` row for an evolver in inventory files.
 EVOLVER_AUGMENT_SLOT_BY_BASE: dict[str, int] = {
     "Primary": 5,
 }

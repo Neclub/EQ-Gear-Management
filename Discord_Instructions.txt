@@ -1,6 +1,6 @@
 **EQ Gear Management (EQGM) — Quick Guide**
 
-Turn EQ inventory dumps into one Excel team workbook (gear, tier levels, unmade craft mats, optional missing rune tracking, optional achievement collection progress, optional Type 7/8 aug recommendations). Optionally generate an interactive HTML report in the same folder.
+Turn EQ inventory files into one Excel team workbook (gear, tier levels, unmade craft mats, optional missing rune tracking, optional achievement collection progress, optional Type 7/8 aug recommendations). Optionally generate an interactive HTML report in the same folder.
 
 **Live only** (not TLP/progression). Tracking goes back as far as **Laurion's Song**.
 
@@ -12,7 +12,7 @@ Turn EQ inventory dumps into one Excel team workbook (gear, tier levels, unmade 
 /outputfile missingspells
 /outputfile achievements
 ```
-Copy the `.txt` files from your EQ Logs folder into one raid folder.
+Copy the `.txt` files from your EQ Logs folder into one folder.
 
 **File names**
 • Inventory (required): `CharacterName_server-Inventory.txt`
@@ -26,7 +26,7 @@ Copy the `.txt` files from your EQ Logs folder into one raid folder.
 
 Tip: put spell files in a `SpellData` subfolder — the app groups them with the right character.
 Tip: put achievement files in an `AchievementData` subfolder — same pattern.
-Tip: class labels come from the worn Chest (BP) in each inventory dump; filenames are the fallback.
+Tip: class labels come from the worn Chest (BP) in each inventory file; filenames are the fallback.
 
 ---
 
@@ -36,12 +36,12 @@ Tip: class labels come from the worn Chest (BP) in each inventory dump; filename
 
 **Using the app (EXE)**
 1. Double-click **`EQGM-<version>.exe`**
-2. Click **EQ Folder** and pick your dump folder
+2. Click **EQ Folder** and pick the folder with your output files
    • Check the characters you want
    • Use the **Server** dropdown to filter (e.g. Xegony)
    • Click **Add selected**
-3. **Team characters** — the list shows toon names, not file paths
-   • **Up** / **Down** to put your main or tank in the first column
+3. **Team characters** — the list shows character names, not file paths
+   • **Up** / **Down** to put a main character in the first column
    • Order is remembered for next time
 4. (Optional) Leave **Spells** checked for rune tabs (auto-enabled when spell files are present)
 5. (Optional) Leave **Achievements** checked for collection/summary tabs (auto-enabled when achievement files are present)
@@ -64,17 +64,17 @@ Use **Browse…** to pick a different path if you want.
 • **Missing Runes** — Rk. III rune totals by spell expansion (LS / ToB / SoR); one matrix per expansion. HTML **Sort** reorders columns (roster, name, class, most missing); **Expansion** filters to one expansion
 • **Missing Spells** — every missing Rk. III with level, rune tier, expansion, and spell name
   • Missing Rk. II at levels 121–130 counts too (shown as Rk. III in the report)
-• **Missing Useful Spells** — curated useful spells still missing (Raccoo’s list × your MissingSpells dump; all levels)
+• **Missing Useful Spells** — curated useful spells still missing (Raccoo’s list × your MissingSpells file; all levels)
 • **Rune Inventory** — on-hand raid runes in bags/bank (NoS, LS, ToB, SoR); no spell file needed
-• **Missing Collections / Achievement Summary / Raid Achievements** — when achievement dumps are included (once per character; personas share achievements/collections)
+• **Missing Collections / Achievement Summary / Raid Achievements** — when achievement files are included (once per character; personas share achievements/collections)
 • **Type 7/8 Augs** — type 7/8 recommendations, Need to Farm, ranked list (when the Type 7/8 Augs chip is on; uses a catalog fetch + cache). Type 5 and other non-7/8 augs are not suggested.
 
-Item names link to EQ Resource when the dump has item IDs.
+Item names link to EQ Resource when the inventory file has item IDs.
 
 **HTML report (optional)** — same data in a single `.html` file beside the Excel workbook (`{Server}_Team_Inventory.html`). Open in any browser; no server needed.
 
 • **Sidebar** — Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Type 7/8 Augs, …)
-• **Character filter** chips under the nav — multi-select by toon/persona (All clears; personas labeled when shared)
+• **Character filter** chips under the nav — multi-select by character/persona (All clears; personas labeled when shared)
 • **Search**, **sort** (click headers), **Visible slots** on gear tabs (search keeps focus while typing)
 • **Character** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Missing Useful Spells, Raid Achievements, Missing Runes, Rune Inventory, etc.)
 • **Sort** on Missing Runes — roster order, name, class, or most missing (uses the Expansion filter when one is selected)
@@ -90,4 +90,4 @@ Item names link to EQ Resource when the dump has item IDs.
 • Close the Excel file before exporting if save fails
 • Regenerate the HTML after app updates to pick up layout changes
 • **Help** (top right) → gear tier colors and About EQGM
-• No Python install needed — just run the `.exe`
+• No Python install needed — run the `.exe`

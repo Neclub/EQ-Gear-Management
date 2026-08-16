@@ -61,7 +61,7 @@ def generate_workbook(
 
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(
-        description="EQ Gear Management (EQGM) — team inventory Excel from EverQuest *-Inventory.txt dumps.",
+        description="EQ Gear Management (EQGM) — team inventory Excel from EverQuest *-Inventory.txt files.",
         prog=APP_NAME_SHORT.lower(),
     )
     p.add_argument(
@@ -73,7 +73,7 @@ def main(argv: list[str] | None = None) -> int:
         "inventories",
         nargs="*",
         type=Path,
-        help="Inventory dump file(s). If omitted, use --folder.",
+        help="Inventory file(s). If omitted, use --folder.",
     )
     p.add_argument(
         "--folder",
