@@ -35,6 +35,7 @@ def test_eqresource_search_payload_int_spell_damage():
     payload = eqresource_search_payload("int", augtype="7")
     assert payload["type"] == "augs"
     assert payload["augtype"] == "7"
+    assert payload["augslot"] == "7"
     assert payload["augmentation"] == "1"
     assert payload["attrib1"] == "spelldamage"
     assert payload["attrib1range"] == "greater"
@@ -75,3 +76,25 @@ def test_eqresource_catalog_hydrates_lore_group():
         [by_id[175573], by_id[175571], by_id[88785]]
     )
     assert [a.item_id for a in kept] == [175573, 88785]
+
+
+def test_eqresource_catalog_drops_type5_after_hydrate():
+    green = (FIXTURES / "eqresource_aug_173378.html").read_text(encoding="utf-8")
+    search = SEARCH.read_text(encoding="utf-8").replace(
+        "</table>\n</td></tr>",
+        '<tr><td bgcolor="#111111"><img src="itemimages/6467.png"></td>'
+        '<td bgcolor="#111111"><a href=items.php?id=173378>Immovable Green Gem</a></td>'
+        "<td>0</td><td>0</td><td>0</td><td>0</td>"
+        "<td>0</td><td>63</td><td>41</td><td>63</td></tr>\n</table>\n</td></tr>",
+        1,
+    )
+    assert 173378 in {r.item_id for r in parse_eqresource_search_html(search)}
+    cat = fetch_eqresource_catalog(
+        "wis",
+        html_override=search,
+        item_html_by_id={173378: green, 175573: _MYSTIC_ITEM, 175571: _DEFENDER_ITEM},
+        allow_network=False,
+    )
+    ids = {a.item_id for a in cat.augs}
+    assert 173378 not in ids
+    assert 175573 in ids

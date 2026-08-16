@@ -46,6 +46,7 @@ def test_parse_eqresource_aug_acrobat_dex():
     assert "Head" in aug.allowed_bases
     assert "Charm" not in aug.allowed_bases
     assert "Range" not in aug.allowed_bases
+    assert aug.aug_types == frozenset({7, 8})
 
 
 def test_parse_eqresource_aug_phantasmal_no_dex_focus():
@@ -212,3 +213,47 @@ def test_parse_eqresource_lore_group_name():
     aug = parse_eqresource_aug_html(html, "int", item_id=175573)
     assert aug is not None
     assert aug.lore_group == "Intellect or Might of Unraveling Order"
+
+
+def test_parse_eqresource_type5_green_gem():
+    html = (FIXTURES / "eqresource_aug_173378.html").read_text(encoding="utf-8")
+    aug = parse_eqresource_aug_html(html, "wis", item_id=173378)
+    assert aug is not None
+    assert aug.name == "Immovable Green Gem"
+    assert aug.aug_types == frozenset({5})
+    assert aug.stats.get("hwis") == 63
+    from inventory_parser.slot2_augs.raidloot import is_type78_aug
+
+    assert not is_type78_aug(aug)
+    assert not is_type78_aug(aug, require_known=True)
+
+
+def test_type5_equipped_is_not_recommended_to_other_slots():
+    html = (FIXTURES / "eqresource_aug_173378.html").read_text(encoding="utf-8")
+    data = InventoryData(
+        character="Shamlub",
+        server="test",
+        filepath="Shamlub_test-Inventory.txt",
+        class_abbr="SHM",
+        items=[
+            InventoryItem("Head", "Test Helm", 1, 1, 6),
+            InventoryItem("Head-Slot2", "Immovable Green Gem", 173378, 1, 0),
+            InventoryItem("Charm", "Test Charm", 2, 1, 6),
+            InventoryItem("Charm-Slot2", "Empty", 0, 0, 0),
+        ],
+    )
+    report = compare_character(
+        data,
+        _catalog(),
+        artisans_prize_owned=False,
+        profile="wis",
+        class_abbr="SHM",
+        fetch_eqr_augs=False,
+        eqr_aug_html_by_id={173378: html},
+        type78_slot_by_parent_id={1: 2, 2: 2},
+    )
+    rec_ids = {c.recommended_id for c in report.comparisons}
+    assert 173378 not in rec_ids
+    head = next(c for c in report.comparisons if c.gear_slot == "Head")
+    assert head.current_id == 173378
+    assert head.recommended_id != 173378

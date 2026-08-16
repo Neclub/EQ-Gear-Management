@@ -55,7 +55,7 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 - **Missing Runes / Spells / Useful Spells** — from MissingSpells Output logs
 - **Rune Inventory** — raid runes on hand
 - **Achievements** — collection and raid progress (from achievement Output logs)
-- **Type 7/8 Augs** — optional type 7/8 recommendations (on by default); equipped Velium Empowered Gem of Freezing is kept as a must-have
+- **Type 7/8 Augs** — optional type 7/8 recommendations (on by default); only augs that fit type 7/8 holes; equipped Velium Empowered Gem of Freezing is kept as a must-have
 - **HTML report** — the same data in a browser, searchable and filterable
 
 For file naming, Alternate Personas, reading each sheet, and troubleshooting, see **[HowToUse.md](HowToUse.md)**.

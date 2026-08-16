@@ -21,13 +21,17 @@ from inventory_parser.slot2_augs.aug_stats import (
     legacy_from_stats,
 )
 from inventory_parser.slot2_augs.profiles import ProfileId
-from inventory_parser.slot2_augs.raidloot import AugCandidate, parse_slot_restrictions
+from inventory_parser.slot2_augs.raidloot import (
+    AugCandidate,
+    parse_aug_slot_types,
+    parse_slot_restrictions,
+)
 from inventory_parser.slot2_augs.paths import appdata_dir
 
 USER_AGENT = "EQ-Augs/0.2 (Slot2 type 7/8 checker; local tool)"
 CACHE_FILENAME = "eqresource_aug_cache.json"
 EXPANSION_CACHE_FILENAME = "eqresource_expansion_cache.json"
-CACHE_STATS_VERSION = 3
+CACHE_STATS_VERSION = 4
 EQRESOURCE_ITEM_URL = "https://items.eqresource.com/items.php?id={item_id}"
 
 _EXPAC_IMG_RE = re.compile(
@@ -480,6 +484,7 @@ def parse_eqresource_aug_html(
         shield_only=shield_only,
         source="EQ Resource",
         stats=stats,
+        aug_types=parse_aug_slot_types(html),
     )
 
 
@@ -509,6 +514,7 @@ def fetch_eqresource_aug(
         if int(entry.get("stats_v", 0)) >= CACHE_STATS_VERSION and entry.get("stats"):
             stats = clean_stats(entry.get("stats") or {})
             focus, ac, hp, atk = legacy_from_stats(stats, profile)
+            types = frozenset(int(t) for t in (entry.get("aug_types") or []) if str(t).isdigit())
             return AugCandidate(
                 item_id=item_id,
                 name=str(entry.get("name") or name_hint or f"Item {item_id}"),
@@ -529,6 +535,7 @@ def fetch_eqresource_aug(
                 shield_only=bool(entry.get("shield_only", False)),
                 source="EQ Resource",
                 stats=stats,
+                aug_types=types,
             )
 
     try:
@@ -563,6 +570,7 @@ def fetch_eqresource_aug(
                 "shield_only": aug.shield_only,
                 "stats": dict(aug.stats),
                 "stats_v": CACHE_STATS_VERSION,
+                "aug_types": sorted(aug.aug_types),
             }
         _save_cache(cache)
     return aug

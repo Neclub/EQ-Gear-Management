@@ -26,7 +26,7 @@ from inventory_parser.slot2_augs.profiles import (
     VELIUM_FREEZING_GEM_NAME,
     ProfileId,
 )
-from inventory_parser.slot2_augs.raidloot import AugCandidate, CatalogResult, augs_for_slot
+from inventory_parser.slot2_augs.raidloot import AugCandidate, CatalogResult, augs_for_slot, is_type78_aug
 from inventory_parser.slots import (
     EAR_REPORT_SLOTS,
     TEAM_GEAR_SLOTS,
@@ -318,6 +318,7 @@ def _normalize_freezing_gem(aug: AugCandidate) -> AugCandidate:
         excluded_bases=frozenset(),
         ear_only=False,
         shield_only=False,
+        aug_types=aug.aug_types or frozenset({7, 8}),
         slot_text=(
             "Arms, Back, Charm, Chest, Ear, Face, Feet, Finger, Hands, "
             "Head, Legs, Neck, Range, Shoulder, Waist, Wrist"
@@ -342,6 +343,7 @@ def _freezing_gem_candidate(
             focus_heroic=0,
             lore=True,
             stats={},
+            aug_types=frozenset({7, 8}),
         )
     )
 
@@ -550,7 +552,9 @@ def pick_best_for_slot(
     fitted = [
         a
         for a in augs_for_slot(catalog, gear_slot)
-        if a.item_id != ARTISANS_PRIZE_ID and a.item_id not in blocked
+        if a.item_id != ARTISANS_PRIZE_ID
+        and a.item_id not in blocked
+        and is_type78_aug(a)
     ]
     if gear_slot == "Secondary" and secondary_is_shield:
         fitted = [a for a in fitted if a.shield_only]
@@ -832,6 +836,8 @@ def assign_slot_recommendations(
                 continue
             if aug.item_id == ARTISANS_PRIZE_ID and not artisans_prize_owned:
                 continue
+            if not is_type78_aug(aug):
+                continue
             if cur is not None and cur.item_id is not None:
                 cur_aug = _catalog_aug_for_id(catalog, cur.item_id)
                 if cur_aug is not None:
@@ -871,7 +877,21 @@ def assign_slot_recommendations(
                 if replacement is not None:
                     _claim_item(claimed_ids, replacement.item_id, catalog)
             else:
-                assigned[slot] = _catalog_aug_for_id(catalog, cur.item_id)
+                keep_cur = _catalog_aug_for_id(catalog, cur.item_id)
+                if keep_cur is not None and is_type78_aug(keep_cur):
+                    assigned[slot] = keep_cur
+                else:
+                    assigned[slot] = pick_best_for_slot(
+                        slot,
+                        catalog,
+                        unavailable_ids=set(claimed_ids),
+                        artisans_prize_owned=artisans_prize_owned,
+                        class_abbr=class_abbr,
+                        secondary_is_shield=secondary,
+                    )
+                    replacement = assigned[slot]
+                    if replacement is not None:
+                        _claim_item(claimed_ids, replacement.item_id, catalog)
         else:
             assigned[slot] = None
 
@@ -947,7 +967,12 @@ def _finalize_comparison(
         and recommended.item_id == VELIUM_FREEZING_GEM_ID
     ):
         pass
-    elif status == "upgrade" and recommended is not None and cur_aug is not None:
+    elif (
+        status == "upgrade"
+        and recommended is not None
+        and cur_aug is not None
+        and is_type78_aug(cur_aug)
+    ):
         if _aug_rank_tuple(
             recommended,
             current.gear_slot,
@@ -1188,7 +1213,7 @@ def compare_character(
     working_catalog = list(catalog)
     seen_ids = {a.item_id for a in working_catalog}
     for aug in external_augs.values():
-        if aug.item_id not in seen_ids:
+        if aug.item_id not in seen_ids and is_type78_aug(aug, require_known=True):
             working_catalog.append(aug)
             seen_ids.add(aug.item_id)
     if _equipped_freezing_gem_slot(by_slot) is not None and VELIUM_FREEZING_GEM_ID not in seen_ids:

@@ -125,6 +125,37 @@ _HEROIC_RE = {
 }
 
 
+# Type 7/8 holes only; type 5 (and others) must never be recommended there.
+TYPE78_AUG_TYPES: frozenset[int] = frozenset({7, 8})
+
+_AUG_SLOT_TYPES_RE = re.compile(
+    r"fits in slot types?:\s*(.+?)(?:<br|</td>|\n\n|$)",
+    re.IGNORECASE | re.DOTALL,
+)
+
+
+def parse_aug_slot_types(html_or_text: str) -> frozenset[int]:
+    """Parse ``This augmentation fits in slot types: 7, 8`` (EQ Resource / raidloot)."""
+    if not html_or_text:
+        return frozenset()
+    match = _AUG_SLOT_TYPES_RE.search(html_or_text)
+    if not match:
+        return frozenset()
+    chunk = re.sub(r"<[^>]+>", " ", match.group(1))
+    nums = {int(n) for n in re.findall(r"\b(\d+)\b", chunk)}
+    return frozenset(n for n in nums if 1 <= n <= 23)
+
+
+def is_type78_aug(aug: AugCandidate, *, require_known: bool = False) -> bool:
+    """True when the aug is type 7 and/or 8, or types are unknown unless required."""
+    if aug.item_id == ARTISANS_PRIZE_ID:
+        return True
+    types = aug.aug_types
+    if not types:
+        return not require_known
+    return bool(types & TYPE78_AUG_TYPES)
+
+
 @dataclass
 class AugCandidate:
     item_id: int
@@ -143,6 +174,7 @@ class AugCandidate:
     shield_only: bool = False
     source: str = ""
     stats: dict[str, int] = field(default_factory=dict)
+    aug_types: frozenset[int] = field(default_factory=frozenset)
 
     def lore_group_key(self) -> str:
         """Casefolded lore-group id/name, or empty when the aug is not grouped."""
@@ -418,6 +450,7 @@ def _prize_aug(profile: ProfileId) -> AugCandidate:
         lore=True,
         source="Quest: Artisan's Prize",
         stats=stats,
+        aug_types=TYPE78_AUG_TYPES,
     )
 
 
@@ -629,6 +662,9 @@ def _parse_aug_block(
         shield_only=shield_only,
         source=source,
         stats=clean_stats(stats),
+        aug_types=parse_aug_slot_types(detail) or (
+            TYPE78_AUG_TYPES if item_id == ARTISANS_PRIZE_ID else frozenset()
+        ),
     )
 
 
@@ -828,6 +864,7 @@ def _candidate_from_dict(d: dict, profile: ProfileId) -> AugCandidate:
         shield_only=bool(d.get("shield_only", False)),
         source=d.get("source", ""),
         stats=stats,
+        aug_types=frozenset(int(t) for t in (d.get("aug_types") or []) if str(t).isdigit()),
     )
 
 
@@ -849,6 +886,7 @@ def _candidate_to_dict(a: AugCandidate) -> dict:
         "source": a.source,
         "stats": dict(a.stats or a.effective_stats()),
         "stats_v": 2,
+        "aug_types": sorted(a.aug_types),
     }
 
 
@@ -966,7 +1004,7 @@ def fetch_catalog(
             raise ValueError(
                 f"EQ Resource catalog parsed only {len(usable)} usable augs"
             )
-        augs = eqr.augs
+        augs = [a for a in eqr.augs if is_type78_aug(a)]
         eqr_ok = True
         catalog_url = eqr.url or catalog_url
         from_cache = eqr.from_cache

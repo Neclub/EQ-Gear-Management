@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.24.1] - 2026-08-16
+
+### Fixed
+
+- Type 7/8 recommendations ignore augs that fit only other hole types (for example type 5 **Immovable Green Gem**). EQ Resource item pages are parsed for `fits in slot types`, and equipped non-7/8 augs are not reused as recommendations for other slots.
+
 ## [1.24.0] - 2026-08-16
 
 ### Added

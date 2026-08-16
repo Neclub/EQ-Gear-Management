@@ -23,7 +23,7 @@ from inventory_parser.slot2_augs.profiles import (
     PROFILE_FOCUS_STAT,
     ProfileId,
 )
-from inventory_parser.slot2_augs.raidloot import AugCandidate, CatalogResult
+from inventory_parser.slot2_augs.raidloot import AugCandidate, CatalogResult, is_type78_aug
 from inventory_parser.slot2_augs.paths import appdata_dir
 
 CACHE_FILENAME = "eqresource_search_cache.json"
@@ -180,7 +180,7 @@ def eqresource_search_payload(profile: ProfileId, *, augtype: str) -> dict[str, 
         "slot": "",
         "level": "",
         "type": "augs",
-        "augslot": "",
+        "augslot": augtype,
         "augtype": augtype,
         "searched": "true",
         "Submit": "Submit",
@@ -340,6 +340,8 @@ def fetch_eqresource_catalog(
             continue
         seen.add(row.item_id)
         aug = hydrated.get(row.item_id)
+        if aug is not None and not is_type78_aug(aug):
+            continue
         if aug is None:
             augs.append(_row_to_candidate(row, profile))
             continue

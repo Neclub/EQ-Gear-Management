@@ -48,6 +48,7 @@ Tip: class labels come from the worn Chest (BP) in each inventory dump; filename
 6. (Optional) Leave **Type 7/8 Augs** checked (on by default) for type 7/8 BiS / farm sheets; uncheck to skip the catalog fetch
    • When on, optional **Include Anniversary augs** (Gems of Distant Echoes) and **Advanced weights** for a single-character roster
    • Equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off
+   • Only augs that fit type 7/8 holes are recommended (type 5 and similar are excluded)
 7. Choose **Excel** / **HTML** / **Both** next to **Generate Report** (default **Both**; remembered next time)
 8. Click **Generate Report**
 
@@ -66,7 +67,7 @@ Use **Browse…** to pick a different path if you want.
 • **Missing Useful Spells** — curated useful spells still missing (Raccoo’s list × your MissingSpells dump; all levels)
 • **Rune Inventory** — on-hand raid runes in bags/bank (NoS, LS, ToB, SoR); no spell file needed
 • **Missing Collections / Achievement Summary / Raid Achievements** — when achievement dumps are included (once per character; personas share achievements/collections)
-• **Type 7/8 Augs** — type 7/8 recommendations, Need to Farm, ranked list (when the Type 7/8 Augs chip is on; uses a catalog fetch + cache)
+• **Type 7/8 Augs** — type 7/8 recommendations, Need to Farm, ranked list (when the Type 7/8 Augs chip is on; uses a catalog fetch + cache). Type 5 and other non-7/8 augs are not suggested.
 
 Item names link to EQ Resource when the dump has item IDs.
 
