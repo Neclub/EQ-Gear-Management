@@ -69,6 +69,9 @@ GENERAL_CATEGORIES = (
 _STATUS_LINE = re.compile(r"^([CIL])\t")
 _ZONE_SUFFIX = re.compile(r"^(.*)\s+\(([^)]+)\)\s*$")
 _PROGRESS_SUFFIX = re.compile(r"^(.*)\t(\d+)/(\d+)\s*$")
+_QUEST_PARENT = re.compile(r"^(Mercenary|Partisan) of (.+)$", re.IGNORECASE)
+_RAID_PARENT = re.compile(r"^(Conqueror|Vanquisher) of (.+)$", re.IGNORECASE)
+_FROM_NPC_SUFFIX = re.compile(r"\s+-\s+from\s+.+$", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -107,12 +110,24 @@ class MissingRaidAchievement:
     section: str
     raid: str
     objective: str
+    complete: bool = False
+    event: str = ""
+
+
+@dataclass(frozen=True)
+class QuestAchievement:
+    section: str
+    quest_type: str
+    zone: str
+    quest: str
+    complete: bool
 
 
 @dataclass
 class AchievementParseResult:
     missing_collections: list[MissingCollectionItem] = field(default_factory=list)
     missing_raid_achievements: list[MissingRaidAchievement] = field(default_factory=list)
+    quest_achievements: list[QuestAchievement] = field(default_factory=list)
     section_summaries: list[SectionSummary] = field(default_factory=list)
 
 
@@ -171,8 +186,65 @@ def _is_raids_subcategory(subcategory: str) -> bool:
     return subcategory.casefold() == "raids"
 
 
-def _is_missing_achievement_status(status: str) -> bool:
-    return status in ("I", "L")
+def _is_quests_subcategory(subcategory: str) -> bool:
+    return subcategory.casefold() == "quests"
+
+
+def parse_raid_parent(name: str) -> tuple[str, str] | None:
+    """``Conqueror of Labyrinth of Spite: Echo of Hate`` -> (zone, event)."""
+    match = _RAID_PARENT.match(name.strip())
+    if match is None:
+        return None
+    rest = match.group(2).strip()
+    zone, sep, event = rest.partition(": ")
+    if not sep:
+        return zone.strip(), ""
+    return zone.strip(), event.strip()
+
+
+def raid_header_name(zone: str, event: str) -> str:
+    """Display header is always the Conqueror line for the zone/event."""
+    if event:
+        return f"Conqueror of {zone}: {event}"
+    return f"Conqueror of {zone}"
+
+
+def raid_event_label(zone: str, event: str) -> str:
+    """Filter label: event name, or the zone when there is no named event."""
+    return event or zone
+
+
+def clean_raid_objective(name: str, event: str = "") -> str:
+    """Drop NPC suffixes and the ``Event: `` prefix from a challenge name."""
+    text = clean_quest_name(name)
+    if event:
+        prefix = f"{event}: "
+        if text.casefold().startswith(prefix.casefold()):
+            return text[len(prefix) :].strip()
+    return text
+
+
+def parse_quest_parent(name: str) -> tuple[str, str] | None:
+    """``Mercenary of Arcstone, Shattered Isles`` -> (Mercenary, zone)."""
+    match = _QUEST_PARENT.match(name.strip())
+    if match is None:
+        return None
+    return match.group(1).title(), match.group(2).strip()
+
+
+def clean_quest_name(name: str) -> str:
+    """Drop NPC/zone suffixes from a quest child line."""
+    text = name.strip()
+    from_match = _FROM_NPC_SUFFIX.search(text)
+    if from_match is not None:
+        return text[: from_match.start()].strip()
+    if " - " in text:
+        return text.rsplit(" - ", 1)[-1].strip()
+    return text
+
+
+def _is_quest_meta_objective(name: str) -> bool:
+    return name.casefold().startswith("complete either")
 
 
 def _normalize_expansion_name(section: str) -> str:
@@ -216,13 +288,18 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
     current_subcategory: str | None = None
     current_collection: str | None = None
     current_raid: str | None = None
+    current_raid_event: str = ""
+    current_raid_event_label: str = ""
+    current_quest: tuple[str, str] | None = None
     in_collections = False
     in_raids = False
+    in_quests = False
 
     section_completed: dict[str, int] = {}
     section_incomplete: dict[str, int] = {}
     missing_collections: list[MissingCollectionItem] = []
     missing_raid_achievements: list[MissingRaidAchievement] = []
+    quest_achievements: list[QuestAchievement] = []
 
     with Path(path).open(encoding="utf-8", errors="ignore") as handle:
         for raw_line in handle:
@@ -235,8 +312,12 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
                 current_section, current_subcategory, _is_expansion = header
                 current_collection = None
                 current_raid = None
+                current_raid_event = ""
+                current_raid_event_label = ""
+                current_quest = None
                 in_collections = _is_collections_subcategory(current_subcategory)
                 in_raids = _is_raids_subcategory(current_subcategory)
+                in_quests = _is_quests_subcategory(current_subcategory)
                 continue
 
             parsed = _parse_status_line(line)
@@ -247,7 +328,17 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
 
             if indent == 0:
                 current_collection = name
-                current_raid = name
+                raid_parent = parse_raid_parent(name) if in_raids else None
+                if raid_parent is not None:
+                    zone, event = raid_parent
+                    current_raid = raid_header_name(zone, event)
+                    current_raid_event = event
+                    current_raid_event_label = raid_event_label(zone, event)
+                else:
+                    current_raid = None
+                    current_raid_event = ""
+                    current_raid_event_label = ""
+                current_quest = parse_quest_parent(name) if in_quests else None
                 section_completed.setdefault(current_section, 0)
                 section_incomplete.setdefault(current_section, 0)
                 if status == "C":
@@ -256,14 +347,40 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
                     section_incomplete[current_section] += 1
                 continue
 
-            if in_raids and _is_missing_achievement_status(status) and current_raid is not None:
-                missing_raid_achievements.append(
-                    MissingRaidAchievement(
-                        section=current_section,
-                        raid=current_raid,
-                        objective=name,
+            if in_raids and current_raid is not None and indent == 1:
+                objective = clean_raid_objective(name, current_raid_event)
+                if (
+                    objective
+                    and objective.casefold() != current_raid_event.casefold()
+                ):
+                    missing_raid_achievements.append(
+                        MissingRaidAchievement(
+                            section=current_section,
+                            raid=current_raid,
+                            objective=objective,
+                            complete=status == "C",
+                            event=current_raid_event_label,
+                        )
                     )
-                )
+
+            if (
+                in_quests
+                and current_quest is not None
+                and indent == 1
+                and not _is_quest_meta_objective(name)
+            ):
+                quest_name = clean_quest_name(name)
+                if quest_name:
+                    quest_type, zone = current_quest
+                    quest_achievements.append(
+                        QuestAchievement(
+                            section=current_section,
+                            quest_type=quest_type,
+                            zone=zone,
+                            quest=quest_name,
+                            complete=status == "C",
+                        )
+                    )
 
             if not in_collections or current_collection is None:
                 continue
@@ -296,5 +413,6 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
     return AchievementParseResult(
         missing_collections=missing_collections,
         missing_raid_achievements=missing_raid_achievements,
+        quest_achievements=quest_achievements,
         section_summaries=summaries,
     )

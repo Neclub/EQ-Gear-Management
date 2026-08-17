@@ -247,6 +247,40 @@ td.empty { background: var(--empty) !important; color: var(--muted); text-align:
 td.empty::before { content: "—"; }
 a { color: var(--link); text-decoration: none; }
 a:hover { text-decoration: underline; }
+button.copy-item {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--link);
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+button.copy-item:hover { text-decoration: underline; }
+button.copy-item.copied { color: #86efac; text-decoration: none; }
+.copy-balloon {
+  position: fixed;
+  z-index: 80;
+  max-width: min(280px, calc(100vw - 16px));
+  padding: 8px 12px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+  line-height: 1.35;
+  pointer-events: none;
+}
+.copy-balloon-label {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.copy-balloon-name { font-weight: 650; }
 .char-head {
   display: inline-flex;
   align-items: center;
@@ -300,6 +334,86 @@ a:hover { text-decoration: underline; }
   color: #8cb4ff;
   text-decoration: underline;
 }
+.quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 920px;
+}
+.quest-card {
+  background: #050608;
+  border: 1px solid #b08d4a;
+  outline: 1px solid #6f572c;
+  outline-offset: -3px;
+}
+.quest-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #2a3140;
+}
+.quest-head svg {
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  color: #9ec4ff;
+}
+.quest-title {
+  flex: 1;
+  text-align: center;
+  font-weight: 650;
+  font-size: 14px;
+  color: #e8eaef;
+}
+.quest-meta {
+  color: var(--muted);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.quest-body { padding: 10px 16px 14px; }
+.quest-status {
+  color: #c9a06a;
+  font-weight: 650;
+  margin-bottom: 4px;
+}
+.quest-desc {
+  color: #c9a06a;
+  margin: 0 0 10px;
+  font-size: 12.5px;
+}
+.quest-items {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.quest-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: #c9a06a;
+  font-size: 13px;
+}
+.quest-item.done { color: #8f7a58; }
+.quest-check {
+  width: 13px;
+  height: 13px;
+  margin-top: 2px;
+  border: 1px solid #c9a06a;
+  background: #0a0a0a;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  color: #e8eaef;
+}
+.quest-empty { color: var(--muted); margin: 12px 4px; }
 .slot2-augs { display: flex; flex-direction: column; gap: 16px; }
 .slot2-augs .card {
   background: var(--panel);
@@ -497,6 +611,12 @@ a:hover { text-decoration: underline; }
     <path d="M5 5H3a2 2 0 0 0 2 2"/>
     <path d="M19 5h2a2 2 0 0 1-2 2"/>
   </symbol>
+  <symbol id="icon-scroll" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 12h-5"/>
+    <path d="M15 8h-5"/>
+    <path d="M19 17V5a2 2 0 0 0-2-2H4"/>
+    <path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/>
+  </symbol>
   <symbol id="icon-gem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
     <path d="M6 3h12l4 6-10 12L2 9z"/>
     <path d="M2 9h20"/>
@@ -548,6 +668,7 @@ const SECTION_ICONS = {
   missing_useful_spells: "icon-book",
   unmade_gear: "icon-anvil",
   missing_collections: "icon-chest",
+  quests: "icon-scroll",
   raid_achievements: "icon-trophy",
   achievement_summary: "icon-trophy",
   slot2_augs: "icon-gem",
@@ -571,11 +692,15 @@ const state = {
   searches: {},
   chars: {},
   expansions: {},
+  zones: {},
+  events: {},
   blocks: {},
   runes: {},
+  copyBalloonTimer: 0,
 };
 const ACHIEVEMENT_EXPANSION_TABS = new Set([
   "missing_collections",
+  "quests",
   "raid_achievements",
   "achievement_summary",
 ]);
@@ -615,6 +740,33 @@ function activeExpansionFilter(section) {
     return REPORT.meta.currentExpansion || "";
   }
   return "";
+}
+
+function nestedColumnOptions(section, columnField) {
+  if (section.type !== "table" || section.data[columnField] == null) return [];
+  const col = section.data[columnField];
+  const expansionCol = section.data.expansionColumn;
+  const expansionFilter = activeExpansionFilter(section);
+  const seen = new Set();
+  const out = [];
+  for (const row of section.data.rows) {
+    if (expansionFilter && expansionCol != null && row[expansionCol] !== expansionFilter) continue;
+    const value = row[col];
+    if (value && !seen.has(value)) {
+      seen.add(value);
+      out.push(value);
+    }
+  }
+  out.sort((a, b) => String(a).localeCompare(String(b)));
+  return out;
+}
+
+function zoneFilterOptions(section) {
+  return nestedColumnOptions(section, "zoneColumn");
+}
+
+function eventFilterOptions(section) {
+  return nestedColumnOptions(section, "eventColumn");
 }
 
 function el(tag, cls, text) {
@@ -778,6 +930,10 @@ function updateToolbar() {
     search.placeholder = "Search rune tiers…";
   } else if (section.type === "slot2_augs") {
     search.placeholder = "Search augs…";
+  } else if (section.id === "quests") {
+    search.placeholder = "Search quests…";
+  } else if (section.id === "raid_achievements") {
+    search.placeholder = "Search raids…";
   } else {
     search.placeholder = "Search…";
   }
@@ -935,9 +1091,64 @@ function updateToolbar() {
     sel.value = selected;
     sel.addEventListener("change", () => {
       state.expansions[section.id] = sel.value;
-      refreshContent();
+      let nestedChanged = false;
+      if (section.data.zoneColumn != null) {
+        const zones = zoneFilterOptions(section);
+        if (state.zones[section.id] && !zones.includes(state.zones[section.id])) {
+          state.zones[section.id] = "";
+          nestedChanged = true;
+        }
+      }
+      if (section.data.eventColumn != null) {
+        const events = eventFilterOptions(section);
+        if (state.events[section.id] && !events.includes(state.events[section.id])) {
+          state.events[section.id] = "";
+          nestedChanged = true;
+        }
+      }
+      if (nestedChanged || section.data.zoneColumn != null || section.data.eventColumn != null) {
+        renderActivePanel();
+      } else {
+        refreshContent();
+      }
     });
     toolbar.appendChild(el("label", null, "Expansion"));
+    toolbar.appendChild(sel);
+  }
+
+  if (section.type === "table" && section.data.zoneColumn != null && section.data.rows.length) {
+    const sel = document.createElement("select");
+    const zones = zoneFilterOptions(section);
+    sel.innerHTML =
+      '<option value="">All zones</option>' +
+      zones.map((x) => `<option value="${String(x).replace(/"/g, "&quot;")}">${x}</option>`).join("");
+    if (state.zones[section.id] && !zones.includes(state.zones[section.id])) {
+      state.zones[section.id] = "";
+    }
+    sel.value = state.zones[section.id] || "";
+    sel.addEventListener("change", () => {
+      state.zones[section.id] = sel.value;
+      refreshContent();
+    });
+    toolbar.appendChild(el("label", null, "Zone"));
+    toolbar.appendChild(sel);
+  }
+
+  if (section.type === "table" && section.data.eventColumn != null && section.data.rows.length) {
+    const sel = document.createElement("select");
+    const events = eventFilterOptions(section);
+    sel.innerHTML =
+      '<option value="">All events</option>' +
+      events.map((x) => `<option value="${String(x).replace(/"/g, "&quot;")}">${x}</option>`).join("");
+    if (state.events[section.id] && !events.includes(state.events[section.id])) {
+      state.events[section.id] = "";
+    }
+    sel.value = state.events[section.id] || "";
+    sel.addEventListener("change", () => {
+      state.events[section.id] = sel.value;
+      refreshContent();
+    });
+    toolbar.appendChild(el("label", null, "Event"));
     toolbar.appendChild(sel);
   }
 }
@@ -1039,10 +1250,9 @@ function updateGearMatrixContent(content, section, tierMode) {
   content.appendChild(wrap);
 }
 
-function updateTableContent(content, section) {
+function filteredTableRows(section) {
   const data = section.data;
   const sort = state.sorts[section.id] || { col: null, dir: 1 };
-
   let rows = data.rows.slice();
   const q = (state.searches[section.id] || "").trim().toLowerCase();
   if (q) rows = rows.filter((r) => r.join(" ").toLowerCase().includes(q));
@@ -1061,6 +1271,12 @@ function updateTableContent(content, section) {
       rows = rows.filter((r) => r[data.expansionColumn] === expansionFilter);
     }
   }
+  if (data.zoneColumn != null && state.zones[section.id]) {
+    rows = rows.filter((r) => r[data.zoneColumn] === state.zones[section.id]);
+  }
+  if (data.eventColumn != null && state.events[section.id]) {
+    rows = rows.filter((r) => r[data.eventColumn] === state.events[section.id]);
+  }
   if (data.blockColumn != null && state.blocks[section.id]) {
     rows = rows.filter((r) => r[data.blockColumn] === state.blocks[section.id]);
   }
@@ -1070,6 +1286,56 @@ function updateTableContent(content, section) {
   if (sort.col != null) {
     rows.sort((a, b) => sort.dir * compareValues(a[sort.col], b[sort.col]));
   }
+  return rows;
+}
+
+function copyTextToClipboard(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+  return new Promise((resolve, reject) => {
+    const area = document.createElement("textarea");
+    area.value = text;
+    area.setAttribute("readonly", "");
+    area.style.position = "fixed";
+    area.style.left = "-9999px";
+    document.body.appendChild(area);
+    area.select();
+    try {
+      if (!document.execCommand("copy")) reject(new Error("copy failed"));
+      else resolve();
+    } catch (err) {
+      reject(err);
+    } finally {
+      area.remove();
+    }
+  });
+}
+
+function showCopyBalloon(anchor, itemName) {
+  document.getElementById("copyBalloon")?.remove();
+  if (state.copyBalloonTimer) clearTimeout(state.copyBalloonTimer);
+  const balloon = el("div", "copy-balloon");
+  balloon.id = "copyBalloon";
+  balloon.appendChild(el("div", "copy-balloon-label", "Copied to clipboard"));
+  balloon.appendChild(el("div", "copy-balloon-name", itemName));
+  document.body.appendChild(balloon);
+  const rect = anchor.getBoundingClientRect();
+  const width = balloon.offsetWidth;
+  const height = balloon.offsetHeight;
+  let left = rect.left + rect.width / 2 - width / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - width - 8));
+  let top = rect.top - height - 8;
+  if (top < 8) top = rect.bottom + 8;
+  balloon.style.left = left + "px";
+  balloon.style.top = top + "px";
+  state.copyBalloonTimer = setTimeout(() => balloon.remove(), 1800);
+}
+
+function updateTableContent(content, section) {
+  const data = section.data;
+  const sort = state.sorts[section.id] || { col: null, dir: 1 };
+  const rows = filteredTableRows(section);
 
   const wrap = el("div", "table-wrap");
   const table = document.createElement("table");
@@ -1091,7 +1357,29 @@ function updateTableContent(content, section) {
   const tbody = document.createElement("tbody");
   rows.forEach((row) => {
     const tr = document.createElement("tr");
-    row.forEach((val) => tr.appendChild(el("td", null, val == null ? "" : String(val))));
+    row.forEach((val, idx) => {
+      const text = val == null ? "" : String(val);
+      if (data.copyColumn === idx && text) {
+        const td = document.createElement("td");
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "copy-item";
+        btn.textContent = text;
+        btn.title = "Click to copy";
+        btn.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          copyTextToClipboard(text).then(() => {
+            btn.classList.add("copied");
+            showCopyBalloon(btn, text);
+            setTimeout(() => btn.classList.remove("copied"), 900);
+          }).catch(() => {});
+        });
+        td.appendChild(btn);
+        tr.appendChild(td);
+      } else {
+        tr.appendChild(el("td", null, text));
+      }
+    });
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
@@ -1107,6 +1395,89 @@ function updateTableContent(content, section) {
     credit.appendChild(link);
     content.appendChild(credit);
   }
+}
+
+function achievementGroupTitle(row, spec) {
+  if (spec.titleColumns && spec.titleColumns.length) {
+    return spec.titleColumns.map((idx) => String(row[idx] || "")).join(spec.titleJoin || " ");
+  }
+  return String(row[spec.titleColumn] || "");
+}
+
+function achievementGroupDescription(row, spec) {
+  if (spec.descriptionKind === "quests") {
+    return (
+      "This achievement is gained upon completing the following story quests in " +
+      String(row[spec.zoneColumn] || "") +
+      "."
+    );
+  }
+  return "This achievement is gained upon completing the following raid objectives.";
+}
+
+function updateAchievementGroupsContent(content, section) {
+  const spec = section.data.group || {};
+  const rows = filteredTableRows(section);
+  const list = el("div", "quest-list");
+  if (!rows.length) {
+    list.appendChild(el("p", "quest-empty", spec.empty || "No matching achievements."));
+    content.appendChild(list);
+    return;
+  }
+
+  const keyColumns = spec.keyColumns || [0, 1, 2];
+  const itemColumn = spec.itemColumn != null ? spec.itemColumn : 3;
+  const statusColumn = spec.statusColumn != null ? spec.statusColumn : 4;
+  const groups = [];
+  const index = new Map();
+  rows.forEach((row) => {
+    const key = keyColumns.map((idx) => String(row[idx] || "")).join("\0");
+    let group = index.get(key);
+    if (!group) {
+      group = {
+        character: String(row[0] || ""),
+        expansion: String(row[1] || ""),
+        title: achievementGroupTitle(row, spec),
+        description: achievementGroupDescription(row, spec),
+        items: [],
+      };
+      index.set(key, group);
+      groups.push(group);
+    }
+    group.items.push({
+      name: String(row[itemColumn] || ""),
+      done: String(row[statusColumn] || "") === "Done",
+    });
+  });
+
+  groups.forEach((group) => {
+    const missing = group.items.filter((item) => !item.done).length;
+    const done = group.items.length - missing;
+    const card = el("article", "quest-card");
+    const head = el("div", "quest-head");
+    head.appendChild(icon(spec.icon || SECTION_ICONS[section.id] || "icon-trophy"));
+    head.appendChild(el("div", "quest-title", group.title));
+    const metaBits = [group.character];
+    if (!activeExpansionFilter(section)) metaBits.push(group.expansion);
+    metaBits.push(done + "/" + group.items.length);
+    head.appendChild(el("div", "quest-meta", metaBits.join(" · ")));
+    card.appendChild(head);
+
+    const body = el("div", "quest-body");
+    body.appendChild(el("div", "quest-status", missing ? "Not Completed" : "Completed"));
+    body.appendChild(el("p", "quest-desc", group.description));
+    const items = el("ul", "quest-items");
+    group.items.forEach((item) => {
+      const li = el("li", item.done ? "quest-item done" : "quest-item");
+      li.appendChild(el("span", "quest-check", item.done ? "X" : ""));
+      li.appendChild(document.createTextNode(item.name));
+      items.appendChild(li);
+    });
+    body.appendChild(items);
+    card.appendChild(body);
+    list.appendChild(card);
+  });
+  content.appendChild(list);
 }
 
 function updateMissingRunesContent(content, section) {
@@ -1452,6 +1823,8 @@ function updatePanelContent(panel, section) {
   panel.innerHTML = "";
   if (section.type === "gear_matrix") {
     updateGearMatrixContent(panel, section, section.id === "gear_t_level");
+  } else if (section.data && section.data.group) {
+    updateAchievementGroupsContent(panel, section);
   } else if (section.type === "table") {
     updateTableContent(panel, section);
   } else if (section.type === "missing_runes") {

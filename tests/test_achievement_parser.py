@@ -9,8 +9,13 @@ from inventory_parser.achievement_files import (
 )
 from inventory_parser.achievement_parser import (
     EVERQUEST_BASE_LABEL,
+    clean_quest_name,
+    clean_raid_objective,
     format_expansion_label,
     parse_achievements_file,
+    parse_quest_parent,
+    parse_raid_parent,
+    raid_header_name,
     split_collection_name,
 )
 from inventory_parser.achievement_report import build_achievement_report
@@ -18,6 +23,7 @@ from inventory_parser.team_report import build_team_report
 from inventory_parser.excel_export import (
     ACHIEVEMENT_SUMMARY_SHEET_NAME,
     MISSING_COLLECTIONS_SHEET_NAME,
+    QUESTS_SHEET_NAME,
     RAID_ACHIEVEMENTS_SHEET_NAME,
     write_team_workbook,
 )
@@ -76,18 +82,37 @@ def test_discover_achievements_files() -> None:
     assert SHAMLUB_ACH.resolve() in [p.resolve() for p in files]
 
 
-def test_parse_missing_raid_achievements() -> None:
+def test_parse_raid_parent_and_clean_raid_objective() -> None:
+    assert parse_raid_parent("Conqueror of Labyrinth of Spite: Echo of Hate") == (
+        "Labyrinth of Spite",
+        "Echo of Hate",
+    )
+    assert parse_raid_parent("Vanquisher of Labyrinth of Spite: Echo of Hate") == (
+        "Labyrinth of Spite",
+        "Echo of Hate",
+    )
+    assert parse_raid_parent("Conqueror of The Plane of Sky") == ("The Plane of Sky", "")
+    assert parse_raid_parent("Echo of Hate: Give in to Greed") is None
+    assert raid_header_name("Labyrinth of Spite", "Echo of Hate") == (
+        "Conqueror of Labyrinth of Spite: Echo of Hate"
+    )
+    assert clean_raid_objective("Echo of Hate: Give in to Greed", "Echo of Hate") == (
+        "Give in to Greed"
+    )
+    assert clean_raid_objective("Echo of Hate: Enraged", "Echo of Hate") == "Enraged"
     parsed = parse_achievements_file(SHAMLUB_ACH)
     rain_fear = [
         raid for raid in parsed.missing_raid_achievements if raid.section == "Rain of Fear"
     ]
     assert rain_fear
     assert any(
-        raid.raid == "Vanquisher of Vulak`Aerr" and raid.objective == "None Shall Pass"
+        raid.raid == "Conqueror of Vulak`Aerr" and raid.objective == "None Shall Pass"
         for raid in rain_fear
     )
     assert all(raid.objective for raid in parsed.missing_raid_achievements)
     assert all(raid.section for raid in parsed.missing_raid_achievements)
+    assert any(not raid.complete for raid in rain_fear)
+    assert any(raid.complete for raid in parsed.missing_raid_achievements)
 
 
 def test_raid_achievements_exclude_completed() -> None:
@@ -99,6 +124,42 @@ def test_raid_achievements_exclude_completed() -> None:
         and raid.raid == "Conqueror of Candlemaker's Workshop: Waxwork Abolishion"
     }
     assert ("Conqueror of Candlemaker's Workshop: Waxwork Abolishion", "") not in completed
+
+
+def test_raid_report_keeps_partial_objectives() -> None:
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    report = build_team_report([inv])
+    ach_report = build_achievement_report(
+        report,
+        achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
+    )
+    assert ach_report is not None
+    vanquisher = [
+        row
+        for row in ach_report.raid_achievements
+        if row.raid == "Conqueror of Candlemaker's Workshop: Waxwork Abolishion"
+    ]
+    statuses = {row.objective: row.status for row in vanquisher}
+    assert statuses["Wax Free Zone"] == "Done"
+    assert statuses["Waxing Intensity"] == "Missing"
+    assert "Waxwork Abolishion" not in statuses
+
+    echo = [
+        row
+        for row in ach_report.raid_achievements
+        if row.raid == "Conqueror of Labyrinth of Spite: Echo of Hate"
+    ]
+    assert {row.objective for row in echo} == {
+        "Give in to Greed",
+        "What It Wants",
+        "Unfocused",
+        "Enraged",
+    }
+    assert all(row.event == "Echo of Hate" for row in echo)
+    assert all(row.status == "Missing" for row in echo)
+    assert not any(
+        row.raid.startswith("Vanquisher of") for row in ach_report.raid_achievements
+    )
 
 
 def test_format_expansion_label() -> None:
@@ -185,10 +246,12 @@ def test_achievement_report_once_per_character_across_personas(tmp_path: Path) -
     assert len(ach_report.summaries) == len(
         [s for s in parsed.section_summaries if s.total > 0]
     )
-    assert len(ach_report.raid_achievements) == len(parsed.missing_raid_achievements)
     assert {row.character for row in ach_report.missing_collections} == {"Shamlub"}
     assert {row.character for row in ach_report.summaries} == {"Shamlub"}
     assert {row.character for row in ach_report.raid_achievements} == {"Shamlub"}
+    assert ach_report.raid_achievements
+    assert ach_report.quests
+    assert {row.character for row in ach_report.quests} == {"Shamlub"}
 
     strange_row = next(
         row for row in ach_report.missing_collections if row.missing_item == "Strange Black Rock"
@@ -248,15 +311,158 @@ def test_achievement_sheets_in_workbook(tmp_path: Path) -> None:
     wb = load_workbook(out, data_only=True)
     assert MISSING_COLLECTIONS_SHEET_NAME in wb.sheetnames
     assert ACHIEVEMENT_SUMMARY_SHEET_NAME in wb.sheetnames
+    assert QUESTS_SHEET_NAME in wb.sheetnames
     assert RAID_ACHIEVEMENTS_SHEET_NAME in wb.sheetnames
     missing_ws = wb[MISSING_COLLECTIONS_SHEET_NAME]
     assert missing_ws.cell(1, 5).value == "Missing Item"
     assert missing_ws.cell(1, 7).value == "Char Has"
+    quest_ws = wb[QUESTS_SHEET_NAME]
+    assert [quest_ws.cell(1, col).value for col in range(1, 7)] == [
+        "Character",
+        "Expansion",
+        "Zone",
+        "Type",
+        "Quest",
+        "Status",
+    ]
+    assert quest_ws.auto_filter.ref is not None
+    assert any(
+        quest_ws.cell(row, 3).value == "Arcstone, Shattered Isles"
+        and quest_ws.cell(row, 5).value == "Quench the Fire"
+        for row in range(2, quest_ws.max_row + 1)
+    )
     raid_ws = wb[RAID_ACHIEVEMENTS_SHEET_NAME]
-    assert raid_ws.cell(1, 2).value == "Expansion"
+    assert [raid_ws.cell(1, col).value for col in range(1, 7)] == [
+        "Character",
+        "Expansion",
+        "Raid",
+        "Event",
+        "Objective",
+        "Status",
+    ]
+    assert any(
+        raid_ws.cell(row, 4).value == "Echo of Hate"
+        and raid_ws.cell(row, 5).value == "Give in to Greed"
+        for row in range(2, raid_ws.max_row + 1)
+    )
     assert raid_ws.cell(2, 2).value == EVERQUEST_BASE_LABEL or " (20" in str(raid_ws.cell(2, 2).value)
     assert raid_ws.auto_filter.ref is not None
     assert any(
         missing_ws.cell(row, 5).value == "Strange Black Rock"
         for row in range(2, missing_ws.max_row + 1)
     )
+
+
+def test_parse_quest_parent_and_clean_quest_name() -> None:
+    assert parse_quest_parent("Mercenary of Arcstone, Shattered Isles") == (
+        "Mercenary",
+        "Arcstone, Shattered Isles",
+    )
+    assert parse_quest_parent("Partisan of Scarred Grove") == ("Partisan", "Scarred Grove")
+    assert parse_quest_parent("Hero of Candlemaker's Workshop: Waxwork Abolishion") is None
+    assert (
+        clean_quest_name(
+            "Quench the Fire - from Archivist Kavros in Arcstone, Shattered Isles"
+        )
+        == "Quench the Fire"
+    )
+    assert (
+        clean_quest_name("Sergeant Malachi in Hodstock Hills - Scaled Invaders")
+        == "Scaled Invaders"
+    )
+    assert clean_quest_name("Garvin Windrunner - Reduce the Risk") == "Reduce the Risk"
+
+
+def test_parse_mercenary_partisan_quest_children() -> None:
+    parsed = parse_achievements_file(SHAMLUB_ACH)
+    arcstone = [
+        item
+        for item in parsed.quest_achievements
+        if item.section == "Shattering of Ro"
+        and item.quest_type == "Mercenary"
+        and item.zone == "Arcstone, Shattered Isles"
+    ]
+    assert {item.quest for item in arcstone} == {
+        "Quench the Fire",
+        "Fungal Outbreak",
+        "Cleanse the Corruption",
+    }
+    assert all(not item.complete for item in arcstone)
+
+    scarred_partisan = [
+        item
+        for item in parsed.quest_achievements
+        if item.zone == "Scarred Grove" and item.quest_type == "Partisan"
+    ]
+    assert any(item.quest == "Missing Scout" and item.complete for item in scarred_partisan)
+    assert any(item.quest == "Storm Chasing" and not item.complete for item in scarred_partisan)
+
+    labyrinth_merc = [
+        item
+        for item in parsed.quest_achievements
+        if item.zone == "Labyrinth of Spite" and item.quest_type == "Mercenary"
+    ]
+    assert labyrinth_merc
+    assert all(item.complete for item in labyrinth_merc)
+
+    assert not any(
+        item.quest.casefold().startswith("complete either")
+        for item in parsed.quest_achievements
+    )
+    assert not any(
+        item.quest.casefold().startswith("complete the achievement")
+        for item in parsed.quest_achievements
+    )
+    assert not any("Waxwork Abolishion" in item.quest for item in parsed.quest_achievements)
+    assert not any(
+        item.quest == "Mercenary of The Plane of War" for item in parsed.quest_achievements
+    )
+
+
+def test_quest_report_omits_complete_lines_and_keeps_partial() -> None:
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    report = build_team_report([inv])
+    ach_report = build_achievement_report(
+        report,
+        achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
+    )
+    assert ach_report is not None
+    quests = ach_report.quests
+
+    arcstone = [
+        row
+        for row in quests
+        if row.zone == "Arcstone, Shattered Isles" and row.quest_type == "Mercenary"
+    ]
+    assert {row.quest for row in arcstone} == {
+        "Quench the Fire",
+        "Fungal Outbreak",
+        "Cleanse the Corruption",
+    }
+    assert all(row.status == "Missing" for row in arcstone)
+
+    scarred_partisan = [
+        row for row in quests if row.zone == "Scarred Grove" and row.quest_type == "Partisan"
+    ]
+    statuses = {row.quest: row.status for row in scarred_partisan}
+    assert statuses["Missing Scout"] == "Done"
+    assert statuses["Storm Chasing"] == "Missing"
+
+    scarred_merc = [
+        row for row in quests if row.zone == "Scarred Grove" and row.quest_type == "Mercenary"
+    ]
+    assert any(row.quest == "Smash to Mulch!" and row.status == "Missing" for row in scarred_merc)
+    assert any(
+        row.quest == "Construct Deconstruction" and row.status == "Done"
+        for row in scarred_merc
+    )
+    assert not any("Complete either" in row.quest for row in scarred_merc)
+
+    assert not any(
+        row.zone == "Labyrinth of Spite" and row.quest_type == "Mercenary" for row in quests
+    )
+    assert any(
+        row.zone == "Labyrinth of Spite" and row.quest_type == "Partisan" and row.status == "Missing"
+        for row in quests
+    )
+    assert not any(row.zone == "Hodstock Hills" for row in quests)

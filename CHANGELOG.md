@@ -6,6 +6,14 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.26.0] - 2026-08-17
+
+### Added
+
+- **Quests** tab (Excel and HTML) lists unfinished Mercenary and Partisan zone quest lines from `/outputfile achievements`. Partial lines show each child quest as **Done** or **Missing**. HTML groups each line under an achievement header with a checklist, plus Character, Expansion, and Zone filters.
+- **Raid Achievements** HTML matches the Quests layout. Each unfinished raid is grouped under the **Conqueror** header; child rows are the event achievements (the text after the event name). HTML adds an **Event** filter. Excel includes **Event** and **Status** columns.
+- **Missing Collections** HTML: click a missing item name to copy it; a small balloon confirms it was added to the clipboard.
+
 ## [1.25.1] - 2026-08-16
 
 ### Changed

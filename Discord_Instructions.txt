@@ -44,7 +44,7 @@ Tip: class labels come from the worn Chest (BP) in each inventory file; filename
    • **Up** / **Down** to put a main character in the first column
    • Order is remembered for next time
 4. (Optional) Leave **Spells** checked for rune tabs (auto-enabled when spell files are present)
-5. (Optional) Leave **Achievements** checked for collection/summary tabs (auto-enabled when achievement files are present)
+5. (Optional) Leave **Achievements** checked for collection, quest, and raid tabs (auto-enabled when achievement files are present)
 6. (Optional) Leave **Type 7/8 Augs** checked (on by default) for type 7/8 BiS / farm sheets; uncheck to skip the catalog fetch
    • When on, optional **Include Anniversary augs** (Gems of Distant Echoes) and **Advanced weights** for a single-character roster
    • Equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off
@@ -66,7 +66,7 @@ Use **Browse…** to pick a different path if you want.
   • Missing Rk. II at levels 121–130 counts too (shown as Rk. III in the report)
 • **Missing Useful Spells** — curated useful spells still missing (Raccoo’s list × your MissingSpells file; all levels)
 • **Rune Inventory** — on-hand raid runes in bags/bank (NoS, LS, ToB, SoR); no spell file needed
-• **Missing Collections / Achievement Summary / Raid Achievements** — when achievement files are included (once per character; personas share achievements/collections)
+• **Missing Collections / Quests / Achievement Summary / Raid Achievements** — when achievement files are included (once per character; personas share achievements/collections)
 • **Type 7/8 Augs** — type 7/8 recommendations, Need to Farm, ranked list (when the Type 7/8 Augs chip is on; uses a catalog fetch + cache). Type 5 and other non-7/8 augs are not suggested.
 
 Item names link to EQ Resource when the inventory file has item IDs.
@@ -76,7 +76,9 @@ Item names link to EQ Resource when the inventory file has item IDs.
 • **Sidebar** — Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Type 7/8 Augs, …)
 • **Character filter** chips under the nav — multi-select by character/persona (All clears; personas labeled when shared)
 • **Search**, **sort** (click headers), **Visible slots** on gear tabs (search keeps focus while typing)
-• **Character** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Missing Useful Spells, Raid Achievements, Missing Runes, Rune Inventory, etc.)
+• **Character** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, Quests, etc.)
+• **Zone** on Quests and **Event** on Raid Achievements (options follow the selected expansion)
+• Click a **Missing Item** name on Missing Collections to copy it (a balloon confirms)
 • **Sort** on Missing Runes — roster order, name, class, or most missing (uses the Expansion filter when one is selected)
 • **Expansion** on achievement tabs defaults to the current expansion (not All) — change the dropdown to see older content
 • Gear colors and EQ Resource links match Excel

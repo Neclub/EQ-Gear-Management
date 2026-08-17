@@ -1,6 +1,6 @@
 # How to Use — EQ Gear Management (EQGM)
 
-Turn your raid’s EverQuest inventory files into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, unmade craft mats, optional missing Rank III spell runes, optional achievement collection progress, and optional Type 7/8 aug recommendations.
+Turn your raid’s EverQuest inventory files into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, unmade craft mats, optional missing Rank III spell runes, optional achievement collections/quests/raid progress, and optional Type 7/8 aug recommendations.
 
 Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
 
@@ -80,7 +80,7 @@ You can put achievement files:
 - In the **same folder** as the inventory files, or  
 - In a subfolder named **`AchievementData`** next to those files
 
-The **Missing Collections** tab lists collection items still needed (`owned/total` progress under **Collections** sections). **Achievement Summary** counts completed vs incomplete top-level achievements per section. Achievement files are named by character only (no class segment); with multiple persona inventories, those tabs still list each character once.
+The **Missing Collections** tab lists collection items still needed (`owned/total` progress under **Collections** sections). **Quests** lists unfinished Mercenary and Partisan zone quest lines (`Done` / `Missing` per quest). **Achievement Summary** counts completed vs incomplete top-level achievements per section. Achievement files are named by character only (no class segment); with multiple persona inventories, those tabs still list each character once.
 
 ---
 
@@ -222,7 +222,17 @@ Craft materials and T1 containers sitting in **General** bags that would still u
 
 ### Missing Collections *(if enabled)*
 
-Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from the collection name), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed. Personas of the same character share one inventory for collections — rows and **Char Has** names are once per character, not per class.
+Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from the collection name), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed. Personas of the same character share one inventory for collections — rows and **Char Has** names are once per character, not per class. In HTML, click a **Missing Item** name to copy it; a small balloon confirms it was added to the clipboard.
+
+### Quests *(if enabled)*
+
+Unfinished **Mercenary** and **Partisan** zone quest lines from each expansion’s **Quests** section. Fully complete lines are omitted. If a line is still in progress, every child quest is listed so you can see what is left in that zone.
+
+**Excel columns:** Character · Expansion · Zone · Type · Quest · Status (`Done` / `Missing`)
+
+**HTML:** each Mercenary/Partisan line is a card with the achievement title as the header (e.g. `Partisan of Arcstone, Shattered Isles`) and the child quests underneath as a checklist. Incomplete steps show an empty box; finished steps show **X**.
+
+Expansions show release year (e.g. `Shattering of Ro (2025)`) and rows are sorted **newest to oldest**. In HTML, **Character**, **Expansion**, and **Zone** dropdowns narrow the list (expansion defaults to the current expansion). Personas of the same character share one achievement file — rows are once per character.
 
 ### Achievement Summary *(if enabled)*
 
@@ -230,7 +240,13 @@ Top-level achievement counts per section (expansion or category): completed, inc
 
 ### Raid Achievements *(if enabled)*
 
-Incomplete raid **objectives** from each expansion’s **Raids** section. Columns: Character, Expansion, Raid, Objective. Expansions show release year (e.g. `Shattering of Ro (2025)`) and rows are sorted **newest to oldest**; use Excel filters on **Expansion** to narrow the list.
+Incomplete **raid** lines from each expansion’s **Raids** section. Fully complete lines are omitted. If a line is still in progress, every child objective is listed so you can see what is left.
+
+**Excel columns:** Character · Expansion · Raid · Event · Objective · Status (`Done` / `Missing`)
+
+**HTML:** each raid is a card headed by the **Conqueror** line (e.g. `Conqueror of Labyrinth of Spite: Echo of Hate`). Child rows are the event achievements after the colon (Enraged, Give in to Greed, Unfocused, What It Wants). Incomplete steps show an empty box; finished steps show **X**.
+
+Expansions show release year (e.g. `Shattering of Ro (2025)`) and rows are sorted **newest to oldest**. In HTML, **Character**, **Expansion**, and **Event** dropdowns narrow the list (expansion defaults to the current expansion; Event options follow the selected expansion).
 
 ### Type 7/8 Augs *(if enabled)*
 
@@ -248,7 +264,7 @@ When **HTML** or **Both** is selected next to **Generate Report** (default **Bot
 
 **Sections**
 
-Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Missing Collections, Achievement Summary, Raid Achievements, and **Type 7/8 Augs** when that chip is on.
+Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Missing Collections, Quests, Achievement Summary, Raid Achievements, and **Type 7/8 Augs** when that chip is on.
 
 **Filters & tools**
 
@@ -257,11 +273,14 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 | **Character filter** (chips) | Sidebar | Multi-select filter for gear columns and table rows. Toggle any combination of characters/personas; **All** clears the filter. Shared-name personas show full labels (e.g. `CharN ( PAL )`). Unselected chips dim only while a filter is active |
 | **Search** | Toolbar | Filters the active section (keeps keyboard focus while typing) |
 | **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
-| **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, etc. to one character |
+| **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, Quests, etc. to one character |
 | **Rune type** | Toolbar (Missing Spells) | All / Minor / Lesser / Median / Greater / Glowing |
 | **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells** by exact spell expansion; filter **Missing Useful Spells** by short expansion code (SOR, TOB, …); filter achievement tables by expansion (defaults to the **current expansion** on first open); on **Missing Runes** and **Rune Inventory**, filter to one expansion / rune family |
+| **Zone** | Toolbar (Quests) | Filter Mercenary/Partisan rows to one zone (options follow the current Expansion filter) |
+| **Event** | Toolbar (Raid Achievements) | Filter raid cards to one event (e.g. Echo of Hate). Options follow the current Expansion filter |
 | **Sort** | Toolbar (Missing Runes) | Reorder character columns: roster order, name, class, or most missing (uses the Expansion filter when one is selected) |
 | **Column headers** | Table | Click to sort |
+| **Missing Item** | Missing Collections | Click an item name to copy it; a balloon confirms it was copied |
 
 Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.
 
@@ -358,7 +377,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\EQGM-1.25.1.exe
+py -3 scripts\sign_exe.py dist\EQGM-1.26.0.exe
 ```
 
 (with the same environment variables set).

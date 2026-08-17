@@ -132,6 +132,29 @@ def test_html_achievement_expansion_labels(tmp_path: Path) -> None:
     raid = next(s for s in report["sections"] if s["title"] == "Raid Achievements")
     expansions = {row[1] for row in raid["data"]["rows"]}
     assert any("Rain of Fear (2012)" in value for value in expansions)
+    assert raid["data"]["columns"] == ["Character", "Expansion", "Raid", "Event", "Objective", "Status"]
+    assert raid["data"]["eventColumn"] == 3
+    assert raid["data"]["group"]["descriptionKind"] == "raids"
+    assert any(
+        row[2] == "Conqueror of Vulak`Aerr" and row[4] == "None Shall Pass"
+        for row in raid["data"]["rows"]
+    )
+    assert any(row[3] == "Echo of Hate" for row in raid["data"]["rows"])
+    quests = next(s for s in report["sections"] if s["id"] == "quests")
+    data = quests["data"]
+    assert data["characterColumn"] == 0
+    assert data["expansionColumn"] == 1
+    assert data["zoneColumn"] == 2
+    assert data["columns"] == ["Character", "Expansion", "Zone", "Type", "Quest", "Status"]
+    assert data["group"]["descriptionKind"] == "quests"
+    assert any(
+        row[2] == "Arcstone, Shattered Isles" and row[4] == "Quench the Fire"
+        for row in data["rows"]
+    )
+    text = out.read_text(encoding="utf-8")
+    assert "function updateAchievementGroupsContent" in text
+    assert "quest-card" in text
+    assert "Not Completed" in text
 
 
 def test_html_unmade_gear_omitted_when_empty(tmp_path: Path) -> None:
@@ -155,6 +178,8 @@ def test_html_spell_list_has_character_filter(tmp_path: Path) -> None:
     assert "ACHIEVEMENT_EXPANSION_TABS" in text
     assert "activeExpansionFilter" in text
     assert "expansionFilterOptions" in text
+    assert "zoneFilterOptions" in text
+    assert "eventFilterOptions" in text
     assert "Rune type" in text
     report = extract_report_json(text)
     spell_section = next(s for s in report["sections"] if s["id"] == "spell_list")
@@ -207,3 +232,7 @@ def test_embedded_json_row_counts_match_bundle(tmp_path: Path) -> None:
     if bundle.achievement_report and bundle.achievement_report.missing_collections:
         missing = next(s for s in report["sections"] if s["title"] == "Missing Collections")
         assert len(missing["data"]["rows"]) == len(bundle.achievement_report.missing_collections)
+        assert missing["data"]["copyColumn"] == 4
+        assert "function copyTextToClipboard" in out.read_text(encoding="utf-8")
+        assert "function showCopyBalloon" in out.read_text(encoding="utf-8")
+        assert "Copied to clipboard" in out.read_text(encoding="utf-8")

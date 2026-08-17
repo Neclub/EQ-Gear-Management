@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections import defaultdict
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -10,6 +11,7 @@ from inventory_parser.achievement_parser import (
     AchievementParseResult,
     MissingCollectionItem,
     MissingRaidAchievement,
+    QuestAchievement,
     SectionSummary,
     expansion_sort_key,
     parse_achievements_file,
@@ -45,19 +47,37 @@ class RaidAchievementRow:
     character: str
     expansion: str
     raid: str
+    event: str
     objective: str
+    status: str
+
+
+@dataclass(frozen=True)
+class QuestRow:
+    character: str
+    expansion: str
+    zone: str
+    quest_type: str
+    quest: str
+    status: str
 
 
 @dataclass
 class AchievementReport:
     missing_collections: list[MissingCollectionRow] = field(default_factory=list)
     raid_achievements: list[RaidAchievementRow] = field(default_factory=list)
+    quests: list[QuestRow] = field(default_factory=list)
     summaries: list[AchievementSummaryRow] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
 
     @property
     def has_data(self) -> bool:
-        return bool(self.missing_collections or self.raid_achievements or self.summaries)
+        return bool(
+            self.missing_collections
+            or self.raid_achievements
+            or self.quests
+            or self.summaries
+        )
 
 
 def _character_key(character: str, server: str) -> str:
@@ -101,15 +121,37 @@ def _raid_rows_from_parse(
     display_name: str,
     raids: list[MissingRaidAchievement],
 ) -> list[RaidAchievementRow]:
-    return [
-        RaidAchievementRow(
-            character=display_name,
-            expansion=raid.section,
-            raid=raid.raid,
-            objective=raid.objective,
-        )
-        for raid in raids
-    ]
+    grouped: dict[tuple[str, str, str], list[MissingRaidAchievement]] = defaultdict(list)
+    for item in raids:
+        grouped[(display_name, item.section, item.raid)].append(item)
+
+    rows: list[RaidAchievementRow] = []
+    for (character, expansion, raid), children in grouped.items():
+        unique: dict[str, MissingRaidAchievement] = {}
+        order: list[str] = []
+        for child in children:
+            key = child.objective.casefold()
+            previous = unique.get(key)
+            if previous is None:
+                unique[key] = child
+                order.append(key)
+            elif previous.complete and not child.complete:
+                unique[key] = child
+        merged = [unique[key] for key in order]
+        if all(child.complete for child in merged):
+            continue
+        for child in merged:
+            rows.append(
+                RaidAchievementRow(
+                    character=character,
+                    expansion=expansion,
+                    raid=raid,
+                    event=child.event,
+                    objective=child.objective,
+                    status="Done" if child.complete else "Missing",
+                )
+            )
+    return rows
 
 
 def _sort_missing_collection_rows(rows: list[MissingCollectionRow]) -> list[MissingCollectionRow]:
@@ -140,6 +182,7 @@ def _sort_raid_achievement_rows(rows: list[RaidAchievementRow]) -> list[RaidAchi
         rows,
         key=lambda row: (
             expansion_sort_key(row.expansion),
+            row.event.casefold(),
             row.raid.casefold(),
             row.objective.casefold(),
             row.character.casefold(),
@@ -147,11 +190,55 @@ def _sort_raid_achievement_rows(rows: list[RaidAchievementRow]) -> list[RaidAchi
     )
 
 
+def _sort_quest_rows(rows: list[QuestRow]) -> list[QuestRow]:
+    return sorted(
+        rows,
+        key=lambda row: (
+            expansion_sort_key(row.expansion),
+            row.zone.casefold(),
+            row.quest_type.casefold(),
+            row.character.casefold(),
+            row.quest.casefold(),
+        ),
+    )
+
+
+def _quest_rows_from_parse(
+    display_name: str,
+    quests: list[QuestAchievement],
+) -> list[QuestRow]:
+    grouped: dict[tuple[str, str, str, str], list[QuestAchievement]] = defaultdict(list)
+    for item in quests:
+        grouped[(display_name, item.section, item.quest_type, item.zone)].append(item)
+
+    rows: list[QuestRow] = []
+    for (character, expansion, quest_type, zone), children in grouped.items():
+        if all(child.complete for child in children):
+            continue
+        for child in children:
+            rows.append(
+                QuestRow(
+                    character=character,
+                    expansion=expansion,
+                    zone=zone,
+                    quest_type=quest_type,
+                    quest=child.quest,
+                    status="Done" if child.complete else "Missing",
+                )
+            )
+    return rows
+
+
 def _rows_from_parse(
     display_name: str,
     parsed: AchievementParseResult,
     item_holders: dict[str, list[str]],
-) -> tuple[list[MissingCollectionRow], list[RaidAchievementRow], list[AchievementSummaryRow]]:
+) -> tuple[
+    list[MissingCollectionRow],
+    list[RaidAchievementRow],
+    list[QuestRow],
+    list[AchievementSummaryRow],
+]:
     missing = [
         MissingCollectionRow(
             character=display_name,
@@ -178,7 +265,8 @@ def _rows_from_parse(
         if summary.total > 0
     ]
     raids = _raid_rows_from_parse(display_name, parsed.missing_raid_achievements)
-    return missing, raids, summaries
+    quests = _quest_rows_from_parse(display_name, parsed.quest_achievements)
+    return missing, raids, quests, summaries
 
 
 def build_achievement_report(
@@ -219,16 +307,18 @@ def build_achievement_report(
                 f"Could not read achievements for {character.character}: {exc}"
             )
             continue
-        missing, raids, summaries = _rows_from_parse(
+        missing, raids, quests, summaries = _rows_from_parse(
             character.character,
             parsed,
             item_holders,
         )
         report.missing_collections.extend(missing)
         report.raid_achievements.extend(raids)
+        report.quests.extend(quests)
         report.summaries.extend(summaries)
 
     report.raid_achievements = _sort_raid_achievement_rows(report.raid_achievements)
+    report.quests = _sort_quest_rows(report.quests)
     report.missing_collections = _sort_missing_collection_rows(report.missing_collections)
     report.summaries = _sort_achievement_summary_rows(report.summaries)
 

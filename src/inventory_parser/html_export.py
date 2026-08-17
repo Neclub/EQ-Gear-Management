@@ -20,6 +20,7 @@ from inventory_parser.excel_export import (
     MISSING_COLLECTIONS_SHEET_NAME,
     MISSING_SPELLS_SHEET_NAME,
     MISSING_USEFUL_SPELLS_SHEET_NAME,
+    QUESTS_SHEET_NAME,
     RAID_ACHIEVEMENTS_SHEET_NAME,
     RUNE_INVENTORY_SHEET_NAME,
     UNMADE_GEAR_SHEET_NAME,
@@ -232,13 +233,26 @@ def _serialize_table(
     *,
     character_column: int | None = 0,
     expansion_column: int | None = None,
+    zone_column: int | None = None,
+    event_column: int | None = None,
+    copy_column: int | None = None,
+    group: dict | None = None,
 ) -> dict:
-    return {
+    data = {
         "columns": columns,
         "rows": rows,
         "characterColumn": character_column,
         "expansionColumn": expansion_column,
     }
+    if zone_column is not None:
+        data["zoneColumn"] = zone_column
+    if event_column is not None:
+        data["eventColumn"] = event_column
+    if copy_column is not None:
+        data["copyColumn"] = copy_column
+    if group is not None:
+        data["group"] = group
+    return data
 
 
 def serialize_report(bundle: ExportBundle) -> dict:
@@ -383,6 +397,43 @@ def serialize_report(bundle: ExportBundle) -> dict:
                         ],
                         character_column=0,
                         expansion_column=1,
+                        copy_column=4,
+                    ),
+                }
+            )
+        if ach.quests:
+            sections.append(
+                {
+                    "id": "quests",
+                    "title": QUESTS_SHEET_NAME,
+                    "type": "table",
+                    "data": _serialize_table(
+                        ["Character", "Expansion", "Zone", "Type", "Quest", "Status"],
+                        [
+                            [
+                                row.character,
+                                format_expansion_label(row.expansion),
+                                row.zone,
+                                row.quest_type,
+                                row.quest,
+                                row.status,
+                            ]
+                            for row in ach.quests
+                        ],
+                        character_column=0,
+                        expansion_column=1,
+                        zone_column=2,
+                        group={
+                            "keyColumns": [0, 1, 2, 3],
+                            "titleColumns": [3, 2],
+                            "titleJoin": " of ",
+                            "itemColumn": 4,
+                            "statusColumn": 5,
+                            "descriptionKind": "quests",
+                            "zoneColumn": 2,
+                            "icon": "icon-scroll",
+                            "empty": "No matching quest lines.",
+                        },
                     ),
                 }
             )
@@ -393,18 +444,30 @@ def serialize_report(bundle: ExportBundle) -> dict:
                     "title": RAID_ACHIEVEMENTS_SHEET_NAME,
                     "type": "table",
                     "data": _serialize_table(
-                        ["Character", "Expansion", "Raid", "Objective"],
+                        ["Character", "Expansion", "Raid", "Event", "Objective", "Status"],
                         [
                             [
                                 row.character,
                                 format_expansion_label(row.expansion),
                                 row.raid,
+                                row.event,
                                 row.objective,
+                                row.status,
                             ]
                             for row in ach.raid_achievements
                         ],
                         character_column=0,
                         expansion_column=1,
+                        event_column=3,
+                        group={
+                            "keyColumns": [0, 1, 2],
+                            "titleColumn": 2,
+                            "itemColumn": 4,
+                            "statusColumn": 5,
+                            "descriptionKind": "raids",
+                            "icon": "icon-trophy",
+                            "empty": "No matching raid achievements.",
+                        },
                     ),
                 }
             )

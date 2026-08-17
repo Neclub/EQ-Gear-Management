@@ -88,6 +88,7 @@ GEAR_T_LEVEL_SHEET_NAME = "Gear T-Level"
 UNMADE_GEAR_SHEET_NAME = "Unmade Gear"
 MISSING_COLLECTIONS_SHEET_NAME = "Missing Collections"
 ACHIEVEMENT_SUMMARY_SHEET_NAME = "Achievement Summary"
+QUESTS_SHEET_NAME = "Quests"
 RAID_ACHIEVEMENTS_SHEET_NAME = "Raid Achievements"
 RUNE_INVENTORY_SHEET_NAME = "Rune Inventory"
 MISSING_SPELLS_SHEET_NAME = "Missing Spells"
@@ -150,6 +151,9 @@ def write_team_workbook(
         if achievement_report.missing_collections:
             ws_missing = wb.create_sheet(MISSING_COLLECTIONS_SHEET_NAME)
             _write_missing_collections_sheet(ws_missing, achievement_report)
+        if achievement_report.quests:
+            ws_quests = wb.create_sheet(QUESTS_SHEET_NAME)
+            _write_quests_sheet(ws_quests, achievement_report)
         if achievement_report.summaries:
             ws_summary = wb.create_sheet(ACHIEVEMENT_SUMMARY_SHEET_NAME)
             _write_achievement_summary_sheet(ws_summary, achievement_report)
@@ -1057,6 +1061,59 @@ def _write_achievement_summary_sheet(ws: Worksheet, report: AchievementReport) -
     )
 
 
+def _write_quests_sheet(ws: Worksheet, report: AchievementReport) -> None:
+    ws.sheet_properties.tabColor = "5A384A"
+    entries = report.quests
+    last_row = 1 + len(entries)
+
+    headers = (
+        "Character",
+        "Expansion",
+        "Zone",
+        "Type",
+        "Quest",
+        "Status",
+    )
+    for col, header in enumerate(headers, start=1):
+        cell = ws.cell(1, col, header)
+        cell.font = FONT_HEADER
+        cell.fill = FILL_HEADER
+        cell.alignment = _ALIGN_HEADER
+
+    for row_idx, entry in enumerate(entries, start=2):
+        values = (
+            entry.character,
+            format_expansion_label(entry.expansion),
+            entry.zone,
+            entry.quest_type,
+            entry.quest,
+            entry.status,
+        )
+        row_fill = FILL_SPELL_DETAIL if row_idx % 2 == 0 else FILL_SPELL_DETAIL_ALT
+        for col, value in enumerate(values, start=1):
+            cell = ws.cell(row_idx, col, value)
+            cell.font = FONT_BODY
+            cell.fill = row_fill
+            cell.alignment = _ALIGN
+
+    if entries:
+        ws.auto_filter.ref = f"A1:F{1 + len(entries)}"
+        ws.freeze_panes = ws.cell(2, 1).coordinate
+
+    ws.column_dimensions["A"].width = _COL_SPELL_CHAR
+    ws.column_dimensions["B"].width = 22.0
+    ws.column_dimensions["C"].width = _COL_ITEM_WIDTH
+    ws.column_dimensions["D"].width = 12.0
+    ws.column_dimensions["E"].width = _COL_ITEM_WIDTH
+    ws.column_dimensions["F"].width = 12.0
+    _fill_sheet_padding(
+        ws,
+        content_last_row=last_row,
+        content_last_col=len(headers),
+        pad_rows=max(last_row, SHEET_BACKGROUND_ROWS),
+    )
+
+
 def _write_raid_achievements_sheet(ws: Worksheet, report: AchievementReport) -> None:
     ws.sheet_properties.tabColor = "5A384A"
     entries = report.raid_achievements
@@ -1066,7 +1123,9 @@ def _write_raid_achievements_sheet(ws: Worksheet, report: AchievementReport) -> 
         "Character",
         "Expansion",
         "Raid",
+        "Event",
         "Objective",
+        "Status",
     )
     for col, header in enumerate(headers, start=1):
         cell = ws.cell(1, col, header)
@@ -1079,7 +1138,9 @@ def _write_raid_achievements_sheet(ws: Worksheet, report: AchievementReport) -> 
             entry.character,
             format_expansion_label(entry.expansion),
             entry.raid,
+            entry.event,
             entry.objective,
+            entry.status,
         )
         row_fill = FILL_SPELL_DETAIL if row_idx % 2 == 0 else FILL_SPELL_DETAIL_ALT
         for col, value in enumerate(values, start=1):
@@ -1089,13 +1150,15 @@ def _write_raid_achievements_sheet(ws: Worksheet, report: AchievementReport) -> 
             cell.alignment = _ALIGN
 
     if entries:
-        ws.auto_filter.ref = f"A1:D{1 + len(entries)}"
+        ws.auto_filter.ref = f"A1:F{1 + len(entries)}"
         ws.freeze_panes = ws.cell(2, 1).coordinate
 
     ws.column_dimensions["A"].width = _COL_SPELL_CHAR
     ws.column_dimensions["B"].width = 22.0
     ws.column_dimensions["C"].width = _COL_ITEM_WIDTH
-    ws.column_dimensions["D"].width = _COL_ITEM_WIDTH
+    ws.column_dimensions["D"].width = 28.0
+    ws.column_dimensions["E"].width = _COL_ITEM_WIDTH
+    ws.column_dimensions["F"].width = 12.0
     _fill_sheet_padding(
         ws,
         content_last_row=last_row,
