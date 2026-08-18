@@ -53,6 +53,7 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
         "icon-chest",
         "icon-trophy",
         "icon-gem",
+        "icon-armor",
     ):
         assert f'id="{symbol_id}"' in text
 
@@ -203,6 +204,7 @@ def test_cli_also_html_flag(tmp_path: Path) -> None:
         include_spells=False,
         include_achievements=False,
         include_slot2=False,
+        include_raid_bis=False,
         also_html=True,
     )
     assert saved == xlsx

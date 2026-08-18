@@ -1,6 +1,6 @@
 # How to Use — EQ Gear Management (EQGM)
 
-Turn your raid’s EverQuest inventory files into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, unmade craft mats, optional missing Rank III spell runes, optional achievement collections/quests/raid progress, and optional Type 7/8 aug recommendations.
+Turn your raid’s EverQuest inventory files into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, unmade craft mats, optional missing Rank III spell runes, optional achievement collections/quests/raid progress, optional Type 7/8 aug recommendations, and optional current-expansion Raid BiS.
 
 Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
 
@@ -93,7 +93,7 @@ The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane 
 | Area | Contents |
 |------|----------|
 | **Left** | **Team characters** roster with class icons; **EQ Folder** below the list |
-| **Right (top)** | **Export options** — Slots dropdown; **Spells**, **Achievements**, and **Type 7/8 Augs** chips |
+| **Right (top)** | **Export options** — Slots dropdown; **Spells**, **Achievements**, **Type 7/8 Augs**, and **Raid BiS** chips |
 | **Right (bottom)** | **Output folder** path and **Browse…**; **Up** / **Down** / **Remove** / **Clear** for the roster |
 | **Footer** | Status line; **Excel** / **HTML** / **Both** output chips; **Generate Report** |
 
@@ -120,6 +120,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
    - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs
    - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs
    - **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Artisan's Prize is recommended for Ear when it is in the inventory file. An equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off. Only augs that fit type 7/8 holes are recommended (type 5 and similar are excluded). Generate shows a progress bar while sockets and catalogs are fetched.
+   - **Raid BiS** chip — on by default when inventories are loaded; uncheck to skip the Raid BiS sheet and catalog fetch. Compares equipped armor and jewelry to current-expansion raid T1 and T2 (weapons are shown but not scored). MAG/BST/NEC keep a pet-focus ear. The first run needs network access to EQ Resource.
 
 6. **Output**
    - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
@@ -252,6 +253,16 @@ Expansions show release year (e.g. `Shattering of Ro (2025)`) and rows are sorte
 
 Type 7/8 (usually inventory Slot2) recommendations vs a live EQ Resource catalog (raidloot fallback). Only augs that **fit type 7/8 holes** are recommended (type 5 and similar are excluded). Artisan's Prize is treated as owned when it appears in the inventory file. If **Velium Empowered Gem of Freezing** is equipped, it is kept and assigned to the legal slot with the best weighted trade-off against other BiS augs. Excel adds **Stat Summary**, **Augs**, **Need to Farm**, **Ranked Augs**, and **Aug Legend**. HTML adds a **Type 7/8 Augs** section with the same cards. Needs a network fetch the first time; later runs use disk cache under `%LOCALAPPDATA%\EQGM\`. Uncheck the chip to skip this entirely.
 
+### Raid BiS *(if enabled)*
+
+Current-expansion raid T1 and T2 armor and jewelry vs what each character is wearing, scored with the same class/slot weights as Type 7/8 augs. T1 can beat T2. MAG, BST, and NEC keep a pet-focus ear (`Enhanced Minion` or `Summoner` in the name). Primary, Secondary, Ammo, and Power Source are shown on the paperdoll but not scored. Wrist items are not Lore, so both wrist slots can recommend the same bracer.
+
+**Excel:** a **Raid BiS** sheet with current item, recommended item, tier, and stat changes.
+
+**HTML:** an inventory-window paperdoll (green outline = already BiS, gold = upgrade) plus a table of every scored slot. A **Character** dropdown at the top of the page filters to one persona (`Name ( CLASS )`). Stat changes list HP, Mana, the class’s primary HStat, and Spell Damage for casters.
+
+Needs a network fetch the first time (EQ Resource raid armor/jewelry, raidloot fallback); later runs use `%LOCALAPPDATA%\EQGM\`. Item icons are cached at generate time. Uncheck the chip to skip this entirely.
+
 ### HTML report *(optional)*
 
 When **HTML** or **Both** is selected next to **Generate Report** (default **Both**), or **`--also-html`** is passed on the CLI, the app saves `{prefix}_Team_Inventory.html` next to the Excel path stem (e.g. `Bristlebane_Team_Inventory.html`). HTML-only mode writes that file without creating a workbook. In the GUI, the `.html` opens in your default browser when generation finishes; you can also double-click it later in Chrome, Edge, Firefox, etc.
@@ -264,7 +275,7 @@ When **HTML** or **Both** is selected next to **Generate Report** (default **Bot
 
 **Sections**
 
-Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Missing Collections, Quests, Achievement Summary, Raid Achievements, and **Type 7/8 Augs** when that chip is on.
+Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Missing Collections, Quests, Achievement Summary, Raid Achievements, **Type 7/8 Augs** when that chip is on, and **Raid BiS** when that chip is on.
 
 **Filters & tools**
 
@@ -273,7 +284,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 | **Character filter** (chips) | Sidebar | Multi-select filter for gear columns and table rows. Toggle any combination of characters/personas; **All** clears the filter. Shared-name personas show full labels (e.g. `CharN ( PAL )`). Unselected chips dim only while a filter is active |
 | **Search** | Toolbar | Filters the active section (keeps keyboard focus while typing) |
 | **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
-| **Character** dropdown | Toolbar (table tabs) | Filter Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, Quests, etc. to one character |
+| **Character** dropdown | Toolbar (table tabs and Raid BiS) | Filter Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, Quests, etc. to one character; on **Raid BiS**, filter cards by `Name ( CLASS )` |
 | **Rune type** | Toolbar (Missing Spells) | All / Minor / Lesser / Median / Greater / Glowing |
 | **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells** by exact spell expansion; filter **Missing Useful Spells** by short expansion code (SOR, TOB, …); filter achievement tables by expansion (defaults to the **current expansion** on first open); on **Missing Runes** and **Rune Inventory**, filter to one expansion / rune family |
 | **Zone** | Toolbar (Quests) | Filter Mercenary/Partisan rows to one zone (options follow the current Expansion filter) |
@@ -345,6 +356,12 @@ Include Gem of Distant Echoes anniversary augs in Type 7/8 recommendations:
 py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --include-anniversary
 ```
 
+Skip the Raid BiS sheet (no catalog fetch):
+
+```powershell
+py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --no-raid-bis
+```
+
 ---
 
 ## Building the .exe
@@ -377,7 +394,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\EQGM-1.26.0.exe
+py -3 scripts\sign_exe.py dist\EQGM-1.27.0.exe
 ```
 
 (with the same environment variables set).
@@ -398,4 +415,5 @@ py -3 scripts\sign_exe.py dist\EQGM-1.26.0.exe
 | “Permission denied” / save failed | Close the workbook in Excel and try again. |
 | Wrong characters in columns | Each inventory file should be one character; check filenames. |
 | Type 7/8 Augs sheets missing or empty | Leave the **Type 7/8 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
+| Raid BiS sheet missing or slots look empty | Leave the **Raid BiS** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
 | HTML looks outdated after an update | Regenerate the report. |

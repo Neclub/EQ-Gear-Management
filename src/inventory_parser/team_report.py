@@ -13,7 +13,6 @@ from inventory_parser.parser import (
     extract_equipped_items,
     parse_inventory_file,
 )
-from inventory_parser.slots import TEAM_GEAR_SLOTS
 
 
 def format_character_display_name(character: str, class_abbr: str | None = None) -> str:
@@ -53,14 +52,17 @@ def _sort_characters(rows: list[CharacterGear]) -> list[CharacterGear]:
 
 
 def _equipped_slots(data: InventoryData) -> dict[str, EquippedItem]:
-    """Equipped items for each team gear slot (empty slots omitted)."""
+    """Equipped items by slot (empty slots omitted).
+
+    Includes Power Source and Ammo for the Raid BiS paperdoll; Excel/HTML
+    gear matrices still iterate TEAM_GEAR_SLOTS and ignore those extras.
+    """
     equipped, evolver_keys = extract_equipped_items(data)
     return {
         slot: equipped_item_from_inventory(
-            equipped[slot], is_evolver=slot in evolver_keys
+            item, is_evolver=slot in evolver_keys
         )
-        for slot in TEAM_GEAR_SLOTS
-        if slot in equipped
+        for slot, item in equipped.items()
     }
 
 

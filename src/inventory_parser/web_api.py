@@ -419,6 +419,7 @@ class WebApi:
         include_spells = bool(config.get("includeSpells"))
         include_achievements = bool(config.get("includeAchievements"))
         include_slot2 = bool(config.get("includeSlot2"))
+        include_raid_bis = bool(config.get("includeRaidBis"))
         include_anniversary = bool(config.get("includeAnniversary"))
         session_weights = None
         if include_slot2 and config.get("advancedWeights") and config.get("sessionWeights"):
@@ -444,6 +445,7 @@ class WebApi:
                 include_spells=include_spells,
                 include_achievements=include_achievements,
                 include_slot2=include_slot2,
+                include_raid_bis=include_raid_bis,
                 include_anniversary=include_anniversary,
                 session_weights=session_weights,
                 on_progress=on_progress,
@@ -457,7 +459,7 @@ class WebApi:
         output_path = Path(output)
         saved = None
         html_saved = None
-        if include_slot2:
+        if include_slot2 or include_raid_bis:
             report_progress(on_progress, "Writing Excel/HTML…", 0.95, 1.0, 0, 1)
         if write_excel:
             saved = write_team_workbook(
@@ -470,6 +472,7 @@ class WebApi:
                 achievement_report=bundle.achievement_report,
                 unmade_entries=bundle.unmade_entries,
                 slot2=bundle.slot2,
+                raid_bis=bundle.raid_bis,
             )
             if write_html:
                 html_saved = write_team_html(bundle, html_path_for_workbook(saved))
@@ -481,7 +484,7 @@ class WebApi:
             else:
                 html_target = html_path_for_workbook(output_path.with_suffix(".xlsx"))
             html_saved = write_team_html(bundle, html_target)
-        if include_slot2:
+        if include_slot2 or include_raid_bis:
             report_progress(on_progress, "Done", 0.95, 1.0, 1, 1)
 
         elapsed = round(time.perf_counter() - started, 1)

@@ -103,17 +103,18 @@ _HEROIC_VAL_RE = re.compile(
     re.IGNORECASE,
 )
 _AC_HP_RE = re.compile(
-    r"<td[^>]*>\s*AC:<br>\s*HP:<br>\s*Mana:<br>\s*End:<br>\s*</td>\s*"
+    r"<td[^>]*>\s*AC:<br>\s*HP:<br>\s*Mana:<br>\s*End:<br>"
+    r"(?:\s*[A-Za-z ]+:<br>)*\s*</td>\s*"
     r"<td[^>]*>\s*(\d+)<br>\s*(\d+)<br>\s*(\d+)<br>\s*(\d+)<br>",
     re.IGNORECASE | re.DOTALL,
 )
 _AC_HP_RE_LOOSE = re.compile(
-    r"<td[^>]*>\s*AC:<br>\s*HP:<br>.*?Mana:<br>.*?End:<br>\s*</td>\s*"
+    r"<td[^>]*>\s*AC:<br>\s*HP:<br>.*?Mana:<br>.*?End:<br>.*?</td>\s*"
     r"<td[^>]*>\s*(\d+)<br>\s*(\d+)<br>",
     re.IGNORECASE | re.DOTALL,
 )
 _ATK_BLOCK_RE = re.compile(
-    r"<td[^>]*>\s*((?:Attack:<br>\s*)(?:HP Regen:<br>\s*)?(?:Mana Regen:<br>\s*)?.*?)</td>\s*"
+    r"<td[^>]*>\s*((?:[A-Za-z][A-Za-z ]*:<br>\s*)+)</td>\s*"
     r"<td[^>]*>\s*(.*?)</td>",
     re.IGNORECASE | re.DOTALL,
 )

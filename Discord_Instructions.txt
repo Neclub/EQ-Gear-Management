@@ -1,6 +1,6 @@
 **EQ Gear Management (EQGM) — Quick Guide**
 
-Turn EQ inventory files into one Excel team workbook (gear, tier levels, unmade craft mats, optional missing rune tracking, optional achievement collection progress, optional Type 7/8 aug recommendations). Optionally generate an interactive HTML report in the same folder.
+Turn EQ inventory files into one Excel team workbook (gear, tier levels, unmade craft mats, optional missing rune tracking, optional achievement collection progress, optional Type 7/8 aug recommendations, optional Raid BiS). Optionally generate an interactive HTML report in the same folder.
 
 **Live only** (not TLP/progression). Tracking goes back as far as **Laurion's Song**.
 
@@ -49,8 +49,10 @@ Tip: class labels come from the worn Chest (BP) in each inventory file; filename
    • When on, optional **Include Anniversary augs** (Gems of Distant Echoes) and **Advanced weights** for a single-character roster
    • Equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off
    • Only augs that fit type 7/8 holes are recommended (type 5 and similar are excluded)
-7. Choose **Excel** / **HTML** / **Both** next to **Generate Report** (default **Both**; remembered next time)
-8. Click **Generate Report**
+7. (Optional) Leave **Raid BiS** checked (on by default) to compare equipped armor and jewelry to current-expansion raid T1/T2; uncheck to skip the catalog fetch
+   • MAG/BST/NEC keep a pet-focus ear; weapons are shown but not scored
+8. Choose **Excel** / **HTML** / **Both** next to **Generate Report** (default **Both**; remembered next time)
+9. Click **Generate Report**
 
 Default save location: `Downloads\{Server}_Team Inventory.xlsx`
 Use **Browse…** to pick a different path if you want.
@@ -68,15 +70,17 @@ Use **Browse…** to pick a different path if you want.
 • **Rune Inventory** — on-hand raid runes in bags/bank (NoS, LS, ToB, SoR); no spell file needed
 • **Missing Collections / Quests / Achievement Summary / Raid Achievements** — when achievement files are included (once per character; personas share achievements/collections)
 • **Type 7/8 Augs** — type 7/8 recommendations, Need to Farm, ranked list (when the Type 7/8 Augs chip is on; uses a catalog fetch + cache). Type 5 and other non-7/8 augs are not suggested.
+• **Raid BiS** — current-expansion raid T1/T2 armor and jewelry vs equipped gear (when the Raid BiS chip is on). HTML paperdoll with a Character filter (`Name ( CLASS )`).
 
 Item names link to EQ Resource when the inventory file has item IDs.
 
 **HTML report (optional)** — same data in a single `.html` file beside the Excel workbook (`{Server}_Team_Inventory.html`). Open in any browser; no server needed.
 
-• **Sidebar** — Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Type 7/8 Augs, …)
+• **Sidebar** — Lucide-style section icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Type 7/8 Augs, Raid BiS, …)
 • **Character filter** chips under the nav — multi-select by character/persona (All clears; personas labeled when shared)
 • **Search**, **sort** (click headers), **Visible slots** on gear tabs (search keeps focus while typing)
 • **Character** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, Quests, etc.)
+• **Character** dropdown on Raid BiS — filter to one persona (`Name ( CLASS )`)
 • **Zone** on Quests and **Event** on Raid Achievements (options follow the selected expansion)
 • Click a **Missing Item** name on Missing Collections to copy it (a balloon confirms)
 • **Sort** on Missing Runes — roster order, name, class, or most missing (uses the Expansion filter when one is selected)

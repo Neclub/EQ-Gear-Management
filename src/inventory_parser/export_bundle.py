@@ -22,6 +22,7 @@ from inventory_parser.useful_spells import (
     MissingUsefulSpellsReport,
     build_missing_useful_spells_report,
 )
+from inventory_parser.raid_bis.build import RaidBisExport, build_raid_bis_export
 from inventory_parser.slot2_augs.build import Slot2Export, build_slot2_export
 from inventory_parser.slot2_augs.chest_class import apply_resolved_classes_to_team
 from inventory_parser.slot2_augs.eqresource_gear_tier import apply_resolved_gear_tiers_to_team
@@ -38,6 +39,7 @@ class ExportBundle:
     warnings: list[str] = field(default_factory=list)
     slot_filter: SlotFilter = "all"
     slot2: Slot2Export | None = None
+    raid_bis: RaidBisExport | None = None
 
 
 def release_export_memory() -> None:
@@ -52,6 +54,7 @@ def build_export_bundle(
     include_spells: bool = True,
     include_achievements: bool = True,
     include_slot2: bool = True,
+    include_raid_bis: bool = False,
     include_anniversary: bool = False,
     session_weights: dict[str, float] | None = None,
     on_progress: Callable[[dict], None] | None = None,
@@ -123,6 +126,12 @@ def build_export_bundle(
     )
     rune_inventory_report = build_rune_inventory_report(report)
 
+    raid_bis_overrides = slot2_kwargs.pop("raid_bis_html_overrides", None)
+    raid_bis_item_html = slot2_kwargs.pop("raid_bis_item_html", None)
+    raid_bis_allow_network = slot2_kwargs.pop("raid_bis_allow_network", True)
+    raid_bis_hydrate = slot2_kwargs.pop("raid_bis_hydrate", True)
+    raid_bis_embed_icons = slot2_kwargs.pop("raid_bis_embed_icons", True)
+
     slot2 = None
     if include_slot2:
         slot2 = build_slot2_export(
@@ -134,6 +143,19 @@ def build_export_bundle(
         )
         warnings.extend(slot2.warnings)
 
+    raid_bis = None
+    if include_raid_bis:
+        raid_bis = build_raid_bis_export(
+            report,
+            on_progress=on_progress,
+            allow_network=bool(raid_bis_allow_network),
+            html_overrides=raid_bis_overrides,
+            item_html_by_id=raid_bis_item_html,
+            hydrate=bool(raid_bis_hydrate),
+            embed_icons=bool(raid_bis_embed_icons),
+        )
+        warnings.extend(raid_bis.warnings)
+
     return ExportBundle(
         team=report,
         spell_report=spell_report,
@@ -144,4 +166,5 @@ def build_export_bundle(
         warnings=warnings,
         slot_filter=slot_filter,
         slot2=slot2,
+        raid_bis=raid_bis,
     )

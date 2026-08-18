@@ -7,6 +7,7 @@ const state = {
   includeSpells: false,
   includeAchievements: false,
   includeSlot2: true,
+  includeRaidBis: true,
   includeAnniversary: false,
   optionsTab: "options",
   useWeightOverrides: false,
@@ -361,6 +362,12 @@ function bindEvents() {
     syncSlot2Options();
     updateStatus();
   });
+  $("chipRaidBis").addEventListener("click", () => {
+    if ($("chipRaidBis").disabled) return;
+    state.includeRaidBis = !state.includeRaidBis;
+    toggleChip($("chipRaidBis"), state.includeRaidBis);
+    updateStatus();
+  });
   $("includeAnniversary").addEventListener("change", () => {
     state.includeAnniversary = $("includeAnniversary").checked;
   });
@@ -524,13 +531,17 @@ async function refreshToggles() {
     state.includeSpells = false;
     state.includeAchievements = false;
     state.includeSlot2 = false;
+    state.includeRaidBis = false;
     spellsBtn.disabled = true;
     achBtn.disabled = true;
     const slot2Btn = $("chipSlot2Augs");
     slot2Btn.disabled = true;
+    const raidBisBtn = $("chipRaidBis");
+    raidBisBtn.disabled = true;
     toggleChip(spellsBtn, false);
     toggleChip(achBtn, false);
     toggleChip(slot2Btn, false);
+    toggleChip(raidBisBtn, false);
     syncSlot2Options();
     return;
   }
@@ -540,12 +551,16 @@ async function refreshToggles() {
   achBtn.disabled = false;
   const slot2Btn = $("chipSlot2Augs");
   slot2Btn.disabled = false;
+  const raidBisBtn = $("chipRaidBis");
+  raidBisBtn.disabled = false;
   state.includeSpells = spellInfo.hasSpells;
   state.includeAchievements = achInfo.hasAchievements;
   state.includeSlot2 = true;
+  state.includeRaidBis = true;
   toggleChip(spellsBtn, state.includeSpells);
   toggleChip(achBtn, state.includeAchievements);
   toggleChip(slot2Btn, state.includeSlot2);
+  toggleChip(raidBisBtn, state.includeRaidBis);
   syncSlot2Options();
 }
 
@@ -670,6 +685,7 @@ async function updateStatus() {
     }
   }
   if (state.includeSlot2) text += " • Type 7/8 Augs";
+  if (state.includeRaidBis) text += " • Raid BiS";
   status.textContent = text;
 }
 
@@ -873,6 +889,7 @@ async function generateReport() {
   $("status").classList.remove("ok");
   $("status").textContent = buildingStatusText();
   if (state.includeSlot2) showGenProgress(0, "Building Type 7/8 aug catalog and report…");
+  else if (state.includeRaidBis) showGenProgress(0, "Building Raid BiS catalog and report…");
 
   const useAdvanced =
     state.includeSlot2 &&
@@ -887,6 +904,7 @@ async function generateReport() {
     includeSpells: state.includeSpells,
     includeAchievements: state.includeAchievements,
     includeSlot2: state.includeSlot2,
+    includeRaidBis: state.includeRaidBis,
     includeAnniversary: state.includeAnniversary,
     advancedWeights: !!useAdvanced,
     sessionWeights: useAdvanced ? { ...(state.weightEdits || {}) } : null,

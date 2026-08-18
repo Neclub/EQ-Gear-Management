@@ -6,6 +6,16 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.27.0] - 2026-08-17
+
+### Added
+
+- **Raid BiS** tab (Excel and HTML) compares equipped armor and jewelry to current-expansion raid T1 and T2, scored with the same class/slot weights as Type 7/8 augs. T1 can beat T2. MAG/BST/NEC keep a pet-focus ear (`Enhanced Minion` or `Summoner` in the name). Weapons, Ammo, and Power Source are shown but not scored. Wrists are not Lore, so both slots can recommend the same bracer. HTML uses an in-game inventory paperdoll (green = already BiS, gold = upgrade) with a **Character** dropdown (`Name ( CLASS )`). Stat changes list HP, Mana, primary HStat, and Spell Damage for casters. Catalog is EQ Resource (raidloot fallback); icons are cached at generate time under `%LOCALAPPDATA%\EQGM\`.
+
+### Fixed
+
+- EQ Resource item pages that include **Purity**, or **Luck** / **Backstab** in the combat block, now parse AC, HP, Mana, and Spell Damage.
+
 ## [1.26.0] - 2026-08-17
 
 ### Added

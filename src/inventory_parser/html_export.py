@@ -279,6 +279,18 @@ def serialize_report(bundle: ExportBundle) -> dict:
         }
     )
 
+    if bundle.raid_bis is not None:
+        from inventory_parser.raid_bis.html import serialize_raid_bis_section
+
+        sections.append(
+            {
+                "id": "raid_bis",
+                "title": "Raid BiS",
+                "type": "raid_bis",
+                "data": serialize_raid_bis_section(bundle.raid_bis),
+            }
+        )
+
     if bundle.spell_report is not None:
         spell_chars = _spell_characters(report, bundle.spell_report)
         from inventory_parser.spell_runes import load_rune_config

@@ -557,6 +557,159 @@ button.copy-item.copied { color: #86efac; text-decoration: none; }
 .slot2-legend .swatch.upgrade { background: var(--upgrade); }
 .slot2-legend .swatch.empty { background: var(--empty-status); }
 .slot2-legend .swatch.unknown { background: var(--unknown); }
+.raid-bis-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.raid-bis-legend .swatch {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  margin-right: 6px;
+  vertical-align: -2px;
+  border-radius: 2px;
+  background: #121a2a;
+}
+.raid-bis-legend .swatch.bis { box-shadow: inset 0 0 0 2px var(--bis); }
+.raid-bis-legend .swatch.upgrade { box-shadow: inset 0 0 0 2px var(--upgrade); }
+.raid-bis .card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.raid-bis .card-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.raid-bis .card-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+.raid-bis .card-head h3 { margin: 0; font-size: 15px; }
+.raid-bis .card-sub { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; white-space: normal; }
+.raid-bis .card-body { padding: 16px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; min-width: 0; }
+.raid-bis-paperdoll {
+  display: grid;
+  grid-template-columns: repeat(4, 48px);
+  grid-template-rows: repeat(8, 48px);
+  gap: 3px;
+  justify-content: center;
+  background: #0b1220;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px;
+}
+.raid-bis-portrait {
+  grid-column: 2 / 4;
+  grid-row: 2 / 6;
+  border: 1px solid #3d4a63;
+  border-radius: 2px;
+  background:
+    radial-gradient(ellipse at center, #1a2740 0%, #0b1220 72%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9eb0c8;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.raid-bis-spacer {
+  grid-column: 1;
+  grid-row: 7;
+  border: 1px solid #3d4a63;
+  border-radius: 2px;
+  background: #0b1220;
+}
+.raid-bis-slot {
+  min-height: 0;
+  border: 1px solid #3d4a63;
+  border-radius: 2px;
+  background: #121a2a;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 9px;
+  overflow: hidden;
+  cursor: default;
+  position: relative;
+}
+.raid-bis-slot img {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+  flex: 0 0 auto;
+}
+.raid-bis-slot .slot-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  line-height: 1.15;
+}
+.raid-bis-slot a { color: var(--link); text-decoration: none; word-break: break-word; }
+.raid-bis-slot a:hover { text-decoration: underline; }
+.raid-bis-slot.status-bis { box-shadow: inset 0 0 0 1px var(--bis); }
+.raid-bis-slot.status-upgrade { box-shadow: inset 0 0 0 1px var(--upgrade); }
+.raid-bis-slot.status-empty { box-shadow: inset 0 0 0 1px var(--empty-status); }
+.raid-bis-slot.status-unknown { box-shadow: inset 0 0 0 1px var(--unknown); }
+.raid-bis-slot.status-weapon { opacity: 0.85; }
+.raid-bis-slot .pet-focus {
+  position: absolute;
+  top: 1px;
+  right: 2px;
+  color: #fbbf24;
+  font-size: 9px;
+  line-height: 1;
+}
+.raid-bis-deltas { flex: 1; min-width: 0; overflow-x: auto; }
+.raid-bis-deltas table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.raid-bis-deltas th, .raid-bis-deltas td {
+  border-bottom: 1px solid var(--border);
+  padding: 6px 8px;
+  text-align: left;
+  vertical-align: top;
+  white-space: normal;
+}
+.raid-bis-deltas th { color: var(--muted); font-weight: 600; }
+.raid-bis-deltas .num { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.s-ear1 { grid-column: 1; grid-row: 1; }
+.s-head { grid-column: 2; grid-row: 1; }
+.s-face { grid-column: 3; grid-row: 1; }
+.s-ear2 { grid-column: 4; grid-row: 1; }
+.s-chest { grid-column: 1; grid-row: 2; }
+.s-neck { grid-column: 4; grid-row: 2; }
+.s-arms { grid-column: 1; grid-row: 3; }
+.s-back { grid-column: 4; grid-row: 3; }
+.s-waist { grid-column: 1; grid-row: 4; }
+.s-shoulders { grid-column: 4; grid-row: 4; }
+.s-wrist1 { grid-column: 1; grid-row: 5; }
+.s-wrist2 { grid-column: 4; grid-row: 5; }
+.s-legs { grid-column: 1; grid-row: 6; }
+.s-hands { grid-column: 2; grid-row: 6; }
+.s-charm { grid-column: 3; grid-row: 6; }
+.s-feet { grid-column: 4; grid-row: 6; }
+.s-fingers1 { grid-column: 2; grid-row: 7; }
+.s-fingers2 { grid-column: 3; grid-row: 7; }
+.s-powersource { grid-column: 4; grid-row: 7; }
+.s-primary { grid-column: 1; grid-row: 8; }
+.s-secondary { grid-column: 2; grid-row: 8; }
+.s-range { grid-column: 3; grid-row: 8; }
+.s-ammo { grid-column: 4; grid-row: 8; }
 @media (max-width: 900px) {
   #app { flex-direction: column; }
   #sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
@@ -622,6 +775,10 @@ button.copy-item.copied { color: #86efac; text-decoration: none; }
     <path d="M2 9h20"/>
     <path d="M12 21 8 9l4-6 4 6z"/>
   </symbol>
+  <symbol id="icon-armor" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 8l8-5 8 5v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9z"/>
+    <path d="M12 11v8"/>
+  </symbol>
   <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
     <circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/>
   </symbol>
@@ -672,6 +829,7 @@ const SECTION_ICONS = {
   raid_achievements: "icon-trophy",
   achievement_summary: "icon-trophy",
   slot2_augs: "icon-gem",
+  raid_bis: "icon-armor",
 };
 const CHAR_COLORS = [
   { border: "#3b82f6", dot: "#3b82f6" },
@@ -930,6 +1088,8 @@ function updateToolbar() {
     search.placeholder = "Search rune tiers…";
   } else if (section.type === "slot2_augs") {
     search.placeholder = "Search augs…";
+  } else if (section.type === "raid_bis") {
+    search.placeholder = "Search items…";
   } else if (section.id === "quests") {
     search.placeholder = "Search quests…";
   } else if (section.id === "raid_achievements") {
@@ -1071,6 +1231,37 @@ function updateToolbar() {
       refreshContent();
     });
     toolbar.appendChild(el("label", null, "Sort"));
+    toolbar.appendChild(sel);
+  }
+
+  if (section.type === "raid_bis" && (section.data.characters || []).length) {
+    const sel = document.createElement("select");
+    const chars = section.data.characters;
+    const options = [{ value: "", label: "All characters" }].concat(
+      chars.map((c) => ({
+        value: c.personaKey || c.displayName || c.character,
+        label: c.displayName || c.character,
+      }))
+    );
+    sel.innerHTML = options
+      .map((opt) => `<option value="${String(opt.value).replace(/"/g, "&quot;")}">${String(opt.label).replace(/</g, "&lt;")}</option>`)
+      .join("");
+    let selected = state.chars[section.id] || "";
+    if (!selected) {
+      const targets = selectedCharacterNames();
+      if (targets && targets.length === 1) {
+        const match = chars.find(
+          (c) => c.displayName === targets[0] || c.character === targets[0]
+        );
+        if (match) selected = match.personaKey || match.displayName;
+      }
+    }
+    sel.value = selected;
+    sel.addEventListener("change", () => {
+      state.chars[section.id] = sel.value;
+      refreshContent();
+    });
+    toolbar.appendChild(el("label", null, "Character"));
     toolbar.appendChild(sel);
   }
 
@@ -1819,6 +2010,161 @@ function updateSlot2AugsContent(panel, section) {
   panel.appendChild(root);
 }
 
+const RAID_BIS_SLOT_CLASS = {
+  "Ear-1": "s-ear1",
+  Head: "s-head",
+  Face: "s-face",
+  "Ear-2": "s-ear2",
+  Chest: "s-chest",
+  Neck: "s-neck",
+  Arms: "s-arms",
+  Back: "s-back",
+  Waist: "s-waist",
+  Shoulders: "s-shoulders",
+  "Wrist-1": "s-wrist1",
+  "Wrist-2": "s-wrist2",
+  Legs: "s-legs",
+  Hands: "s-hands",
+  Charm: "s-charm",
+  Feet: "s-feet",
+  "Fingers-1": "s-fingers1",
+  "Fingers-2": "s-fingers2",
+  "Power Source": "s-powersource",
+  Primary: "s-primary",
+  Secondary: "s-secondary",
+  Range: "s-range",
+  Ammo: "s-ammo",
+};
+const RAID_BIS_LAYOUT = [
+  "Ear-1", "Head", "Face", "Ear-2",
+  "Chest", "Neck",
+  "Arms", "Back",
+  "Waist", "Shoulders",
+  "Wrist-1", "Wrist-2",
+  "Legs", "Hands", "Charm", "Feet",
+  "Fingers-1", "Fingers-2", "Power Source",
+  "Primary", "Secondary", "Range", "Ammo",
+];
+
+function raidBisMatchesChar(ch) {
+  const toolbar = state.chars.raid_bis || "";
+  if (toolbar) {
+    return ch.personaKey === toolbar || ch.displayName === toolbar || ch.character === toolbar;
+  }
+  const targets = selectedCharacterNames();
+  if (!targets) return true;
+  return targets.some((name) => name === ch.displayName || name === ch.character);
+}
+
+function raidBisItemHtml(url, name, id, icons, iconId) {
+  if (!name) return "";
+  const href = slot2ItemHref(url, id);
+  if (iconId && icons && icons[iconId]) {
+    const img = `<img src="${slot2Esc(icons[iconId])}" alt="${slot2Esc(name)}">`;
+    if (id) {
+      return `<a href="${slot2Esc(href)}" target="_blank" rel="noopener">${img}</a>`;
+    }
+    return img;
+  }
+  if (id) {
+    return `<a href="${slot2Esc(href)}" target="_blank" rel="noopener">${slot2Esc(name)}</a>`;
+  }
+  return slot2Esc(name);
+}
+
+function updateRaidBisContent(panel, section) {
+  const data = section.data || {};
+  const url = data.eqResourceItemUrl;
+  const icons = data.iconDataUris || {};
+  const q = (state.searches[section.id] || "").trim().toLowerCase();
+  const root = el("div", "raid-bis");
+  if (data.warnings && data.warnings.length) {
+    data.warnings.forEach((w) => root.appendChild(el("p", "empty-msg", w)));
+  }
+  const chars = (data.characters || []).filter(raidBisMatchesChar);
+  if (!chars.length) {
+    root.appendChild(el("p", "empty-msg", "No characters match the current filter."));
+    panel.appendChild(root);
+    return;
+  }
+  chars.forEach((ch) => {
+    const card = el("div", "card");
+    const head = el("div", "card-head");
+    const titleRow = el("div", "card-title-row");
+    const title = document.createElement("h3");
+    title.textContent = ch.displayName || ch.character;
+    titleRow.appendChild(title);
+    const legend = el("div", "raid-bis-legend");
+    legend.innerHTML = '<span><i class="swatch bis"></i> Green: already BiS</span><span><i class="swatch upgrade"></i> Gold: upgrade</span>';
+    titleRow.appendChild(legend);
+    head.appendChild(titleRow);
+    const sub = el("div", "card-sub", (ch.totalDeltaText ? ch.totalDeltaText : "No scored stat changes") +
+      (ch.slotsChanged ? ` • ${ch.slotsChanged} slot(s) to upgrade` : " • already BiS"));
+    head.appendChild(sub);
+    card.appendChild(head);
+    const body = el("div", "card-body");
+    const doll = el("div", "raid-bis-paperdoll");
+    const portrait = el("div", "raid-bis-portrait", ch.classAbbr || "");
+    portrait.title = ch.displayName || ch.character;
+    doll.appendChild(portrait);
+    doll.appendChild(el("div", "raid-bis-spacer"));
+    const bySlot = {};
+    (ch.slots || []).forEach((slot) => { bySlot[slot.gearSlot] = slot; });
+    RAID_BIS_LAYOUT.forEach((slotName) => {
+      const cls = RAID_BIS_SLOT_CLASS[slotName];
+      if (!cls) return;
+      const unscored = slotName === "Primary" || slotName === "Secondary" || slotName === "Ammo" || slotName === "Power Source";
+      const slot = bySlot[slotName] || { gearSlot: slotName, status: "unknown", scored: !unscored };
+      const box = el("div", `raid-bis-slot ${cls} status-${slot.status || "unknown"}`);
+      const showName = slot.status === "bis" || slot.status === "weapon"
+        ? slot.currentName
+        : (slot.recommendedName || slot.currentName);
+      const showId = slot.status === "bis" || slot.status === "weapon"
+        ? slot.currentId
+        : (slot.recommendedId || slot.currentId);
+      const iconId = slot.status === "bis" || slot.status === "weapon"
+        ? slot.currentIconId
+        : (slot.recommendedIconId || slot.currentIconId);
+      const recBit = slot.recommendedName && slot.recommendedName !== slot.currentName
+        ? ` → ${slot.recommendedName}`
+        : "";
+      box.title = `${slotName}: ${showName || "empty"}${recBit}`;
+      const wrap = el("div", "slot-name");
+      wrap.innerHTML = raidBisItemHtml(url, showName, showId, icons, iconId);
+      box.appendChild(wrap);
+      if (slot.petFocus) box.appendChild(el("div", "pet-focus", "✦"));
+      doll.appendChild(box);
+    });
+    body.appendChild(doll);
+    const deltas = el("div", "raid-bis-deltas");
+    let rows = (ch.slots || []).filter((s) => s.scored !== false);
+    if (q) {
+      rows = rows.filter((s) => {
+        const hay = [s.gearSlot, s.currentName, s.recommendedName, s.deltaText, s.note]
+          .filter(Boolean).join(" ").toLowerCase();
+        return hay.includes(q);
+      });
+    }
+    let bodyRows = "";
+    if (!rows.length) {
+      bodyRows = '<tr><td colspan="4" class="muted-cell">No scored slots match the current filter.</td></tr>';
+    } else {
+      rows.forEach((s) => {
+        const cur = s.currentName ? slot2ItemLink(url, s.currentName, s.currentId) : '<span class="muted-cell">(empty)</span>';
+        const rec = s.recommendedName ? slot2ItemLink(url, s.recommendedName, s.recommendedId) : '<span class="muted-cell">—</span>';
+        const showNote = s.note && (s.status !== "bis" || s.petFocus);
+        bodyRows += `<tr class="status-${slot2Esc(s.status || "")}"><td>${slot2Esc(s.gearSlot)}</td><td>${cur}</td><td>${rec}</td>` +
+          `<td class="num">${slot2Esc(s.deltaText || "—")}${showNote ? `<div class="muted-cell">${slot2Esc(s.note)}</div>` : ""}</td></tr>`;
+      });
+    }
+    deltas.innerHTML = `<table><thead><tr><th>Slot</th><th>Equipped</th><th>Best in slot</th><th>Stat changes</th></tr></thead><tbody>${bodyRows}</tbody></table>`;
+    body.appendChild(deltas);
+    card.appendChild(body);
+    root.appendChild(card);
+  });
+  panel.appendChild(root);
+}
+
 function updatePanelContent(panel, section) {
   panel.innerHTML = "";
   if (section.type === "gear_matrix") {
@@ -1833,6 +2179,8 @@ function updatePanelContent(panel, section) {
     updateRuneInventoryContent(panel, section);
   } else if (section.type === "slot2_augs") {
     updateSlot2AugsContent(panel, section);
+  } else if (section.type === "raid_bis") {
+    updateRaidBisContent(panel, section);
   }
 }
 
