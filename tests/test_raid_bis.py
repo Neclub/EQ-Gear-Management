@@ -289,6 +289,7 @@ def test_html_section_present(tmp_path: Path):
     assert section["data"]["characters"]
     html = out.read_text(encoding="utf-8")
     assert "raid-bis-legend" in html
+    assert "Current raid gear only. Evolvers are not scored and may still be BiS." in html
     assert "Green: already BiS" in html
     assert "Gold: upgrade" in html
     assert "s-powersource" in html

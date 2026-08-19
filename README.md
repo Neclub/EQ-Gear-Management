@@ -56,7 +56,7 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 - **Rune Inventory** — raid runes on hand
 - **Achievements** — collections, Mercenary/Partisan quests, and raid progress (from achievement output files)
 - **Type 7/8 Augs** — optional type 7/8 recommendations (on by default); only augs that fit type 7/8 holes; equipped Velium Empowered Gem of Freezing is kept as a must-have
-- **Raid BiS** — optional current-expansion raid T1/T2 armor and jewelry vs equipped gear (on by default); HTML paperdoll with a Character filter
+- **Raid BiS** — optional current-expansion raid T1/T2 armor and jewelry vs equipped gear (on by default); Evolvers are not scored and may still be BiS; HTML paperdoll with a Character filter
 - **HTML report** — the same data in a browser, searchable and filterable
 
 For file naming, Alternate Personas, reading each sheet, and troubleshooting, see **[HowToUse.md](HowToUse.md)**.

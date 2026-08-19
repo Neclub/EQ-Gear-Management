@@ -255,7 +255,7 @@ Type 7/8 (usually inventory Slot2) recommendations vs a live EQ Resource catalog
 
 ### Raid BiS *(if enabled)*
 
-Current-expansion raid T1 and T2 armor and jewelry vs what each character is wearing, scored with the same class/slot weights as Type 7/8 augs. T1 can beat T2. MAG, BST, and NEC keep a pet-focus ear (`Enhanced Minion` or `Summoner` in the name). Primary, Secondary, Ammo, and Power Source are shown on the paperdoll but not scored. Wrist items are not Lore, so both wrist slots can recommend the same bracer.
+Current-expansion raid T1 and T2 armor and jewelry vs what each character is wearing, scored with the same class/slot weights as Type 7/8 augs. T1 can beat T2. Evolvers are not scored and may still be BiS. MAG, BST, and NEC keep a pet-focus ear (`Enhanced Minion` or `Summoner` in the name). Primary, Secondary, Ammo, and Power Source are shown on the paperdoll but not scored. Wrist items are not Lore, so both wrist slots can recommend the same bracer.
 
 **Excel:** a **Raid BiS** sheet with current item, recommended item, tier, and stat changes.
 

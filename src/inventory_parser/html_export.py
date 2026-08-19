@@ -44,6 +44,26 @@ from inventory_parser.useful_spells import (
 _REPORT_JSON_MARKER = "/*__REPORT_JSON__*/"
 
 
+def json_for_html_script(value: object) -> str:
+    """JSON that is safe to embed inside a ``<script>`` tag.
+
+    Escapes ``<``, ``>``, ``&``, and JS line separators so a crafted item name
+    cannot break out of the script (``</script>``) or inject HTML.
+    """
+    return escape_json_for_script(json.dumps(value, ensure_ascii=False))
+
+
+def escape_json_for_script(text: str) -> str:
+    """Escape an already-serialized JSON string for a ``<script>`` embed."""
+    return (
+        text.replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+        .replace("\u2028", "\\u2028")
+        .replace("\u2029", "\\u2029")
+    )
+
+
 def _slots_for_tier_sheet(report: TeamGearReport, base_slots: tuple[str, ...]) -> tuple[str, ...]:
     slots = list(base_slots)
     if "Secondary" in slots and not any("Secondary" in c.slots for c in report.characters):
@@ -573,7 +593,7 @@ def write_team_html(bundle: ExportBundle, output_path: Path) -> Path:
     if _REPORT_JSON_MARKER not in template:
         raise ValueError("HTML template is missing the report JSON marker.")
 
-    payload = json.dumps(serialize_report(bundle), ensure_ascii=False)
+    payload = json_for_html_script(serialize_report(bundle))
     html = template.replace(_REPORT_JSON_MARKER, payload, 1)
     del payload, template, bundle
     output_path.write_text(html, encoding="utf-8")

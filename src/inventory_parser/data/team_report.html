@@ -603,6 +603,19 @@ button.copy-item.copied { color: #86efac; text-decoration: none; }
 .slot2-legend .swatch.upgrade { background: var(--upgrade); }
 .slot2-legend .swatch.empty { background: var(--empty-status); }
 .slot2-legend .swatch.unknown { background: var(--unknown); }
+.raid-bis-title {
+  margin: 0 0 14px;
+}
+.raid-bis-title h2 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+.raid-bis-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
 .raid-bis-legend {
   display: flex;
   flex-wrap: wrap;
@@ -862,6 +875,14 @@ button.copy-item.copied { color: #86efac; text-decoration: none; }
 </div>
 <script>
 const REPORT = /*__REPORT_JSON__*/;
+function escHtml(s) {
+  return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  })[c]);
+}
+function optionHtml(value, label) {
+  return `<option value="${escHtml(value)}">${escHtml(label)}</option>`;
+}
 const SECTION_ICONS = {
   team_gear: "icon-shield",
   gear_t_level: "icon-chart",
@@ -1176,9 +1197,7 @@ function updateToolbar() {
         label: c.displayName || c.columnLabel || c.character,
       }))
     );
-    sel.innerHTML = options
-      .map((opt) => `<option value="${String(opt.value).replace(/"/g, "&quot;")}">${opt.label}</option>`)
-      .join("");
+    sel.innerHTML = options.map((opt) => optionHtml(opt.value, opt.label)).join("");
     let selected = state.chars[section.id] || "";
     if (!selected) {
       const targets = selectedCharacterNames();
@@ -1204,9 +1223,7 @@ function updateToolbar() {
   if (section.type === "table" && section.data.characterColumn != null && section.data.rows.length) {
     const sel = document.createElement("select");
     const options = characterFilterOptions(section);
-    sel.innerHTML = options
-      .map((opt) => `<option value="${String(opt.value).replace(/"/g, "&quot;")}">${opt.label}</option>`)
-      .join("");
+    sel.innerHTML = options.map((opt) => optionHtml(opt.value, opt.label)).join("");
     let selected = state.chars[section.id] || "";
     if (!selected) {
       const targets = selectedCharacterNames();
@@ -1229,8 +1246,8 @@ function updateToolbar() {
     if (data.runeOptions && data.runeOptions.length) {
       const sel = document.createElement("select");
       sel.innerHTML =
-        '<option value="">All runes</option>' +
-        data.runeOptions.map((r) => `<option value="${String(r).replace(/"/g, "&quot;")}">${r}</option>`).join("");
+        optionHtml("", "All runes") +
+        data.runeOptions.map((r) => optionHtml(r, r)).join("");
       sel.value = state.runes[section.id] || "";
       sel.addEventListener("change", () => {
         state.runes[section.id] = sel.value;
@@ -1247,10 +1264,8 @@ function updateToolbar() {
   ) {
     const sel = document.createElement("select");
     sel.innerHTML =
-      '<option value="">All expansions</option>' +
-      section.data.expansionOptions
-        .map((x) => `<option value="${String(x).replace(/"/g, "&quot;")}">${x}</option>`)
-        .join("");
+      optionHtml("", "All expansions") +
+      section.data.expansionOptions.map((x) => optionHtml(x, x)).join("");
     sel.value = state.expansions[section.id] || "";
     sel.addEventListener("change", () => {
       state.expansions[section.id] = sel.value;
@@ -1268,9 +1283,7 @@ function updateToolbar() {
       ["class", "Class"],
       ["missing", "Most missing"],
     ];
-    sel.innerHTML = options
-      .map(([value, label]) => `<option value="${value}">${label}</option>`)
-      .join("");
+    sel.innerHTML = options.map(([value, label]) => optionHtml(value, label)).join("");
     sel.value = state.colSorts[section.id] || "roster";
     sel.addEventListener("change", () => {
       state.colSorts[section.id] = sel.value;
@@ -1289,9 +1302,7 @@ function updateToolbar() {
         label: c.displayName || c.character,
       }))
     );
-    sel.innerHTML = options
-      .map((opt) => `<option value="${String(opt.value).replace(/"/g, "&quot;")}">${String(opt.label).replace(/</g, "&lt;")}</option>`)
-      .join("");
+    sel.innerHTML = options.map((opt) => optionHtml(opt.value, opt.label)).join("");
     let selected = state.chars[section.id] || "";
     if (!selected) {
       const targets = selectedCharacterNames();
@@ -1315,8 +1326,8 @@ function updateToolbar() {
     const sel = document.createElement("select");
     const expansions = expansionFilterOptions(section);
     sel.innerHTML =
-      '<option value="">All expansions</option>' +
-      expansions.map((x) => `<option value="${x.replace(/"/g, "&quot;")}">${x}</option>`).join("");
+      optionHtml("", "All expansions") +
+      expansions.map((x) => optionHtml(x, x)).join("");
     const selected = activeExpansionFilter(section);
     if (
       !Object.prototype.hasOwnProperty.call(state.expansions, section.id) &&
@@ -1357,8 +1368,8 @@ function updateToolbar() {
     const sel = document.createElement("select");
     const zones = zoneFilterOptions(section);
     sel.innerHTML =
-      '<option value="">All zones</option>' +
-      zones.map((x) => `<option value="${String(x).replace(/"/g, "&quot;")}">${x}</option>`).join("");
+      optionHtml("", "All zones") +
+      zones.map((x) => optionHtml(x, x)).join("");
     if (state.zones[section.id] && !zones.includes(state.zones[section.id])) {
       state.zones[section.id] = "";
     }
@@ -1375,8 +1386,8 @@ function updateToolbar() {
     const sel = document.createElement("select");
     const events = eventFilterOptions(section);
     sel.innerHTML =
-      '<option value="">All events</option>' +
-      events.map((x) => `<option value="${String(x).replace(/"/g, "&quot;")}">${x}</option>`).join("");
+      optionHtml("", "All events") +
+      events.map((x) => optionHtml(x, x)).join("");
     if (state.events[section.id] && !events.includes(state.events[section.id])) {
       state.events[section.id] = "";
     }
@@ -1796,9 +1807,7 @@ function updateRuneInventoryContent(content, section) {
 }
 
 function slot2Esc(s) {
-  return String(s ?? "").replace(/[&<>"']/g, (c) => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
-  })[c]);
+  return escHtml(s);
 }
 function slot2ItemHref(url, id) {
   return (url || "https://items.eqresource.com/items.php?id={item_id}").replace("{item_id}", String(id));
@@ -2124,6 +2133,14 @@ function updateRaidBisContent(panel, section) {
   const icons = data.iconDataUris || {};
   const q = (state.searches[section.id] || "").trim().toLowerCase();
   const root = el("div", "raid-bis");
+  const title = el("div", "raid-bis-title");
+  title.appendChild(el("h2", null, "Raid BiS"));
+  title.appendChild(el(
+    "p",
+    "raid-bis-note",
+    "Current raid gear only. Evolvers are not scored and may still be BiS."
+  ));
+  root.appendChild(title);
   if (data.warnings && data.warnings.length) {
     data.warnings.forEach((w) => root.appendChild(el("p", "empty-msg", w)));
   }

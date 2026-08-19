@@ -6,6 +6,18 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.28.1] - 2026-08-19
+
+### Changed
+
+- **HTML reports:** item names and filter labels with special characters display correctly.
+- **GUI:** failed exports show a short status message.
+
+### Docs
+
+- Discord guide rewritten as four paste-ready messages (what EQGM is, what the report shows, in-game files, using the program).
+- HowToUse, README, and Discord note that Raid BiS does not score Evolvers (they may still be BiS).
+
 ## [1.28.0] - 2026-08-19
 
 ### Changed

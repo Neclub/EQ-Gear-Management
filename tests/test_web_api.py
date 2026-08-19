@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from inventory_parser.web_api import WebApi, _choice_summary
+from inventory_parser.web_api import WebApi, _choice_summary, _gui_error_payload, _public_error_message
 
 
 def test_choice_summary_formats_counts() -> None:
@@ -210,3 +210,13 @@ def test_fit_window_moves_above_work_area_bottom(monkeypatch) -> None:
 def test_start_window_drag_without_window() -> None:
     api = WebApi()
     assert api.start_window_drag() == {"ok": False}
+
+
+def test_public_error_redacts_home_path() -> None:
+    home = str(Path.home())
+    message = _public_error_message(FileNotFoundError(f"{home}\\Downloads\\report.xlsx"))
+    assert home not in message
+    assert message.startswith("~")
+    payload = _gui_error_payload(RuntimeError(f"failed in {home}"))
+    assert payload == {"ok": False, "error": "failed in ~"}
+    assert "traceback" not in payload

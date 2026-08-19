@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 import json
+import re
 import threading
 import time
-import traceback
 import webbrowser
 from pathlib import Path
 
@@ -49,8 +49,24 @@ from inventory_parser.team_report import FolderCharacterChoice, discover_folder_
 from inventory_parser.web_bridge import eq_logo_data_uri, file_url, setup_url
 
 
+_HOME_PATH = str(Path.home())
+_HOME_PATH_RE = re.compile(re.escape(_HOME_PATH), re.IGNORECASE) if _HOME_PATH else None
+
+
 def _downloads_dir() -> Path:
     return Path.home() / "Downloads"
+
+
+def _public_error_message(exc: BaseException) -> str:
+    """User-facing error text without home-directory paths or tracebacks."""
+    text = str(exc).strip() or type(exc).__name__
+    if _HOME_PATH_RE is not None and _HOME_PATH:
+        text = _HOME_PATH_RE.sub("~", text)
+    return text
+
+
+def _gui_error_payload(exc: BaseException) -> dict:
+    return {"ok": False, "error": _public_error_message(exc)}
 
 
 def _native_hwnd(window) -> int | None:
@@ -391,8 +407,7 @@ class WebApi:
                 payload = json.dumps(result, ensure_ascii=False)
                 window.evaluate_js(f"window.onGenerateComplete({payload})")
             except Exception as exc:
-                tb = traceback.format_exc()
-                err = json.dumps({"ok": False, "error": str(exc), "traceback": tb})
+                err = json.dumps(_gui_error_payload(exc), ensure_ascii=False)
                 window.evaluate_js(f"window.onGenerateComplete({err})")
             finally:
                 release_export_memory()
@@ -452,7 +467,7 @@ class WebApi:
                 character_column_order=column_order,
             )
         except ValueError as exc:
-            return {"ok": False, "error": str(exc)}
+            return _gui_error_payload(exc)
 
         warnings = list(bundle.warnings)
 

@@ -5,7 +5,7 @@ from __future__ import annotations
 import base64
 
 from inventory_parser.package_data import asset_path, gui_asset_path, read_data_text
-from inventory_parser.html_export import _REPORT_JSON_MARKER
+from inventory_parser.html_export import _REPORT_JSON_MARKER, escape_json_for_script
 
 
 def file_url(path) -> str:
@@ -22,7 +22,10 @@ def report_viewer_html(payload_json: str | None = None) -> str:
     template = read_data_text("team_report.html")
     if _REPORT_JSON_MARKER not in template:
         raise ValueError("HTML template is missing the report JSON marker.")
-    replacement = payload_json if payload_json is not None else "null"
+    if payload_json is None:
+        replacement = "null"
+    else:
+        replacement = escape_json_for_script(payload_json)
     return template.replace(_REPORT_JSON_MARKER, replacement, 1)
 
 

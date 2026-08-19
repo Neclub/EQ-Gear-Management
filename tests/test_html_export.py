@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 
 from dataclasses import replace
 
@@ -240,3 +241,50 @@ def test_embedded_json_row_counts_match_bundle(tmp_path: Path) -> None:
         assert "function copyTextToClipboard" in out.read_text(encoding="utf-8")
         assert "function showCopyBalloon" in out.read_text(encoding="utf-8")
         assert "Copied to clipboard" in out.read_text(encoding="utf-8")
+
+
+def test_json_for_html_script_blocks_script_breakout() -> None:
+    from inventory_parser.html_export import escape_json_for_script, json_for_html_script
+
+    payload = json_for_html_script({"name": "</script><script>alert(1)</script>"})
+    assert "</script>" not in payload
+    assert "\\u003c" in payload
+    restored = json.loads(payload)
+    assert restored["name"] == "</script><script>alert(1)</script>"
+    already = json.dumps({"x": "</script>"}, ensure_ascii=False)
+    assert "</script>" not in escape_json_for_script(already)
+
+
+def test_html_report_escapes_script_breakout_in_item_name(tmp_path: Path) -> None:
+    from inventory_parser.html_export import extract_report_json, write_team_html
+
+    inv = tmp_path / "Xsslub_bristle-Inventory.txt"
+    inv.write_text(
+        "Location\tName\tID\tCount\tSlots\n"
+        "Chest\t</script><script>alert(1)</script>\t168096\t1\t5\n",
+        encoding="utf-8",
+    )
+    bundle = build_export_bundle(
+        [inv],
+        include_spells=False,
+        include_achievements=False,
+        include_slot2=False,
+        include_raid_bis=False,
+        fetch_chest_class=False,
+        fetch_eqr_gear_tiers=False,
+    )
+    out = tmp_path / "xss.html"
+    write_team_html(bundle, out)
+    text = out.read_text(encoding="utf-8")
+    script_json = text.split("const REPORT = ", 1)[1].split(";\n", 1)[0]
+    assert "</script>" not in script_json
+    report = extract_report_json(text)
+    names = [
+        cell.get("name")
+        for section in report["sections"]
+        if section.get("type") == "gear_matrix"
+        for row in section["data"]["rows"]
+        for cell in row["cells"]
+        if cell
+    ]
+    assert "</script><script>alert(1)</script>" in names

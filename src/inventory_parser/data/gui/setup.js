@@ -933,7 +933,7 @@ window.onGenerateComplete = async function (result) {
   resetUI();
   if (!result.ok) {
     $("status").textContent = "Export failed.";
-    const msg = result.traceback || result.error || "Export failed.";
+    const msg = result.error || "Export failed.";
     showToast(msg, true);
     return;
   }

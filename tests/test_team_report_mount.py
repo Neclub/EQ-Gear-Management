@@ -20,6 +20,7 @@ def test_report_viewer_html_injects_payload() -> None:
     assert "mountReport" not in html or "if (REPORT)" in html
     parsed = extract_report_json(html)
     assert parsed["meta"]["characterCount"] == payload["meta"]["characterCount"]
+    assert "</script>" not in html.split("const REPORT = ", 1)[1].split(";\n", 1)[0]
 
 
 def test_write_team_html_still_boots() -> None:

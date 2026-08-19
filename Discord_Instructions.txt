@@ -1,100 +1,119 @@
-**EQ Gear Management (EQGM) — Quick Guide**
+Paste each MESSAGE block below as its own Discord message.
+Do not paste this header or the ===== lines.
 
-Turn EQ inventory files into one Excel team workbook (gear, tier levels, unmade craft mats, optional missing rune tracking, optional achievement collection progress, optional Type 7/8 aug recommendations, optional Raid BiS). Optionally generate an interactive HTML report in the same folder.
+===== MESSAGE 1: PURPOSE =====
+# EQ Gear Management (EQGM)
+### What it is
 
-**Live only** (not TLP/progression). Tracking goes back as far as **Laurion's Song**.
+A Windows program for **EverQuest Live** players.
+-# Not for TLP or progression servers.
 
----
+EverQuest can save a snapshot of a character as a text file. EQGM reads those files for everyone on your team and builds **one report** you can open in Excel or in your web browser.
 
-**In-game (per character)**
-```
-/outputfile inventory
-/outputfile missingspells
-/outputfile achievements
-```
-Copy the `.txt` files from your EQ Logs folder into one folder.
+**Use it to answer questions like:**
+> ⚔️ Who is wearing what?
+> 📉 Whose gear is outdated?
+> 📜 Who still needs spell runes?
+> 🏆 Who is missing collections, quests, or raid achievements?
+> 🗺️ What should people farm next?
 
-**File names**
-• Inventory (required): `CharacterName_server-Inventory.txt`
-  Example: `Deflub_bristle-Inventory.txt`
-• Personas (optional): `CharacterName_server-CLASS-Inventory.txt` — one file per class/persona
-  Example: `Deflub_bristle-PAL-Inventory.txt` (pairs with matching MissingSpells; ignores the generic inventory when present)
-• Missing spells (optional): `CharacterName_server-CLASS-MissingSpells.txt`
-  Example: `Healub_bristle-CLR-MissingSpells.txt`
-• Achievements (optional): `CharacterName_server-Achievements.txt`
-  Example: `Shamlub_xegony-Achievements.txt`
+You do **not** need to install anything extra. Download the program, double-click it, and follow the How to Use posts.
 
-Tip: put spell files in a `SpellData` subfolder — the app groups them with the right character.
-Tip: put achievement files in an `AchievementData` subfolder — same pattern.
-Tip: class labels come from the worn Chest (BP) in each inventory file; filenames are the fallback.
+### Download
+🔗 https://github.com/Neclub/EQ-Gear-Management/releases
 
----
+Get the file named `EQGM-x.y.z.exe`
+-# The numbers change with each version. Works on Windows 10 and 11.
 
-**Download the app**
-• Latest build: https://github.com/Neclub/EQ-Gear-Management/releases
-• Download **`EQGM-x.y.z.exe`** — no Python install needed
+===== MESSAGE 2: FUNCTIONS =====
+# What the report shows
 
-**Using the app (EXE)**
-1. Double-click **`EQGM-<version>.exe`**
-2. Click **EQ Folder** and pick the folder with your output files
-   • Check the characters you want
-   • Use the **Server** dropdown to filter (e.g. Xegony)
-   • Click **Add selected**
-3. **Team characters** — the list shows character names, not file paths
-   • **Up** / **Down** to put a main character in the first column
-   • Order is remembered for next time
-4. (Optional) Leave **Spells** checked for rune tabs (auto-enabled when spell files are present)
-5. (Optional) Leave **Achievements** checked for collection, quest, and raid tabs (auto-enabled when achievement files are present)
-6. (Optional) Leave **Type 7/8 Augs** checked (on by default) for type 7/8 BiS / farm sheets; uncheck to skip the catalog fetch
-   • When on, optional **Include Anniversary augs** (Gems of Distant Echoes) and **Advanced weights** for a single-character roster
-   • Equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off
-   • Only augs that fit type 7/8 holes are recommended (type 5 and similar are excluded)
-7. (Optional) Leave **Raid BiS** checked (on by default) to compare equipped armor and jewelry to current-expansion raid T1/T2; uncheck to skip the catalog fetch
-   • MAG/BST/NEC keep a pet-focus ear; weapons are shown but not scored
-8. Choose **Excel** / **HTML** / **Both** next to **Generate Report** (default **Both**; remembered next time)
-9. Click **Generate Report**
+After you generate a report, you get an **Excel** file, a **web page**, or both. The web page opens in your browser and is easy to search.
 
-Default save location: `Downloads\{Server}_Team Inventory.xlsx`
-Use **Browse…** to pick a different path if you want.
+### 🛡️ Team Gear
+A grid of everyone on the team. Each row is a gear slot. Item names are color-coded:
+> 🟢 **Green** — newest raid gear
+> 🟡 **Yellow** — close
+> 🟠 **Orange** — last expansion
+> 🔴 **Red** — older
+> 🟣 **Purple** — Evolver
 
----
+### 📊 Gear T-Level
+Same layout, but shows the tier name instead of the item name (for example `SOR-R2`).
 
-**What you get (Excel)**
-• **Team Gear** — who is wearing what (tier-bucket colors: green / yellow / orange / red / purple)
-• **Gear T-Level** — tier codes per slot (`SOR-R2`, `TOB-R2`, etc.); unknown names are looked up on EQ Resource
-• **Unmade Gear** — craft mats and T1 containers in General bags that still upgrade a slot
-• **Missing Runes** — Rk. III rune totals by spell expansion (LS / ToB / SoR); one matrix per expansion. HTML **Sort** reorders columns (roster, name, class, most missing); **Expansion** filters to one expansion
-• **Missing Spells** — every missing Rk. III with level, rune tier, expansion, and spell name
-  • Missing Rk. II at levels 121–130 counts too (shown as Rk. III in the report)
-• **Missing Useful Spells** — curated useful spells still missing (Raccoo’s list × your MissingSpells file; all levels)
-• **Rune Inventory** — on-hand raid runes in bags/bank (NoS, LS, ToB, SoR); no spell file needed
-• **Missing Collections / Quests / Achievement Summary / Raid Achievements** — when achievement files are included (once per character; personas share achievements/collections)
-• **Type 7/8 Augs** — type 7/8 recommendations, Need to Farm, ranked list (when the Type 7/8 Augs chip is on; uses a catalog fetch + cache). Type 5 and other non-7/8 augs are not suggested.
-• **Raid BiS** — current-expansion raid T1/T2 armor and jewelry vs equipped gear (when the Raid BiS chip is on). HTML paperdoll with a Character filter (`Name ( CLASS )`).
+### ⚒️ Unmade Gear
+Craft materials sitting in bags that could still make someone a better piece.
 
-Item names link to EQ Resource when the inventory file has item IDs.
+### 📘 Missing Runes / Spells / Useful Spells
+Who still needs spell runes, which spells they are missing, and which of those spells are the most useful ones.
 
-**HTML report (optional)** — same data in a single `.html` file beside the Excel workbook (`{Server}_Team_Inventory.html`). Open in any browser; no server needed.
+### 🎒 Rune Inventory
+Raid runes people already have in bags or bank.
 
-• **Sidebar** — gold-rail section buttons with Lucide-style icons (Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Type 7/8 Augs, Raid BiS, …), matching the Lub Inventory page
-• **Title nameplate** — rounded plate with the EQGM crest, server title, character count, and generation date
-• **Character filter** chips under the nav — multi-select by character/persona (All clears; personas labeled when shared)
-• **Search**, **sort** (click headers), **Visible slots** on gear tabs (search keeps focus while typing)
-• **Character** / **Rune type** / **Expansion** dropdowns on table tabs (Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, Quests, etc.)
-• **Character** dropdown on Raid BiS — filter to one persona (`Name ( CLASS )`)
-• **Zone** on Quests and **Event** on Raid Achievements (options follow the selected expansion)
-• Click a **Missing Item** name on Missing Collections to copy it (a balloon confirms)
-• **Sort** on Missing Runes — roster order, name, class, or most missing (uses the Expansion filter when one is selected)
-• **Expansion** on achievement tabs defaults to the current expansion (not All) — change the dropdown to see older content
-• Gear colors and EQ Resource links match Excel
+### 🏆 Collections, Quests, Raid Achievements
+What is still incomplete. For collections, you can also see who on the team already has the item.
 
----
+### 💎 Type 7/8 Augs
+Suggested augs to wear or farm.
 
-**Quick tips**
-• The main window grows so Export options (including Anniversary augs) stay fully visible
-• You need at least one `*-Inventory.txt` — spell files alone aren't enough
-• First character in the list = first column in Excel and HTML (reorder with **Up** / **Down**)
-• Close the Excel file before exporting if save fails
-• Regenerate the HTML after app updates to pick up layout changes
-• **Help** (top right) → gear tier colors and About EQGM
-• No Python install needed — run the `.exe`
+### 👑 Raid BiS
+Compares what you are wearing to this expansion’s raid armor and jewelry. The web report shows a paperdoll:
+> 🟢 Green outline = already best
+> 🟡 Gold outline = upgrade available
+
+-# Current raid gear only. Evolvers are not scored and may still be BiS.
+
+Clicking an item name opens **EQ Resource** for more info.
+
+===== MESSAGE 3: HOW TO USE (IN EVERQUEST) =====
+# How to use — Part 1
+### In EverQuest
+
+Do this on **each character** you want in the report.
+
+**1.** Log into the character in EverQuest.
+
+**2.** Type these commands in chat, one at a time, and press Enter:
+> `/outputfile inventory`
+> `/outputfile missingspells`
+> `/outputfile achievements`
+
+-# Optional for **Personas**. It is suggested to make a hotkey for each persona.
+> `/outputfile CHR_Server-CLASS-Inventory.txt`
+
+> ⚠️ The first command is **required**. The other two are optional, but they add extra pages to the report (spells, runes, collections, quests, achievements).
+
+**3.** EverQuest saves text files in your **EverQuest Logs** folder.
+
+That’s all you do in-game.
+-# Next post: using the program.
+
+===== MESSAGE 4: HOW TO USE (THE PROGRAM) =====
+# How to use — Part 2
+### The program
+
+**1.** Download `EQGM-x.y.z.exe` from:
+🔗 https://github.com/Neclub/EQ-Gear-Management/releases
+
+**2.** Double-click the file to open it.
+
+**3.** Click **EQ Folder** and choose the folder that has your text files.
+
+**4.** Check the characters you want, then click **Add selected**.
+-# If you play on more than one server, use the **Server** dropdown first.
+
+**5.** The left side lists who will be in the report. You can move names **Up** or **Down**.
+-# The first name becomes the first column.
+
+**6.** On the right, leave the extra options on unless you want a smaller report:
+> 📜 **Spells** — runes and missing spells
+> 🏆 **Achievements** — collections, quests, raid progress
+> 💎 **Type 7/8 Augs** — aug suggestions
+> 👑 **Raid BiS** — best-in-slot raid gear comparison
+
+**7.** Choose **Excel**, **HTML** (web page), or **Both**.
+-# **HTML** is fine for most people.
+
+**8.** Click **Generate Report**.
+> 📁 Saved in your **Downloads** folder by default.
+> 🌐 If you chose HTML, it should open in your browser automatically.
