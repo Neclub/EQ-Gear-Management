@@ -269,8 +269,8 @@ When **HTML** or **Both** is selected next to **Generate Report** (default **Bot
 
 **Layout**
 
-- **Left sidebar** — EQGM crest, Lucide-style section icons, then **Character filter** chips (directly under the nav, not at the bottom of the window)
-- **Main area** — report title (e.g. `Bristlebane Team Inventory`), character count, generation date, toolbar, and the active section’s table
+- **Left sidebar** — EQGM crest, gold-rail section buttons (same look as [Lub Inventory](https://neclub.github.io/Lub-Inventory/)), Lucide-style icons, then **Character filter** chips (directly under the nav, not at the bottom of the window)
+- **Main area** — rounded title nameplate (e.g. `Bristlebane Team Inventory`, character count, generation date), toolbar, and the active section’s table
 - **Footer** — gear-tier color legend when viewing **Team Gear**
 
 **Sections**
@@ -394,7 +394,7 @@ Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fa
 You can also sign manually:
 
 ```powershell
-py -3 scripts\sign_exe.py dist\EQGM-1.27.0.exe
+py -3 scripts\sign_exe.py dist\EQGM-x.y.z.exe
 ```
 
 (with the same environment variables set).

@@ -6,6 +6,13 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.28.0] - 2026-08-19
+
+### Changed
+
+- **HTML sidebar:** section buttons match the Lub Inventory index cards — dark plates, gold hover ring, blue active state, and high-contrast labels.
+- **HTML title:** the report title is drawn as a rounded nameplate (EQGM crest, gold underline, character count and date) in the same gold-and-dark theme.
+
 ## [1.27.0] - 2026-08-17
 
 ### Added

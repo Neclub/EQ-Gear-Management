@@ -18,6 +18,8 @@
   --border: #2a3140;
   --accent: #3b6fd4;
   --accent-soft: rgba(59, 111, 212, 0.15);
+  --gold: #c9a84c;
+  --gold-soft: rgba(201, 168, 76, 0.25);
   --empty: #181c24;
   --sidebar-w: 240px;
   --row-alt: #191e28;
@@ -43,7 +45,7 @@ body {
 #sidebar {
   width: var(--sidebar-w);
   flex-shrink: 0;
-  background: var(--panel);
+  background: var(--bg);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
@@ -63,36 +65,60 @@ body {
 .sidebar-brand:hover span { color: var(--link); }
 .sidebar-brand img { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; }
 .sidebar-brand span { font-weight: 600; font-size: 14px; line-height: 1.3; }
-#navList { display: flex; flex-direction: column; gap: 2px; padding: 0 8px; }
+#navList { display: flex; flex-direction: column; gap: 8px; padding: 0 8px; }
 .nav-btn {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
   padding: 10px 12px;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--muted);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold-soft);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
   font: inherit;
+  font-weight: 600;
   text-align: left;
   cursor: pointer;
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
-.nav-btn:hover { background: var(--panel-hover); color: var(--text); }
+.nav-btn:hover {
+  background: var(--panel-hover);
+  border-color: var(--gold);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    0 0 0 1px var(--gold-soft);
+}
+.nav-btn:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
 .nav-btn.active {
   background: #1e3a5f;
-  color: var(--text);
-  font-weight: 600;
+  border-color: var(--accent);
+  border-left-color: var(--gold);
+  color: #fff;
+  box-shadow: 0 0 16px var(--accent-soft);
+}
+.nav-btn.active:hover {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 16px var(--accent-soft),
+    0 0 0 1px var(--gold-soft);
 }
 .nav-btn svg {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
   fill: none;
-  stroke: currentColor;
-  opacity: 0.82;
+  stroke: var(--gold);
+  opacity: 1;
 }
-.nav-btn.active svg { color: #c8d4f0; opacity: 1; }
+.nav-btn.active svg { stroke: #fff; }
 .char-filter-section {
   margin-top: 16px;
   padding: 16px 16px 0;
@@ -138,6 +164,17 @@ body {
   border-bottom: 1px solid var(--border);
 }
 .page-header-row { flex: 1; min-width: 200px; }
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 .in-app-bar { width: 100%; flex-basis: 100%; }
 .in-app-bar.hidden { display: none; }
 .btn-ghost {
@@ -151,7 +188,16 @@ body {
   cursor: pointer;
 }
 .btn-ghost:hover { background: var(--panel-hover); color: var(--text); }
-#pageHeader h1 { margin: 0 0 4px; font-size: 22px; font-weight: 600; }
+#pageHeader h1 {
+  margin: 0;
+  line-height: 0;
+}
+#pageHeader h1.title-graphic svg {
+  display: block;
+  width: min(100%, var(--title-graphic-w, 420px));
+  height: auto;
+  max-width: 100%;
+}
 #pageHeader .meta { color: var(--muted); font-size: 12px; }
 #toolbar {
   display: flex;
@@ -2253,6 +2299,154 @@ function initCharacterFilter() {
   syncCharacterChips();
 }
 
+function cssToken(name, fallback) {
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || fallback;
+}
+
+function measureTextWidth(text, font) {
+  const canvas = measureTextWidth.canvas || (measureTextWidth.canvas = document.createElement("canvas"));
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return text.length * 8;
+  ctx.font = font;
+  return ctx.measureText(text).width;
+}
+
+function svgEl(name, attrs) {
+  const node = document.createElementNS("http://www.w3.org/2000/svg", name);
+  Object.entries(attrs || {}).forEach(([key, value]) => {
+    if (value != null) node.setAttribute(key, String(value));
+  });
+  return node;
+}
+
+function paintTitleGraphic(title, subtitle, logoUri) {
+  const h1 = document.getElementById("reportTitle");
+  const metaEl = document.getElementById("reportMeta");
+  if (!h1) return;
+
+  const gold = cssToken("--gold", "#c9a84c");
+  const panel = cssToken("--panel", "#141820");
+  const border = cssToken("--border", "#2a3140");
+  const text = cssToken("--text", "#eef0f4");
+  const muted = cssToken("--muted", "#8b93a7");
+
+  const titleFont = '700 26px "Segoe UI", system-ui, sans-serif';
+  const subFont = '12px "Segoe UI", system-ui, sans-serif';
+  const titleW = measureTextWidth(title, titleFont);
+  const subW = measureTextWidth(subtitle, subFont);
+  const crest = logoUri ? 40 : 0;
+  const gap = logoUri ? 12 : 0;
+  const padX = 18;
+  const width = Math.ceil(Math.max(titleW, subW) + padX * 2 + crest + gap + 8);
+  const height = 78;
+  const textX = padX + crest + gap;
+  const titleY = subtitle ? 34 : 44;
+  const subY = 56;
+
+  const svg = svgEl("svg", {
+    viewBox: `0 0 ${width} ${height}`,
+    width: String(width),
+    height: String(height),
+    role: "presentation",
+    "aria-hidden": "true",
+  });
+
+  const defs = svgEl("defs");
+  const filter = svgEl("filter", {
+    id: "titleGoldPop",
+    x: "-8%",
+    y: "-40%",
+    width: "116%",
+    height: "180%",
+  });
+  filter.appendChild(svgEl("feDropShadow", {
+    in: "SourceGraphic",
+    dx: "0",
+    dy: "1",
+    stdDeviation: "0.2",
+    "flood-color": gold,
+    "flood-opacity": "0.95",
+    result: "edge",
+  }));
+  filter.appendChild(svgEl("feDropShadow", {
+    in: "SourceGraphic",
+    dx: "0",
+    dy: "0",
+    stdDeviation: "2.4",
+    "flood-color": gold,
+    "flood-opacity": "0.32",
+    result: "glow",
+  }));
+  const merge = svgEl("feMerge");
+  merge.appendChild(svgEl("feMergeNode", { in: "glow" }));
+  merge.appendChild(svgEl("feMergeNode", { in: "edge" }));
+  merge.appendChild(svgEl("feMergeNode", { in: "SourceGraphic" }));
+  filter.appendChild(merge);
+  defs.appendChild(filter);
+  svg.appendChild(defs);
+
+  svg.appendChild(svgEl("rect", {
+    x: "0.5",
+    y: "0.5",
+    width: String(width - 1),
+    height: String(height - 1),
+    rx: "18",
+    fill: panel,
+    stroke: border,
+  }));
+  svg.appendChild(svgEl("rect", {
+    x: String(textX),
+    y: String(titleY + 6),
+    width: String(Math.max(titleW, 48)),
+    height: "2",
+    rx: "1",
+    fill: gold,
+    opacity: "0.9",
+  }));
+
+  if (logoUri) {
+    svg.appendChild(svgEl("image", {
+      href: logoUri,
+      x: String(padX),
+      y: String((height - crest) / 2),
+      width: String(crest),
+      height: String(crest),
+    }));
+  }
+
+  const titleNode = svgEl("text", {
+    x: String(textX),
+    y: String(titleY),
+    fill: text,
+    "font-family": '"Segoe UI", system-ui, sans-serif',
+    "font-size": "26",
+    "font-weight": "700",
+    "letter-spacing": "0.02em",
+    filter: "url(#titleGoldPop)",
+  });
+  titleNode.textContent = title;
+  svg.appendChild(titleNode);
+
+  if (subtitle) {
+    const subNode = svgEl("text", {
+      x: String(textX),
+      y: String(subY),
+      fill: muted,
+      "font-family": '"Segoe UI", system-ui, sans-serif',
+      "font-size": "12",
+    });
+    subNode.textContent = subtitle;
+    svg.appendChild(subNode);
+  }
+
+  const sr = el("span", "sr-only", subtitle ? `${title}. ${subtitle}` : title);
+  h1.classList.add("title-graphic");
+  h1.style.setProperty("--title-graphic-w", width + "px");
+  h1.replaceChildren(svg, sr);
+  if (metaEl) metaEl.classList.add("hidden");
+}
+
 function init() {
   const meta = REPORT.meta;
   if (meta.logoDataUri) {
@@ -2260,10 +2454,11 @@ function init() {
     const favicon = document.getElementById("favicon");
     if (favicon) favicon.href = meta.logoDataUri;
   }
-  document.getElementById("reportTitle").textContent = meta.reportTitle || "Team Inventory";
+  const title = meta.reportTitle || "Team Inventory";
   const datePart = (meta.generatedAt || "").split(" ")[0];
-  document.getElementById("reportMeta").textContent =
-    `${meta.characterCount || 0} characters · generated ${datePart}`;
+  const subtitle = `${meta.characterCount || 0} characters · generated ${datePart}`;
+  document.getElementById("reportMeta").textContent = subtitle;
+  paintTitleGraphic(title, subtitle, meta.logoDataUri || "");
 
   const nav = document.getElementById("navList");
   const content = document.getElementById("content");
