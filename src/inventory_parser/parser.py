@@ -54,6 +54,18 @@ class Slot2Aug:
     socket_map_hit: bool = False  # True when dump_slot came from item socket map
 
 
+@dataclass(frozen=True)
+class Type5Aug:
+    """Equipped type 5 aug contents for one gear slot (socket-map dump SlotN)."""
+
+    gear_slot: str
+    name: str | None
+    item_id: int | None
+    dump_slot: int
+    parent_name: str | None = None
+    parent_id: int | None = None
+
+
 def parse_inventory_filename(filepath: str | Path) -> tuple[str, str, str | None]:
     """Extract character, server, and optional class from an inventory filename.
 
@@ -479,4 +491,130 @@ def extract_slot2_augs(
                 )
             )
 
+    return results
+
+
+def _gear_slot_key_for_base(
+    base: str,
+    *,
+    ear_n: int,
+    finger_n: int,
+    wrist_n: int,
+) -> tuple[str, int, int, int]:
+    """Assign Ear-N / Fingers-N / Wrist-N keys; return (key, ear_n, finger_n, wrist_n)."""
+    if base == "Ear":
+        ear_n += 1
+        return f"Ear-{ear_n}", ear_n, finger_n, wrist_n
+    if base == "Fingers":
+        finger_n += 1
+        return f"Fingers-{finger_n}", ear_n, finger_n, wrist_n
+    if base == "Wrist":
+        wrist_n += 1
+        return f"Wrist-{wrist_n}", ear_n, finger_n, wrist_n
+    return base, ear_n, finger_n, wrist_n
+
+
+def extract_type5_augs(
+    data: InventoryData,
+    *,
+    type5_slot_by_parent_id: dict[int, int],
+) -> list[Type5Aug]:
+    """
+    Extract equipped type 5 augs using parent-item socket maps only.
+
+    Only gear slots whose parent has a mapped type 5 dump SlotN are included.
+    Missing or empty ``*-SlotN`` rows become Empty. No Slot2 heuristic fallback.
+    """
+    ear_n = 0
+    finger_n = 0
+    wrist_n = 0
+    current_key_by_base: dict[str, str] = {}
+    parent_name_by_base: dict[str, str] = {}
+    parent_id_by_base: dict[str, int] = {}
+    # gear_slot → Type5Aug from dump rows that matched the mapped SlotN
+    found: dict[str, Type5Aug] = {}
+    # Parents that have a type 5 hole (gear_slot → dump_slot, parent meta)
+    expected: dict[str, tuple[int, str | None, int | None]] = {}
+
+    for item in data.items:
+        loc = item.location
+
+        if "-Slot" not in loc:
+            base = loc.split("-")[0].strip()
+            if base not in EQUIPMENT_SLOT_BASES:
+                continue
+            if base == "Primary":
+                continue
+            if base == "Secondary" and not parent_name_is_shield(item.name):
+                continue
+            if item.item_id <= 0 or item.name.strip().casefold() == "empty":
+                continue
+            key, ear_n, finger_n, wrist_n = _gear_slot_key_for_base(
+                base, ear_n=ear_n, finger_n=finger_n, wrist_n=wrist_n
+            )
+            current_key_by_base[base] = key
+            parent_name_by_base[base] = item.name
+            parent_id_by_base[base] = item.item_id
+            mapped = type5_slot_by_parent_id.get(item.item_id)
+            if mapped is not None:
+                expected[key] = (mapped, item.name, item.item_id)
+            continue
+
+        parsed = _is_equipped_aug_location(loc)
+        if parsed is None:
+            continue
+        parent, slot_n = parsed
+        base = parent.split("-")[0].strip()
+        parent_id = parent_id_by_base.get(base)
+        if parent_id is None or parent_id <= 0:
+            continue
+        wanted = type5_slot_by_parent_id.get(parent_id)
+        if wanted is None or slot_n != wanted:
+            continue
+
+        gear_slot = current_key_by_base.get(base)
+        if gear_slot is None:
+            gear_slot, ear_n, finger_n, wrist_n = _gear_slot_key_for_base(
+                base, ear_n=ear_n, finger_n=finger_n, wrist_n=wrist_n
+            )
+            current_key_by_base[base] = gear_slot
+
+        parent_name = parent_name_by_base.get(base)
+        if gear_slot not in expected:
+            expected[gear_slot] = (wanted, parent_name, parent_id)
+
+        if item.name == "Empty" or item.item_id == 0:
+            found[gear_slot] = Type5Aug(
+                gear_slot=gear_slot,
+                name=None,
+                item_id=None,
+                dump_slot=wanted,
+                parent_name=parent_name,
+                parent_id=parent_id,
+            )
+        else:
+            found[gear_slot] = Type5Aug(
+                gear_slot=gear_slot,
+                name=item.name,
+                item_id=item.item_id,
+                dump_slot=wanted,
+                parent_name=parent_name,
+                parent_id=parent_id,
+            )
+
+    results: list[Type5Aug] = []
+    for gear_slot, (dump_slot, parent_name, parent_id) in expected.items():
+        if gear_slot in found:
+            results.append(found[gear_slot])
+        else:
+            results.append(
+                Type5Aug(
+                    gear_slot=gear_slot,
+                    name=None,
+                    item_id=None,
+                    dump_slot=dump_slot,
+                    parent_name=parent_name,
+                    parent_id=parent_id,
+                )
+            )
     return results

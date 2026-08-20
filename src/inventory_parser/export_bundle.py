@@ -26,6 +26,7 @@ from inventory_parser.raid_bis.build import RaidBisExport, build_raid_bis_export
 from inventory_parser.slot2_augs.build import Slot2Export, build_slot2_export
 from inventory_parser.slot2_augs.chest_class import apply_resolved_classes_to_team
 from inventory_parser.slot2_augs.eqresource_gear_tier import apply_resolved_gear_tiers_to_team
+from inventory_parser.type5_augs.build import Type5Export, build_type5_export
 
 
 @dataclass
@@ -39,6 +40,7 @@ class ExportBundle:
     warnings: list[str] = field(default_factory=list)
     slot_filter: SlotFilter = "all"
     slot2: Slot2Export | None = None
+    type5: Type5Export | None = None
     raid_bis: RaidBisExport | None = None
 
 
@@ -54,6 +56,7 @@ def build_export_bundle(
     include_spells: bool = True,
     include_achievements: bool = True,
     include_slot2: bool = True,
+    include_type5: bool = False,
     include_raid_bis: bool = False,
     include_anniversary: bool = False,
     session_weights: dict[str, float] | None = None,
@@ -132,6 +135,11 @@ def build_export_bundle(
     raid_bis_hydrate = slot2_kwargs.pop("raid_bis_hydrate", True)
     raid_bis_embed_icons = slot2_kwargs.pop("raid_bis_embed_icons", True)
 
+    type5_socket_overrides = slot2_kwargs.pop("type5_socket_overrides", None)
+    type5_slot_by_parent_id = slot2_kwargs.pop("type5_slot_by_parent_id", None)
+    type5_eqr_aug_html_by_id = slot2_kwargs.pop("type5_eqr_aug_html_by_id", None)
+    type5_fetch_eqr_augs = slot2_kwargs.pop("type5_fetch_eqr_augs", True)
+
     slot2 = None
     if include_slot2:
         slot2 = build_slot2_export(
@@ -142,6 +150,20 @@ def build_export_bundle(
             **slot2_kwargs,
         )
         warnings.extend(slot2.warnings)
+
+    type5 = None
+    if include_type5:
+        type5 = build_type5_export(
+            report,
+            socket_overrides=type5_socket_overrides
+            or slot2_kwargs.get("socket_overrides"),
+            type5_slot_by_parent_id=type5_slot_by_parent_id,
+            eqr_aug_html_by_id=type5_eqr_aug_html_by_id
+            or slot2_kwargs.get("eqr_aug_html_by_id"),
+            fetch_eqr_augs=bool(type5_fetch_eqr_augs),
+            on_progress=on_progress,
+        )
+        warnings.extend(type5.warnings)
 
     raid_bis = None
     if include_raid_bis:
@@ -166,5 +188,6 @@ def build_export_bundle(
         warnings=warnings,
         slot_filter=slot_filter,
         slot2=slot2,
+        type5=type5,
         raid_bis=raid_bis,
     )

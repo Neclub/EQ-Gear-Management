@@ -550,6 +550,18 @@ def serialize_report(bundle: ExportBundle) -> dict:
             }
         )
 
+    if bundle.type5 is not None:
+        from inventory_parser.type5_augs.html import serialize_type5_section
+
+        sections.append(
+            {
+                "id": "type5_augs",
+                "title": "Type 5 Augs",
+                "type": "type5_augs",
+                "data": serialize_type5_section(bundle.type5),
+            }
+        )
+
     gear_legend = build_gear_legend()
 
     prefix = default_export_prefix_from_report(report)

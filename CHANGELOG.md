@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.30.0] - 2026-08-20
+
+### Added
+
+- **Type 5 Augs** tab (Excel and HTML): display-only list of equipped type 5 augs (and Empty holes) per gear slot, with expansion, heroic stats, and sortable HTML columns. No upgrade suggestions. Character filter on the HTML toolbar. Link to the current [EQ Resource Type 5 list](https://items.eqresource.com/itemsearch.php?searchid=481762). Toggle with the **Type 5 Augs** Include chip (on by default) or CLI `--type5` / `--no-type5`. Socket maps and aug/expansion lookups reuse the `%LOCALAPPDATA%\EQGM\` cache shared with Type 7/8.
+
 ## [1.29.0] - 2026-08-20
 
 ### Added

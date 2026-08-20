@@ -56,6 +56,9 @@ What is still incomplete. For collections, you can also see who on the team alre
 ### 💎 Type 7/8 Augs
 Suggested augs to wear or farm.
 
+### 💠 Type 5 Augs
+Shows which type 5 augs people already have equipped (and empty holes). Preference only — no upgrade suggestions.
+
 ### 👑 Raid BiS
 Compares what you are wearing to this expansion’s raid armor and jewelry. The web report shows a paperdoll:
 > 🟢 Green outline = already best
@@ -109,6 +112,7 @@ That’s all you do in-game.
 > 📜 **Spells** — runes and missing spells
 > 🏆 **Achievements** — collections, quests, raid progress
 > 💎 **Type 7/8 Augs** — aug suggestions
+> 💠 **Type 5 Augs** — equipped type 5 augs (display only)
 > 👑 **Raid BiS** — best-in-slot raid gear comparison
 
 **7.** Choose **Excel**, **HTML** (web page), or **Both**.

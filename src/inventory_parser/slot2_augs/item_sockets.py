@@ -1,4 +1,4 @@
-"""Look up parent-item augment socket types (raidloot / EQ Resource) for type 7/8 holes."""
+"""Look up parent-item augment socket types (raidloot / EQ Resource) for type 5 and type 7/8 holes."""
 
 from __future__ import annotations
 
@@ -55,6 +55,12 @@ def cache_path() -> Path:
 def type78_dump_slot(sockets: Iterable[AugSocket]) -> int | None:
     """Lowest dump SlotN whose aug type is 7 or 8."""
     matches = [s.slot for s in sockets if s.aug_type in _TYPE78]
+    return min(matches) if matches else None
+
+
+def type5_dump_slot(sockets: Iterable[AugSocket]) -> int | None:
+    """Lowest dump SlotN whose aug type is 5."""
+    matches = [s.slot for s in sockets if s.aug_type == 5]
     return min(matches) if matches else None
 
 
@@ -232,6 +238,51 @@ def resolve_type78_slots(
             if not sock_map.from_cache:
                 fetched_live += 1
         result[item_id] = type78_dump_slot(sock_map.sockets)
+        if on_progress is not None:
+            on_progress(i, total)
+
+    return result
+
+
+def resolve_type5_slots(
+    item_ids: Iterable[int],
+    *,
+    force_refresh: bool = False,
+    overrides: dict[int, tuple[str | None, str | None]] | None = None,
+    polite_delay_s: float = 0.05,
+    on_progress: Callable[[int, int], None] | None = None,
+) -> dict[int, int | None]:
+    """
+    Map parent item IDs → dump SlotN for the first type 5 hole.
+
+    Values are ``None`` when no type 5 socket was found.
+    ``overrides`` maps item_id → (raidloot_html, eqr_html) for tests.
+    ``on_progress(done, total)`` is called after each item (1-based done).
+    """
+    result: dict[int, int | None] = {}
+    unique = sorted({int(i) for i in item_ids if int(i) > 0})
+    overrides = overrides or {}
+    fetched_live = 0
+    total = len(unique)
+
+    if total == 0 and on_progress is not None:
+        on_progress(0, 0)
+
+    for i, item_id in enumerate(unique, start=1):
+        ov = overrides.get(item_id)
+        if ov is not None:
+            sock_map = fetch_item_sockets(
+                item_id,
+                html_override=ov[0],
+                eqr_html_override=ov[1],
+            )
+        else:
+            if fetched_live > 0 and polite_delay_s > 0:
+                time.sleep(polite_delay_s)
+            sock_map = fetch_item_sockets(item_id, force_refresh=force_refresh)
+            if not sock_map.from_cache:
+                fetched_live += 1
+        result[item_id] = type5_dump_slot(sock_map.sockets)
         if on_progress is not None:
             on_progress(i, total)
 

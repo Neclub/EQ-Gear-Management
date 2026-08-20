@@ -603,6 +603,59 @@ button.copy-item.copied { color: #86efac; text-decoration: none; }
 .slot2-legend .swatch.upgrade { background: var(--upgrade); }
 .slot2-legend .swatch.empty { background: var(--empty-status); }
 .slot2-legend .swatch.unknown { background: var(--unknown); }
+.type5-augs { display: flex; flex-direction: column; gap: 14px; }
+.type5-augs .meta {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.type5-augs .meta a { color: #8cb4ff; }
+.type5-augs .table-scroll { overflow: auto; max-height: min(75vh, 900px); }
+.type5-augs table {
+  width: auto;
+  max-width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  table-layout: auto;
+}
+.type5-augs th, .type5-augs td {
+  padding: 9px 12px;
+  vertical-align: top;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.type5-augs th {
+  background: var(--header);
+  color: #c5ccda;
+  font-weight: 600;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  cursor: pointer;
+  user-select: none;
+}
+.type5-augs th.sort-asc::after { content: " ▲"; font-size: 10px; }
+.type5-augs th.sort-desc::after { content: " ▼"; font-size: 10px; }
+.type5-augs td.col-aug {
+  white-space: normal;
+  max-width: 28ch;
+}
+.type5-augs td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.type5-augs tbody tr.status-empty { background: rgba(127, 29, 29, 0.28); }
+.type5-augs tbody tr:nth-child(even):not(.status-empty) { background: var(--row-alt); }
+.type5-augs .muted-cell { color: var(--muted); }
+.type5-augs .empty-msg { color: var(--muted); margin: 0; padding: 22px 16px; }
+#toolbar .toolbar-spacer { flex: 1 1 auto; min-width: 12px; }
+#toolbar .toolbar-char-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
 .raid-bis-title {
   margin: 0 0 14px;
 }
@@ -896,6 +949,7 @@ const SECTION_ICONS = {
   raid_achievements: "icon-trophy",
   achievement_summary: "icon-trophy",
   slot2_augs: "icon-gem",
+  type5_augs: "icon-gem",
   raid_bis: "icon-armor",
 };
 const CHAR_COLORS = [
@@ -1155,6 +1209,8 @@ function updateToolbar() {
     search.placeholder = "Search rune tiers…";
   } else if (section.type === "slot2_augs") {
     search.placeholder = "Search augs…";
+  } else if (section.type === "type5_augs") {
+    search.placeholder = "Search type 5 augs…";
   } else if (section.type === "raid_bis") {
     search.placeholder = "Search items…";
   } else if (section.id === "quests") {
@@ -1218,6 +1274,40 @@ function updateToolbar() {
     });
     toolbar.appendChild(el("label", null, "Character"));
     toolbar.appendChild(sel);
+  }
+
+  if (section.type === "type5_augs" && (section.data.characters || []).length > 1) {
+    const wrap = el("div", "toolbar-char-wrap");
+    const sel = document.createElement("select");
+    const chars = section.data.characters;
+    const options = [{ value: "", label: "All characters" }].concat(
+      chars.map((c) => ({
+        value: c.personaKey || c.displayName || c.columnLabel,
+        label: c.displayName || c.columnLabel || c.character,
+      }))
+    );
+    sel.innerHTML = options.map((opt) => optionHtml(opt.value, opt.label)).join("");
+    let selected = state.chars[section.id] || "";
+    if (!selected) {
+      const targets = selectedCharacterNames();
+      if (targets && targets.length === 1) {
+        const match = chars.find(
+          (c) =>
+            c.displayName === targets[0] ||
+            c.character === targets[0] ||
+            c.columnLabel === targets[0]
+        );
+        if (match) selected = match.personaKey || match.displayName;
+      }
+    }
+    sel.value = selected;
+    sel.addEventListener("change", () => {
+      state.chars[section.id] = sel.value;
+      refreshContent();
+    });
+    wrap.appendChild(el("label", null, "Character"));
+    wrap.appendChild(sel);
+    toolbar.appendChild(wrap);
   }
 
   if (section.type === "table" && section.data.characterColumn != null && section.data.rows.length) {
@@ -2065,6 +2155,157 @@ function updateSlot2AugsContent(panel, section) {
   panel.appendChild(root);
 }
 
+function type5RowKeys(row, data) {
+  const keys = new Set();
+  [row.personaKey, row.character, row.columnLabel, row.displayName].forEach((k) => {
+    if (k) keys.add(k);
+  });
+  const meta = (data.characters || []).find((c) => c.personaKey === row.personaKey);
+  if (meta) {
+    [meta.personaKey, meta.character, meta.columnLabel, meta.displayName].forEach((k) => {
+      if (k) keys.add(k);
+    });
+  }
+  return keys;
+}
+
+function type5MatchesChar(row, data) {
+  const keys = type5RowKeys(row, data);
+  const toolbar = state.chars["type5_augs"] || "";
+  if (toolbar) return keys.has(toolbar);
+  const filters = selectedCharacterFilters();
+  if (!filters) return true;
+  return filters.some((f) => keys.has(f.name) || keys.has(f.shortName));
+}
+
+function updateType5AugsContent(panel, section) {
+  const data = section.data || {};
+  const url = data.eqResourceItemUrl;
+  const q = (state.searches[section.id] || "").trim().toLowerCase();
+  const toolbarChar = state.chars["type5_augs"] || "";
+  const showCharacterCol = !toolbarChar;
+  const root = el("div", "type5-augs");
+  const meta = el("div", "meta");
+  const catalog = data.catalogUrl
+    ? `<a href="${slot2Esc(data.catalogUrl)}" target="_blank" rel="noopener">EQ Resource Type 5 list</a>`
+    : "EQ Resource Type 5 list";
+  meta.innerHTML =
+    `Equipped type 5 augs only (no upgrade suggestions). Browse current options: ${catalog}.`;
+  root.appendChild(meta);
+
+  let rows = (data.rows || []).filter((r) => type5MatchesChar(r, data));
+  if (q) {
+    rows = rows.filter((r) => {
+      const hay = `${r.gearSlot || ""} ${r.name || ""} ${r.displayName || ""} ${r.character || ""}`.toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  if (!(data.rows || []).length) {
+    root.appendChild(el("p", "empty-msg", "No type 5 holes found on equipped gear."));
+    panel.appendChild(root);
+    return;
+  }
+  if (!rows.length) {
+    root.appendChild(el("p", "empty-msg", "No rows for this character."));
+    panel.appendChild(root);
+    return;
+  }
+
+  const type5Cols = [];
+  if (showCharacterCol) {
+    type5Cols.push({
+      key: "character",
+      label: "Character",
+      value: (r) => r.displayName || r.character || "",
+    });
+  }
+  type5Cols.push(
+    { key: "gearSlot", label: "Slot", value: (r) => r.gearSlot || "" },
+    { key: "expansion", label: "Expansion", value: (r) => r.expansion || "" },
+    { key: "name", label: "Type 5 Aug", value: (r) => r.name || "Empty" },
+    { key: "hstr", label: "HStr", value: (r) => (r.empty || !r.name ? -1 : Number(r.hstr) || 0) },
+    { key: "hsta", label: "HSta", value: (r) => (r.empty || !r.name ? -1 : Number(r.hsta) || 0) },
+    { key: "hint", label: "HInt", value: (r) => (r.empty || !r.name ? -1 : Number(r.hint) || 0) },
+    { key: "hwis", label: "HWis", value: (r) => (r.empty || !r.name ? -1 : Number(r.hwis) || 0) },
+    { key: "hagi", label: "HAgi", value: (r) => (r.empty || !r.name ? -1 : Number(r.hagi) || 0) },
+    { key: "hdex", label: "HDex", value: (r) => (r.empty || !r.name ? -1 : Number(r.hdex) || 0) },
+    { key: "hcha", label: "HCha", value: (r) => (r.empty || !r.name ? -1 : Number(r.hcha) || 0) },
+  );
+
+  const wrap = el("div", "table-scroll");
+  const table = el("table", "type5-table");
+  const thead = document.createElement("thead");
+  const headRow = document.createElement("tr");
+  const tbody = document.createElement("tbody");
+  const type5Rows = [];
+
+  function applyType5Sort() {
+    const sort = state.sorts.type5_augs || { col: null, dir: 1 };
+    [...headRow.children].forEach((th, i) => {
+      th.className = sort.col === type5Cols[i].key ? (sort.dir > 0 ? "sort-asc" : "sort-desc") : "";
+    });
+    const col = type5Cols.find((c) => c.key === sort.col);
+    if (!col) return;
+    type5Rows.slice().sort((a, b) => {
+      const primary = sort.dir * compareValues(col.value(a.data), col.value(b.data));
+      if (primary) return primary;
+      const byChar = compareValues(
+        a.data.displayName || a.data.character,
+        b.data.displayName || b.data.character
+      );
+      if (byChar) return byChar;
+      return compareValues(a.data.gearSlot, b.data.gearSlot);
+    }).forEach((item) => tbody.appendChild(item.tr));
+  }
+
+  type5Cols.forEach((col) => {
+    const th = el("th", null, col.label);
+    th.addEventListener("click", () => {
+      const next = state.sorts.type5_augs || { col: null, dir: 1 };
+      if (next.col === col.key) next.dir *= -1;
+      else {
+        next.col = col.key;
+        next.dir = 1;
+      }
+      state.sorts.type5_augs = next;
+      applyType5Sort();
+    });
+    headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  rows.forEach((r) => {
+    const empty = !!r.empty || !r.name;
+    const tr = document.createElement("tr");
+    if (empty) tr.className = "status-empty";
+    const aug = empty
+      ? '<span class="muted-cell">Empty</span>'
+      : slot2ItemLink(url, r.name, r.itemId);
+    const cells = [];
+    if (showCharacterCol) cells.push(`<td>${slot2Esc(r.displayName || r.character || "")}</td>`);
+    cells.push(`<td>${slot2Esc(r.gearSlot || "")}</td>`);
+    cells.push(
+      empty
+        ? '<td class="muted-cell">—</td>'
+        : `<td>${slot2Esc(r.expansion || "")}</td>`
+    );
+    cells.push(`<td class="col-aug">${aug}</td>`);
+    ["hstr", "hsta", "hint", "hwis", "hagi", "hdex", "hcha"].forEach((k) => {
+      cells.push(empty ? '<td class="num muted-cell">—</td>' : `<td class="num">${Number(r[k]) || 0}</td>`);
+    });
+    tr.innerHTML = cells.join("");
+    type5Rows.push({ tr, data: r });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  applyType5Sort();
+  wrap.appendChild(table);
+  root.appendChild(wrap);
+  panel.appendChild(root);
+}
+
 const RAID_BIS_SLOT_CLASS = {
   "Ear-1": "s-ear1",
   Head: "s-head",
@@ -2242,6 +2483,8 @@ function updatePanelContent(panel, section) {
     updateRuneInventoryContent(panel, section);
   } else if (section.type === "slot2_augs") {
     updateSlot2AugsContent(panel, section);
+  } else if (section.type === "type5_augs") {
+    updateType5AugsContent(panel, section);
   } else if (section.type === "raid_bis") {
     updateRaidBisContent(panel, section);
   }

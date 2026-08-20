@@ -23,6 +23,7 @@ def generate_workbook(
     include_spells: bool = True,
     include_achievements: bool = True,
     include_slot2: bool = True,
+    include_type5: bool = True,
     include_raid_bis: bool = True,
     include_anniversary: bool = False,
     also_html: bool = False,
@@ -35,6 +36,7 @@ def generate_workbook(
         include_spells=include_spells,
         include_achievements=include_achievements,
         include_slot2=include_slot2,
+        include_type5=include_type5,
         include_raid_bis=include_raid_bis,
         include_anniversary=include_anniversary,
         character_column_order=character_column_order,
@@ -51,6 +53,7 @@ def generate_workbook(
             achievement_report=bundle.achievement_report,
             unmade_entries=bundle.unmade_entries,
             slot2=bundle.slot2,
+            type5=bundle.type5,
             raid_bis=bundle.raid_bis,
         )
         html_saved = None
@@ -120,6 +123,20 @@ def main(argv: list[str] | None = None) -> int:
         action="store_false",
         help="Skip Type 7/8 aug sheets and network catalog fetch",
     )
+    type5 = p.add_mutually_exclusive_group()
+    type5.add_argument(
+        "--type5",
+        dest="include_type5",
+        action="store_true",
+        default=True,
+        help="Include Type 5 aug sheet (default)",
+    )
+    type5.add_argument(
+        "--no-type5",
+        dest="include_type5",
+        action="store_false",
+        help="Skip Type 5 aug sheet and socket/stat lookups",
+    )
     raid_bis = p.add_mutually_exclusive_group()
     raid_bis.add_argument(
         "--raid-bis",
@@ -162,6 +179,7 @@ def main(argv: list[str] | None = None) -> int:
             include_spells=not args.no_spells,
             include_achievements=not args.no_achievements,
             include_slot2=args.include_slot2,
+            include_type5=args.include_type5,
             include_raid_bis=args.include_raid_bis,
             include_anniversary=args.include_anniversary,
             also_html=args.also_html,
