@@ -23,6 +23,9 @@ from inventory_parser.team_report import CharacterGear
 
 SlotStatus = Literal["empty", "bis", "upgrade", "unknown", "weapon"]
 
+TANK_CLASSES: frozenset[str] = frozenset({"WAR", "PAL", "SHD"})
+NO_MANA_CLASSES: frozenset[str] = frozenset({"WAR", "ROG", "MNK", "BER"})
+
 DELTA_STAT_ORDER: tuple[str, ...] = (
     "ac",
     "hp",
@@ -71,6 +74,34 @@ def legal_for_slot(
     return item.fits_class(class_abbr) and item.fits_slot(gear_slot)
 
 
+def _block_keys(item: RaidGearCandidate) -> set[str]:
+    keys = {item.lore_key()}
+    if item.item_id > 0:
+        keys.add(str(item.item_id))
+    return keys
+
+
+def _equipped_elsewhere_keys(
+    slot: str,
+    equipped: dict[str, EquippedItem],
+    by_id: dict[int, RaidGearCandidate],
+) -> set[str]:
+    """Lore/item keys already worn in a different slot (wrists may duplicate)."""
+    if slot in NON_LORE_SLOTS:
+        return set()
+    keys: set[str] = set()
+    for other, worn in equipped.items():
+        if other == slot or other in NON_LORE_SLOTS:
+            continue
+        if worn is None or worn.item_id <= 0:
+            continue
+        keys.add(str(worn.item_id))
+        known = by_id.get(worn.item_id)
+        if known is not None:
+            keys.update(_block_keys(known))
+    return keys
+
+
 def _best(
     candidates: list[RaidGearCandidate],
     *,
@@ -82,7 +113,7 @@ def _best(
         c
         for c in candidates
         if legal_for_slot(c, class_abbr=class_abbr, gear_slot=gear_slot)
-        and c.lore_key() not in used
+        and not (_block_keys(c) & used)
     ]
     if not legal:
         return None
@@ -101,6 +132,7 @@ def build_ideal_loadout(
     used: set[str] = set()
     loadout: dict[str, RaidGearCandidate] = {}
     class_key = (class_abbr or "").strip().upper() or None
+    by_id = {c.item_id: c for c in catalog if c.item_id > 0}
 
     if class_key in PET_FOCUS_CLASSES:
         pin_slot, pin_item = _choose_pet_focus_ear(
@@ -108,18 +140,22 @@ def build_ideal_loadout(
         )
         if pin_slot and pin_item:
             loadout[pin_slot] = pin_item
-            used.add(pin_item.lore_key())
+            used.update(_block_keys(pin_item))
 
     for slot in SCORED_SLOTS:
         if slot in loadout:
             continue
-        slot_used = set() if slot in NON_LORE_SLOTS else used
+        slot_used = (
+            set()
+            if slot in NON_LORE_SLOTS
+            else used | _equipped_elsewhere_keys(slot, equipped, by_id)
+        )
         pick = _best(catalog, class_abbr=class_key, gear_slot=slot, used=slot_used)
         if pick is None:
             continue
         loadout[slot] = pick
         if slot not in NON_LORE_SLOTS:
-            used.add(pick.lore_key())
+            used.update(_block_keys(pick))
     return loadout
 
 
@@ -181,9 +217,15 @@ def stat_deltas(
 
 
 def display_delta_keys(class_abbr: str | None) -> tuple[str, ...]:
-    """HP, Mana, primary HStat, and Spell Damage for casters."""
-    keys: list[str] = ["hp", "mana"]
-    profile = CLASS_TO_PROFILE.get((class_abbr or "").strip().upper())
+    """HP, primary HStat; AC for tanks; Mana except WAR/ROG/MNK/BER; Spell Damage for casters."""
+    class_key = (class_abbr or "").strip().upper()
+    keys: list[str] = []
+    if class_key in TANK_CLASSES:
+        keys.append("ac")
+    keys.append("hp")
+    if class_key not in NO_MANA_CLASSES:
+        keys.append("mana")
+    profile = CLASS_TO_PROFILE.get(class_key)
     if profile:
         keys.append(PROFILE_FOCUS_STAT[profile])
     if profile in {"int", "wis"}:

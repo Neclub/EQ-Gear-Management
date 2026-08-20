@@ -87,9 +87,21 @@ def test_displayed_stat_deltas_are_trimmed():
         "heal_amount": 79,
     }
     pal = format_stat_deltas(deltas, class_abbr="PAL")
-    assert pal == "+4047 HP, +4206 Mana, +17 HDex"
+    assert pal == "+75 AC, +4047 HP, +4206 Mana, +17 HDex"
     assert "Spell Damage" not in pal
-    assert "AC" not in pal
+    war = format_stat_deltas(deltas, class_abbr="WAR")
+    assert war == "+75 AC, +4047 HP, +17 HDex"
+    assert "Mana" not in war
+    shd = format_stat_deltas(deltas, class_abbr="SHD")
+    assert shd == pal
+    mnk = format_stat_deltas(deltas, class_abbr="MNK")
+    assert mnk == "+4047 HP, +17 HDex"
+    assert "AC" not in mnk
+    assert "Mana" not in mnk
+    rog = format_stat_deltas(deltas, class_abbr="ROG")
+    assert rog == mnk
+    ber = format_stat_deltas(deltas, class_abbr="BER")
+    assert ber == mnk
     mag = format_stat_deltas(deltas, class_abbr="MAG")
     assert mag == "+4047 HP, +4206 Mana, +6 HInt, -54 Spell Damage"
     clr = format_stat_deltas(deltas, class_abbr="CLR")
@@ -184,6 +196,100 @@ def test_lore_uniqueness_for_dual_ears():
     keys = {loadout[s].lore_key() for s in ("Ear-1", "Ear-2") if s in loadout}
     assert "same-lore" in keys
     assert len(keys) == len(loadout.keys() & {"Ear-1", "Ear-2"})
+
+
+def test_equipped_bis_ear_is_not_recommended_for_the_other_ear() -> None:
+    best = _cand(
+        item_id=10,
+        name="Best Ear",
+        stats={"ac": 100, "hdex": 20},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Ear"}),
+    )
+    second = _cand(
+        item_id=11,
+        name="Second Ear",
+        stats={"ac": 90, "hdex": 15},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Ear"}),
+    )
+    third = _cand(
+        item_id=12,
+        name="Third Ear",
+        stats={"ac": 80, "hdex": 10},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Ear"}),
+    )
+    equipped = {
+        "Ear-2": EquippedItem(name=best.name, item_id=best.item_id),
+    }
+    loadout = build_ideal_loadout(
+        [best, second, third], class_abbr="WAR", equipped=equipped
+    )
+    assert loadout["Ear-2"].item_id == 10
+    assert loadout["Ear-1"].item_id == 11
+
+
+def test_equipped_second_ear_is_not_suggested_for_the_other_slot() -> None:
+    best = _cand(
+        item_id=10,
+        name="Best Ear",
+        stats={"ac": 100, "hdex": 20},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Ear"}),
+    )
+    second = _cand(
+        item_id=11,
+        name="Second Ear",
+        stats={"ac": 90, "hdex": 15},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Ear"}),
+    )
+    third = _cand(
+        item_id=12,
+        name="Third Ear",
+        stats={"ac": 80, "hdex": 10},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Ear"}),
+    )
+    equipped = {
+        "Ear-1": EquippedItem(name=second.name, item_id=second.item_id),
+    }
+    loadout = build_ideal_loadout(
+        [best, second, third], class_abbr="WAR", equipped=equipped
+    )
+    assert loadout["Ear-1"].item_id == 10
+    assert loadout["Ear-2"].item_id == 12
+    ch = CharacterGear(character="Warlub", server="test", filepath="x", class_abbr="WAR")
+    ch.slots["Ear-1"] = EquippedItem(name=second.name, item_id=second.item_id)
+    report = compare_character(ch, [best, second, third])
+    by_slot = {row.gear_slot: row for row in report.slots}
+    assert by_slot["Ear-1"].recommended_id == 10
+    assert by_slot["Ear-2"].recommended_id == 12
+    assert by_slot["Ear-2"].recommended_id != second.item_id
+
+
+def test_equipped_ring_is_not_recommended_for_the_other_finger() -> None:
+    best = _cand(
+        item_id=30,
+        name="Best Ring",
+        stats={"ac": 100, "hdex": 20},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Fingers"}),
+    )
+    second = _cand(
+        item_id=31,
+        name="Second Ring",
+        stats={"ac": 90, "hdex": 15},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Fingers"}),
+    )
+    equipped = {
+        "Fingers-2": EquippedItem(name=best.name, item_id=best.item_id),
+    }
+    loadout = build_ideal_loadout([best, second], class_abbr="WAR", equipped=equipped)
+    assert loadout["Fingers-2"].item_id == 30
+    assert loadout["Fingers-1"].item_id == 31
 
 
 def test_wrists_can_equip_the_same_item():

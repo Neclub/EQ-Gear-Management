@@ -6,6 +6,16 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.28.3] - 2026-08-20
+
+### Changed
+
+- **Raid BiS:** stat changes and overall totals include **AC** for tank classes (WAR, PAL, SHD) and omit **Mana** for WAR, ROG, MNK, and BER.
+
+### Fixed
+
+- **Raid BiS:** an item already equipped is not recommended as BiS for a different slot. Wrists can still share a bracer.
+
 ## [1.28.2] - 2026-08-19
 
 ### Fixed
