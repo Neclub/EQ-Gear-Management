@@ -16,7 +16,7 @@ Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and rel
 2. Download **`EQGM-x.y.z.exe`** from the latest release.
 3. Double-click to run. No Python install needed.
 
-Installed copies can use **Help → Check for Updates** to see if a newer GitHub Release is available.
+Installed copies check GitHub Releases when they open. If a newer version is available, a popup shows the current and newest versions and asks whether to download. You can also use **Help → Check for Updates**.
 
 ---
 

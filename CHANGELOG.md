@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.29.0] - 2026-08-20
+
+### Added
+
+- **GUI:** checks GitHub Releases when the app opens. If a newer `EQGM-x.y.z.exe` is available, a popup shows the current and newest versions and asks whether to download. Offline or up-to-date launches stay quiet. **Help → Check for Updates** still runs the same check on demand. Download links must be this repo's HTTPS GitHub Release asset; the app opens the link in the browser and never runs the file.
+
 ## [1.28.3] - 2026-08-20
 
 ### Changed

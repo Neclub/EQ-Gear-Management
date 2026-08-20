@@ -4,7 +4,7 @@ Turn your raid’s EverQuest inventory files into one Excel workbook (and option
 
 Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
 
-The app version is shown in the window title and under **Help → About EQGM**. **Help → Check for Updates** compares that version to the latest GitHub Release. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details), with company **Lubworks**.
+The app version is shown in the window title and under **Help → About EQGM**. When the app opens, it checks the latest GitHub Release. If a newer version is available, a popup shows the current and newest versions and asks whether to download. **Yes** opens the official GitHub download in your browser; the app does not install or run the file. **Help → Check for Updates** runs the same check on demand. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details), with company **Lubworks**.
 
 ---
 
@@ -106,6 +106,8 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
 2. **Run the app**
    - Double-click **`run_gui.bat`**, or  
    - Double-click **`dist\EQGM-<version>.exe`** after building (see [Building the .exe](#building-the-exe))
+
+   If a newer GitHub Release exists, a popup shows the current and newest versions and asks whether to download.
 
 3. **Add your files**
    - **EQ Folder** (under the roster) — pick a folder; in the picker, check the characters you want (optional **Server** filter), then **Add selected**. Inventory, MissingSpells, and Achievements files are grouped per character.
@@ -307,7 +309,7 @@ No Python or web server is required to view the HTML file.
 - **Status bar** — shows how many inventory, MissingSpells, and achievement files are loaded.  
 - **Up** / **Down** / **Remove** / **Clear** — under Output folder on the right; fix the roster before regenerating.  
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
-- **Help** (top right) — gear tier colors, **Check for Updates** (compares this build to the latest GitHub Release), and **About EQGM** (shows the app version).
+- **Help** (top right) — gear tier colors, **Check for Updates** (same GitHub Release check as startup), and **About EQGM** (shows the app version).
 
 ---
 

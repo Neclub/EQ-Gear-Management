@@ -255,6 +255,7 @@ async function setOutputFormat(format, { persist = true } = {}) {
 }
 
 let eventsBound = false;
+let startupUpdateChecked = false;
 
 async function initApp() {
   resetUI();
@@ -284,6 +285,8 @@ async function initApp() {
   } catch (_) {
     /* defaults already applied */
   }
+
+  void checkForUpdatesOnStartup();
 }
 
 function startWindowDrag(event) {
@@ -975,6 +978,57 @@ function refreshUI() {
   scheduleFitSetupWindow();
 }
 
+function modalAlreadyOpen() {
+  return Boolean($("modalRoot") && $("modalRoot").innerHTML.trim());
+}
+
+function showUpdateAvailableModal(info) {
+  if (!info || !info.downloadUrl) return;
+  const latest = escapeHtml(info.latest || "");
+  const current = escapeHtml(info.current || "");
+  showModal(`
+    <div class="modal">
+      <div class="modal-header"><h2>Update available</h2></div>
+      <div class="modal-body">
+        <p>A newer version of EQGM is available.</p>
+        <p style="margin-top:12px">Current version: <strong>${current}</strong></p>
+        <p>Newest version: <strong>${latest}</strong></p>
+        <p style="margin-top:12px">Would you like to download the latest version?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="updateNo">No</button>
+        <button type="button" class="btn btn-primary" id="updateYes">Yes</button>
+      </div>
+    </div>`);
+  $("updateNo").addEventListener("click", closeModal);
+  $("updateYes").addEventListener("click", async () => {
+    try {
+      const result = await api("open_update_download", info.downloadUrl);
+      if (!result || !result.ok) {
+        showToast((result && result.error) || "Could not open the download.", true);
+        return;
+      }
+      closeModal();
+    } catch (err) {
+      showToast(err && err.message ? err.message : String(err), true);
+    }
+  });
+}
+
+async function checkForUpdatesOnStartup() {
+  if (startupUpdateChecked) return;
+  startupUpdateChecked = true;
+  let info;
+  try {
+    info = await api("check_for_updates");
+  } catch (_) {
+    return;
+  }
+  if (!info || info.status !== "update" || !info.downloadUrl) return;
+  if (modalAlreadyOpen()) return;
+  showUpdateAvailableModal(info);
+}
+
 async function checkForUpdates() {
   showModal(`
     <div class="modal">
@@ -1002,42 +1056,22 @@ async function checkForUpdates() {
     return;
   }
   if (info.status === "latest") {
+    const current = escapeHtml(info.current || "");
+    const latest = escapeHtml(info.latest || current);
     showModal(`
       <div class="modal">
         <div class="modal-header"><h2>Check for Updates</h2></div>
-        <div class="modal-body"><p>You have the latest version.</p></div>
+        <div class="modal-body">
+          <p>You have the latest version.</p>
+          <p style="margin-top:12px">Current version: <strong>${current}</strong></p>
+          <p>Newest version: <strong>${latest}</strong></p>
+        </div>
         <div class="modal-footer"><button type="button" class="btn" id="modalClose">Close</button></div>
       </div>`);
     $("modalClose").addEventListener("click", closeModal);
     return;
   }
-  const latest = escapeHtml(info.latest || "");
-  const current = escapeHtml(info.current || "");
-  showModal(`
-    <div class="modal">
-      <div class="modal-header"><h2>Check for Updates</h2></div>
-      <div class="modal-body">
-        <p>Version ${latest} is available (you have ${current}).</p>
-        <p style="margin-top:12px">Would you like to download?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" id="updateNo">No</button>
-        <button type="button" class="btn btn-primary" id="updateYes">Yes</button>
-      </div>
-    </div>`);
-  $("updateNo").addEventListener("click", closeModal);
-  $("updateYes").addEventListener("click", async () => {
-    try {
-      const result = await api("open_update_download", info.downloadUrl);
-      if (!result || !result.ok) {
-        showToast((result && result.error) || "Could not open the download.", true);
-        return;
-      }
-      closeModal();
-    } catch (err) {
-      showToast(err && err.message ? err.message : String(err), true);
-    }
-  });
+  showUpdateAvailableModal(info);
 }
 
 async function showHelpTiers() {
