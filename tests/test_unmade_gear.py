@@ -44,6 +44,15 @@ def test_parse_fractured_charm_polishing_cloth_targets_charm() -> None:
     assert mat.target_slot == "Charm"
 
 
+def test_parse_fractured_ring_polishing_cloth_targets_fingers() -> None:
+    mat = parse_unmade_material("Fractured Ring Polishing Cloth")
+    assert mat is not None
+    assert mat.expansion == "SoR"
+    assert mat.material == "T2"
+    assert mat.target_tier == "SOR-R2"
+    assert mat.target_slot == "Fingers-1"
+
+
 def test_parse_rejects_ore() -> None:
     assert parse_unmade_material("Riven Arcana Ore") is None
 
@@ -111,7 +120,40 @@ def test_rebellion_mat_listed_when_neck_empty(tmp_path: Path) -> None:
     assert [row.item_name for row in entries] == ["Necklace Clasp of Rebellion"]
 
 
-def test_rebellion_mat_hidden_when_face_at_tob_r2(tmp_path: Path) -> None:
+def test_ring_mat_listed_when_fingers1_evolver_and_fingers2_below(tmp_path: Path) -> None:
+    inv = tmp_path / "Songlub_xegony-Inventory.txt"
+    inv.write_text(
+        "Location\tName\tID\tCount\tSlots\n"
+        "Fingers\tHarbinger's Fine Harasser Ring of Malice\t168066\t1\t6\n"
+        "Fingers-Slot6\tDevotee's Enhancement of Enduring Harmony\t138895\t1\t6\n"
+        "Fingers\tRing of Roaring Skies\t175732\t1\t6\n"
+        "General 1-Slot43\tFractured Ring Polishing Cloth\t170807\t1\t6\n",
+        encoding="utf-8",
+    )
+    report = build_team_report([inv])
+    entries = build_unmade_gear_report(report)
+    assert [row.item_name for row in entries] == ["Fractured Ring Polishing Cloth"]
+    assert entries[0].target_slot == "Fingers-2"
+    assert entries[0].equipped_tier == "SOR-R1"
+
+
+def test_ring_mat_listed_when_both_fingers_at_sor_r2(tmp_path: Path) -> None:
+    inv = tmp_path / "Test_bristle-Inventory.txt"
+    inv.write_text(
+        "Location\tName\tID\tCount\tSlots\n"
+        "Fingers\tRing of Resonant Fracture\t175900\t1\t6\n"
+        "Fingers\tBand of Resonant Fracture\t175901\t1\t6\n"
+        "General 1-Slot1\tFractured Ring Polishing Cloth\t170807\t1\t6\n",
+        encoding="utf-8",
+    )
+    report = build_team_report([inv])
+    entries = build_unmade_gear_report(report)
+    assert [row.item_name for row in entries] == ["Fractured Ring Polishing Cloth"]
+    assert entries[0].target_slot == "Fingers-1"
+    assert entries[0].equipped_tier == "SOR-R2"
+
+
+def test_rebellion_mat_listed_when_face_at_tob_r2(tmp_path: Path) -> None:
     inv = tmp_path / "Test_bristle-Inventory.txt"
     inv.write_text(
         "Location\tName\tID\tCount\tSlots\n"
@@ -121,15 +163,17 @@ def test_rebellion_mat_hidden_when_face_at_tob_r2(tmp_path: Path) -> None:
     )
     report = build_team_report([inv])
     entries = build_unmade_gear_report(report)
-    assert entries == []
+    assert [row.item_name for row in entries] == ["Mask Fastener of Rebellion"]
+    assert entries[0].target_slot == "Face"
+    assert entries[0].equipped_tier == "TOB-R2"
 
 
-def test_songlub_lists_diminished_head_when_head_below_sor_r1() -> None:
+def test_songlub_lists_diminished_head_and_weapon_core() -> None:
     report = build_team_report([EXAMPLES / "Songlub_bristle-Inventory.txt"])
     entries = build_unmade_gear_report(report)
     names = {row.item_name for row in entries}
     assert "Diminished Shattered Dominion Head Armor" in names
-    assert "Finesse Core of Rebellion" not in names
+    assert "Finesse Core of Rebellion" in names
 
 
 def test_deflub_excludes_ore_and_finished_bound_gear() -> None:

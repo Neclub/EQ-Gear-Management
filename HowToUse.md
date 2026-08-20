@@ -219,7 +219,7 @@ Four sections (NoS, LS, ToB, SoR), each with a tier × character matrix. Cells s
 
 ### Unmade Gear *(if mats found)*
 
-Craft materials and T1 containers sitting in **General** bags that would still upgrade an equipped slot (SoR / ToB). Items already matched by a better-or-equal equipped tier are omitted. Rows follow the same character order as Team Gear.
+Craft materials and T1 containers sitting in **General** bags (SoR / ToB). Every recognized unmade raid item is listed so you can see it is still in inventory; Equipped Tier is shown for context and does not hide rows. Rows follow the same character order as Team Gear.
 
 ### Missing Collections *(if enabled)*
 

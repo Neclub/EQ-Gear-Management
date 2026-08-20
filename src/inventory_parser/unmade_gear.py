@@ -6,7 +6,6 @@ import re
 from dataclasses import dataclass
 
 from inventory_parser.team_report import CharacterGear, TeamGearReport, format_character_display_name
-from inventory_parser.evolver import EVOLVER_GAP_LABEL
 from inventory_parser.gear_tiers import (
     UNKNOWN_TIER_LABEL,
     _is_tradeskill_item,
@@ -67,6 +66,14 @@ _BOUND_CONTAINER_SLOTS: dict[str, str] = {
     "Head": "Head",
     "Legs": "Legs",
     "Wrist": "Wrist-1",
+}
+
+# Ring / ear / wrist mats map to the first slot; Equipped Tier prefers a
+# paired slot that is still below the material's target when one exists.
+_PAIRED_SLOTS: dict[str, tuple[str, ...]] = {
+    "Ear-1": ("Ear-1", "Ear-2"),
+    "Wrist-1": ("Wrist-1", "Wrist-2"),
+    "Fingers-1": ("Fingers-1", "Fingers-2"),
 }
 
 
@@ -169,8 +176,32 @@ def _equipped_tier_label(char: CharacterGear, slot: str | None) -> tuple[str | N
     return equipped_tier_label(item), item.is_evolver
 
 
+def _slots_to_check(target_slot: str) -> tuple[str, ...]:
+    return _PAIRED_SLOTS.get(target_slot, (target_slot,))
+
+
+def _display_slot_for_material(
+    char: CharacterGear, target_slot: str | None, target_tier: str
+) -> tuple[str | None, str]:
+    """Slot and equipped-tier label for the Unmade Gear row (never used to hide)."""
+    if not target_slot:
+        return None, ""
+
+    for slot in _slots_to_check(target_slot):
+        equipped_label, is_evolver = _equipped_tier_label(char, slot)
+        if is_tier_below_target(
+            equipped_label,
+            target_tier,
+            is_evolver=is_evolver,
+        ):
+            return slot, equipped_label or ""
+
+    equipped_label, _is_evolver = _equipped_tier_label(char, target_slot)
+    return target_slot, equipped_label or ""
+
+
 def build_unmade_gear_report(report: TeamGearReport) -> list[UnmadeGearEntry]:
-    """Scan General bags and return rows for mats/containers still worth crafting."""
+    """Scan General bags and list every recognized unmade mat/container."""
     entries: list[UnmadeGearEntry] = []
 
     for char in report.characters:
@@ -187,16 +218,10 @@ def build_unmade_gear_report(report: TeamGearReport) -> list[UnmadeGearEntry]:
             material = parse_unmade_material(item.name)
             if material is None:
                 continue
-            if material.target_slot is None:
-                continue
 
-            equipped_label, is_evolver = _equipped_tier_label(char, material.target_slot)
-            if not is_tier_below_target(
-                equipped_label,
-                material.target_tier,
-                is_evolver=is_evolver,
-            ):
-                continue
+            target_slot, equipped_label = _display_slot_for_material(
+                char, material.target_slot, material.target_tier
+            )
 
             entries.append(
                 UnmadeGearEntry(
@@ -208,8 +233,8 @@ def build_unmade_gear_report(report: TeamGearReport) -> list[UnmadeGearEntry]:
                     bag_location=item.location,
                     expansion=material.expansion,
                     material=material.material,
-                    target_slot=material.target_slot,
-                    equipped_tier=equipped_label or "",
+                    target_slot=target_slot,
+                    equipped_tier=equipped_label,
                     notes="",
                 )
             )

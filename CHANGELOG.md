@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.28.2] - 2026-08-19
+
+### Fixed
+
+- **Unmade Gear:** raid craft mats and T1 containers in General bags were omitted when the matching slot was already at (or above) the material's target, or was an Evolver. Every recognized unmade item is now listed so you can see it is still in inventory. Equipped Tier remains for context. For rings, ears, and wrists, Target Slot prefers a paired slot that is still below the material's target when one exists.
+
 ## [1.28.1] - 2026-08-19
 
 ### Changed
