@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.30.3] - 2026-08-20
+
+### Fixed
+
+- **Type 7/8 Augs:** when a priority slot claims an aug from another hole, that donor row still lists the replacement in **Upgrade to**. It was marked BiS (blank Upgrade to) while the note still said to move the current aug.
+
 ## [1.30.2] - 2026-08-20
 
 ### Added

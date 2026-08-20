@@ -54,7 +54,7 @@ Raid runes people already have in bags or bank.
 What is still incomplete. For collections, you can also see who on the team already has the item.
 
 ### 💎 Type 7/8 Augs
-Suggested augs to wear or farm.
+Suggested augs to wear or farm. If an aug should move to another slot, Upgrade to shows what replaces it.
 
 ### 💠 Type 5 Augs
 Shows which type 5 augs people already have equipped (and empty holes). Preference only — no upgrade suggestions.

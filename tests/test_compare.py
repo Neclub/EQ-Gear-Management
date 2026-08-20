@@ -6,6 +6,7 @@ from pathlib import Path
 
 from inventory_parser.slot2_augs.compare import (
     Slot2Comparison,
+    _finalize_comparison,
     assign_slot_recommendations,
     build_ideal_loadout,
     compare_character,
@@ -217,6 +218,174 @@ def test_range_claims_bis_from_other_slot():
     assert by_slot["Range"].recommended_owned is True
     assert "Move Joy of the Dancer to Range" in by_slot["Head"].note
     assert by_slot["Head"].recommended_id != 175169
+    assert by_slot["Head"].status in ("upgrade", "empty", "unknown")
+    assert by_slot["Head"].recommended_name
+
+
+def test_departing_aug_keeps_weaker_replacement_in_upgrade_to():
+    """Donor hole whose current is claimed still lists the replacement, not BiS."""
+    strong = AugCandidate(
+        item_id=999200,
+        name="Strong Charm Gem",
+        profile="dex",
+        focus_heroic=80,
+        ac=100,
+        hp=1000,
+        excluded_bases=frozenset({"Primary", "Secondary", "Ammo"}),
+        lore=True,
+        source="test",
+        aug_types=frozenset({7, 8}),
+    )
+    weak = AugCandidate(
+        item_id=999201,
+        name="Weak Face Filler",
+        profile="dex",
+        focus_heroic=5,
+        ac=5,
+        hp=50,
+        excluded_bases=frozenset({"Primary", "Secondary", "Ammo"}),
+        lore=True,
+        source="test",
+        aug_types=frozenset({7, 8}),
+    )
+    current = Slot2Aug(
+        gear_slot="Face",
+        name=strong.name,
+        item_id=strong.item_id,
+    )
+    cmp_ = _finalize_comparison(
+        current,
+        weak,
+        [strong, weak],
+        None,
+        profile="dex",
+        moved_to_slot="Charm",
+    )
+    assert cmp_.status == "upgrade"
+    assert cmp_.recommended_id == weak.item_id
+    assert cmp_.recommended_name == weak.name
+    assert "Move Strong Charm Gem to Charm" in cmp_.note
+    assert "Current is better than remaining" not in cmp_.note
+
+
+def test_worse_upgrade_without_move_still_counts_as_bis():
+    strong = AugCandidate(
+        item_id=999200,
+        name="Strong Face Gem",
+        profile="dex",
+        focus_heroic=80,
+        ac=100,
+        hp=1000,
+        excluded_bases=frozenset({"Primary", "Secondary", "Ammo"}),
+        lore=True,
+        source="test",
+        aug_types=frozenset({7, 8}),
+    )
+    weak = AugCandidate(
+        item_id=999201,
+        name="Weak Face Filler",
+        profile="dex",
+        focus_heroic=5,
+        ac=5,
+        hp=50,
+        excluded_bases=frozenset({"Primary", "Secondary", "Ammo"}),
+        lore=True,
+        source="test",
+        aug_types=frozenset({7, 8}),
+    )
+    current = Slot2Aug(
+        gear_slot="Face",
+        name=strong.name,
+        item_id=strong.item_id,
+    )
+    cmp_ = _finalize_comparison(
+        current,
+        weak,
+        [strong, weak],
+        None,
+        profile="dex",
+    )
+    assert cmp_.status == "bis"
+    assert cmp_.recommended_id == strong.item_id
+    assert "Move " not in cmp_.note
+
+
+def test_charm_claim_from_face_lists_face_replacement():
+    """Charm BiS on Face must not leave Face as BiS with a blank Upgrade to."""
+    charm_bis = AugCandidate(
+        item_id=999300,
+        name="Unparalleled Test Gem",
+        profile="dex",
+        focus_heroic=80,
+        ac=100,
+        hp=1000,
+        allowed_bases=frozenset({"Charm", "Face"}),
+        lore=True,
+        source="test",
+        aug_types=frozenset({7, 8}),
+    )
+    filler = AugCandidate(
+        item_id=999301,
+        name="Face Filler",
+        profile="dex",
+        focus_heroic=5,
+        ac=5,
+        hp=50,
+        allowed_bases=frozenset({"Face", "Head", "Waist"}),
+        lore=True,
+        source="test",
+        aug_types=frozenset({7, 8}),
+    )
+    catalog = CatalogResult(
+        profile="dex",
+        augs=[charm_bis, filler],
+        fetched_at="test",
+        from_cache=False,
+        url="http://test",
+    )
+    data = InventoryData(
+        character="Movelub",
+        server="test",
+        filepath="Movelub_test-Inventory.txt",
+        items=[
+            InventoryItem("Face", "Test Mask", 1, 1, 6),
+            InventoryItem("Face-Slot2", charm_bis.name, charm_bis.item_id, 1, 0),
+            InventoryItem("Charm", "Test Charm", 2, 1, 6),
+            InventoryItem("Charm-Slot2", "Empty", 0, 0, 0),
+        ],
+    )
+    report = compare_character(
+        data,
+        catalog,
+        artisans_prize_owned=False,
+        profile="dex",
+        fetch_eqr_augs=False,
+        type78_slot_by_parent_id={1: 2, 2: 2},
+    )
+    by_slot = {c.gear_slot: c for c in report.comparisons}
+    assert by_slot["Charm"].recommended_id == charm_bis.item_id
+    assert by_slot["Charm"].move_from_slot == "Face"
+    assert by_slot["Face"].status == "upgrade"
+    assert by_slot["Face"].recommended_id == filler.item_id
+    assert by_slot["Face"].recommended_name == filler.name
+    assert f"Move {charm_bis.name} to Charm" in by_slot["Face"].note
+
+    from inventory_parser.slot2_augs.build import Slot2Export
+    from inventory_parser.slot2_augs.html import serialize_slot2_section
+
+    payload = serialize_slot2_section(
+        Slot2Export(
+            profile="dex",
+            profile_label="Dex (melee)",
+            artisans_prize_owned=False,
+            catalog=catalog,
+            characters=[report],
+            ranked_augs=[charm_bis, filler],
+        )
+    )
+    face_row = next(r for r in payload["upgrades"] if r["gearSlot"] == "Face")
+    assert face_row["recommendedName"] == filler.name
+    assert "Move " in (face_row["note"] or "")
 
 
 def test_displaced_range_aug_moves_to_head_as_owned():

@@ -256,6 +256,8 @@ Expansions show release year (e.g. `Shattering of Ro (2025)`) and rows are sorte
 
 Type 7/8 (usually inventory Slot2) recommendations vs a live EQ Resource catalog (raidloot fallback). Only augs that **fit type 7/8 holes** are recommended (type 5 and similar are excluded). Artisan's Prize is treated as owned when it appears in the inventory file. If **Velium Empowered Gem of Freezing** is equipped, it is kept and assigned to the legal slot with the best weighted trade-off against other BiS augs. Excel adds **Stat Summary**, **Augs**, **Need to Farm**, **Ranked Augs**, and **Aug Legend**. HTML adds a **Type 7/8 Augs** section with the same cards. Needs a network fetch the first time; later runs use disk cache under `%LOCALAPPDATA%\EQGM\`. Uncheck the chip to skip this entirely.
 
+**Slot recommendations** compare **Current** to **Upgrade to**. **BiS** leaves Upgrade to blank — that hole already has the suggested aug. If a note says to move an aug to another slot (Charm, Range, Feet, and similar priority holes can claim a piece sitting elsewhere), Upgrade to lists what should replace it in the hole being vacated. The destination row shows a **Move from** badge. Regenerating after an app update is required for older HTML files to pick this up.
+
 ### Type 5 Augs *(if enabled)*
 
 Display-only list of what is in each type 5 hole (often inventory Slot2 on current gear, but the dump SlotN comes from the parent item’s socket map). Empty holes show as **Empty**. Columns include **Expansion** (from EQ Resource) and heroic stats (HStr through HCha) when an aug is equipped. No BiS or farm suggestions — preference only. Excel adds a **Type 5 Augs** sheet; HTML adds a **Type 5 Augs** section with a **Character** filter (All or one character), clickable column headers to sort, and a link to the [EQ Resource Type 5 list](https://items.eqresource.com/itemsearch.php?searchid=481762). Uncheck the chip to skip.
@@ -328,6 +330,7 @@ Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.
 | “Permission denied” / save failed | Close the workbook in Excel and try again. |
 | Wrong characters in columns | Each inventory file should be one character; check filenames. |
 | Type 7/8 Augs sheets missing or empty | Leave the **Type 7/8 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
+| Type 7/8 note says to move an aug, but **Upgrade to** is blank | Use **1.30.3** or newer and regenerate the report. Older builds marked that donor hole as BiS. |
 | Type 5 Augs sheet missing or empty | Leave the **Type 5 Augs** chip on; sockets and aug stats use the same `%LOCALAPPDATA%\EQGM\` cache as Type 7/8 (first run may need network). |
 | Raid BiS sheet missing or slots look empty | Leave the **Raid BiS** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
 | HTML looks outdated after an update | Regenerate the report. |

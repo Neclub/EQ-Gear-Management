@@ -959,7 +959,10 @@ def _finalize_comparison(
         status = "unknown"
         note = "Current aug not in raidloot catalog (EQ Resource miss)"
 
-    # Guard: never list an upgrade that ranks worse than current.
+    # Guard: never list an upgrade that ranks worse than current — unless the
+    # current piece is leaving for another slot. Then the replacement (even a
+    # weaker one) belongs in Upgrade to; marking BiS would blank that column
+    # while the note still says to move the aug.
     # Must-have freezing gem may occupy a hole whose catalog BiS scores higher.
     if (
         status == "upgrade"
@@ -972,6 +975,7 @@ def _finalize_comparison(
         and recommended is not None
         and cur_aug is not None
         and is_type78_aug(cur_aug)
+        and not moved_to_slot
     ):
         if _aug_rank_tuple(
             recommended,
@@ -990,6 +994,7 @@ def _finalize_comparison(
             note = "Current is better than remaining missing BiS options"
             recommended = cur_aug
             move_from_slot = None
+            moved_to_slot = None
 
     # Lead note with score / Spell Damage / heroic / AC / HP gain when recommended.
     if status in ("upgrade", "empty") and recommended is not None:
@@ -1012,7 +1017,7 @@ def _finalize_comparison(
     move_bits: list[str] = []
     if move_from_slot and status in ("upgrade", "empty", "unknown"):
         move_bits.append(f"Move from {move_from_slot}")
-    if moved_to_slot and status in ("upgrade", "empty", "unknown", "bis"):
+    if moved_to_slot and status in ("upgrade", "empty", "unknown"):
         label = current.name or "Current aug"
         move_bits.append(f"Move {label} to {moved_to_slot}")
     if move_bits:

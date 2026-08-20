@@ -57,7 +57,7 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 - **Missing Runes / Spells / Useful Spells** — from MissingSpells output files; HTML Missing Runes can sort columns (roster, name, class, most missing) and filter by expansion
 - **Rune Inventory** — raid runes on hand
 - **Achievements** — collections, Mercenary/Partisan quests, and raid progress (from achievement output files)
-- **Type 7/8 Augs** — optional type 7/8 recommendations (on by default); only augs that fit type 7/8 holes; equipped Velium Empowered Gem of Freezing is kept as a must-have
+- **Type 7/8 Augs** — optional type 7/8 recommendations (on by default); only augs that fit type 7/8 holes; equipped Velium Empowered Gem of Freezing is kept as a must-have; if an aug should move to another slot, **Upgrade to** lists the replacement for the hole it leaves
 - **Type 5 Augs** — optional display of equipped type 5 augs and Empty holes (on by default); expansion + heroic stats; sortable HTML columns; no upgrade suggestions; link to the EQ Resource Type 5 list
 - **Raid BiS** — optional current-expansion raid T1/T2 armor and jewelry vs equipped gear (on by default); Evolvers are not scored and may still be BiS; HTML paperdoll with a Character filter
 - **HTML report** — the same data in a browser, searchable and filterable
