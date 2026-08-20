@@ -226,7 +226,7 @@ Craft materials and T1 containers sitting in **General** bags (SoR / ToB). Every
 
 ### Missing Collections *(if enabled)*
 
-Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from the collection name), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed. Personas of the same character share one inventory for collections — rows and **Char Has** names are once per character, not per class. In HTML, click a **Missing Item** name to copy it; a small balloon confirms it was added to the clipboard.
+Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from the collection name), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed. Personas of the same character share one inventory for collections — rows and **Char Has** names are once per character, not per class. **Stalking Fear** (Rain of Fear) is omitted from this list. In HTML, click a **Missing Item** name to copy it; a small balloon confirms it was added to the clipboard.
 
 ### Quests *(if enabled)*
 

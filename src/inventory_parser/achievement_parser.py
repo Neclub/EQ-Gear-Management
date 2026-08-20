@@ -182,6 +182,22 @@ def _is_collections_subcategory(subcategory: str) -> bool:
     return subcategory.casefold().endswith("collections")
 
 
+# Collections omitted from Missing Collections (still counted in Achievement Summary).
+IGNORED_MISSING_COLLECTIONS: frozenset[tuple[str, str]] = frozenset(
+    {
+        ("rain of fear", "stalking fear"),
+    }
+)
+
+
+def is_ignored_missing_collection(section: str, collection: str) -> bool:
+    """True when this expansion/collection should not appear on Missing Collections."""
+    return (
+        section.strip().casefold(),
+        collection.strip().casefold(),
+    ) in IGNORED_MISSING_COLLECTIONS
+
+
 def _is_raids_subcategory(subcategory: str) -> bool:
     return subcategory.casefold() == "raids"
 
@@ -388,6 +404,8 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
                 continue
 
             collection_name, zone = split_collection_name(current_collection)
+            if is_ignored_missing_collection(current_section, collection_name):
+                continue
             missing_collections.append(
                 MissingCollectionItem(
                     section=current_section,

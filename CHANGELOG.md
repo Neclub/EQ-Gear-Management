@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.30.1] - 2026-08-20
+
+### Changed
+
+- **Missing Collections:** omit **Stalking Fear** (Rain of Fear). It still counts toward Achievement Summary totals.
+
 ## [1.30.0] - 2026-08-20
 
 ### Added

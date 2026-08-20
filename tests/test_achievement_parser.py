@@ -12,6 +12,7 @@ from inventory_parser.achievement_parser import (
     clean_quest_name,
     clean_raid_objective,
     format_expansion_label,
+    is_ignored_missing_collection,
     parse_achievements_file,
     parse_quest_parent,
     parse_raid_parent,
@@ -56,6 +57,29 @@ def test_split_collection_name() -> None:
     collection, zone = split_collection_name("The Depths of Fear (Rain of Fear)")
     assert collection == "The Depths of Fear"
     assert zone == "Rain of Fear"
+
+
+def test_ignored_stalking_fear_collection() -> None:
+    assert is_ignored_missing_collection("Rain of Fear", "Stalking Fear")
+    assert is_ignored_missing_collection("rain of fear", "stalking fear")
+    assert not is_ignored_missing_collection("Rain of Fear", "The Depths of Fear")
+
+
+def test_parse_omits_stalking_fear_collection(tmp_path: Path) -> None:
+    path = tmp_path / "Test_server-Achievements.txt"
+    path.write_text(
+        "Rain of Fear: Collections\n"
+        "I\tStalking Fear (Fear Itself)\n"
+        "I\t\tCreepy Item\t0/1\n"
+        "I\tThe Depths of Fear (Rain of Fear)\n"
+        "I\t\tStrange Black Rock\t0/1\n",
+        encoding="utf-8",
+    )
+    parsed = parse_achievements_file(path)
+    collections = {item.collection for item in parsed.missing_collections}
+    assert "Stalking Fear" not in collections
+    assert "The Depths of Fear" in collections
+    assert all(item.item != "Creepy Item" for item in parsed.missing_collections)
 
 
 def test_parse_missing_collection_items() -> None:
