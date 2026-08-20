@@ -148,9 +148,45 @@ def test_get_and_set_output_format(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(module, "settings_path", lambda: settings_file)
     api = WebApi()
     assert api.get_gui_prefs()["outputFormat"] == "both"
+    assert api.get_gui_prefs()["lastEqFolder"] is None
     assert api.set_output_format("excel")["outputFormat"] == "excel"
     assert api.get_gui_prefs()["outputFormat"] == "excel"
     assert api.set_output_format("nope")["outputFormat"] == "both"
+
+
+def test_pick_folder_remembers_last_directory(tmp_path, monkeypatch) -> None:
+    from inventory_parser import character_column_order as module
+    from inventory_parser.web_api import webview
+
+    settings_file = tmp_path / "settings.json"
+    monkeypatch.setattr(module, "settings_path", lambda: settings_file)
+    first = tmp_path / "logs_a"
+    second = tmp_path / "logs_b"
+    first.mkdir()
+    second.mkdir()
+
+    class FakeWindow:
+        def __init__(self) -> None:
+            self.calls: list[dict] = []
+
+        def create_file_dialog(self, dialog_type, **kwargs):
+            self.calls.append({"type": dialog_type, **kwargs})
+            if len(self.calls) == 1:
+                return [str(first)]
+            return [str(second)]
+
+    window = FakeWindow()
+    api = WebApi()
+    api.bind_window(window)
+
+    assert api.pick_folder() == str(first.resolve())
+    assert window.calls[0]["type"] == webview.FileDialog.FOLDER
+    assert "directory" not in window.calls[0]
+    assert api.get_gui_prefs()["lastEqFolder"] == str(first.resolve())
+
+    assert api.pick_folder() == str(second.resolve())
+    assert window.calls[1]["directory"] == str(first.resolve())
+    assert api.get_gui_prefs()["lastEqFolder"] == str(second.resolve())
 
 
 def test_open_html_report_missing_file() -> None:

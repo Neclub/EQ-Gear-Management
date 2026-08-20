@@ -6,6 +6,17 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.30.2] - 2026-08-20
+
+### Added
+
+- **GUI:** remember the last **EQ Folder** path in `%LOCALAPPDATA%\EQGM\settings.json` so the folder picker opens there again after updates.
+- **Help:** **Website…** menu item and **About** Website button open the GitHub Pages product site.
+
+### Changed
+
+- **HowToUse.md:** end-user guide for the `.exe` only (CLI and build steps removed).
+
 ## [1.30.1] - 2026-08-20
 
 ### Changed

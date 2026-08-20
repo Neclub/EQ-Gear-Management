@@ -21,8 +21,10 @@ from inventory_parser.character_column_order import (
     normalize_output_format,
     paths_for_roster_removal,
     save_character_column_order,
+    save_eq_folder,
     save_output_format,
     saved_character_column_order,
+    saved_eq_folder,
     saved_output_format,
 )
 from inventory_parser.eq_servers import server_display_name
@@ -48,6 +50,7 @@ from inventory_parser.slots import NON_VISIBLE_SLOTS, VISIBLE_SLOTS, SlotFilter
 from inventory_parser.team_report import FolderCharacterChoice, discover_folder_character_choices
 from inventory_parser.web_bridge import eq_logo_data_uri, file_url, setup_url
 
+PRODUCT_WEBSITE_URL = "https://neclub.github.io/EQ-Gear-Management/"
 
 _HOME_PATH = str(Path.home())
 _HOME_PATH_RE = re.compile(re.escape(_HOME_PATH), re.IGNORECASE) if _HOME_PATH else None
@@ -236,10 +239,18 @@ class WebApi:
             return {"ok": False}
 
     def get_version(self) -> dict:
-        return {"version": __version__, "logoDataUri": eq_logo_data_uri()}
+        return {
+            "version": __version__,
+            "logoDataUri": eq_logo_data_uri(),
+            "websiteUrl": PRODUCT_WEBSITE_URL,
+        }
 
     def check_for_updates(self) -> dict:
         return fetch_app_updates()
+
+    def open_website(self) -> dict:
+        webbrowser.open(PRODUCT_WEBSITE_URL)
+        return {"ok": True, "url": PRODUCT_WEBSITE_URL}
 
     def open_update_download(self, url: str) -> dict:
         if not is_allowed_download_url(url):
@@ -248,7 +259,10 @@ class WebApi:
         return {"ok": True}
 
     def get_gui_prefs(self) -> dict:
-        return {"outputFormat": saved_output_format()}
+        return {
+            "outputFormat": saved_output_format(),
+            "lastEqFolder": saved_eq_folder(),
+        }
 
     def set_output_format(self, value: str) -> dict:
         return {"outputFormat": save_output_format(value)}
@@ -263,10 +277,16 @@ class WebApi:
         window = self._window
         if window is None:
             return None
-        result = window.create_file_dialog(webview.FileDialog.FOLDER)
+        kwargs: dict = {}
+        start = saved_eq_folder()
+        if start:
+            kwargs["directory"] = start
+        result = window.create_file_dialog(webview.FileDialog.FOLDER, **kwargs)
         if not result:
             return None
-        return str(result[0])
+        folder = str(Path(result[0]).resolve())
+        save_eq_folder(folder)
+        return folder
 
     def pick_output_file(self, suggested_name: str) -> str | None:
         window = self._window

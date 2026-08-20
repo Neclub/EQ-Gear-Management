@@ -95,6 +95,36 @@ def saved_output_format() -> str:
     return normalize_output_format(load_settings().get("output_format"))
 
 
+def save_eq_folder(folder: str | Path) -> str | None:
+    """Remember the last EQ Folder path under AppData (survives EXE updates)."""
+    try:
+        path = Path(folder).expanduser().resolve()
+    except OSError:
+        return None
+    if not path.is_dir():
+        return None
+    settings_file = settings_path()
+    settings_file.parent.mkdir(parents=True, exist_ok=True)
+    settings = load_settings()
+    settings["last_eq_folder"] = str(path)
+    settings_file.write_text(json.dumps(settings, indent=2) + "\n", encoding="utf-8")
+    return str(path)
+
+
+def saved_eq_folder() -> str | None:
+    """Return the last EQ Folder if it is still an existing directory."""
+    raw = load_settings().get("last_eq_folder")
+    if not isinstance(raw, str) or not raw.strip():
+        return None
+    try:
+        path = Path(raw).expanduser().resolve()
+    except OSError:
+        return None
+    if not path.is_dir():
+        return None
+    return str(path)
+
+
 def order_by_persona_keys(items: list[T], order: list[str], *, key_fn) -> list[T]:
     """Return items sorted by saved order, then default order for unknown keys."""
     by_key = {key_fn(item): item for item in items}

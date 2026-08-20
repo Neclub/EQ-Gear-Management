@@ -7,8 +7,10 @@ from inventory_parser.character_column_order import (
     order_roster_entries,
     paths_for_roster_removal,
     save_character_column_order,
+    save_eq_folder,
     save_output_format,
     saved_character_column_order,
+    saved_eq_folder,
     saved_output_format,
 )
 from inventory_parser.team_report import build_team_report
@@ -92,6 +94,23 @@ def test_save_and_load_output_format(tmp_path, monkeypatch) -> None:
     save_character_column_order(["Tank_bristle"])
     assert saved_output_format() == "html"
     assert saved_character_column_order() == ["Tank_bristle"]
+
+
+def test_save_and_load_eq_folder(tmp_path, monkeypatch) -> None:
+    from inventory_parser import character_column_order as module
+
+    settings_file = tmp_path / "settings.json"
+    monkeypatch.setattr(module, "settings_path", lambda: settings_file)
+    eq_dir = tmp_path / "EQ Logs"
+    eq_dir.mkdir()
+    assert saved_eq_folder() is None
+    assert save_eq_folder(eq_dir) == str(eq_dir.resolve())
+    assert saved_eq_folder() == str(eq_dir.resolve())
+    save_output_format("excel")
+    assert saved_eq_folder() == str(eq_dir.resolve())
+    assert saved_output_format() == "excel"
+    assert save_eq_folder(tmp_path / "missing") is None
+    assert saved_eq_folder() == str(eq_dir.resolve())
 
 
 def test_excel_unmade_matches_bundle_character_column_order(tmp_path: Path) -> None:

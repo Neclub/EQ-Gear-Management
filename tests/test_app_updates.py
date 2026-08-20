@@ -149,6 +149,25 @@ def test_open_update_download_opens_github_url() -> None:
     open_browser.assert_called_once_with(url)
 
 
+def test_open_website_opens_product_page() -> None:
+    from inventory_parser.web_api import PRODUCT_WEBSITE_URL
+
+    api = WebApi()
+    with patch("inventory_parser.web_api.webbrowser.open") as open_browser:
+        result = api.open_website()
+    assert result["ok"] is True
+    assert result["url"] == PRODUCT_WEBSITE_URL
+    open_browser.assert_called_once_with(PRODUCT_WEBSITE_URL)
+
+
+def test_get_version_includes_website_url() -> None:
+    from inventory_parser.web_api import PRODUCT_WEBSITE_URL
+
+    info = WebApi().get_version()
+    assert info["websiteUrl"] == PRODUCT_WEBSITE_URL
+    assert "version" in info
+
+
 def test_check_for_updates_rejects_foreign_asset_url(monkeypatch) -> None:
     payload = {
         "tag_name": "v1.22.0",

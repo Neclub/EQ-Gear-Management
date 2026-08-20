@@ -315,28 +315,17 @@ function bindEvents() {
     $("helpMenu").classList.add("hidden");
     showHelpTiers();
   });
+  $("helpWebsite").addEventListener("click", () => {
+    $("helpMenu").classList.add("hidden");
+    openWebsite();
+  });
   $("helpUpdates").addEventListener("click", () => {
     $("helpMenu").classList.add("hidden");
     checkForUpdates();
   });
   $("helpAbout").addEventListener("click", async () => {
     $("helpMenu").classList.add("hidden");
-    const info = await api("get_version");
-    showModal(`
-      <div class="modal">
-        <div class="modal-header"><h2>About EQ Gear Management</h2></div>
-        <div class="modal-body">
-          <p>EQGM ${info.version}</p>
-          <p style="margin-top:12px;color:var(--muted);font-size:12px">
-            Builds team Excel workbooks and optional HTML reports from EverQuest
-            /outputfile inventory, spell, and achievement files.
-          </p>
-          <p style="margin-top:8px;font-size:12px">Sheets: Team Gear, Gear T-Level, Missing Runes,
-          Missing Spells, Rune Inventory, Unmade Gear, achievements, and more.</p>
-        </div>
-        <div class="modal-footer"><button type="button" class="btn" id="modalClose">Close</button></div>
-      </div>`);
-    $("modalClose").addEventListener("click", closeModal);
+    showAbout();
   });
 
   $("btnFolder").addEventListener("click", browseFolder);
@@ -1090,6 +1079,43 @@ async function checkForUpdates() {
     return;
   }
   showUpdateAvailableModal(info);
+}
+
+async function openWebsite() {
+  try {
+    const result = await api("open_website");
+    if (!result || !result.ok) {
+      showToast((result && result.error) || "Could not open the website.", true);
+    }
+  } catch (err) {
+    showToast(err && err.message ? err.message : String(err), true);
+  }
+}
+
+async function showAbout() {
+  const info = await api("get_version");
+  const version = escapeHtml(info.version || "");
+  showModal(`
+    <div class="modal">
+      <div class="modal-header"><h2>About EQ Gear Management</h2></div>
+      <div class="modal-body">
+        <p><strong>EQGM ${version}</strong></p>
+        <p style="margin-top:12px;color:var(--muted);font-size:12px">
+          Builds team Excel workbooks and optional HTML reports from EverQuest
+          /outputfile inventory, spell, and achievement files.
+        </p>
+        <p style="margin-top:8px;font-size:12px;color:var(--muted)">
+          Sheets include Team Gear, Gear T-Level, Missing Runes, Missing Spells,
+          Rune Inventory, Unmade Gear, achievements, augs, Raid BiS, and more.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="aboutWebsite">Website</button>
+        <button type="button" class="btn" id="modalClose">Close</button>
+      </div>
+    </div>`);
+  $("modalClose").addEventListener("click", closeModal);
+  $("aboutWebsite").addEventListener("click", () => openWebsite());
 }
 
 async function showHelpTiers() {

@@ -778,3 +778,10 @@ select, .text-input {
 }
 
 .help-menu button:hover { background: var(--panel-hover); }
+
+.help-menu-sep {
+  height: 1px;
+  margin: 4px 0;
+  background: var(--border);
+  border: none;
+}

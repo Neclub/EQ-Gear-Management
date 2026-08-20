@@ -86,7 +86,7 @@ The **Missing Collections** tab lists collection items still needed (`owned/tota
 
 ## Quick start (GUI)
 
-The app uses a **dark HTML interface** (pywebview + WebView2) with a split-pane setup screen. When HTML export is selected, the saved report opens in your default browser after generation; the setup screen stays open.
+The app uses a **dark HTML interface** with a split-pane setup screen. When HTML export is selected, the saved report opens in your default browser after generation; the setup screen stays open.
 
 **Setup layout:**
 
@@ -101,11 +101,11 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
 
 **Requirements:** Windows 10/11 with **WebView2** (Microsoft Edge runtime — usually already installed).
 
-1. **In EQ:** on each character, `/outputfile inventory` and (optional) `/outputfile missingspells`; copy the `.txt` files into one folder.
+1. **In EQ:** on each character, `/outputfile inventory` and (optional) `/outputfile missingspells` and `/outputfile achievements`; copy the `.txt` files into one folder.
 
 2. **Run the app**
-   - Double-click **`run_gui.bat`**, or  
-   - Double-click **`dist\EQGM-<version>.exe`** after building (see [Building the .exe](#building-the-exe))
+   - Download **`EQGM-x.y.z.exe`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases)
+   - Double-click the `.exe` to open it
 
    If a newer GitHub Release exists, a popup shows the current and newest versions and asks whether to download.
 
@@ -258,7 +258,7 @@ Type 7/8 (usually inventory Slot2) recommendations vs a live EQ Resource catalog
 
 ### Type 5 Augs *(if enabled)*
 
-Display-only list of what is in each type 5 hole (often inventory Slot2 on current gear, but the dump SlotN comes from the parent item’s socket map). Empty holes show as **Empty**. Columns include **Expansion** (from EQ Resource) and heroic stats (HStr through HCha) when an aug is equipped. No BiS or farm suggestions — preference only. Excel adds a **Type 5 Augs** sheet; HTML adds a **Type 5 Augs** section with a **Character** filter (All or one character), clickable column headers to sort, and a link to the [EQ Resource Type 5 list](https://items.eqresource.com/itemsearch.php?searchid=481762). Uncheck the chip or pass `--no-type5` to skip.
+Display-only list of what is in each type 5 hole (often inventory Slot2 on current gear, but the dump SlotN comes from the parent item’s socket map). Empty holes show as **Empty**. Columns include **Expansion** (from EQ Resource) and heroic stats (HStr through HCha) when an aug is equipped. No BiS or farm suggestions — preference only. Excel adds a **Type 5 Augs** sheet; HTML adds a **Type 5 Augs** section with a **Character** filter (All or one character), clickable column headers to sort, and a link to the [EQ Resource Type 5 list](https://items.eqresource.com/itemsearch.php?searchid=481762). Uncheck the chip to skip.
 
 ### Raid BiS *(if enabled)*
 
@@ -272,7 +272,7 @@ Needs a network fetch the first time (EQ Resource raid armor/jewelry, raidloot f
 
 ### HTML report *(optional)*
 
-When **HTML** or **Both** is selected next to **Generate Report** (default **Both**), or **`--also-html`** is passed on the CLI, the app saves `{prefix}_Team_Inventory.html` next to the Excel path stem (e.g. `Bristlebane_Team_Inventory.html`). HTML-only mode writes that file without creating a workbook. In the GUI, the `.html` opens in your default browser when generation finishes; you can also double-click it later in Chrome, Edge, Firefox, etc.
+When **HTML** or **Both** is selected next to **Generate Report** (default **Both**), the app saves `{prefix}_Team_Inventory.html` next to the Excel path stem (e.g. `Bristlebane_Team_Inventory.html`). HTML-only mode writes that file without creating a workbook. The `.html` opens in your default browser when generation finishes; you can also double-click it later in Chrome, Edge, Firefox, etc.
 
 **Layout**
 
@@ -302,8 +302,6 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 
 Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.
 
-No Python or web server is required to view the HTML file.
-
 ---
 
 ## Tips
@@ -318,110 +316,12 @@ No Python or web server is required to view the HTML file.
 
 ---
 
-## Command line (optional)
-
-From the `EQ Gear Management` folder:
-
-```powershell
-py -3 -m pip install -e .
-py -3 -m inventory_parser --folder "D:\EQ Files" -o "D:\EQ Files\Team Inventory.xlsx"
-```
-
-Skip the spell tabs:
-
-```powershell
-py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --no-spells
-```
-
-Skip the achievement tabs:
-
-```powershell
-py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --no-achievements
-```
-
-Also write an interactive HTML report (same folder, same name stem):
-
-```powershell
-py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --also-html
-```
-
-Only visible slots:
-
-```powershell
-py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --slots visible
-```
-
-Skip Type 7/8 aug sheets (no catalog fetch):
-
-```powershell
-py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --no-slot2
-```
-
-Skip Type 5 aug sheet:
-
-```powershell
-py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --no-type5
-```
-
-Include Gem of Distant Echoes anniversary augs in Type 7/8 recommendations:
-
-```powershell
-py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --include-anniversary
-```
-
-Skip the Raid BiS sheet (no catalog fetch):
-
-```powershell
-py -3 -m inventory_parser --folder "D:\EQ Files" -o out.xlsx --no-raid-bis
-```
-
----
-
-## Building the .exe
-
-Run **`build_exe.bat`** inside the **`EQ Gear Management`** folder (not another project’s batch file).
-
-The batch file runs `pip install -e .` (installs **openpyxl** and **pywebview**) and PyInstaller. The GUI uses WebView2 on Windows and is bundled into the executable.
-
-Output: `EQ Gear Management\dist\EQGM-<version>.exe`
-
-Copy that `.exe` to any Windows PC; Python does not need to be installed there.
-
-**Before rebuilding:** close any running `EQGM-*.exe`. If the old exe is still open, PyInstaller may fail with “Access is denied” when writing to `dist\`.
-
-### Code signing (optional, recommended for release builds)
-
-Unsigned PyInstaller EXEs are often flagged by antivirus as false positives. Signing with an **Authenticode** certificate helps SmartScreen and Defender trust the file.
-
-1. Obtain a code signing certificate (`.pfx`) from a trusted CA, or install one in the Windows certificate store.
-2. Install the **Windows SDK** (includes `signtool.exe`) via Visual Studio Build Tools or the standalone SDK.
-3. Copy **`codesign.local.bat.example`** to **`codesign.local.bat`** (gitignored) and set either:
-   - **`IP_SIGN_PFX`** + **`IP_SIGN_PASSWORD`** — path to your `.pfx` file, or
-   - **`IP_SIGN_THUMBPRINT`** — SHA1 thumbprint of a cert in the Windows store
-4. Run **`build_exe.bat`** as usual. After PyInstaller finishes, the batch file signs the EXE automatically.
-
-If `codesign.local.bat` is not present, the build completes without signing (fine for local dev).
-
-Set **`IP_SIGN_REQUIRED=1`** in `codesign.local.bat` if you want the build to fail when signing is not configured or fails.
-
-You can also sign manually:
-
-```powershell
-py -3 scripts\sign_exe.py dist\EQGM-x.y.z.exe
-```
-
-(with the same environment variables set).
-
----
-
 ## Troubleshooting
 
 | Problem | What to do |
 |---------|------------|
 | “Add at least one *-Inventory.txt” | Spell files alone are not enough — add inventory files. |
-| `ModuleNotFoundError: No module named 'webview'` when running from source | Run `py -3 -m pip install -e .` in the project folder (installs pywebview). |
 | GUI window is blank or fails to start | Install the [WebView2 runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/) (Evergreen bootstrapper). |
-| Build fails with “Access is denied” on the exe | Close any running `EQGM-*.exe`, then run **`build_exe.bat`** again. |
 | Spell tabs empty | Confirm spell file names match `Name_server-CLASS-MissingSpells.txt` and character names match inventory files. |
 | Achievement tabs empty | Confirm achievement file names match `Name_server-Achievements.txt` and character/server match inventory files. |
 | Include chips are grayed out | No inventory files in the roster yet. |
