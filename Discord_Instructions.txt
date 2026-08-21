@@ -82,7 +82,7 @@ Do this on **each character** you want in the report.
 > `/outputfile achievements`
 
 -# Optional for **Personas**. It is suggested to make a hotkey for each persona.
-> `/outputfile CHR_Server-CLASS-Inventory.txt`
+> `/outputfile inventory CHR_Server-CLASS-Inventory.txt`
 
 > ⚠️ The first command is **required**. The other two are optional, but they add extra pages to the report (spells, runes, collections, quests, achievements).
 

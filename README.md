@@ -31,7 +31,7 @@ On each character, run in EverQuest chat:
 | Command | What it creates |
 |---------|-----------------|
 | `/outputfile inventory` | Required — `Name_server-Inventory.txt` |
-| `/outputfile CHR_Server-CLASS-Inventory.txt` | Optional — persona inventory (`Name_server-CLASS-Inventory.txt`). A hotkey per persona is suggested. |
+| `/outputfile inventory CHR_Server-CLASS-Inventory.txt` | Optional — persona inventory (`Name_server-CLASS-Inventory.txt`). A hotkey per persona is suggested. |
 | `/outputfile missingspells` | Optional — spell and rune tabs |
 | `/outputfile achievements` | Optional — achievement tabs |
 

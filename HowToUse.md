@@ -17,7 +17,7 @@ On each character, run these chat commands in EverQuest:
 | Command | Creates |
 |---------|---------|
 | `/outputfile inventory` | Inventory file (`*-Inventory.txt`) |
-| `/outputfile CHR_Server-CLASS-Inventory.txt` | Optional — persona inventory (`*-CLASS-Inventory.txt`). A hotkey per persona is suggested. |
+| `/outputfile inventory CHR_Server-CLASS-Inventory.txt` | Optional — persona inventory (`*-CLASS-Inventory.txt`). A hotkey per persona is suggested. |
 | `/outputfile missingspells` | Missing spells file (`*-MissingSpells.txt`) |
 | `/outputfile achievements` | Achievement file (`*-Achievements.txt`) |
 
@@ -33,7 +33,7 @@ Example: `CharN_bristle-Inventory.txt`
 
 Tab-separated text from `/outputfile inventory`. The file reflects **equipped items for the active persona only**.
 
-You can also write a class-tagged inventory directly (same pattern as MissingSpells) with `/outputfile CHR_Server-CLASS-Inventory.txt` (a hotkey per persona is suggested):
+You can also write a class-tagged inventory directly (same pattern as MissingSpells) with `/outputfile inventory CHR_Server-CLASS-Inventory.txt` (a hotkey per persona is suggested):
 
 `CharacterName_server-CLASS-Inventory.txt`
 
@@ -102,7 +102,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
 
 **Requirements:** Windows 10/11 with **WebView2** (Microsoft Edge runtime — usually already installed).
 
-1. **In EQ:** on each character, `/outputfile inventory` and (optional) `/outputfile missingspells` and `/outputfile achievements`. For a persona inventory, also run `/outputfile CHR_Server-CLASS-Inventory.txt` (a hotkey per persona is suggested).
+1. **In EQ:** on each character, `/outputfile inventory` and (optional) `/outputfile missingspells` and `/outputfile achievements`. For a persona inventory, also run `/outputfile inventory CHR_Server-CLASS-Inventory.txt` (a hotkey per persona is suggested).
 
 2. **Run the app**
    - Download **`EQGM-x.y.z.exe`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases)
