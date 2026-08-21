@@ -30,16 +30,17 @@ On each character, run in EverQuest chat:
 
 | Command | What it creates |
 |---------|-----------------|
-| `/outputfile inventory` | Required — `Name_server-Inventory.txt` (or `Name_server-CLASS-Inventory.txt` for personas) |
+| `/outputfile inventory` | Required — `Name_server-Inventory.txt` |
+| `/outputfile CHR_Server-CLASS-Inventory.txt` | Optional — persona inventory (`Name_server-CLASS-Inventory.txt`). A hotkey per persona is suggested. |
 | `/outputfile missingspells` | Optional — spell and rune tabs |
 | `/outputfile achievements` | Optional — achievement tabs |
 
-Copy the `.txt` files from your EQ Logs folder into one folder on your PC.
+EQ writes those files to your **EverQuest Logs** folder.
 
 ### 2. Generate the report
 
 1. Open **EQ Gear Management**.
-2. Click **EQ Folder** and pick the folder with your output files; select which characters to import.
+2. Click **EQ Folder** and pick your EverQuest Logs folder; select which characters to import.
 3. Adjust **Export options** and **Output folder** on the right if needed.
 4. Choose **Excel**, **HTML**, or **Both**, then click **Generate Report**.
 

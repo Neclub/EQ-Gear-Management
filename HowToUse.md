@@ -17,10 +17,11 @@ On each character, run these chat commands in EverQuest:
 | Command | Creates |
 |---------|---------|
 | `/outputfile inventory` | Inventory file (`*-Inventory.txt`) |
+| `/outputfile CHR_Server-CLASS-Inventory.txt` | Optional — persona inventory (`*-CLASS-Inventory.txt`). A hotkey per persona is suggested. |
 | `/outputfile missingspells` | Missing spells file (`*-MissingSpells.txt`) |
 | `/outputfile achievements` | Achievement file (`*-Achievements.txt`) |
 
-EQ writes the files to your **`EverQuest/Logs`** folder (or the path your client uses for `/outputfile`). Copy those `.txt` files into one folder for the app — each character needs their own inventory file; add spell and/or achievement files when you want those tabs.
+EQ writes the files to your **`EverQuest/Logs`** folder (or the path your client uses for `/outputfile`). Point **EQ Folder** at that folder — each character needs their own inventory file; add spell and/or achievement files when you want those tabs.
 
 ### Inventory files (required)
 
@@ -32,7 +33,7 @@ Example: `CharN_bristle-Inventory.txt`
 
 Tab-separated text from `/outputfile inventory`. The file reflects **equipped items for the active persona only**.
 
-You can also use class-tagged inventory names (same pattern as MissingSpells), for example after renaming exports or if the client names them this way:
+You can also write a class-tagged inventory directly (same pattern as MissingSpells) with `/outputfile CHR_Server-CLASS-Inventory.txt` (a hotkey per persona is suggested):
 
 `CharacterName_server-CLASS-Inventory.txt`
 
@@ -101,7 +102,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
 
 **Requirements:** Windows 10/11 with **WebView2** (Microsoft Edge runtime — usually already installed).
 
-1. **In EQ:** on each character, `/outputfile inventory` and (optional) `/outputfile missingspells` and `/outputfile achievements`; copy the `.txt` files into one folder.
+1. **In EQ:** on each character, `/outputfile inventory` and (optional) `/outputfile missingspells` and `/outputfile achievements`. For a persona inventory, also run `/outputfile CHR_Server-CLASS-Inventory.txt` (a hotkey per persona is suggested).
 
 2. **Run the app**
    - Download **`EQGM-x.y.z.exe`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases)
@@ -110,7 +111,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
    If a newer GitHub Release exists, a popup shows the current and newest versions and asks whether to download.
 
 3. **Add your files**
-   - **EQ Folder** (under the roster) — pick a folder; in the picker, check the characters you want (optional **Server** filter), then **Add selected**. Inventory, MissingSpells, and Achievements files are grouped per character.
+   - **EQ Folder** (under the roster) — pick your **EverQuest/Logs** folder (or the path your client uses for `/outputfile`); in the picker, check the characters you want (optional **Server** filter), then **Add selected**. Inventory, MissingSpells, and Achievements files are grouped per character.
 
 4. **Manage the roster** (optional)
    - **Up** / **Down** — change character column order in Excel and HTML (including Unmade Gear row order)  
