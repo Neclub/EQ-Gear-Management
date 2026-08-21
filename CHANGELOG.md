@@ -6,6 +6,10 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+### Added
+
+- **Website:** a [Changelog](https://neclub.github.io/EQ-Gear-Management/changelog.html) page lists recent releases by date (last five days, or last five releases if that is more).
+
 ## [1.31.0] - 2026-08-21
 
 ### Added

@@ -12,7 +12,7 @@ Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and rel
 
 ## Download
 
-Product page: **[neclub.github.io/EQ-Gear-Management](https://neclub.github.io/EQ-Gear-Management/)**
+Product page: **[neclub.github.io/EQ-Gear-Management](https://neclub.github.io/EQ-Gear-Management/)** · Changelog: **[neclub.github.io/EQ-Gear-Management/changelog.html](https://neclub.github.io/EQ-Gear-Management/changelog.html)**
 
 1. Open **[Releases](https://github.com/Neclub/EQ-Gear-Management/releases)** on GitHub.
 2. Download **`EQGM-x.y.z.exe`** from the latest release.
