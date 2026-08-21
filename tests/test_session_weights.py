@@ -24,9 +24,11 @@ def test_default_class_weights_war():
     assert info["weights"]["ac"] == 10.0
     assert info["weights"]["hdex"] == 8.0
     assert "ac" in info["labels"]
-    # Focus stats always present in Advanced GUI; retired ones absent.
-    for key in ("ac", "hdex", "hint", "hwis", "spell_damage"):
+    # Focus stats plus HP/Mana always present in Advanced GUI; retired ones absent.
+    for key in ("ac", "hp", "mana", "hdex", "hint", "hwis", "spell_damage"):
         assert key in info["weights"]
+    assert info["weights"]["hp"] == 0.0
+    assert info["weights"]["mana"] == 0.0
     for key in ("accuracy", "combat_effects", "shielding", "stun_resist"):
         assert key not in info["weights"]
 

@@ -801,7 +801,7 @@ function syncOptionsTabs(single) {
   paneAdvanced.classList.toggle("hidden", !onAdvanced);
   if (hint) {
     hint.textContent = single
-      ? "Edit class default scoring weights for this generate only."
+      ? "Edit class default scoring weights for this file. 0-10"
       : "Available with exactly one character on the roster.";
   }
   if (onAdvanced) void ensureWeightDefaultsLoaded();

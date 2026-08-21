@@ -40,7 +40,7 @@ STAT_KEYS: tuple[str, ...] = (
     "clairvoyance",
 )
 
-# Advanced GUI always surfaces the simplified focus stats (zeros when unused).
+# Advanced GUI always surfaces these stats (zeros when unused).
 # Accuracy / Combat Effects / Shielding / Stun Resist stay out of scoring UI.
 ADVANCED_WEIGHT_EXCLUDE: frozenset[str] = frozenset(
     {
@@ -52,6 +52,8 @@ ADVANCED_WEIGHT_EXCLUDE: frozenset[str] = frozenset(
 )
 ADVANCED_WEIGHT_ALWAYS: tuple[str, ...] = (
     "ac",
+    "hp",
+    "mana",
     "hdex",
     "hint",
     "hwis",

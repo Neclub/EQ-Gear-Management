@@ -6,6 +6,16 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.30.4] - 2026-08-20
+
+### Added
+
+- **Advanced weights:** HP and Mana can be scored (0–10) along with AC and the focus stats.
+
+### Changed
+
+- **Advanced weights** hint: “Edit class default scoring weights for this file. 0-10”.
+
 ## [1.30.3] - 2026-08-20
 
 ### Fixed
