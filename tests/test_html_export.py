@@ -241,6 +241,8 @@ def test_embedded_json_row_counts_match_bundle(tmp_path: Path) -> None:
         assert "function copyTextToClipboard" in out.read_text(encoding="utf-8")
         assert "function showCopyBalloon" in out.read_text(encoding="utf-8")
         assert "Copied to clipboard" in out.read_text(encoding="utf-8")
+        assert "copy-col-head" in out.read_text(encoding="utf-8")
+        assert "Clicking the link copies the name to your clipboard." in out.read_text(encoding="utf-8")
 
 
 def test_json_for_html_script_blocks_script_breakout() -> None:

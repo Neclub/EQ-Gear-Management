@@ -62,7 +62,9 @@ def build_raid_bis_export(
     n = max(len(team.characters), 1)
     for i, ch in enumerate(team.characters, start=1):
         characters.append(
-            compare_character(ch, catalog.items, equipped_stats=equipped)
+            compare_character(
+                ch, catalog.items, equipped_stats=equipped, vendor=catalog.vendor
+            )
         )
         report_progress(
             on_progress,
@@ -84,6 +86,8 @@ def build_raid_bis_export(
                     icon_ids.add(slot.recommended_icon_id)
                 if slot.current_icon_id:
                     icon_ids.add(slot.current_icon_id)
+        if catalog.vendor and catalog.vendor.currency_icon_id:
+            icon_ids.add(catalog.vendor.currency_icon_id)
         icon_data_uris = collect_icon_data_uris(
             icon_ids,
             allow_network=allow_network and not html_overrides,

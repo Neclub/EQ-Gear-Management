@@ -6,6 +6,14 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.31.0] - 2026-08-21
+
+### Added
+
+- **Raid BiS:** Waist is a personal choice. HTML **Best in slot** offers a dropdown of the three best-statted belts (Overdrive Punch, Treaded Boon of Potential, and Crippling Slicer). A **?** in **Stat changes** shows that note on hover. Changing the selection updates that row’s stat changes, the character total, and the paperdoll using the same class display rules. Item pages that list both a click effect and a worn effect/focus are fully parsed so each line gets its own belt.
+- **Raid BiS:** HTML character cards have a current-expansion raid coin box (Shattering of Ro: **Forgotten Ruined Coin**) on the right. A coin icon after each Best in slot name shows vendor cost on hover (T2 ore/lining, or the finished T1 vendor item). Entering coins marks the best affordable purchase(s) with a **Best Purchase** bubble; leftover coins can fund a second upgrade when that combination scores higher. Equipped Evolvers still show a Best in slot pick but are skipped for coin purchases; a pulsing magenta gem marks them with an **Evolver** hover balloon. Hover **Raid BiS** for scoring notes as line items. Character names use a gold nameplate with a class badge.
+- **Missing Collections:** hover **Missing Item** in HTML for a tooltip that clicking the link copies the name to the clipboard. Zone is filled from a `(Zone)` suffix on the collection name, or from a `{Zone} Scavenger` grouping when the title has no zone.
+
 ## [1.30.4] - 2026-08-20
 
 ### Added

@@ -81,7 +81,7 @@ You can put achievement files:
 - In the **same folder** as the inventory files, or  
 - In a subfolder named **`AchievementData`** next to those files
 
-The **Missing Collections** tab lists collection items still needed (`owned/total` progress under **Collections** sections). **Quests** lists unfinished Mercenary and Partisan zone quest lines (`Done` / `Missing` per quest). **Achievement Summary** counts completed vs incomplete top-level achievements per section. Achievement files are named by character only (no class segment); with multiple persona inventories, those tabs still list each character once.
+The **Missing Collections** tab lists collection items still needed (`owned/total` progress under **Collections** sections). **Zone** comes from a `(Zone)` suffix on the collection name, or from a `{Zone} Scavenger` grouping when the title has no zone. **Quests** lists unfinished Mercenary and Partisan zone quest lines (`Done` / `Missing` per quest). **Achievement Summary** counts completed vs incomplete top-level achievements per section. Achievement files are named by character only (no class segment); with multiple persona inventories, those tabs still list each character once.
 
 ---
 
@@ -124,7 +124,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
    - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs
    - **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Artisan's Prize is recommended for Ear when it is in the inventory file. An equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off. Only augs that fit type 7/8 holes are recommended (type 5 and similar are excluded). Generate shows a progress bar while sockets and catalogs are fetched.
    - **Type 5 Augs** chip — on by default when inventories are loaded; uncheck to skip the Type 5 display sheet. Shows equipped type 5 augs (and Empty holes) with heroic stats; no upgrade suggestions. Uses parent-item socket maps (cached with Type 7/8). Link to the EQ Resource Type 5 list is included in the report.
-   - **Raid BiS** chip — on by default when inventories are loaded; uncheck to skip the Raid BiS sheet and catalog fetch. Compares equipped armor and jewelry to current-expansion raid T1 and T2 (weapons are shown but not scored). MAG/BST/NEC keep a pet-focus ear. The first run needs network access to EQ Resource.
+   - **Raid BiS** chip — on by default when inventories are loaded; uncheck to skip the Raid BiS sheet and catalog fetch. Compares equipped armor and jewelry to current-expansion raid T1 and T2 (weapons are shown but not scored). MAG/BST/NEC keep a pet-focus ear. HTML cards take raid coin counts to mark the best vendor ore purchase. The first run needs network access to EQ Resource.
 
 6. **Output**
    - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
@@ -227,7 +227,7 @@ Craft materials and T1 containers sitting in **General** bags (SoR / ToB). Every
 
 ### Missing Collections *(if enabled)*
 
-Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from the collection name), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed. Personas of the same character share one inventory for collections — rows and **Char Has** names are once per character, not per class. **Stalking Fear** (Rain of Fear) is omitted from this list. In HTML, click a **Missing Item** name to copy it; a small balloon confirms it was added to the clipboard.
+Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from a `(Zone)` suffix on the collection name, or from a `{Zone} Scavenger` grouping), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed. Personas of the same character share one inventory for collections — rows and **Char Has** names are once per character, not per class. **Stalking Fear** (Rain of Fear) is omitted from this list. In HTML, hover **Missing Item** for a reminder that clicking a name copies it; a small balloon confirms it was added to the clipboard.
 
 ### Quests *(if enabled)*
 
@@ -265,11 +265,15 @@ Display-only list of what is in each type 5 hole (often inventory Slot2 on curre
 
 ### Raid BiS *(if enabled)*
 
-Current-expansion raid T1 and T2 armor and jewelry vs what each character is wearing, scored with the same class/slot weights as Type 7/8 augs. T1 can beat T2. Evolvers are not scored and may still be BiS. MAG, BST, and NEC keep a pet-focus ear (`Enhanced Minion` or `Summoner` in the name). Primary, Secondary, Ammo, and Power Source are shown on the paperdoll but not scored. Wrist items are not Lore, so both wrist slots can recommend the same bracer. An item already equipped is not suggested as BiS for a different slot.
+Current-expansion raid T1 and T2 armor and jewelry vs what each character is wearing, scored with the same class/slot weights as Type 7/8 augs. T1 can beat T2. Evolvers are not scored and may still be BiS; they still get a Best in slot pick, but that slot is skipped when choosing coin purchases. A pulsing magenta gem next to the equipped item marks an Evolver on hover. MAG, BST, and NEC keep a pet-focus ear (`Enhanced Minion` or `Summoner` in the name). Primary, Secondary, Ammo, and Power Source are shown on the paperdoll but not scored. Wrist items are not Lore, so both wrist slots can recommend the same bracer. An item already equipped is not suggested as BiS for a different slot.
 
-**Excel:** a **Raid BiS** sheet with current item, recommended item, tier, and stat changes.
+**Waist belts** are a personal choice. The HTML report’s **Best in slot** column shows a dropdown of the three best-statted raid belts — one each for **Overdrive Punch**, **Treaded Boon of Potential**, and **Crippling Slicer**. The default selection is the highest class-weighted of those three; picking another belt updates that row’s **Stat changes**, the character total, and the paperdoll. A **?** next to the Waist stat changes explains the three-belt choice on hover. Excel shows the class-weighted default and notes that Waist is a personal choice (use the HTML report to compare).
 
-**HTML:** an inventory-window paperdoll (green outline = already BiS, gold = upgrade) plus a table of every scored slot. A **Character** dropdown at the top of the page filters to one persona (`Name ( CLASS )`). Stat changes list HP, the class’s primary HStat, AC for tanks (WAR/PAL/SHD), Mana except for WAR/ROG/MNK/BER, and Spell Damage for casters.
+**Raid coins:** each HTML character card has a coin box on the right, labeled with the current expansion’s raid currency (**Forgotten Ruined Coin** for Shattering of Ro). That value is only used for that character. Best in slot rows show a coin after the recommended item; hover it for the raid vendor cost — T2 recommendations use the slot’s vendor **ore** (Fractured lining/clasp/fastener); T1 jewelry that is sold on the vendor shows that item’s cost. Enter how many coins you have: the report marks the best affordable upgrade with a **Best Purchase** bubble. If you can afford more than one, it picks the combination that gains the most weighted stats for the coins you have.
+
+**Excel:** a **Raid BiS** sheet with current item, recommended item, tier, vendor cost/item, and stat changes.
+
+**HTML:** an inventory-window paperdoll (green outline = already BiS, gold = upgrade) plus a table of every scored slot. Character names use a gold nameplate with a class badge. Hover **Raid BiS** for scoring notes (current raid gear, Evolvers, waist choice, and coins). A **Character** dropdown at the top of the page filters to one persona (`Name ( CLASS )`). Stat changes list HP, the class’s primary HStat, AC for tanks (WAR/PAL/SHD), Mana except for WAR/ROG/MNK/BER, and Spell Damage for casters.
 
 Needs a network fetch the first time (EQ Resource raid armor/jewelry, raidloot fallback); later runs use `%LOCALAPPDATA%\EQGM\`. Item icons are cached at generate time. Uncheck the chip to skip this entirely.
 
@@ -301,7 +305,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 | **Event** | Toolbar (Raid Achievements) | Filter raid cards to one event (e.g. Echo of Hate). Options follow the current Expansion filter |
 | **Sort** | Toolbar (Missing Runes) | Reorder character columns: roster order, name, class, or most missing (uses the Expansion filter when one is selected) |
 | **Column headers** | Table | Click to sort |
-| **Missing Item** | Missing Collections | Click an item name to copy it; a balloon confirms it was copied |
+| **Missing Item** | Missing Collections | Hover the header for a copy reminder; click an item name to copy it |
 
 Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.
 

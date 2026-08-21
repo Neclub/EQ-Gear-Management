@@ -14,8 +14,10 @@ from inventory_parser.raid_bis.models import (
     SCORED_SLOTS,
     UNSCORED_SLOTS,
     RaidGearCandidate,
+    RaidVendorCatalog,
     slot_base,
 )
+from inventory_parser.raid_bis.vendor import vendor_offer_for_item
 from inventory_parser.slot2_augs.aug_stats import STAT_DISPLAY, STAT_KEYS
 from inventory_parser.slot2_augs.profiles import CLASS_TO_PROFILE, PROFILE_FOCUS_STAT
 from inventory_parser.slot2_augs.weights import resolve_weights
@@ -25,6 +27,13 @@ SlotStatus = Literal["empty", "bis", "upgrade", "unknown", "weapon"]
 
 TANK_CLASSES: frozenset[str] = frozenset({"WAR", "PAL", "SHD"})
 NO_MANA_CLASSES: frozenset[str] = frozenset({"WAR", "ROG", "MNK", "BER"})
+
+# Best-statted belt per effect/focus; Waist is a personal choice among these.
+WAIST_CHOICE_LABELS: tuple[str, ...] = (
+    "Overdrive Punch",
+    "Treaded Boon of Potential",
+    "Crippling Slicer",
+)
 
 DELTA_STAT_ORDER: tuple[str, ...] = (
     "ac",
@@ -121,6 +130,45 @@ def _best(
     return legal[0]
 
 
+def matches_waist_label(item: RaidGearCandidate, label: str) -> bool:
+    """True if effect or focus text contains the waist choice label."""
+    needle = label.casefold()
+    hay = f"{item.effect or ''} {item.focus or ''}".casefold()
+    return needle in hay
+
+
+def waist_choices_for_class(
+    catalog: list[RaidGearCandidate],
+    *,
+    class_abbr: str | None,
+    used: set[str] | None = None,
+) -> list[tuple[str, RaidGearCandidate]]:
+    """Best legal belt per WAIST_CHOICE_LABELS for this class."""
+    used = used or set()
+    out: list[tuple[str, RaidGearCandidate]] = []
+    for label in WAIST_CHOICE_LABELS:
+        matches = [c for c in catalog if matches_waist_label(c, label)]
+        pick = _best(matches, class_abbr=class_abbr, gear_slot="Waist", used=used)
+        if pick is not None:
+            out.append((label, pick))
+    return out
+
+
+def _best_waist(
+    catalog: list[RaidGearCandidate],
+    *,
+    class_abbr: str | None,
+    used: set[str],
+) -> RaidGearCandidate | None:
+    """Default Waist BiS: best of the three effect belts, else best waist overall."""
+    choices = waist_choices_for_class(catalog, class_abbr=class_abbr, used=used)
+    if choices:
+        picks = [item for _, item in choices]
+        picks.sort(key=lambda c: rank_tuple(c, class_abbr, "Waist"))
+        return picks[0]
+    return _best(catalog, class_abbr=class_abbr, gear_slot="Waist", used=used)
+
+
 def build_ideal_loadout(
     catalog: list[RaidGearCandidate],
     *,
@@ -150,7 +198,10 @@ def build_ideal_loadout(
             if slot in NON_LORE_SLOTS
             else used | _equipped_elsewhere_keys(slot, equipped, by_id)
         )
-        pick = _best(catalog, class_abbr=class_key, gear_slot=slot, used=slot_used)
+        if slot == "Waist":
+            pick = _best_waist(catalog, class_abbr=class_key, used=slot_used)
+        else:
+            pick = _best(catalog, class_abbr=class_key, gear_slot=slot, used=slot_used)
         if pick is None:
             continue
         loadout[slot] = pick
@@ -256,6 +307,21 @@ def sum_deltas(rows: list[dict[str, int]]) -> dict[str, int]:
 
 
 @dataclass
+class WaistChoice:
+    effect_label: str
+    item_id: int
+    name: str
+    tier: str = ""
+    icon_id: str | None = None
+    deltas: dict[str, int] = field(default_factory=dict)
+    status: SlotStatus = "upgrade"
+    score_gain: float = 0.0
+    vendor_cost: int | None = None
+    vendor_item_name: str | None = None
+    vendor_item_id: int | None = None
+
+
+@dataclass
 class SlotComparison:
     gear_slot: str
     status: SlotStatus
@@ -270,6 +336,12 @@ class SlotComparison:
     note: str = ""
     pet_focus: bool = False
     scored: bool = True
+    choices: list[WaistChoice] = field(default_factory=list)
+    score_gain: float = 0.0
+    vendor_cost: int | None = None
+    vendor_item_name: str | None = None
+    vendor_item_id: int | None = None
+    current_is_evolver: bool = False
 
 
 @dataclass
@@ -284,11 +356,85 @@ class CharacterRaidBis:
     slots_changed: int = 0
 
 
+def _score_gain(
+    current_stats: Mapping[str, int] | None,
+    recommended_stats: Mapping[str, int] | None,
+    *,
+    class_abbr: str | None,
+    gear_slot: str,
+    status: SlotStatus,
+) -> float:
+    if status == "bis" or not recommended_stats:
+        return 0.0
+    weights = resolve_weights(class_abbr, gear_slot)
+    return score_stats(recommended_stats, weights) - score_stats(current_stats, weights)
+
+
+def _vendor_fields(
+    item: RaidGearCandidate | None,
+    gear_slot: str,
+    vendor: RaidVendorCatalog | None,
+) -> tuple[int | None, str | None, int | None]:
+    offer = vendor_offer_for_item(item, gear_slot, vendor)
+    if offer is None:
+        return None, None, None
+    return offer.cost, offer.name, offer.item_id
+
+
+def _waist_choice_rows(
+    catalog: list[RaidGearCandidate],
+    *,
+    class_abbr: str | None,
+    current_stats: Mapping[str, int],
+    current_id: int | None,
+    current_empty: bool,
+    used: set[str],
+    vendor: RaidVendorCatalog | None = None,
+) -> list[WaistChoice]:
+    rows: list[WaistChoice] = []
+    for label, item in waist_choices_for_class(
+        catalog, class_abbr=class_abbr, used=used
+    ):
+        if current_empty:
+            status: SlotStatus = "empty"
+            deltas = stat_deltas(current_stats, item.stats)
+        elif current_id is not None and current_id == item.item_id:
+            status = "bis"
+            deltas = {}
+        else:
+            status = "upgrade"
+            deltas = stat_deltas(current_stats, item.stats)
+        cost, vendor_name, vendor_id = _vendor_fields(item, "Waist", vendor)
+        rows.append(
+            WaistChoice(
+                effect_label=label,
+                item_id=item.item_id,
+                name=item.name,
+                tier=item.tier,
+                icon_id=item.icon_id,
+                deltas=deltas,
+                status=status,
+                score_gain=_score_gain(
+                    current_stats,
+                    item.stats,
+                    class_abbr=class_abbr,
+                    gear_slot="Waist",
+                    status=status,
+                ),
+                vendor_cost=cost,
+                vendor_item_name=vendor_name,
+                vendor_item_id=vendor_id,
+            )
+        )
+    return rows
+
+
 def compare_character(
     character: CharacterGear,
     catalog: list[RaidGearCandidate],
     *,
     equipped_stats: dict[int, RaidGearCandidate] | None = None,
+    vendor: RaidVendorCatalog | None = None,
 ) -> CharacterRaidBis:
     equipped_stats = equipped_stats or {}
     class_abbr = (character.class_abbr or "").strip().upper() or None
@@ -322,6 +468,7 @@ def compare_character(
                     current_icon_id=current_icon,
                     note=note,
                     scored=False,
+                    current_is_evolver=bool(current and current.is_evolver),
                 )
             )
             continue
@@ -337,7 +484,22 @@ def compare_character(
 
         rec_stats = dict(recommended.stats) if recommended else {}
         deltas = stat_deltas(current_stats, rec_stats) if recommended else {}
-        pet_focus = bool(recommended and recommended.is_pet_focus_ear() and slot_base(slot) == "Ear")
+        pet_focus = bool(
+            recommended and recommended.is_pet_focus_ear() and slot_base(slot) == "Ear"
+        )
+
+        waist_rows: list[WaistChoice] = []
+        if slot == "Waist":
+            waist_used = _equipped_elsewhere_keys(slot, character.slots, by_id)
+            waist_rows = _waist_choice_rows(
+                catalog,
+                class_abbr=class_abbr,
+                current_stats=current_stats,
+                current_id=current.item_id if current and current.item_id > 0 else None,
+                current_empty=current is None or current.item_id <= 0,
+                used=waist_used,
+                vendor=vendor,
+            )
 
         if recommended is None:
             status: SlotStatus = "unknown"
@@ -359,7 +521,14 @@ def compare_character(
 
         if pet_focus:
             note = (note + " " if note else "") + "Required pet focus."
+        if slot == "Waist" and waist_rows:
+            note = (
+                (note + " " if note else "")
+                + "Waist is a personal choice among Overdrive Punch, "
+                "Treaded Boon of Potential, and Crippling Slicer."
+            ).strip()
 
+        cost, vendor_name, vendor_id = _vendor_fields(recommended, slot, vendor)
         rows.append(
             SlotComparison(
                 gear_slot=slot,
@@ -375,6 +544,18 @@ def compare_character(
                 note=note.strip(),
                 pet_focus=pet_focus,
                 scored=True,
+                choices=waist_rows,
+                score_gain=_score_gain(
+                    current_stats,
+                    rec_stats,
+                    class_abbr=class_abbr,
+                    gear_slot=slot,
+                    status=status,
+                ),
+                vendor_cost=cost,
+                vendor_item_name=vendor_name,
+                vendor_item_id=vendor_id,
+                current_is_evolver=bool(current and current.is_evolver),
             )
         )
 

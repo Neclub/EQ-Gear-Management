@@ -18,6 +18,7 @@ from inventory_parser.achievement_parser import (
     parse_raid_parent,
     raid_header_name,
     split_collection_name,
+    scavenger_zone_from_name,
 )
 from inventory_parser.achievement_report import build_achievement_report
 from inventory_parser.team_report import build_team_report
@@ -57,6 +58,56 @@ def test_split_collection_name() -> None:
     collection, zone = split_collection_name("The Depths of Fear (Rain of Fear)")
     assert collection == "The Depths of Fear"
     assert zone == "Rain of Fear"
+
+
+def test_scavenger_zone_from_name() -> None:
+    assert scavenger_zone_from_name("Scarred Grove Scavenger") == "Scarred Grove"
+    assert scavenger_zone_from_name("Arcstone, Shattered Isles Scavenger") == (
+        "Arcstone, Shattered Isles"
+    )
+    assert scavenger_zone_from_name("Ruined Relic Scavenger") == "Ruined Relic"
+    assert scavenger_zone_from_name("Master Scavenger of Fear (Rain of Fear)") is None
+    assert scavenger_zone_from_name("Toxxulian Scavenger Rat") is None
+    assert scavenger_zone_from_name("Seeds of Growth") is None
+
+
+def test_scavenger_achievement_fills_collection_zone(tmp_path: Path) -> None:
+    path = tmp_path / "Test_server-Achievements.txt"
+    path.write_text(
+        "Shattering of Ro: Collections\n"
+        "I\tScarred Grove Scavenger\n"
+        "I\t\tSeeds of Growth\n"
+        "I\t\tLegacies of Nature\n"
+        "I\tSeeds of Growth\n"
+        "I\t\tPartially Digested Seed\t0/1\n"
+        "I\tThe Depths of Fear (Rain of Fear)\n"
+        "I\t\tStrange Black Rock\t0/1\n",
+        encoding="utf-8",
+    )
+    parsed = parse_achievements_file(path)
+    seed = next(item for item in parsed.missing_collections if item.item == "Partially Digested Seed")
+    assert seed.collection == "Seeds of Growth"
+    assert seed.zone == "Scarred Grove"
+    rock = next(item for item in parsed.missing_collections if item.item == "Strange Black Rock")
+    assert rock.zone == "Rain of Fear"
+
+
+def test_scavenger_zone_from_live_dump() -> None:
+    parsed = parse_achievements_file(SHAMLUB_ACH)
+    hodstock = next(
+        item for item in parsed.missing_collections if item.collection == "Flora of Hodstock Hills"
+    )
+    assert hodstock.zone == "Hodstock Hills"
+    ashes = next(
+        item for item in parsed.missing_collections if item.collection == "Ashes of the Shattered"
+    )
+    assert ashes.zone == "Ruined Relic"
+    seeds = next(
+        (item for item in parsed.missing_collections if item.collection == "Seeds of Growth"),
+        None,
+    )
+    if seeds is not None:
+        assert seeds.zone == "Scarred Grove"
 
 
 def test_ignored_stalking_fear_collection() -> None:

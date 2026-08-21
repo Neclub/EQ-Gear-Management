@@ -17,6 +17,12 @@ from inventory_parser.raid_bis.models import (
     JEWELRY_TYPE_SLOTS,
     RaidBisCatalog,
     RaidGearCandidate,
+    RaidVendorCatalog,
+)
+from inventory_parser.raid_bis.vendor import (
+    parse_raidvendor_html,
+    vendor_catalog_from_dict,
+    vendor_catalog_to_dict,
 )
 from inventory_parser.slot2_augs.aug_stats import clean_stats, merge_stats
 from inventory_parser.slot2_augs.chest_class import parse_eqresource_item_classes
@@ -33,14 +39,22 @@ from inventory_parser.slot2_augs.paths import appdata_dir
 
 CACHE_FILENAME = "raid_bis_catalog.json"
 ITEM_CACHE_FILENAME = "raid_bis_item_cache.json"
-ITEM_CACHE_VERSION = 4
+ITEM_CACHE_VERSION = 6
 RAIDARMOR_URL = "https://sor.eqresource.com/raidarmor.php"
 RAIDGEAR_URL = "https://sor.eqresource.com/raidgear.php"
+RAIDVENDOR_URL = "https://sor.eqresource.com/raidvendorgood.php"
 RAIDLOOT_SEARCH_URL = "https://www.raidloot.com/items"
 
 _ITEM_HREF_RE = re.compile(r"items\.php\?id=(\d+)", re.IGNORECASE)
 _ICON_RE = re.compile(r"itemimages/(\d+)\.(?:png|gif|jpg|webp)", re.IGNORECASE)
-_FOCUS_RE = re.compile(r"Focus:\s*([^<\n]+)", re.IGNORECASE)
+_FOCUS_RE = re.compile(
+    r"Focus:\s*(?:<[^>]+>\s*)*([^<\n]+)",
+    re.IGNORECASE,
+)
+_EFFECT_RE = re.compile(
+    r"Effect:\s*(?:<[^>]+>\s*)*([^<\n]+)",
+    re.IGNORECASE,
+)
 _TIER_HEAD_RE = re.compile(
     r'<a\s+name="tier(\d+)"></a>.*?<font[^>]*>\s*Tier\s+\d+\s+-\s*([^<]+)',
     re.IGNORECASE | re.DOTALL,
@@ -343,8 +357,28 @@ def _cell_int(raw: str) -> int | None:
     return int(text)
 
 
+def _labeled_spell_names(html: str, pattern: re.Pattern[str]) -> str:
+    """Collect every Effect:/Focus: name on the page (items often have click + worn)."""
+    names: list[str] = []
+    seen: set[str] = set()
+    for match in pattern.finditer(html or ""):
+        raw = re.sub(r"\s+", " ", match.group(1)).strip()
+        # Drop trailing UI suffixes like "- Casting Time: 0.5s" / "- Worn" for cleaner storage,
+        # but keep the spell name itself for matching.
+        name = re.split(r"\s*-\s*(?:Casting Time|Worn)\b", raw, maxsplit=1, flags=re.I)[0]
+        name = name.strip(" -")
+        if not name:
+            continue
+        key = name.casefold()
+        if key in seen:
+            continue
+        seen.add(key)
+        names.append(name)
+    return "; ".join(names)
+
+
 def parse_item_page(html: str, item_id: int, *, name_hint: str = "") -> RaidGearCandidate | None:
-    """Hydrate stats, class, slot, focus, and icon from an EQ Resource item page."""
+    """Hydrate stats, class, slot, focus, effect, and icon from an EQ Resource item page."""
     if not html or item_id <= 0:
         return None
     name_m = _NAME_RE.search(html)
@@ -356,8 +390,8 @@ def parse_item_page(html: str, item_id: int, *, name_hint: str = "") -> RaidGear
     slot_m = _SLOT_RE.search(html)
     slot_text = slot_m.group(1).strip() if slot_m else ""
     slots = _allowed_from_eqr_slot_text(re.sub(r"\s+", " ", slot_text))
-    focus_m = _FOCUS_RE.search(html)
-    focus = re.sub(r"\s+", " ", focus_m.group(1)).strip() if focus_m else ""
+    focus = _labeled_spell_names(html, _FOCUS_RE)
+    effect = _labeled_spell_names(html, _EFFECT_RE)
     icon_m = _ICON_RE.search(html)
     tier = ""
     if re.search(r"Raid\s*[-–]\s*Tier\s*2", html, re.IGNORECASE):
@@ -374,6 +408,7 @@ def parse_item_page(html: str, item_id: int, *, name_hint: str = "") -> RaidGear
         lore_group=parse_eqresource_lore_group(html),
         icon_id=icon_m.group(1) if icon_m else None,
         focus=focus,
+        effect=effect,
         source="EQ Resource",
     )
 
@@ -387,6 +422,9 @@ def _better_name(base: RaidGearCandidate, extra: RaidGearCandidate) -> str:
 
 
 def merge_hydrated(base: RaidGearCandidate, extra: RaidGearCandidate) -> RaidGearCandidate:
+    # Prefer the longer effect/focus string (hydrated pages list click + worn).
+    focus = extra.focus if len(extra.focus or "") >= len(base.focus or "") else base.focus
+    effect = extra.effect if len(extra.effect or "") >= len(base.effect or "") else base.effect
     return RaidGearCandidate(
         item_id=base.item_id,
         name=_better_name(base, extra),
@@ -396,7 +434,8 @@ def merge_hydrated(base: RaidGearCandidate, extra: RaidGearCandidate) -> RaidGea
         tier=extra.tier or base.tier,
         lore_group=extra.lore_group or base.lore_group,
         icon_id=extra.icon_id or base.icon_id,
-        focus=extra.focus or base.focus,
+        focus=focus or "",
+        effect=effect or "",
         source=extra.source or base.source,
     )
 
@@ -419,6 +458,7 @@ def _candidate_to_dict(item: RaidGearCandidate) -> dict:
         "lore_group": item.lore_group,
         "icon_id": item.icon_id,
         "focus": item.focus,
+        "effect": item.effect,
         "source": item.source,
     }
 
@@ -434,6 +474,7 @@ def _candidate_from_dict(raw: dict) -> RaidGearCandidate:
         lore_group=raw.get("lore_group"),
         icon_id=raw.get("icon_id"),
         focus=str(raw.get("focus") or ""),
+        effect=str(raw.get("effect") or ""),
         source=str(raw.get("source") or "EQ Resource"),
     )
 
@@ -453,9 +494,10 @@ def fetch_catalog(
     item_html_by_id = item_html_by_id or {}
     cache = _load_json(cache_path())
     warning: str | None = None
-    urls: list[str] = [RAIDARMOR_URL]
+    urls: list[str] = [RAIDARMOR_URL, RAIDVENDOR_URL]
     items: list[RaidGearCandidate] = []
     from_cache = False
+    vendor: RaidVendorCatalog | None = None
 
     try:
         armor_html = html_overrides.get("raidarmor")
@@ -481,12 +523,23 @@ def fetch_catalog(
             )
         if not items:
             raise ValueError("EQ Resource raid catalog returned no items")
+        vendor = _load_vendor(
+            html_overrides=html_overrides,
+            allow_network=allow_network,
+            polite_delay_s=polite_delay_s,
+            cache=cache,
+            now=now,
+            force_refresh=force_refresh,
+        )
         if html_overrides or allow_network:
             cache["catalog"] = {
                 "fetched_at": now,
                 "urls": urls,
                 "items": [_candidate_to_dict(i) for i in items],
             }
+            if vendor is not None:
+                cache["vendor"] = vendor_catalog_to_dict(vendor)
+                cache["vendor"]["fetched_at"] = now
             if not html_overrides:
                 _save_json(cache_path(), cache)
     except (urllib.error.URLError, TimeoutError, ValueError, OSError, RuntimeError) as exc:
@@ -495,6 +548,7 @@ def fetch_catalog(
             items = [_candidate_from_dict(d) for d in cached["items"]]
             from_cache = True
             warning = f"Live EQ Resource raid catalog failed ({exc}); using cache."
+            vendor = vendor_catalog_from_dict(cache.get("vendor"))
         else:
             fallback = _raidloot_fallback(
                 allow_network=allow_network and not html_overrides,
@@ -503,6 +557,14 @@ def fetch_catalog(
             if fallback:
                 items = fallback
                 warning = f"EQ Resource raid catalog failed ({exc}); using raidloot fallback."
+                vendor = _load_vendor(
+                    html_overrides=html_overrides,
+                    allow_network=allow_network,
+                    polite_delay_s=polite_delay_s,
+                    cache=cache,
+                    now=now,
+                    force_refresh=force_refresh,
+                )
             else:
                 return RaidBisCatalog(
                     items=[],
@@ -510,6 +572,14 @@ def fetch_catalog(
                     from_cache=False,
                     warning=f"Raid BiS catalog failed ({exc}).",
                     urls=urls,
+                    vendor=_load_vendor(
+                        html_overrides=html_overrides,
+                        allow_network=False,
+                        polite_delay_s=0,
+                        cache=cache,
+                        now=now,
+                        force_refresh=force_refresh,
+                    ),
                 )
 
     by_id: dict[int, RaidGearCandidate] = {}
@@ -532,13 +602,50 @@ def fetch_catalog(
                 by_id[item_id] = merge_hydrated(base, extra)
 
     ready = [i for i in by_id.values() if i.item_id > 0 and not should_skip_name(i.name)]
+    if vendor is None:
+        vendor = _load_vendor(
+            html_overrides=html_overrides,
+            allow_network=allow_network and not html_overrides,
+            polite_delay_s=polite_delay_s,
+            cache=cache,
+            now=now,
+            force_refresh=force_refresh,
+        )
     return RaidBisCatalog(
         items=ready,
         fetched_at=now,
         from_cache=from_cache,
         warning=warning,
         urls=urls,
+        vendor=vendor,
     )
+
+
+def _load_vendor(
+    *,
+    html_overrides: dict[str, str],
+    allow_network: bool,
+    polite_delay_s: float,
+    cache: dict,
+    now: str,
+    force_refresh: bool,
+) -> RaidVendorCatalog | None:
+    html = html_overrides.get("raidvendor")
+    if html is None and allow_network:
+        if polite_delay_s > 0:
+            time.sleep(polite_delay_s)
+        try:
+            html = _http_get(RAIDVENDOR_URL)
+        except (urllib.error.URLError, TimeoutError, OSError):
+            html = None
+    if html:
+        vendor = parse_raidvendor_html(html, url=RAIDVENDOR_URL)
+        vendor.fetched_at = now
+        if vendor.items or vendor.currency_name:
+            return vendor
+    if html_overrides or force_refresh:
+        return None
+    return vendor_catalog_from_dict(cache.get("vendor"))
 
 
 def _hydrate_items(

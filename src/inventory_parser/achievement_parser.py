@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from pathlib import Path
 
 EXPANSIONS_NEWEST_FIRST: tuple[tuple[str, int], ...] = (
@@ -137,6 +137,19 @@ def split_collection_name(name: str) -> tuple[str, str]:
     if match is None:
         return name.strip(), ""
     return match.group(1).strip(), match.group(2).strip()
+
+
+_SCAVENGER_SUFFIX = " scavenger"
+
+
+def scavenger_zone_from_name(name: str) -> str | None:
+    """``Scarred Grove Scavenger`` -> ``Scarred Grove``."""
+    text = name.strip()
+    folded = text.casefold()
+    if not folded.endswith(_SCAVENGER_SUFFIX):
+        return None
+    zone = text[: -len(_SCAVENGER_SUFFIX)].strip()
+    return zone or None
 
 
 def _split_name_and_progress(text: str) -> tuple[str, int | None, int | None]:
@@ -310,6 +323,8 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
     in_collections = False
     in_raids = False
     in_quests = False
+    current_scavenger_zone = ""
+    scavenger_zones: dict[str, str] = {}
 
     section_completed: dict[str, int] = {}
     section_incomplete: dict[str, int] = {}
@@ -331,6 +346,7 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
                 current_raid_event = ""
                 current_raid_event_label = ""
                 current_quest = None
+                current_scavenger_zone = ""
                 in_collections = _is_collections_subcategory(current_subcategory)
                 in_raids = _is_raids_subcategory(current_subcategory)
                 in_quests = _is_quests_subcategory(current_subcategory)
@@ -344,6 +360,7 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
 
             if indent == 0:
                 current_collection = name
+                current_scavenger_zone = scavenger_zone_from_name(name) or ""
                 raid_parent = parse_raid_parent(name) if in_raids else None
                 if raid_parent is not None:
                     zone, event = raid_parent
@@ -362,6 +379,15 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
                 else:
                     section_incomplete[current_section] += 1
                 continue
+
+            if (
+                in_collections
+                and indent == 1
+                and owned is None
+                and current_scavenger_zone
+                and scavenger_zone_from_name(name) is None
+            ):
+                scavenger_zones.setdefault(name.casefold(), current_scavenger_zone)
 
             if in_raids and current_raid is not None and indent == 1:
                 objective = clean_raid_objective(name, current_raid_event)
@@ -416,6 +442,14 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
                     total=total,
                 )
             )
+
+    if scavenger_zones:
+        missing_collections = [
+            replace(item, zone=scavenger_zones[item.collection.casefold()])
+            if not item.zone and item.collection.casefold() in scavenger_zones
+            else item
+            for item in missing_collections
+        ]
 
     summaries = [
         SectionSummary(

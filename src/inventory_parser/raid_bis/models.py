@@ -98,6 +98,7 @@ class RaidGearCandidate:
     lore_group: str | None = None
     icon_id: str | None = None
     focus: str = ""
+    effect: str = ""
     source: str = "EQ Resource"
 
     def lore_key(self) -> str:
@@ -129,9 +130,29 @@ class RaidGearCandidate:
 
 
 @dataclass
+class RaidVendorItem:
+    item_id: int
+    name: str
+    cost: int
+    is_ore: bool = False
+
+
+@dataclass
+class RaidVendorCatalog:
+    currency_name: str = ""
+    currency_id: int | None = None
+    currency_icon_id: str | None = None
+    items: list[RaidVendorItem] = field(default_factory=list)
+    fetched_at: str = ""
+    warning: str | None = None
+    url: str = ""
+
+
+@dataclass
 class RaidBisCatalog:
     items: list[RaidGearCandidate] = field(default_factory=list)
     fetched_at: str = ""
     from_cache: bool = False
     warning: str | None = None
     urls: list[str] = field(default_factory=list)
+    vendor: RaidVendorCatalog | None = None

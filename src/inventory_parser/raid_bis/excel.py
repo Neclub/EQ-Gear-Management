@@ -36,6 +36,8 @@ def append_raid_bis_sheet(wb, bundle: RaidBisExport) -> None:
         "Current",
         "Best in slot",
         "Tier",
+        "Vendor cost",
+        "Vendor item",
         "Stat changes",
         "Notes",
     ]
@@ -59,17 +61,20 @@ def append_raid_bis_sheet(wb, bundle: RaidBisExport) -> None:
             _item_cell(ws.cell(row, 5), slot.current_name, slot.current_id)
             _item_cell(ws.cell(row, 6), slot.recommended_name, slot.recommended_id)
             ws.cell(row, 7, slot.recommended_tier)
-            ws.cell(row, 8, format_stat_deltas(slot.deltas, class_abbr=ch.class_abbr))
-            ws.cell(row, 9, slot.note)
+            if slot.vendor_cost is not None:
+                ws.cell(row, 8, slot.vendor_cost)
+            _item_cell(ws.cell(row, 9), slot.vendor_item_name, slot.vendor_item_id)
+            ws.cell(row, 10, format_stat_deltas(slot.deltas, class_abbr=ch.class_abbr))
+            ws.cell(row, 11, slot.note)
             row += 1
 
         if ch.total_deltas:
             ws.cell(row, 1, ch.display_name)
             ws.cell(row, 3, "TOTAL")
-            ws.cell(row, 8, format_stat_deltas(ch.total_deltas, class_abbr=ch.class_abbr))
+            ws.cell(row, 10, format_stat_deltas(ch.total_deltas, class_abbr=ch.class_abbr))
             row += 1
 
-    widths = [22, 8, 12, 12, 42, 42, 8, 48, 36]
+    widths = [22, 8, 12, 12, 42, 42, 8, 14, 36, 48, 36]
     for i, width in enumerate(widths, start=1):
         ws.column_dimensions[get_column_letter(i)].width = width
 

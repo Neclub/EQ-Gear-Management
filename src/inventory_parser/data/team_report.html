@@ -305,6 +305,11 @@ button.copy-item {
 }
 button.copy-item:hover { text-decoration: underline; }
 button.copy-item.copied { color: #86efac; text-decoration: none; }
+th.copy-col-head {
+  cursor: help;
+  text-decoration: underline dotted var(--muted);
+  text-underline-offset: 3px;
+}
 .copy-balloon {
   position: fixed;
   z-index: 80;
@@ -660,14 +665,32 @@ button.copy-item.copied { color: #86efac; text-decoration: none; }
   margin: 0 0 14px;
 }
 .raid-bis-title h2 {
-  margin: 0 0 4px;
+  margin: 0;
   font-size: 16px;
   font-weight: 700;
 }
-.raid-bis-note {
+.raid-bis-heading {
+  display: inline-block;
+  cursor: help;
+  border-bottom: 1px dotted var(--muted);
+}
+.raid-bis-heading:hover,
+.raid-bis-heading:focus {
+  color: #fde68a;
+  border-bottom-color: #fde68a;
+  outline: none;
+}
+.copy-balloon.raid-bis-title-balloon {
+  max-width: min(380px, calc(100vw - 16px));
+}
+.raid-bis-tip-list {
   margin: 0;
-  color: var(--muted);
-  font-size: 12px;
+  padding: 0 0 0 1.15em;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.raid-bis-tip-list li + li {
+  margin-top: 7px;
 }
 .raid-bis-legend {
   display: flex;
@@ -695,11 +718,21 @@ button.copy-item.copied { color: #86efac; text-decoration: none; }
 }
 .raid-bis .card-head {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px 16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.raid-bis-head-main {
+  flex: 1 1 auto;
+  min-width: min(100%, 18rem);
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 6px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
 }
 .raid-bis .card-title-row {
   display: flex;
@@ -707,7 +740,41 @@ button.copy-item.copied { color: #86efac; text-decoration: none; }
   align-items: center;
   gap: 10px 16px;
 }
-.raid-bis .card-head h3 { margin: 0; font-size: 15px; }
+.raid-bis-char-plate {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 6px 12px 7px;
+  max-width: 100%;
+  background: linear-gradient(180deg, rgba(201, 168, 76, 0.2) 0%, rgba(15, 20, 32, 0.55) 100%);
+  border: 1px solid rgba(201, 168, 76, 0.5);
+  border-left: 3px solid var(--gold);
+  border-right: 3px solid var(--gold);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(248, 239, 212, 0.08), 0 0 16px rgba(201, 168, 76, 0.12);
+}
+.raid-bis-char-name {
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  color: #f8efd4;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.55), 0 0 12px rgba(201, 168, 76, 0.35);
+  overflow-wrap: anywhere;
+}
+.raid-bis-class-badge {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  padding: 4px 7px;
+  border-radius: 4px;
+  color: var(--class-color, var(--gold));
+  background: var(--class-bg, var(--gold-soft));
+  border: 1px solid var(--class-color, var(--gold));
+}
 .raid-bis .card-sub { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; white-space: normal; }
 .raid-bis .card-body { padding: 16px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; min-width: 0; }
 .raid-bis-paperdoll {
@@ -788,6 +855,21 @@ button.copy-item.copied { color: #86efac; text-decoration: none; }
   font-size: 9px;
   line-height: 1;
 }
+.raid-bis-slot .evolver-gem {
+  position: absolute;
+  top: 1px;
+  left: 1px;
+  width: 14px;
+  height: 14px;
+  color: #e879f9;
+  cursor: help;
+  z-index: 1;
+}
+.raid-bis-slot .evolver-gem svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
 .raid-bis-deltas { flex: 1; min-width: 0; overflow-x: auto; }
 .raid-bis-deltas table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
 .raid-bis-deltas th, .raid-bis-deltas td {
@@ -799,6 +881,196 @@ button.copy-item.copied { color: #86efac; text-decoration: none; }
 }
 .raid-bis-deltas th { color: var(--muted); font-weight: 600; }
 .raid-bis-deltas .num { font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.raid-bis-delta-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.raid-bis-help {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  color: var(--muted);
+  cursor: help;
+  vertical-align: middle;
+}
+.raid-bis-help svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+.raid-bis-help:hover,
+.raid-bis-help:focus {
+  color: #fde68a;
+  outline: none;
+}
+.raid-bis-equipped {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.raid-bis-evolver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  color: #e879f9;
+  cursor: help;
+  vertical-align: middle;
+}
+.raid-bis-evolver svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+.raid-bis-evolver,
+.raid-bis-slot .evolver-gem {
+  filter: drop-shadow(0 0 3px #c026d3);
+  animation: raid-bis-evolver-pulse 1.7s ease-in-out infinite;
+}
+@keyframes raid-bis-evolver-pulse {
+  0%, 100% {
+    color: #c084fc;
+    filter: drop-shadow(0 0 2px #7e22ce);
+  }
+  50% {
+    color: #f0abfc;
+    filter: drop-shadow(0 0 7px #e879f9) drop-shadow(0 0 11px #a855f7);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .raid-bis-evolver,
+  .raid-bis-slot .evolver-gem {
+    animation: none;
+    filter: drop-shadow(0 0 4px #c026d3);
+    color: #e879f9;
+  }
+}
+.raid-bis-waist-pick {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.raid-bis-waist-pick select {
+  max-width: 100%;
+  background: var(--panel, #1e2430);
+  color: var(--text, #eef0f4);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+.raid-bis-waist-pick .waist-link { font-size: 11px; }
+.raid-bis-coins {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  margin-left: auto;
+  padding: 8px 10px;
+  width: 200px;
+  flex: 0 0 200px;
+  background: linear-gradient(180deg, rgba(234, 179, 8, 0.16) 0%, rgba(15, 20, 32, 0.9) 100%);
+  border: 1px solid #d97706;
+  box-shadow: inset 0 0 0 1px rgba(253, 230, 138, 0.12), 0 0 18px rgba(234, 179, 8, 0.12);
+  border-radius: 8px;
+}
+.raid-bis-coins-field {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  margin: 0;
+}
+.raid-bis-coins-label {
+  font-size: 11px;
+  color: #fde68a;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.raid-bis-coins input {
+  width: 100%;
+  box-sizing: border-box;
+  background: #0b1220;
+  color: #fde68a;
+  border: 1px solid #f59e0b;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.raid-bis-coins input:focus {
+  outline: none;
+  border-color: #fde68a;
+  box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.35);
+}
+.raid-bis-buy-summary {
+  margin: 0;
+  font-size: 12px;
+  color: #fde68a;
+  font-weight: 600;
+  line-height: 1.35;
+  min-height: 0;
+}
+.raid-bis-buy-summary:empty { display: none; }
+.raid-bis-rec {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.raid-bis-best-buy {
+  display: inline-block;
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  background: var(--upgrade-soft, #854d0e);
+  color: #fde68a;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.raid-bis-best-buy[hidden] { display: none; }
+.raid-bis-coin {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  color: #fbbf24;
+  cursor: help;
+  vertical-align: middle;
+}
+.raid-bis-coin img {
+  width: 16px;
+  height: 16px;
+  image-rendering: pixelated;
+}
+.raid-bis-coin svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+.raid-bis-coin-balloon {
+  border-color: #d97706;
+  background: #1a1610;
+  color: #fde68a;
+}
 .s-ear1 { grid-column: 1; grid-row: 1; }
 .s-head { grid-column: 2; grid-row: 1; }
 .s-face { grid-column: 3; grid-row: 1; }
@@ -891,6 +1163,21 @@ button.copy-item.copied { color: #86efac; text-decoration: none; }
     <path d="M4 8l8-5 8 5v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9z"/>
     <path d="M12 11v8"/>
   </symbol>
+  <symbol id="icon-coins" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="8" cy="8" r="6"/>
+    <path d="M18.09 10.37A6 6 0 1 1 10.34 18"/>
+    <path d="M7 6h1v4"/>
+  </symbol>
+  <symbol id="icon-evolver" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round">
+    <path fill-opacity="0.35" d="M12 2 5 10l7 12 7-12z"/>
+    <path fill="none" d="M5 10h14"/>
+    <path fill-opacity="0.55" d="M12 2 9 10l3 12 3-12z"/>
+  </symbol>
+  <symbol id="icon-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+    <path d="M12 17h.01"/>
+  </symbol>
   <symbol id="icon-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
     <circle cx="11" cy="11" r="7"/><path d="M20 20l-3-3"/>
   </symbol>
@@ -975,6 +1262,8 @@ const state = {
   events: {},
   blocks: {},
   runes: {},
+  raidBisWaist: {},
+  raidBisCoins: {},
   copyBalloonTimer: 0,
 };
 const ACHIEVEMENT_EXPANSION_TABS = new Set([
@@ -1670,7 +1959,32 @@ function showCopyBalloon(anchor, itemName) {
   state.copyBalloonTimer = setTimeout(() => balloon.remove(), 1800);
 }
 
+const COPY_COL_TIP = "Clicking the link copies the name to your clipboard.";
+
+function hideHeaderTipBalloon() {
+  document.getElementById("headerTipBalloon")?.remove();
+}
+
+function showHeaderTipBalloon(anchor, text) {
+  hideHeaderTipBalloon();
+  if (!anchor || !text) return;
+  const balloon = el("div", "copy-balloon");
+  balloon.id = "headerTipBalloon";
+  balloon.appendChild(el("div", "copy-balloon-name", text));
+  document.body.appendChild(balloon);
+  const rect = anchor.getBoundingClientRect();
+  const width = balloon.offsetWidth;
+  const height = balloon.offsetHeight;
+  let left = rect.left + rect.width / 2 - width / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - width - 8));
+  let top = rect.top - height - 8;
+  if (top < 8) top = rect.bottom + 8;
+  balloon.style.left = left + "px";
+  balloon.style.top = top + "px";
+}
+
 function updateTableContent(content, section) {
+  hideHeaderTipBalloon();
   const data = section.data;
   const sort = state.sorts[section.id] || { col: null, dir: 1 };
   const rows = filteredTableRows(section);
@@ -1681,6 +1995,14 @@ function updateTableContent(content, section) {
   const headRow = document.createElement("tr");
   data.columns.forEach((col, idx) => {
     const th = el("th", sort.col === idx ? (sort.dir > 0 ? "sort-asc" : "sort-desc") : null, col);
+    if (data.copyColumn === idx) {
+      th.classList.add("copy-col-head");
+      th.tabIndex = 0;
+      th.addEventListener("mouseenter", () => showHeaderTipBalloon(th, COPY_COL_TIP));
+      th.addEventListener("mouseleave", hideHeaderTipBalloon);
+      th.addEventListener("focus", () => showHeaderTipBalloon(th, COPY_COL_TIP));
+      th.addEventListener("blur", hideHeaderTipBalloon);
+    }
     th.addEventListener("click", () => {
       if (sort.col === idx) sort.dir *= -1;
       else { sort.col = idx; sort.dir = 1; }
@@ -2368,19 +2690,358 @@ function raidBisItemHtml(url, name, id, icons, iconId) {
   return slot2Esc(name);
 }
 
+function raidBisFormatDeltas(deltas, keys, labels) {
+  const parts = [];
+  (keys || []).forEach((k) => {
+    if (!deltas || deltas[k] == null || !Number(deltas[k])) return;
+    const label = (labels && labels[k]) || k;
+    const n = Number(deltas[k]);
+    parts.push(`${n > 0 ? "+" : ""}${n} ${label}`);
+  });
+  return parts.join(", ");
+}
+
+function raidBisSumDeltas(rows) {
+  const totals = {};
+  rows.forEach((r) => {
+    Object.keys(r || {}).forEach((k) => {
+      const v = Number(r[k]) || 0;
+      if (!v) return;
+      totals[k] = (totals[k] || 0) + v;
+    });
+  });
+  return totals;
+}
+
+function raidBisApplyWaistChoice(ch, slot) {
+  if (!slot || slot.gearSlot !== "Waist" || !(slot.choices || []).length) return slot;
+  const key = ch.personaKey || ch.displayName || ch.character;
+  const saved = state.raidBisWaist[key];
+  let choice = null;
+  if (saved != null) {
+    choice = slot.choices.find((c) => String(c.itemId) === String(saved)) || null;
+  }
+  if (!choice) {
+    choice = slot.choices.find((c) => c.itemId === slot.recommendedId)
+      || slot.choices[0];
+  }
+  return Object.assign({}, slot, {
+    recommendedName: choice.name,
+    recommendedId: choice.itemId,
+    recommendedTier: choice.tier || slot.recommendedTier,
+    recommendedIconId: choice.iconId || slot.recommendedIconId,
+    deltas: choice.deltas || {},
+    deltaText: choice.deltaText || "",
+    status: choice.status || slot.status,
+    scoreGain: choice.scoreGain != null ? choice.scoreGain : slot.scoreGain,
+    vendorCost: choice.vendorCost != null ? choice.vendorCost : slot.vendorCost,
+    vendorItemName: choice.vendorItemName || slot.vendorItemName,
+    vendorItemId: choice.vendorItemId || slot.vendorItemId,
+    _waistChoiceId: choice.itemId,
+  });
+}
+
+function raidBisResolvedSlots(ch) {
+  return (ch.slots || []).map((s) =>
+    s.gearSlot === "Waist" ? raidBisApplyWaistChoice(ch, s) : s
+  );
+}
+
+function raidBisWaistSelectHtml(url, slot) {
+  const choices = slot.choices || [];
+  if (!choices.length) {
+    return slot.recommendedName
+      ? slot2ItemLink(url, slot.recommendedName, slot.recommendedId)
+      : '<span class="muted-cell">—</span>';
+  }
+  const selected = slot._waistChoiceId || slot.recommendedId;
+  let opts = "";
+  choices.forEach((c) => {
+    const sel = String(c.itemId) === String(selected) ? " selected" : "";
+    const label = `${c.name} (${c.effectLabel})`;
+    opts += `<option value="${slot2Esc(String(c.itemId))}"${sel}>${slot2Esc(label)}</option>`;
+  });
+  const href = slot.recommendedId
+    ? slot2ItemHref(url, slot.recommendedId)
+    : "";
+  const link = href
+    ? `<a class="waist-link" href="${slot2Esc(href)}" target="_blank" rel="noopener">${slot2Esc(slot.recommendedName || "EQ Resource")}</a>`
+    : "";
+  return `<div class="raid-bis-waist-pick"><select data-raid-bis-waist="1">${opts}</select>${link}</div>`;
+}
+
+function raidBisCostTip(slot, currencyName) {
+  if (slot.vendorCost == null || slot.vendorCost === "") return "";
+  const amount = String(slot.vendorCost);
+  const curr = currencyName ? ` ${currencyName}` : "";
+  const ore = slot.vendorItemName && slot.vendorItemName !== slot.recommendedName
+    ? ` · ${slot.vendorItemName}`
+    : "";
+  return amount + curr + ore;
+}
+
+function raidBisCoinHtml(slot, currencyName, icons, currencyIconId) {
+  if (slot.currentIsEvolver) return "";
+  const tip = raidBisCostTip(slot, currencyName);
+  if (!tip) return "";
+  let inner = '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-coins"></use></svg>';
+  if (currencyIconId && icons && icons[currencyIconId]) {
+    inner = `<img src="${slot2Esc(icons[currencyIconId])}" alt="">`;
+  }
+  return `<span class="raid-bis-coin raid-bis-tip" data-tip="${slot2Esc(tip)}" tabindex="0">${inner}</span>`;
+}
+
+const RAID_BIS_WAIST_HINT = "Waist is a personal choice among Overdrive Punch, Treaded Boon of Potential, and Crippling Slicer.";
+
+function hideRaidBisTipBalloon() {
+  document.getElementById("raidBisCoinBalloon")?.remove();
+}
+
+function raidBisSectionTips(currencyName) {
+  const lines = [
+    "Current raid gear only.",
+    "Evolvers are not scored and may still be BiS — they are skipped when choosing coin purchases.",
+    "Waist belts are a personal choice — pick among the three effect belts in Best in slot.",
+  ];
+  if (currencyName) {
+    lines.push(
+      `Enter this character's ${currencyName} to mark the best vendor ore purchase(s) among upgrades.`
+    );
+  }
+  return lines;
+}
+
+function showRaidBisTipBalloon(anchor, text) {
+  hideRaidBisTipBalloon();
+  if (!anchor || !text || (Array.isArray(text) && !text.length)) return;
+  const balloon = el("div", "copy-balloon raid-bis-coin-balloon");
+  balloon.id = "raidBisCoinBalloon";
+  if (Array.isArray(text)) {
+    balloon.classList.add("raid-bis-title-balloon");
+    const list = document.createElement("ul");
+    list.className = "raid-bis-tip-list";
+    text.forEach((line) => {
+      const item = document.createElement("li");
+      item.textContent = line;
+      list.appendChild(item);
+    });
+    balloon.appendChild(list);
+  } else {
+    balloon.appendChild(el("div", "copy-balloon-name", text));
+  }
+  document.body.appendChild(balloon);
+  const rect = anchor.getBoundingClientRect();
+  const width = balloon.offsetWidth;
+  const height = balloon.offsetHeight;
+  let left = rect.left + rect.width / 2 - width / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - width - 8));
+  let top = rect.top - height - 8;
+  if (top < 8) top = rect.bottom + 8;
+  balloon.style.left = left + "px";
+  balloon.style.top = top + "px";
+}
+
+function hideRaidBisCoinBalloon() {
+  hideRaidBisTipBalloon();
+}
+
+function showRaidBisCoinBalloon(anchor, text) {
+  showRaidBisTipBalloon(anchor, text);
+}
+
+function raidBisBindTipBalloons(root) {
+  root.querySelectorAll(".raid-bis-tip").forEach((node) => {
+    const tip = node.getAttribute("data-tip") || "";
+    node.addEventListener("mouseenter", () => showRaidBisTipBalloon(node, tip));
+    node.addEventListener("mouseleave", hideRaidBisTipBalloon);
+    node.addEventListener("focus", () => showRaidBisTipBalloon(node, tip));
+    node.addEventListener("blur", hideRaidBisTipBalloon);
+  });
+}
+
+function raidBisBindCoinBalloons(root) {
+  raidBisBindTipBalloons(root);
+}
+
+function raidBisHelpHtml(slot) {
+  if (slot.gearSlot !== "Waist" || !(slot.choices || []).length) return "";
+  return `<span class="raid-bis-help raid-bis-tip" data-tip="${slot2Esc(RAID_BIS_WAIST_HINT)}" tabindex="0" aria-label="Waist note"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-help"></use></svg></span>`;
+}
+
+function raidBisDeltaCellHtml(slot) {
+  let note = slot.note || "";
+  if ((slot.choices || []).length && note.includes(RAID_BIS_WAIST_HINT)) {
+    note = note.replace(RAID_BIS_WAIST_HINT, "").trim();
+  }
+  const showNote = note && (slot.status !== "bis" || slot.petFocus);
+  const noteHtml = showNote ? `<div class="muted-cell">${slot2Esc(note)}</div>` : "";
+  return `<span class="raid-bis-delta-main">${slot2Esc(slot.deltaText || "—")}${raidBisHelpHtml(slot)}</span>${noteHtml}`;
+}
+
+function raidBisRecCellHtml(url, slot, currencyName, icons, currencyIconId) {
+  const rec = slot.gearSlot === "Waist" && (slot.choices || []).length
+    ? raidBisWaistSelectHtml(url, slot)
+    : (slot.recommendedName
+      ? slot2ItemLink(url, slot.recommendedName, slot.recommendedId)
+      : '<span class="muted-cell">—</span>');
+  return `<div class="raid-bis-rec">${rec}${raidBisCoinHtml(slot, currencyName, icons, currencyIconId)}<span class="raid-bis-best-buy" data-best-purchase="1" hidden>Best Purchase</span></div>`;
+}
+
+function raidBisEvolverHtml(slot) {
+  if (!slot.currentIsEvolver) return "";
+  return `<span class="raid-bis-evolver raid-bis-tip" data-tip="Evolver" tabindex="0" aria-label="Evolver"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-evolver"></use></svg></span>`;
+}
+
+function raidBisEquippedHtml(url, slot) {
+  const name = slot.currentName
+    ? slot2ItemLink(url, slot.currentName, slot.currentId)
+    : '<span class="muted-cell">(empty)</span>';
+  const gem = raidBisEvolverHtml(slot);
+  if (!gem) return name;
+  return `<div class="raid-bis-equipped">${name}${gem}</div>`;
+}
+
+function raidBisPurchaseCandidates(slots) {
+  return (slots || []).filter((s) => {
+    if (s.scored === false || s.status === "bis" || s.status === "weapon") return false;
+    if (s.currentIsEvolver) return false;
+    return Number(s.vendorCost) > 0 && Number(s.scoreGain) > 0;
+  }).map((s) => ({
+    gearSlot: s.gearSlot,
+    cost: Number(s.vendorCost),
+    scoreGain: Number(s.scoreGain) || 0,
+    itemId: s.recommendedId || 0,
+    name: s.recommendedName || "",
+  }));
+}
+
+function raidBisBestPurchases(items, coins) {
+  // Keep in sync with inventory_parser.raid_bis.vendor.best_purchases.
+  const budget = Math.max(0, Math.floor(Number(coins) || 0));
+  if (budget <= 0) return [];
+  let aff = (items || []).filter((it) => it.cost > 0 && it.scoreGain > 0 && it.cost <= budget);
+  if (!aff.length) return [];
+  if (aff.length > 20) {
+    aff = aff.slice().sort((a, b) => (b.scoreGain / b.cost) - (a.scoreGain / a.cost)).slice(0, 20);
+  }
+  const n = aff.length;
+  let bestGain = -1;
+  let bestCount = -1;
+  let bestCost = 0;
+  let bestMask = 0;
+  const limit = 1 << n;
+  for (let mask = 1; mask < limit; mask++) {
+    let cost = 0;
+    let gain = 0;
+    let count = 0;
+    let over = false;
+    for (let i = 0; i < n; i++) {
+      if (!(mask & (1 << i))) continue;
+      cost += aff[i].cost;
+      if (cost > budget) { over = true; break; }
+      gain += aff[i].scoreGain;
+      count += 1;
+    }
+    if (over) continue;
+    let better = gain > bestGain + 1e-9;
+    if (!better && Math.abs(gain - bestGain) <= 1e-9) {
+      if (count > bestCount) better = true;
+      else if (count === bestCount && cost < bestCost) better = true;
+    }
+    if (better) {
+      bestGain = gain;
+      bestCount = count;
+      bestCost = cost;
+      bestMask = mask;
+    }
+  }
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    if (bestMask & (1 << i)) out.push(aff[i]);
+  }
+  return out;
+}
+
+function raidBisApplyPurchases(card, slots, coins, currencyName) {
+  const picks = raidBisBestPurchases(raidBisPurchaseCandidates(slots), coins);
+  const picked = new Set(picks.map((p) => p.gearSlot));
+  card.querySelectorAll("tr[data-gear-slot]").forEach((tr) => {
+    const bubble = tr.querySelector("[data-best-purchase]");
+    if (!bubble) return;
+    bubble.hidden = !picked.has(tr.getAttribute("data-gear-slot"));
+  });
+  const summary = card.querySelector("[data-raid-bis-buy-summary]");
+  if (!summary) return;
+  const curr = currencyName || "coins";
+  if (!picks.length) {
+    summary.textContent = coins > 0 ? "Not enough coins for a vendor upgrade." : "";
+    return;
+  }
+  const total = picks.reduce((sum, p) => sum + p.cost, 0);
+  const names = picks.map((p) => p.gearSlot).join(", ");
+  summary.textContent = picks.length === 1
+    ? `Best purchase: ${names} (${total} ${curr})`
+    : `Best purchases: ${names} (${total} ${curr})`;
+}
+
+const RAID_BIS_CLASS_THEMES = {
+  BER: { color: "#f97316", bg: "rgba(249, 115, 22, 0.16)" },
+  BRD: { color: "#eab308", bg: "rgba(234, 179, 8, 0.16)" },
+  BST: { color: "#84cc16", bg: "rgba(132, 204, 22, 0.16)" },
+  CLR: { color: "#22c55e", bg: "rgba(34, 197, 94, 0.16)" },
+  DRU: { color: "#10b981", bg: "rgba(16, 185, 129, 0.16)" },
+  ENC: { color: "#ec4899", bg: "rgba(236, 72, 153, 0.16)" },
+  MAG: { color: "#ef4444", bg: "rgba(239, 68, 68, 0.16)" },
+  MNK: { color: "#f59e0b", bg: "rgba(245, 158, 11, 0.16)" },
+  NEC: { color: "#a855f7", bg: "rgba(168, 85, 247, 0.16)" },
+  PAL: { color: "#facc15", bg: "rgba(250, 204, 21, 0.16)" },
+  RNG: { color: "#65a30d", bg: "rgba(101, 163, 13, 0.16)" },
+  ROG: { color: "#94a3b8", bg: "rgba(148, 163, 184, 0.16)" },
+  SHD: { color: "#9333ea", bg: "rgba(147, 51, 234, 0.16)" },
+  SHM: { color: "#06b6d4", bg: "rgba(6, 182, 212, 0.16)" },
+  WAR: { color: "#dc2626", bg: "rgba(220, 38, 38, 0.16)" },
+  WIZ: { color: "#3b82f6", bg: "rgba(59, 130, 246, 0.16)" },
+};
+
+function raidBisClassTheme(classAbbr) {
+  const key = String(classAbbr || "").toUpperCase();
+  return RAID_BIS_CLASS_THEMES[key] || { color: "#c9a84c", bg: "rgba(201, 168, 76, 0.16)" };
+}
+
+function raidBisCharTitle(ch) {
+  const plate = el("h3", "raid-bis-char-plate");
+  const name = el("span", "raid-bis-char-name", ch.character || ch.displayName || "");
+  plate.appendChild(name);
+  const abbr = String(ch.classAbbr || "").trim().toUpperCase();
+  if (abbr) {
+    const theme = raidBisClassTheme(abbr);
+    const badge = el("span", "raid-bis-class-badge", abbr);
+    badge.style.setProperty("--class-color", theme.color);
+    badge.style.setProperty("--class-bg", theme.bg);
+    plate.appendChild(badge);
+  }
+  return plate;
+}
+
 function updateRaidBisContent(panel, section) {
+  hideRaidBisTipBalloon();
   const data = section.data || {};
   const url = data.eqResourceItemUrl;
   const icons = data.iconDataUris || {};
+  const currencyIconId = data.currencyIconId || "";
   const q = (state.searches[section.id] || "").trim().toLowerCase();
   const root = el("div", "raid-bis");
+  const currencyName = data.currencyName || "";
   const title = el("div", "raid-bis-title");
-  title.appendChild(el("h2", null, "Raid BiS"));
-  title.appendChild(el(
-    "p",
-    "raid-bis-note",
-    "Current raid gear only. Evolvers are not scored and may still be BiS."
-  ));
+  const heading = el("h2", "raid-bis-heading");
+  heading.textContent = "Raid BiS";
+  heading.tabIndex = 0;
+  const sectionTips = raidBisSectionTips(currencyName);
+  heading.addEventListener("mouseenter", () => showRaidBisTipBalloon(heading, sectionTips));
+  heading.addEventListener("mouseleave", hideRaidBisTipBalloon);
+  heading.addEventListener("focus", () => showRaidBisTipBalloon(heading, sectionTips));
+  heading.addEventListener("blur", hideRaidBisTipBalloon);
+  title.appendChild(heading);
   root.appendChild(title);
   if (data.warnings && data.warnings.length) {
     data.warnings.forEach((w) => root.appendChild(el("p", "empty-msg", w)));
@@ -2392,19 +3053,59 @@ function updateRaidBisContent(panel, section) {
     return;
   }
   chars.forEach((ch) => {
+    const resolved = raidBisResolvedSlots(ch);
+    const scored = resolved.filter((s) => s.scored !== false);
+    const deltaParts = scored
+      .filter((s) => s.status !== "bis")
+      .map((s) => s.deltas || {});
+    const totalDeltas = raidBisSumDeltas(deltaParts);
+    const totalText = raidBisFormatDeltas(
+      totalDeltas,
+      ch.displayDeltaKeys,
+      ch.statLabels
+    ) || "No scored stat changes";
+    const slotsChanged = scored.filter((s) => s.status === "upgrade" || s.status === "empty").length;
+
     const card = el("div", "card");
+    card.dataset.personaKey = ch.personaKey || ch.displayName || ch.character || "";
     const head = el("div", "card-head");
+    const headMain = el("div", "raid-bis-head-main");
     const titleRow = el("div", "card-title-row");
-    const title = document.createElement("h3");
-    title.textContent = ch.displayName || ch.character;
-    titleRow.appendChild(title);
+    const charKey = card.dataset.personaKey;
+    const titleEl = raidBisCharTitle(ch);
+    titleRow.appendChild(titleEl);
     const legend = el("div", "raid-bis-legend");
     legend.innerHTML = '<span><i class="swatch bis"></i> Green: already BiS</span><span><i class="swatch upgrade"></i> Gold: upgrade</span>';
     titleRow.appendChild(legend);
-    head.appendChild(titleRow);
-    const sub = el("div", "card-sub", (ch.totalDeltaText ? ch.totalDeltaText : "No scored stat changes") +
-      (ch.slotsChanged ? ` • ${ch.slotsChanged} slot(s) to upgrade` : " • already BiS"));
-    head.appendChild(sub);
+    headMain.appendChild(titleRow);
+    const sub = el("div", "card-sub");
+    sub.className = "card-sub raid-bis-total";
+    sub.textContent = totalText +
+      (slotsChanged ? ` • ${slotsChanged} slot(s) to upgrade` : " • already BiS");
+    headMain.appendChild(sub);
+    head.appendChild(headMain);
+    const buySummary = el("p", "raid-bis-buy-summary");
+    buySummary.dataset.raidBisBuySummary = "1";
+    if (currencyName) {
+      const coinsWrap = el("div", "raid-bis-coins");
+      const coinsLabel = el("label", "raid-bis-coins-field");
+      coinsLabel.appendChild(el("span", "raid-bis-coins-label", currencyName));
+      const coinsInput = document.createElement("input");
+      coinsInput.type = "number";
+      coinsInput.min = "0";
+      coinsInput.step = "1";
+      coinsInput.setAttribute("inputmode", "numeric");
+      coinsInput.dataset.raidBisCoins = "1";
+      coinsInput.placeholder = "0";
+      const savedCoins = state.raidBisCoins[charKey];
+      if (savedCoins != null && savedCoins !== "") coinsInput.value = String(savedCoins);
+      coinsLabel.appendChild(coinsInput);
+      coinsWrap.appendChild(coinsLabel);
+      coinsWrap.appendChild(buySummary);
+      head.appendChild(coinsWrap);
+    } else {
+      headMain.appendChild(buySummary);
+    }
     card.appendChild(head);
     const body = el("div", "card-body");
     const doll = el("div", "raid-bis-paperdoll");
@@ -2413,13 +3114,14 @@ function updateRaidBisContent(panel, section) {
     doll.appendChild(portrait);
     doll.appendChild(el("div", "raid-bis-spacer"));
     const bySlot = {};
-    (ch.slots || []).forEach((slot) => { bySlot[slot.gearSlot] = slot; });
+    resolved.forEach((slot) => { bySlot[slot.gearSlot] = slot; });
     RAID_BIS_LAYOUT.forEach((slotName) => {
       const cls = RAID_BIS_SLOT_CLASS[slotName];
       if (!cls) return;
       const unscored = slotName === "Primary" || slotName === "Secondary" || slotName === "Ammo" || slotName === "Power Source";
       const slot = bySlot[slotName] || { gearSlot: slotName, status: "unknown", scored: !unscored };
       const box = el("div", `raid-bis-slot ${cls} status-${slot.status || "unknown"}`);
+      if (slotName === "Waist") box.dataset.raidBisWaistSlot = "1";
       const showName = slot.status === "bis" || slot.status === "weapon"
         ? slot.currentName
         : (slot.recommendedName || slot.currentName);
@@ -2432,19 +3134,31 @@ function updateRaidBisContent(panel, section) {
       const recBit = slot.recommendedName && slot.recommendedName !== slot.currentName
         ? ` → ${slot.recommendedName}`
         : "";
-      box.title = `${slotName}: ${showName || "empty"}${recBit}`;
+      const costBit = !slot.currentIsEvolver && slot.vendorCost != null
+        ? ` (${slot.vendorCost}${currencyName ? ` ${currencyName}` : ""})`
+        : "";
+      box.title = `${slotName}: ${showName || "empty"}${recBit}${costBit}`;
       const wrap = el("div", "slot-name");
       wrap.innerHTML = raidBisItemHtml(url, showName, showId, icons, iconId);
       box.appendChild(wrap);
       if (slot.petFocus) box.appendChild(el("div", "pet-focus", "✦"));
+      if (slot.currentIsEvolver) {
+        const gem = el("div", "evolver-gem raid-bis-tip");
+        gem.dataset.tip = "Evolver";
+        gem.tabIndex = 0;
+        gem.setAttribute("aria-label", "Evolver");
+        gem.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-evolver"></use></svg>';
+        box.appendChild(gem);
+      }
       doll.appendChild(box);
     });
     body.appendChild(doll);
     const deltas = el("div", "raid-bis-deltas");
-    let rows = (ch.slots || []).filter((s) => s.scored !== false);
+    let rows = scored.slice();
     if (q) {
       rows = rows.filter((s) => {
-        const hay = [s.gearSlot, s.currentName, s.recommendedName, s.deltaText, s.note]
+        const choiceNames = (s.choices || []).map((c) => c.name).join(" ");
+        const hay = [s.gearSlot, s.currentName, s.recommendedName, s.deltaText, s.note, s.vendorItemName, choiceNames]
           .filter(Boolean).join(" ").toLowerCase();
         return hay.includes(q);
       });
@@ -2454,17 +3168,37 @@ function updateRaidBisContent(panel, section) {
       bodyRows = '<tr><td colspan="4" class="muted-cell">No scored slots match the current filter.</td></tr>';
     } else {
       rows.forEach((s) => {
-        const cur = s.currentName ? slot2ItemLink(url, s.currentName, s.currentId) : '<span class="muted-cell">(empty)</span>';
-        const rec = s.recommendedName ? slot2ItemLink(url, s.recommendedName, s.recommendedId) : '<span class="muted-cell">—</span>';
-        const showNote = s.note && (s.status !== "bis" || s.petFocus);
-        bodyRows += `<tr class="status-${slot2Esc(s.status || "")}"><td>${slot2Esc(s.gearSlot)}</td><td>${cur}</td><td>${rec}</td>` +
-          `<td class="num">${slot2Esc(s.deltaText || "—")}${showNote ? `<div class="muted-cell">${slot2Esc(s.note)}</div>` : ""}</td></tr>`;
+        const cur = raidBisEquippedHtml(url, s);
+        const rec = raidBisRecCellHtml(url, s, currencyName, icons, currencyIconId);
+        bodyRows += `<tr class="status-${slot2Esc(s.status || "")}" data-gear-slot="${slot2Esc(s.gearSlot)}"><td>${slot2Esc(s.gearSlot)}</td><td>${cur}</td><td>${rec}</td>` +
+          `<td class="num raid-bis-delta-cell">${raidBisDeltaCellHtml(s)}</td></tr>`;
       });
     }
     deltas.innerHTML = `<table><thead><tr><th>Slot</th><th>Equipped</th><th>Best in slot</th><th>Stat changes</th></tr></thead><tbody>${bodyRows}</tbody></table>`;
     body.appendChild(deltas);
     card.appendChild(body);
     root.appendChild(card);
+
+    card.querySelectorAll("select[data-raid-bis-waist]").forEach((sel) => {
+      sel.addEventListener("change", () => {
+        const key = card.dataset.personaKey || "";
+        state.raidBisWaist[key] = sel.value;
+        panel.innerHTML = "";
+        updateRaidBisContent(panel, section);
+      });
+    });
+    raidBisBindTipBalloons(card);
+    const coinsInput = card.querySelector("input[data-raid-bis-coins]");
+    if (coinsInput) {
+      const applyCoins = () => {
+        const key = card.dataset.personaKey || "";
+        const raw = String(coinsInput.value || "").trim();
+        state.raidBisCoins[key] = raw;
+        raidBisApplyPurchases(card, resolved, Number(raw) || 0, currencyName);
+      };
+      coinsInput.addEventListener("input", applyCoins);
+      applyCoins();
+    }
   });
   panel.appendChild(root);
 }

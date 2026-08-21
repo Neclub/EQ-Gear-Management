@@ -51,7 +51,7 @@ Who still needs spell runes, which spells they are missing, and which of those s
 Raid runes people already have in bags or bank.
 
 ### 🏆 Collections, Quests, Raid Achievements
-What is still incomplete. For collections, you can also see who on the team already has the item.
+What is still incomplete. For collections, you can also see who on the team already has the item. The Zone column uses a `(Zone)` suffix on the collection name, or a `{Zone} Scavenger` grouping. In the web report, click a missing item name to copy it.
 
 ### 💎 Type 7/8 Augs
 Suggested augs to wear or farm. If an aug should move to another slot, Upgrade to shows what replaces it.
@@ -64,7 +64,9 @@ Compares what you are wearing to this expansion’s raid armor and jewelry. The 
 > 🟢 Green outline = already best
 > 🟡 Gold outline = upgrade available
 
--# Current raid gear only. Evolvers are not scored and may still be BiS.
+Enter raid coins on each character card to mark the best vendor ore purchase. Waist belts are a personal choice among three effect belts. Evolvers still get a Best in slot pick, but that slot is skipped when spending coins.
+
+-# Current raid gear only. Hover **Raid BiS** in the web report for the scoring notes.
 
 Clicking an item name opens **EQ Resource** for more info.
 
