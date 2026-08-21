@@ -6,9 +6,15 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.31.1] - 2026-08-21
+
 ### Added
 
 - **Website:** a [Changelog](https://neclub.github.io/EQ-Gear-Management/changelog.html) page lists recent releases by date (last five days, or last five releases if that is more).
+
+### Changed
+
+- **Type 5 Augs:** HTML report uses one card per character with the same gold nameplate and class badge as Raid BiS (Character filter and sortable columns unchanged).
 
 ## [1.31.0] - 2026-08-21
 

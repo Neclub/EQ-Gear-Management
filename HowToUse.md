@@ -261,7 +261,7 @@ Type 7/8 (usually inventory Slot2) recommendations vs a live EQ Resource catalog
 
 ### Type 5 Augs *(if enabled)*
 
-Display-only list of what is in each type 5 hole (often inventory Slot2 on current gear, but the dump SlotN comes from the parent item’s socket map). Empty holes show as **Empty**. Columns include **Expansion** (from EQ Resource) and heroic stats (HStr through HCha) when an aug is equipped. No BiS or farm suggestions — preference only. Excel adds a **Type 5 Augs** sheet; HTML adds a **Type 5 Augs** section with a **Character** filter (All or one character), clickable column headers to sort, and a link to the [EQ Resource Type 5 list](https://items.eqresource.com/itemsearch.php?searchid=481762). Uncheck the chip to skip.
+Display-only list of what is in each type 5 hole (often inventory Slot2 on current gear, but the dump SlotN comes from the parent item’s socket map). Empty holes show as **Empty**. Columns include **Expansion** (from EQ Resource) and heroic stats (HStr through HCha) when an aug is equipped. No BiS or farm suggestions — preference only. Excel adds a **Type 5 Augs** sheet; HTML adds a **Type 5 Augs** section with **one card per character** (same gold nameplate and class badge as Raid BiS), a **Character** filter (All or one character), clickable column headers to sort, and a link to the [EQ Resource Type 5 list](https://items.eqresource.com/itemsearch.php?searchid=481762). Uncheck the chip to skip.
 
 ### Raid BiS *(if enabled)*
 

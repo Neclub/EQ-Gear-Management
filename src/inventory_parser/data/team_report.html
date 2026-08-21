@@ -615,7 +615,23 @@ th.copy-col-head {
   line-height: 1.45;
 }
 .type5-augs .meta a { color: #8cb4ff; }
-.type5-augs .table-scroll { overflow: auto; max-height: min(75vh, 900px); }
+.type5-augs .card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.type5-augs .card-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.type5-augs .card-sub { margin: 0; color: var(--muted); font-size: 12px; }
+.type5-augs .card-body { padding: 16px; min-width: 0; }
+.type5-augs .table-scroll { overflow: auto; max-height: min(70vh, 820px); }
 .type5-augs table {
   width: auto;
   max-width: 100%;
@@ -2500,12 +2516,14 @@ function type5MatchesChar(row, data) {
   return filters.some((f) => keys.has(f.name) || keys.has(f.shortName));
 }
 
+function type5PersonaKey(chOrRow) {
+  return chOrRow.personaKey || chOrRow.displayName || chOrRow.columnLabel || chOrRow.character || "";
+}
+
 function updateType5AugsContent(panel, section) {
   const data = section.data || {};
   const url = data.eqResourceItemUrl;
   const q = (state.searches[section.id] || "").trim().toLowerCase();
-  const toolbarChar = state.chars["type5_augs"] || "";
-  const showCharacterCol = !toolbarChar;
   const root = el("div", "type5-augs");
   const meta = el("div", "meta");
   const catalog = data.catalogUrl
@@ -2515,7 +2533,8 @@ function updateType5AugsContent(panel, section) {
     `Equipped type 5 augs only (no upgrade suggestions). Browse current options: ${catalog}.`;
   root.appendChild(meta);
 
-  let rows = (data.rows || []).filter((r) => type5MatchesChar(r, data));
+  const matched = (data.rows || []).filter((r) => type5MatchesChar(r, data));
+  let rows = matched;
   if (q) {
     rows = rows.filter((r) => {
       const hay = `${r.gearSlot || ""} ${r.name || ""} ${r.displayName || ""} ${r.character || ""}`.toLowerCase();
@@ -2534,15 +2553,7 @@ function updateType5AugsContent(panel, section) {
     return;
   }
 
-  const type5Cols = [];
-  if (showCharacterCol) {
-    type5Cols.push({
-      key: "character",
-      label: "Character",
-      value: (r) => r.displayName || r.character || "",
-    });
-  }
-  type5Cols.push(
+  const type5Cols = [
     { key: "gearSlot", label: "Slot", value: (r) => r.gearSlot || "" },
     { key: "expansion", label: "Expansion", value: (r) => r.expansion || "" },
     { key: "name", label: "Type 5 Aug", value: (r) => r.name || "Empty" },
@@ -2553,78 +2564,128 @@ function updateType5AugsContent(panel, section) {
     { key: "hagi", label: "HAgi", value: (r) => (r.empty || !r.name ? -1 : Number(r.hagi) || 0) },
     { key: "hdex", label: "HDex", value: (r) => (r.empty || !r.name ? -1 : Number(r.hdex) || 0) },
     { key: "hcha", label: "HCha", value: (r) => (r.empty || !r.name ? -1 : Number(r.hcha) || 0) },
-  );
+  ];
 
-  const wrap = el("div", "table-scroll");
-  const table = el("table", "type5-table");
-  const thead = document.createElement("thead");
-  const headRow = document.createElement("tr");
-  const tbody = document.createElement("tbody");
-  const type5Rows = [];
-
-  function applyType5Sort() {
-    const sort = state.sorts.type5_augs || { col: null, dir: 1 };
-    [...headRow.children].forEach((th, i) => {
-      th.className = sort.col === type5Cols[i].key ? (sort.dir > 0 ? "sort-asc" : "sort-desc") : "";
+  function groupRows(list) {
+    const byKey = new Map();
+    list.forEach((r) => {
+      const key = type5PersonaKey(r);
+      if (!byKey.has(key)) byKey.set(key, []);
+      byKey.get(key).push(r);
     });
-    const col = type5Cols.find((c) => c.key === sort.col);
-    if (!col) return;
-    type5Rows.slice().sort((a, b) => {
-      const primary = sort.dir * compareValues(col.value(a.data), col.value(b.data));
-      if (primary) return primary;
-      const byChar = compareValues(
-        a.data.displayName || a.data.character,
-        b.data.displayName || b.data.character
-      );
-      if (byChar) return byChar;
-      return compareValues(a.data.gearSlot, b.data.gearSlot);
-    }).forEach((item) => tbody.appendChild(item.tr));
+    return byKey;
   }
 
-  type5Cols.forEach((col) => {
-    const th = el("th", null, col.label);
-    th.addEventListener("click", () => {
-      const next = state.sorts.type5_augs || { col: null, dir: 1 };
-      if (next.col === col.key) next.dir *= -1;
-      else {
-        next.col = col.key;
-        next.dir = 1;
-      }
-      state.sorts.type5_augs = next;
-      applyType5Sort();
-    });
-    headRow.appendChild(th);
+  const allByKey = groupRows(matched);
+  const shownByKey = groupRows(rows);
+  const chars = data.characters || [];
+  const ordered = [];
+  const seen = new Set();
+  chars.forEach((ch) => {
+    const key = type5PersonaKey(ch);
+    if (!shownByKey.has(key)) return;
+    ordered.push(ch);
+    seen.add(key);
   });
-  thead.appendChild(headRow);
-  table.appendChild(thead);
+  shownByKey.forEach((charRows, key) => {
+    if (seen.has(key)) return;
+    ordered.push({
+      personaKey: key,
+      character: charRows[0].character || key,
+      displayName: charRows[0].displayName || charRows[0].character || key,
+      classAbbr: "",
+    });
+  });
 
-  rows.forEach((r) => {
-    const empty = !!r.empty || !r.name;
-    const tr = document.createElement("tr");
-    if (empty) tr.className = "status-empty";
-    const aug = empty
-      ? '<span class="muted-cell">Empty</span>'
-      : slot2ItemLink(url, r.name, r.itemId);
-    const cells = [];
-    if (showCharacterCol) cells.push(`<td>${slot2Esc(r.displayName || r.character || "")}</td>`);
-    cells.push(`<td>${slot2Esc(r.gearSlot || "")}</td>`);
-    cells.push(
-      empty
-        ? '<td class="muted-cell">—</td>'
-        : `<td>${slot2Esc(r.expansion || "")}</td>`
-    );
-    cells.push(`<td class="col-aug">${aug}</td>`);
-    ["hstr", "hsta", "hint", "hwis", "hagi", "hdex", "hcha"].forEach((k) => {
-      cells.push(empty ? '<td class="num muted-cell">—</td>' : `<td class="num">${Number(r[k]) || 0}</td>`);
+  const tableStates = [];
+
+  function applyType5SortAll() {
+    const sort = state.sorts.type5_augs || { col: null, dir: 1 };
+    const col = type5Cols.find((c) => c.key === sort.col);
+    tableStates.forEach(({ headRow, tbody, type5Rows }) => {
+      [...headRow.children].forEach((th, i) => {
+        th.className = sort.col === type5Cols[i].key ? (sort.dir > 0 ? "sort-asc" : "sort-desc") : "";
+      });
+      if (!col) return;
+      type5Rows.slice().sort((a, b) => {
+        const primary = sort.dir * compareValues(col.value(a.data), col.value(b.data));
+        if (primary) return primary;
+        return compareValues(a.data.gearSlot, b.data.gearSlot);
+      }).forEach((item) => tbody.appendChild(item.tr));
     });
-    tr.innerHTML = cells.join("");
-    type5Rows.push({ tr, data: r });
-    tbody.appendChild(tr);
+  }
+
+  ordered.forEach((ch) => {
+    const key = type5PersonaKey(ch);
+    const charRows = shownByKey.get(key) || [];
+    if (!charRows.length) return;
+    const allForChar = allByKey.get(key) || charRows;
+    const emptyCount = allForChar.filter((r) => !!r.empty || !r.name).length;
+
+    const card = el("div", "card");
+    card.dataset.personaKey = key;
+    const head = el("div", "card-head");
+    head.appendChild(raidBisCharTitle(ch));
+    const sub = el("div", "card-sub");
+    sub.textContent = `${emptyCount} empty of ${allForChar.length} holes`;
+    head.appendChild(sub);
+    card.appendChild(head);
+
+    const body = el("div", "card-body");
+    const wrap = el("div", "table-scroll");
+    const table = el("table", "type5-table");
+    const thead = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    const tbody = document.createElement("tbody");
+    const type5Rows = [];
+
+    type5Cols.forEach((col) => {
+      const th = el("th", null, col.label);
+      th.addEventListener("click", () => {
+        const next = state.sorts.type5_augs || { col: null, dir: 1 };
+        if (next.col === col.key) next.dir *= -1;
+        else {
+          next.col = col.key;
+          next.dir = 1;
+        }
+        state.sorts.type5_augs = next;
+        applyType5SortAll();
+      });
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    charRows.forEach((r) => {
+      const empty = !!r.empty || !r.name;
+      const tr = document.createElement("tr");
+      if (empty) tr.className = "status-empty";
+      const aug = empty
+        ? '<span class="muted-cell">Empty</span>'
+        : slot2ItemLink(url, r.name, r.itemId);
+      const cells = [
+        `<td>${slot2Esc(r.gearSlot || "")}</td>`,
+        empty
+          ? '<td class="muted-cell">—</td>'
+          : `<td>${slot2Esc(r.expansion || "")}</td>`,
+        `<td class="col-aug">${aug}</td>`,
+      ];
+      ["hstr", "hsta", "hint", "hwis", "hagi", "hdex", "hcha"].forEach((k) => {
+        cells.push(empty ? '<td class="num muted-cell">—</td>' : `<td class="num">${Number(r[k]) || 0}</td>`);
+      });
+      tr.innerHTML = cells.join("");
+      type5Rows.push({ tr, data: r });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    tableStates.push({ headRow, tbody, type5Rows });
+    wrap.appendChild(table);
+    body.appendChild(wrap);
+    card.appendChild(body);
+    root.appendChild(card);
   });
-  table.appendChild(tbody);
-  applyType5Sort();
-  wrap.appendChild(table);
-  root.appendChild(wrap);
+
+  applyType5SortAll();
   panel.appendChild(root);
 }
 

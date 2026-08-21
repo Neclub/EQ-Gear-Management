@@ -63,6 +63,19 @@ def test_include_type5_offline_adds_section(tmp_path: Path) -> None:
     assert SHEET_NAME in load_workbook(out).sheetnames
 
 
+def test_type5_html_template_has_per_character_cards() -> None:
+    from inventory_parser.package_data import read_data_text
+
+    html = read_data_text("team_report.html")
+    assert "function updateType5AugsContent" in html
+    assert "raidBisCharTitle(ch)" in html
+    assert "type5PersonaKey" in html
+    assert "empty of" in html
+    assert ".type5-augs .card" in html
+    assert ".type5-augs .card-head" in html
+    assert "raid-bis-char-plate" in html
+
+
 def test_type5_serialize_empty_and_stats() -> None:
     from inventory_parser.parser import InventoryData, InventoryItem
     from inventory_parser.team_report import CharacterGear, TeamGearReport
