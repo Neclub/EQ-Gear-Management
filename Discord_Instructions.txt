@@ -60,11 +60,9 @@ Suggested augs to wear or farm. If an aug should move to another slot, Upgrade t
 Shows which type 5 augs people already have equipped (and empty holes). Preference only — no upgrade suggestions.
 
 ### 👑 Raid BiS
-Compares what you are wearing to this expansion’s raid armor and jewelry. The web report shows a paperdoll:
-> 🟢 Green outline = already best
-> 🟡 Gold outline = upgrade available
+Compares what you are wearing to this expansion’s raid armor and jewelry.
 
-Enter raid coins on each character card to mark the best vendor ore purchase. Waist belts are a personal choice among three effect belts. Evolvers still get a Best in slot pick, but that slot is skipped when spending coins.
+Enter raid coins on each character card to highlight the best vendor upgrade. Evolvers still get a Best in slot pick, but that slot is skipped when spending coins.
 
 -# Current raid gear only. Hover **Raid BiS** in the web report for the scoring notes.
 
