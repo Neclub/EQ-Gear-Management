@@ -6,6 +6,8 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.31.3] - 2026-08-22
+
 ### Changed
 
 - **Raid BiS:** HTML still shows vendor coin cost on the suggested item when the slot has an Evolver; those slots remain excluded from coin purchase picks.
