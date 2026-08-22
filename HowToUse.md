@@ -257,7 +257,9 @@ Expansions show release year (e.g. `Shattering of Ro (2025)`) and rows are sorte
 
 Type 7/8 (usually inventory Slot2) recommendations vs a live EQ Resource catalog (raidloot fallback). Only augs that **fit type 7/8 holes** are recommended (type 5 and similar are excluded). Artisan's Prize is treated as owned when it appears in the inventory file. If **Velium Empowered Gem of Freezing** is equipped, it is kept and assigned to the legal slot with the best weighted trade-off against other BiS augs. Excel adds **Stat Summary**, **Augs**, **Need to Farm**, **Ranked Augs**, and **Aug Legend**. HTML adds a **Type 7/8 Augs** section with the same cards. Needs a network fetch the first time; later runs use disk cache under `%LOCALAPPDATA%\EQGM\`. Uncheck the chip to skip this entirely.
 
-**Slot recommendations** compare **Current** to **Upgrade to**. **BiS** leaves Upgrade to blank — that hole already has the suggested aug. If a note says to move an aug to another slot (Charm, Range, Feet, and similar priority holes can claim a piece sitting elsewhere), Upgrade to lists what should replace it in the hole being vacated. The destination row shows a **Move from** badge. Regenerating after an app update is required for older HTML files to pick this up.
+**Slot recommendations** compare **Current** to **Upgrade to**. Hover the **?** for a reminder that these are suggestions — some classes already sit at a stat cap. **BiS** leaves Upgrade to blank — that hole already has the suggested aug. If a note says to move an aug to another slot (Charm, Range, Feet, and similar priority holes can claim a piece sitting elsewhere), Upgrade to lists what should replace it in the hole being vacated. The destination row shows a **Move from** badge.
+
+When a recommended aug still needs a Focus of Fortitude (Unraveling, Otherworldly, Gallant, or Focus of Uprising) or Ensanguined ore, HTML shows a **Need** or **Have** chip that links to EQ Resource. **Slot recommendations** and **Need to farm** both use those chips. Regenerating after an app update is required for older HTML files to pick this up.
 
 ### Type 5 Augs *(if enabled)*
 

@@ -481,6 +481,12 @@ th.copy-col-head {
   padding: 14px 16px;
   border-bottom: 1px solid var(--border);
 }
+.slot2-augs .card-head h2 {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
 .slot2-augs .card-toggle {
   display: inline-flex;
   align-items: center;
@@ -578,6 +584,8 @@ th.copy-col-head {
 .slot2-augs .badge-farm { background: var(--farm); color: #fff7ed; }
 .slot2-augs .badge-component { background: #1e3a5f; color: #bfdbfe; }
 .slot2-augs .badge-need { background: var(--farm); color: #fff7ed; }
+.slot2-augs a.badge-need { color: #fff7ed; }
+.slot2-augs a.badge-component { color: #bfdbfe; }
 .slot2-augs .empty-msg { color: var(--muted); margin: 0; padding: 22px 16px; }
 .slot2-augs .muted-cell { color: var(--muted); }
 .slot2-augs .num { font-variant-numeric: tabular-nums; }
@@ -2277,20 +2285,22 @@ function updateSlot2AugsContent(panel, section) {
     const cls = STATUS_LABELS[key] ? key : "unknown";
     return `<span class="status-pill ${slot2Esc(cls)}">${slot2Esc(label)}</span>`;
   }
-  function slot2CraftBadge(owned, name) {
+  function slot2CraftBadge(owned, name, id) {
     if (!name) return "";
-    if (owned === true) {
-      return `<span class="badge badge-component">Have ${slot2Esc(name)}</span>`;
+    const isHave = owned === true;
+    const cls = isHave ? "badge badge-component" : "badge badge-need";
+    const label = `${isHave ? "Have" : "Need"} ${slot2Esc(name)}`;
+    if (id) {
+      return `<a class="${cls}" href="${slot2Esc(slot2ItemHref(url, id))}" target="_blank" rel="noopener">${label}</a>`;
     }
-    return `<span class="badge badge-need">Need ${slot2Esc(name)}</span>`;
+    return `<span class="${cls}">${label}</span>`;
   }
-  function badge(owned, moveFrom, craftOwned, craftName) {
+  function badge(owned, moveFrom, craftOwned, craftName, craftId) {
     if (moveFrom) return `<span class="badge badge-owned">Move from ${slot2Esc(moveFrom)}</span>`;
     if (owned === true) return `<span class="badge badge-owned">Owned</span>`;
     if (owned === false) {
-      let html = `<span class="badge badge-farm">Need to farm</span>`;
-      if (craftOwned && craftName) html += `<span class="badge badge-component">Have ${slot2Esc(craftName)}</span>`;
-      return html;
+      return `<span class="badge badge-farm">Need to farm</span>` +
+        slot2CraftBadge(craftOwned, craftName, craftId);
     }
     return "";
   }
@@ -2311,7 +2321,7 @@ function updateSlot2AugsContent(panel, section) {
   legend.innerHTML = '<span><i class="swatch bis"></i> BiS</span><span><i class="swatch upgrade"></i> Upgrade</span><span><i class="swatch empty"></i> Empty</span><span><i class="swatch unknown"></i> Unknown</span>';
   root.appendChild(legend);
 
-  function card(title, bodyContent, collapsed, extraHead, cardKey) {
+  function card(title, bodyContent, collapsed, extraHead, cardKey, titleTip) {
     const collapsedNow =
       cardKey && state.slot2Collapsed && Object.prototype.hasOwnProperty.call(state.slot2Collapsed, cardKey)
         ? state.slot2Collapsed[cardKey]
@@ -2333,6 +2343,15 @@ function updateSlot2AugsContent(panel, section) {
       }
     });
     h2.appendChild(btn);
+    if (titleTip) {
+      const help = document.createElement("span");
+      help.className = "raid-bis-help raid-bis-tip";
+      help.tabIndex = 0;
+      help.setAttribute("aria-label", title + " note");
+      help.setAttribute("data-tip", titleTip);
+      help.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-help"></use></svg>';
+      h2.appendChild(help);
+    }
     head.appendChild(h2);
     if (extraHead) head.appendChild(extraHead);
     sectionEl.appendChild(head);
@@ -2368,13 +2387,15 @@ function updateSlot2AugsContent(panel, section) {
     let body = "";
     upgrades.forEach((u) => {
       const cur = u.currentName ? slot2ItemLink(url, u.currentName, u.currentId) : '<span class="muted-cell">(empty)</span>';
-      const rec = u.recommendedName ? slot2ItemLink(url, u.recommendedName, u.recommendedId) + badge(u.recommendedOwned, u.moveFromSlot, u.craftComponentOwned, u.craftComponentName) : "";
+      const rec = u.recommendedName ? slot2ItemLink(url, u.recommendedName, u.recommendedId) + badge(u.recommendedOwned, u.moveFromSlot, u.craftComponentOwned, u.craftComponentName, u.craftComponentId) : "";
       const status = String(u.status || "").toLowerCase();
       body += `<tr class="status-${slot2Esc(status)}"><td>${pill(status)}</td><td>${slot2Esc(u.displayName || u.character)}</td><td>${slot2Esc(u.gearSlot)}</td><td>${cur}</td><td>${rec}</td><td>${slot2Esc(u.recommendedExpansion || "")}</td><td class="muted-cell">${slot2Esc(u.note || "")}</td></tr>`;
     });
     upHtml = `<table><thead><tr><th>Status</th><th>Character</th><th>Slot</th><th>Current</th><th>Upgrade to</th><th>Expansion</th><th>Note</th></tr></thead><tbody>${body}</tbody></table>`;
   }
-  root.appendChild(card("Slot recommendations", upHtml, false));
+  const slotRecTip =
+    "These are recommendations. Some classes already sit at a stat cap, so it is up to you to decide whether a suggested change is the best fit.";
+  root.appendChild(card("Slot recommendations", upHtml, false, null, null, slotRecTip));
 
   let farm = (data.farmList || []).filter((f) => slot2MatchesChar(f, data));
   if (q) farm = farm.filter((f) => JSON.stringify(f).toLowerCase().includes(q));
@@ -2422,7 +2443,7 @@ function updateSlot2AugsContent(panel, section) {
     table.appendChild(thead);
     farm.forEach((f) => {
       const tr = document.createElement("tr");
-      const aug = slot2ItemLink(url, f.name, f.itemId) + slot2CraftBadge(f.craftComponentOwned, f.craftComponentName);
+      const aug = slot2ItemLink(url, f.name, f.itemId) + slot2CraftBadge(f.craftComponentOwned, f.craftComponentName, f.craftComponentId);
       tr.innerHTML =
         `<td>${slot2Esc(f.displayName || f.character)}</td><td>${slot2Esc(f.gearSlot)}</td>` +
         `<td>${aug}</td><td>${slot2Esc(f.expansion || "")}</td>`;
@@ -2490,6 +2511,7 @@ function updateSlot2AugsContent(panel, section) {
     rankedHtml = `<div class="table-scroll"><table class="ranked-table"><thead><tr><th>#</th><th>Name</th><th>ID</th><th>${slot2Esc(focus)}</th><th>AC</th><th>HP</th><th>ATK</th><th>Heal</th><th>Spell Dmg</th><th>Clrv</th><th>Type</th><th>Slots</th><th>Source</th></tr></thead><tbody>${body}</tbody></table></div>`;
   }
   root.appendChild(card("Ranked reference augs", rankedHtml, true, extra));
+  raidBisBindTipBalloons(root);
   panel.appendChild(root);
 }
 
@@ -2888,6 +2910,7 @@ function showRaidBisTipBalloon(anchor, text) {
     });
     balloon.appendChild(list);
   } else {
+    if (String(text).length > 80) balloon.classList.add("raid-bis-title-balloon");
     balloon.appendChild(el("div", "copy-balloon-name", text));
   }
   document.body.appendChild(balloon);

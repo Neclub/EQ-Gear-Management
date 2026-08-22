@@ -414,5 +414,8 @@ def test_slot2_html_template_has_character_filter():
     assert '{ key: "name", label: "Aug"' in html
     assert "function applyFarmSort()" in html
     assert "applyFarmSort();" in html
-    assert "function slot2CraftBadge(owned, name)" in html
-    assert "Need ${slot2Esc(name)}" in html
+    assert "function slot2CraftBadge(owned, name, id)" in html
+    assert '${isHave ? "Have" : "Need"} ${slot2Esc(name)}' in html
+    assert "slot2ItemHref(url, id)" in html
+    assert "f.craftComponentId" in html
+    assert "u.craftComponentId" in html

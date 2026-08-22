@@ -6,6 +6,13 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.31.2] - 2026-08-21
+
+### Added
+
+- **Type 7/8 Augs:** HTML **Slot recommendations** has a **?** note: these are suggestions, and some classes already sit at a stat cap.
+- **Type 7/8 Augs:** **Need** and **Have** Focus of Fortitude chips (and Ensanguined ore) in **Slot recommendations** and **Need to farm** link to EQ Resource. Missing Focus now shows **Need** on Slot recommendations as well as Need to farm.
+
 ## [1.31.1] - 2026-08-21
 
 ### Added
