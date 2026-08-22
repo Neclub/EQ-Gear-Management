@@ -127,8 +127,8 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
    - **Raid BiS** chip — on by default when inventories are loaded; uncheck to skip the Raid BiS sheet and catalog fetch. Compares equipped armor and jewelry to current-expansion raid T1 and T2 (weapons are shown but not scored). MAG/BST/NEC keep a pet-focus ear. HTML cards take raid coin counts to mark the best vendor ore purchase. The first run needs network access to EQ Resource.
 
 6. **Output**
-   - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`)  
-   - Use **Browse…** to pick another path  
+   - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`). A single character uses that character’s name instead.  
+   - Use **Browse…** to pick another folder. The file name is always the default above; it updates if you change which server/characters are loaded.  
    - **Excel** / **HTML** / **Both** chips next to **Generate Report** — choose workbook only, HTML only, or both (default **Both**). The choice is remembered for next time.
 
 7. Click **Generate Report** — when HTML is included, the saved `.html` file opens in your default browser. The setup screen stays open.

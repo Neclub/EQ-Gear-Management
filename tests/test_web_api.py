@@ -2,7 +2,7 @@
 
 from pathlib import Path
 
-from inventory_parser.web_api import WebApi, _choice_summary, _gui_error_payload, _public_error_message
+from inventory_parser.web_api import WebApi, _choice_summary, _first_dialog_selection, _gui_error_payload, _public_error_message
 
 
 def test_choice_summary_formats_counts() -> None:
@@ -68,6 +68,30 @@ def test_generate_report_writes_html(tmp_path: Path) -> None:
     assert Path(result["xlsx"]).is_file()
     assert result["html"]
     assert Path(result["html"]).is_file()
+
+
+def test_generate_report_folder_gets_default_filename(tmp_path: Path) -> None:
+    root = Path(__file__).resolve().parents[1]
+    inv = root / "Examples" / "Deflub_bristle-Inventory.txt"
+    folder = tmp_path / "exports"
+    folder.mkdir()
+    api = WebApi()
+    result = api._generate_report_sync(
+        {
+            "paths": [str(inv)],
+            "outputPath": str(folder),
+            "slotFilter": "all",
+            "includeSpells": False,
+            "includeAchievements": False,
+            "includeSlot2": False,
+            "outputFormat": "excel",
+        }
+    )
+    assert result["ok"] is True
+    saved = Path(result["xlsx"])
+    assert saved.parent == folder
+    assert saved.name == "Deflub_Team Inventory.xlsx"
+    assert saved.is_file()
 
 
 def test_generate_report_excel_only(tmp_path: Path) -> None:
@@ -187,6 +211,55 @@ def test_pick_folder_remembers_last_directory(tmp_path, monkeypatch) -> None:
     assert api.pick_folder() == str(second.resolve())
     assert window.calls[1]["directory"] == str(first.resolve())
     assert api.get_gui_prefs()["lastEqFolder"] == str(second.resolve())
+
+
+def test_pick_output_folder_uses_dialog_tuple(tmp_path: Path) -> None:
+    from inventory_parser.web_api import webview
+
+    dest = tmp_path / "exports"
+    dest.mkdir()
+
+    class FakeWindow:
+        def __init__(self) -> None:
+            self.calls: list[dict] = []
+
+        def create_file_dialog(self, dialog_type, **kwargs):
+            self.calls.append({"type": dialog_type, **kwargs})
+            return (str(dest),)
+
+    window = FakeWindow()
+    api = WebApi()
+    api.bind_window(window)
+    assert api.pick_output_folder() == str(dest.resolve())
+    assert window.calls[0]["type"] == webview.FileDialog.FOLDER
+
+
+def test_default_output_path_keeps_folder_and_sets_filename(tmp_path: Path) -> None:
+    root = Path(__file__).resolve().parents[1]
+    inv = root / "Examples" / "Deflub_bristle-Inventory.txt"
+    folder = tmp_path / "exports"
+    folder.mkdir()
+    api = WebApi()
+    result = Path(api.default_output_path([str(inv)], str(folder)))
+    assert result.parent == folder
+    assert result.name == "Deflub_Team Inventory.xlsx"
+
+    team = [
+        str(root / "Examples" / "Deflub_bristle-Inventory.txt"),
+        str(root / "Examples" / "Healub_bristle-Inventory.txt"),
+    ]
+    result = Path(api.default_output_path(team, str(folder)))
+    assert result.parent == folder
+    assert result.name == "Bristlebane_Team Inventory.xlsx"
+
+
+def test_first_dialog_selection_unwraps_tuple() -> None:
+    path = r"D:\raid\exports"
+    assert _first_dialog_selection((path,)) == path
+    assert _first_dialog_selection([path]) == path
+    assert _first_dialog_selection(path) == path
+    assert _first_dialog_selection(None) is None
+    assert _first_dialog_selection(()) is None
 
 
 def test_open_html_report_missing_file() -> None:

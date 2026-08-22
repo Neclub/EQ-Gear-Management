@@ -648,9 +648,10 @@ async function clearAll() {
 
 async function browseOutput() {
   try {
-    const name = await api("default_output_filename", state.filePaths);
-    const path = await api("pick_output_file", name);
-    if (path) $("outputPath").value = path;
+    const folder = await api("pick_output_folder", $("outputPath").value);
+    if (!folder) return;
+    const next = await api("default_output_path", state.filePaths, folder);
+    $("outputPath").value = next;
   } catch (err) {
     showToast(String(err), true);
   }

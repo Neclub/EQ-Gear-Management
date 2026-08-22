@@ -40,9 +40,10 @@ from inventory_parser.missing_spells import (
     split_input_paths,
 )
 from inventory_parser.output_paths import (
+    apply_default_export_filename,
     default_export_prefix_from_input_paths,
     html_path_for_workbook,
-    is_auto_team_inventory_path,
+    output_directory_from_current,
     team_inventory_filename,
     team_inventory_path,
 )
@@ -58,6 +59,22 @@ _HOME_PATH_RE = re.compile(re.escape(_HOME_PATH), re.IGNORECASE) if _HOME_PATH e
 
 def _downloads_dir() -> Path:
     return Path.home() / "Downloads"
+
+
+def _first_dialog_selection(result: object) -> str | None:
+    """pywebview dialogs return a tuple/list of paths, or None if cancelled."""
+    if result is None or result is False:
+        return None
+    if isinstance(result, (list, tuple)):
+        if not result:
+            return None
+        first = result[0]
+    else:
+        first = result
+    if first is None or first is False:
+        return None
+    text = str(first).strip()
+    return text or None
 
 
 def _public_error_message(exc: BaseException) -> str:
@@ -282,28 +299,27 @@ class WebApi:
         if start:
             kwargs["directory"] = start
         result = window.create_file_dialog(webview.FileDialog.FOLDER, **kwargs)
-        if not result:
+        selected = _first_dialog_selection(result)
+        if not selected:
             return None
-        folder = str(Path(result[0]).resolve())
+        folder = str(Path(selected).resolve())
         save_eq_folder(folder)
         return folder
 
-    def pick_output_file(self, suggested_name: str) -> str | None:
+    def pick_output_folder(self, current: str = "") -> str | None:
+        """Choose a destination folder; the export filename is applied separately."""
         window = self._window
         if window is None:
             return None
-        result = window.create_file_dialog(
-            webview.FileDialog.SAVE,
-            directory=str(_downloads_dir()),
-            save_filename=suggested_name,
-            file_types=("Excel workbook (*.xlsx)", "All files (*.*)"),
-        )
-        if not result:
+        kwargs: dict = {}
+        start = output_directory_from_current(current, default=_downloads_dir())
+        if start.is_dir():
+            kwargs["directory"] = str(start)
+        result = window.create_file_dialog(webview.FileDialog.FOLDER, **kwargs)
+        selected = _first_dialog_selection(result)
+        if not selected:
             return None
-        path = Path(result)
-        if path.suffix.lower() != ".xlsx":
-            path = path.with_suffix(".xlsx")
-        return str(path.resolve())
+        return str(Path(selected).resolve())
 
     def discover_folder_choices(self, folder: str) -> dict:
         folder_path = Path(folder)
@@ -381,9 +397,9 @@ class WebApi:
 
     def default_output_path(self, paths: list[str], current: str) -> str:
         prefix = default_export_prefix_from_input_paths([Path(p) for p in paths])
-        if not current.strip() or is_auto_team_inventory_path(current):
-            return str(team_inventory_path(_downloads_dir(), prefix))
-        return current
+        return str(
+            apply_default_export_filename(current, prefix, default_dir=_downloads_dir())
+        )
 
     def default_output_filename(self, paths: list[str]) -> str:
         prefix = default_export_prefix_from_input_paths([Path(p) for p in paths])
@@ -446,6 +462,10 @@ class WebApi:
             }
         if not output:
             return {"ok": False, "error": "Choose where to save the report."}
+        prefix = default_export_prefix_from_input_paths(paths)
+        output_choice = Path(output)
+        if output_choice.is_dir() or not output_choice.suffix:
+            output = str(team_inventory_path(output_choice, prefix))
 
         raw_slots = (config.get("slotFilter") or "all").strip()
         slot_filter: SlotFilter = (

@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.31.4] - 2026-08-22
+
+### Fixed
+
+- **GUI:** choosing an **Output folder** no longer crashes (`TypeError` from the folder dialog returning a tuple). Browse picks a folder only; the file is always named `{Server}_Team Inventory.xlsx` (or `{Character}_…` for a single character) in that folder.
+
 ## [1.31.3] - 2026-08-22
 
 ### Changed

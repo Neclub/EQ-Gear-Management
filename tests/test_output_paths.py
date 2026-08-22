@@ -3,11 +3,13 @@ from pathlib import Path
 from inventory_parser.team_report import build_team_report
 from inventory_parser.eq_servers import server_display_name, server_slug_from_eqlog_filename
 from inventory_parser.output_paths import (
+    apply_default_export_filename,
     team_inventory_filename,
     team_inventory_html_filename,
     default_export_prefix_from_input_paths,
     default_export_prefix_from_report,
     is_auto_team_inventory_path,
+    output_directory_from_current,
     server_slug_from_input_paths,
     server_slug_from_report,
 )
@@ -90,3 +92,26 @@ def test_is_auto_team_inventory_path() -> None:
     assert is_auto_team_inventory_path(r"D:\Downloads\Bristlebane_Crew Inventory.xlsx")
     assert is_auto_team_inventory_path(r"D:\Downloads\Deflub_Crew Inventory.xlsx")
     assert not is_auto_team_inventory_path("MyRaid.xlsx")
+
+
+def test_output_directory_from_current_keeps_chosen_folder(tmp_path: Path) -> None:
+    folder = tmp_path / "exports"
+    folder.mkdir()
+    fallback = tmp_path / "Downloads"
+    fallback.mkdir()
+    assert output_directory_from_current(folder, default=fallback) == folder
+    assert output_directory_from_current(str(folder) + "\\", default=fallback) == folder
+    workbook = folder / "Bristlebane_Team Inventory.xlsx"
+    assert output_directory_from_current(workbook, default=fallback) == folder
+    assert output_directory_from_current("", default=fallback) == fallback
+
+
+def test_apply_default_export_filename_uses_server_prefix(tmp_path: Path) -> None:
+    folder = tmp_path / "raid_out"
+    folder.mkdir()
+    path = apply_default_export_filename(folder, "Bristlebane", default_dir=tmp_path)
+    assert path == folder / "Bristlebane_Team Inventory.xlsx"
+    path = apply_default_export_filename(
+        folder / "old name.xlsx", "Bristlebane", default_dir=tmp_path
+    )
+    assert path == folder / "Bristlebane_Team Inventory.xlsx"

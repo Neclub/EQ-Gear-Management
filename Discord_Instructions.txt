@@ -119,5 +119,5 @@ That’s all you do in-game.
 -# **HTML** is fine for most people.
 
 **8.** Click **Generate Report**.
-> 📁 Saved in your **Downloads** folder by default.
+> 📁 Saved in **Downloads** as `{Server}_Team Inventory.xlsx` by default (or `{Character}_Team Inventory.xlsx` if you exported only one). Use **Browse…** under **Output folder** to pick a different folder; the file name stays the default.
 > 🌐 If you chose HTML, it should open in your browser automatically.

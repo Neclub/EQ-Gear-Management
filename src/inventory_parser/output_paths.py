@@ -39,6 +39,50 @@ def team_inventory_path(directory: Path, prefix: str | None = None) -> Path:
     return directory / team_inventory_filename(prefix)
 
 
+_EXPORT_FILE_SUFFIXES = {TEAM_INVENTORY_SUFFIX, TEAM_INVENTORY_HTML_SUFFIX, ".xlsx", ".html", ".xls"}
+
+
+def output_directory_from_current(
+    current: str | Path | None,
+    *,
+    default: Path | None = None,
+) -> Path:
+    """Return the folder to save exports in, from a typed path or folder pick.
+
+    File paths keep their parent directory. Folder paths (including a pick with a
+    trailing slash) are used as-is. Empty input falls back to ``default``.
+    """
+    fallback = Path(default) if default is not None else Path.home() / "Downloads"
+    text = str(current or "").strip()
+    if not text:
+        return fallback
+    path = Path(text)
+    try:
+        if path.is_dir():
+            return path
+    except OSError:
+        pass
+    if text.endswith(("/", "\\")):
+        return Path(text)
+    if path.suffix.lower() in _EXPORT_FILE_SUFFIXES or is_auto_team_inventory_path(path):
+        parent = path.parent
+        return fallback if str(parent) in {".", ""} else parent
+    if path.suffix == "":
+        return path
+    parent = path.parent
+    return fallback if str(parent) in {".", ""} else parent
+
+
+def apply_default_export_filename(
+    current: str | Path | None,
+    prefix: str | None = None,
+    *,
+    default_dir: Path | None = None,
+) -> Path:
+    """Standard ``{Server}_Team Inventory.xlsx`` name in the chosen folder."""
+    return team_inventory_path(output_directory_from_current(current, default=default_dir), prefix)
+
+
 def team_inventory_html_path(directory: Path, prefix: str | None = None) -> Path:
     return directory / team_inventory_html_filename(prefix)
 
