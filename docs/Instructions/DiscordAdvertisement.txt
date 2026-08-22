@@ -1,0 +1,23 @@
+# ⚔️ EQ Gear Management (EQGM)
+### One report. One character or your entire box team. No more guessing.
+
+EverQuest Live can output a snapshot of a character to a text file.
+**EQGM** reads those files for everyone on your team and turns them into **one** Excel workbook or web report.
+
+> **Mission:** Stop farming in the dark.
+> See who is geared, who is behind, and what to farm next — before raid night, not after.
+
+**What you can answer in minutes:**
+> 🛡️ Who is wearing what — color-coded by how current it is
+> 📉 Whose slots are still last expansion
+> 📜 Who still needs spell runes
+> 🏆 Who is missing collections, quests, or raid achievements
+> 💎 Which augs to wear, move, or farm
+> 👑 What Raid BiS looks like *this* expansion
+
+No extra installs. Download it, double-click it, point it at your EverQuest folder.
+**These are suggestions based on the stats your class uses. Use the numbers, then decide whether a change is worth it.**
+
+🌐 **Website:** https://neclub.github.io/EQ-Gear-Management/
+🔗 **Download:** https://github.com/Neclub/EQ-Gear-Management/releases
+-# EverQuest Live only. Not for TLP or progression servers.

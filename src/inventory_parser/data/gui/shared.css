@@ -179,6 +179,8 @@ body {
 }
 
 .panel-characters .char-card-inner {
+  flex: 1;
+  min-width: 0;
   padding: 4px 6px;
   gap: 6px;
 }
@@ -259,12 +261,73 @@ body {
 }
 
 .roster-list li {
+  display: flex;
+  align-items: center;
   margin: 2px 4px;
   padding: 0;
   cursor: pointer;
   border-radius: 8px;
   border: 1px solid transparent;
-  transition: background 0.12s ease, border-color 0.12s ease;
+  transition: background 0.12s ease, border-color 0.12s ease, opacity 0.12s ease, margin 0.12s ease;
+  user-select: none;
+}
+
+.roster-list li[draggable="true"] {
+  cursor: grab;
+}
+
+.roster-list li.dragging {
+  opacity: 0.4;
+  cursor: grabbing;
+  background: var(--panel-hover);
+}
+
+.roster-list.roster-dragging .roster-item.dragging {
+  opacity: 0.35;
+}
+
+.roster-list li.drop-spread-below {
+  margin-bottom: 10px;
+}
+
+.roster-list li.drop-spread-above {
+  margin-top: 10px;
+}
+
+.roster-list li.drop-spread-below:not(.drop-pair) {
+  margin-bottom: 12px;
+}
+
+.roster-list li.drop-spread-above:not(.drop-pair) {
+  margin-top: 12px;
+}
+
+.roster-list .roster-drop-slot {
+  display: block;
+  height: 38px;
+  margin: 4px 4px;
+  padding: 0;
+  cursor: default;
+  border: 1px dashed rgba(59, 130, 246, 0.6);
+  border-radius: 8px;
+  background: rgba(59, 111, 212, 0.1);
+  box-shadow: none;
+  opacity: 1;
+  pointer-events: none;
+  user-select: none;
+}
+
+.roster-grip {
+  flex-shrink: 0;
+  width: 10px;
+  height: 16px;
+  margin: 0 0 0 6px;
+  background:
+    radial-gradient(circle, var(--muted) 1.1px, transparent 1.25px) 0 0 / 5px 5px,
+    radial-gradient(circle, var(--muted) 1.1px, transparent 1.25px) 5px 0 / 5px 5px;
+  background-repeat: repeat-y;
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 .roster-list li:hover {

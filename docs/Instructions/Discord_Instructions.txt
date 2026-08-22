@@ -105,7 +105,7 @@ That’s all you do in-game.
 **4.** Check the characters you want, then click **Add selected**.
 -# If you play on more than one server, use the **Server** dropdown first.
 
-**5.** The left side lists who will be in the report. You can move names **Up** or **Down**.
+**5.** The left side lists who will be in the report. Drag a name to move it; a gap shows where it will land. You can also use **Up** or **Down**.
 -# The first name becomes the first column.
 
 **6.** On the right, leave the extra options on unless you want a smaller report:

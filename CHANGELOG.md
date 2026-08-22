@@ -6,6 +6,20 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.32.0] - 2026-08-22
+
+### Added
+
+- **GUI:** drag names in **Team characters** to set column order in Excel and HTML. Names stay in place while you drag; a dashed empty slot opens between them to show the drop target. Up/Down still work.
+
+### Removed
+
+- **GUI:** **Slots** dropdown (`all` / `visible` / `non_visible`). Reports always include all gear slots.
+
+### Changed
+
+- **Docs:** Discord paste files live under [docs/Instructions](docs/Instructions) (`Discord_Instructions.txt`, `DiscordAdvertisement.txt`).
+
 ## [1.31.4] - 2026-08-22
 
 ### Fixed
@@ -448,7 +462,7 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 ### Changed
 
 - Export assembly refactored into [`export_bundle.py`](src/inventory_parser/export_bundle.py) shared by Excel and HTML writers.
-- [HowToUse.md](HowToUse.md) and [Discord_Instructions.txt](Discord_Instructions.txt) document the HTML export option.
+- [HowToUse.md](HowToUse.md) and [Discord_Instructions.txt](docs/Instructions/Discord_Instructions.txt) document the HTML export option.
 
 ### Fixed
 
@@ -472,7 +486,7 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ### Changed
 
-- [HowToUse.md](HowToUse.md) and [Discord_Instructions.txt](Discord_Instructions.txt) document `/outputfile achievements` and the new tabs.
+- [HowToUse.md](HowToUse.md) and [Discord_Instructions.txt](docs/Instructions/Discord_Instructions.txt) document `/outputfile achievements` and the new tabs.
 
 ## [1.7.5] - 2026-05-25
 
@@ -489,7 +503,7 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ### Changed
 
-- [HowToUse.md](HowToUse.md) and [Discord_Instructions.txt](Discord_Instructions.txt) document the **Unmade Gear** tab and optional code signing setup.
+- [HowToUse.md](HowToUse.md) and [Discord_Instructions.txt](docs/Instructions/Discord_Instructions.txt) document the **Unmade Gear** tab and optional code signing setup.
 
 ## [1.7.4] - 2026-05-25
 

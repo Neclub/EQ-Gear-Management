@@ -94,7 +94,7 @@ The app uses a **dark HTML interface** with a split-pane setup screen. When HTML
 | Area | Contents |
 |------|----------|
 | **Left** | **Team characters** roster with class icons; **EQ Folder** below the list |
-| **Right (top)** | **Export options** — Slots dropdown; **Spells**, **Achievements**, **Type 7/8 Augs**, **Type 5 Augs**, and **Raid BiS** chips |
+| **Right (top)** | **Export options** — **Spells**, **Achievements**, **Type 7/8 Augs**, **Type 5 Augs**, and **Raid BiS** chips |
 | **Right (bottom)** | **Output folder** path and **Browse…**; **Up** / **Down** / **Remove** / **Clear** for the roster |
 | **Footer** | Status line; **Excel** / **HTML** / **Both** output chips; **Generate Report** |
 
@@ -114,12 +114,12 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
    - **EQ Folder** (under the roster) — pick your **EverQuest/Logs** folder (or the path your client uses for `/outputfile`); in the picker, check the characters you want (optional **Server** filter), then **Add selected**. Inventory, MissingSpells, and Achievements files are grouped per character.
 
 4. **Manage the roster** (optional)
-   - **Up** / **Down** — change character column order in Excel and HTML (including Unmade Gear row order)  
+   - **Drag** names in **Team characters** — a gap opens to show where the name will land; that order is used for Excel and HTML columns (including Unmade Gear row order)
+   - **Up** / **Down** — move the selected character the same way
    - **Remove** — take the selected character off the export list  
    - **Clear** — empty the roster and start over  
 
 5. **Options** (optional)
-   - **Slots** dropdown — `all`, `visible`, or `non_visible` on the gear sheets  
    - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs
    - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs
    - **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Artisan's Prize is recommended for Ear when it is in the inventory file. An equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off. Only augs that fit type 7/8 holes are recommended (type 5 and similar are excluded). Generate shows a progress bar while sockets and catalogs are fetched.

@@ -329,6 +329,8 @@ function bindEvents() {
   });
 
   $("btnFolder").addEventListener("click", browseFolder);
+  $("rosterList").addEventListener("dragover", onRosterDragOver);
+  $("rosterList").addEventListener("drop", (e) => e.preventDefault());
   $("btnUp").addEventListener("click", () => moveRoster(-1));
   $("btnDown").addEventListener("click", () => moveRoster(1));
   $("btnRemove").addEventListener("click", removeSelected);
@@ -577,16 +579,116 @@ async function refreshOutputDefault() {
   $("outputPath").value = next;
 }
 
+let rosterSuppressClick = false;
+let rosterDragFrom = null;
+let rosterDropInsert = null;
+
+function canDragRoster() {
+  return !state.generating && state.roster.length > 1;
+}
+
+function rosterNameItems() {
+  return [...document.querySelectorAll("#rosterList .roster-item")];
+}
+
+function clearRosterDropSlot() {
+  document.querySelectorAll("#rosterList .roster-drop-slot").forEach((el) => el.remove());
+  document.querySelectorAll(".drop-spread-above, .drop-spread-below, .drop-pair").forEach((el) => {
+    el.classList.remove("drop-spread-above", "drop-spread-below", "drop-pair");
+  });
+  const list = $("rosterList");
+  if (list) list.classList.remove("roster-dragging");
+}
+
+function rosterInsertIndexAt(clientY) {
+  const items = rosterNameItems();
+  for (let i = 0; i < items.length; i++) {
+    const rect = items[i].getBoundingClientRect();
+    if (clientY < rect.top + rect.height / 2) return i;
+  }
+  return items.length;
+}
+
+function showRosterDropSlot(insertIndex) {
+  const list = $("rosterList");
+  if (!list) return;
+  const items = rosterNameItems();
+  const from = rosterDragFrom;
+  const samePlace = from != null && (insertIndex === from || insertIndex === from + 1);
+  list.classList.add("roster-dragging");
+
+  if (samePlace) {
+    document.querySelectorAll("#rosterList .roster-drop-slot").forEach((el) => el.remove());
+    document.querySelectorAll(".drop-spread-above, .drop-spread-below, .drop-pair").forEach((el) => {
+      el.classList.remove("drop-spread-above", "drop-spread-below", "drop-pair");
+    });
+    rosterDropInsert = from;
+    return;
+  }
+
+  if (rosterDropInsert === insertIndex && list.querySelector(".roster-drop-slot")) return;
+  rosterDropInsert = insertIndex;
+
+  document.querySelectorAll(".drop-spread-above, .drop-spread-below, .drop-pair").forEach((el) => {
+    el.classList.remove("drop-spread-above", "drop-spread-below", "drop-pair");
+  });
+
+  let slot = list.querySelector(".roster-drop-slot");
+  if (!slot) {
+    slot = document.createElement("li");
+    slot.className = "roster-drop-slot";
+    slot.setAttribute("aria-hidden", "true");
+  }
+  const target = items[insertIndex] || null;
+  if (target) list.insertBefore(slot, target);
+  else list.appendChild(slot);
+
+  const above = insertIndex > 0 ? items[insertIndex - 1] : null;
+  const below = insertIndex < items.length ? items[insertIndex] : null;
+  if (above) above.classList.add("drop-spread-below");
+  if (below) below.classList.add("drop-spread-above");
+  if (above && below) {
+    above.classList.add("drop-pair");
+    below.classList.add("drop-pair");
+  }
+}
+
+function onRosterDragOver(e) {
+  if (rosterDragFrom == null) return;
+  e.preventDefault();
+  if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+  showRosterDropSlot(rosterInsertIndexAt(e.clientY));
+}
+
+function moveRosterEntry(entries, from, insertAt) {
+  const next = entries.slice();
+  const [item] = next.splice(from, 1);
+  let dest = insertAt;
+  if (from < insertAt) dest -= 1;
+  dest = Math.max(0, Math.min(next.length, dest));
+  next.splice(dest, 0, item);
+  return { next, dest };
+}
+
 function renderRoster() {
   const list = $("rosterList");
   list.innerHTML = "";
   const servers = new Set(state.roster.map((e) => (e.server || "").toLowerCase()));
   const showServer = servers.size > 1;
+  const draggable = canDragRoster();
   state.roster.forEach((entry, idx) => {
     const li = document.createElement("li");
     li.className = "roster-item";
     li.dataset.index = String(idx);
+    li.draggable = draggable;
+    if (draggable) li.title = "Drag to reorder";
     if (state.selectedRoster.has(idx)) li.classList.add("selected");
+    if (draggable) {
+      const grip = document.createElement("span");
+      grip.className = "roster-grip";
+      grip.setAttribute("aria-hidden", "true");
+      li.appendChild(grip);
+    }
     li.appendChild(
       ClassVisuals.createCard({
         character: entry.character,
@@ -595,6 +697,10 @@ function renderRoster() {
       })
     );
     li.addEventListener("click", (e) => {
+      if (rosterSuppressClick) {
+        rosterSuppressClick = false;
+        return;
+      }
       if (e.ctrlKey || e.metaKey) {
         if (state.selectedRoster.has(idx)) state.selectedRoster.delete(idx);
         else state.selectedRoster.add(idx);
@@ -604,9 +710,60 @@ function renderRoster() {
       }
       renderRoster();
     });
+    if (draggable) bindRosterItemDrag(li);
     list.appendChild(li);
   });
   $("emptyState").classList.toggle("hidden", state.roster.length > 0);
+}
+
+function bindRosterItemDrag(li) {
+  li.addEventListener("dragstart", (e) => {
+    if (!canDragRoster()) {
+      e.preventDefault();
+      return;
+    }
+    rosterSuppressClick = true;
+    rosterDragFrom = Number(li.dataset.index);
+    rosterDropInsert = rosterDragFrom;
+    li.classList.add("dragging");
+    $("rosterList")?.classList.add("roster-dragging");
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", li.dataset.index || "");
+  });
+  li.addEventListener("dragover", onRosterDragOver);
+  li.addEventListener("drop", (e) => {
+    e.preventDefault();
+  });
+  li.addEventListener("dragend", () => {
+    void finishRosterDrag();
+    setTimeout(() => {
+      rosterSuppressClick = false;
+    }, 0);
+  });
+}
+
+async function finishRosterDrag() {
+  const from = rosterDragFrom;
+  const insertAt = rosterDropInsert;
+  const dragged = document.querySelector("#rosterList .roster-item.dragging");
+  if (dragged) dragged.classList.remove("dragging");
+  clearRosterDropSlot();
+  rosterDragFrom = null;
+  rosterDropInsert = null;
+
+  if (from == null || insertAt == null || from === insertAt) {
+    renderRoster();
+    return;
+  }
+  const { next, dest } = moveRosterEntry(state.roster, from, insertAt);
+  const unchanged = next.every((entry, i) => entry === state.roster[i]);
+  state.roster = next;
+  state.selectedRoster.clear();
+  state.selectedRoster.add(dest);
+  if (!unchanged) {
+    await api("save_roster_order", state.roster.map((e) => e.personaKey));
+  }
+  renderRoster();
 }
 
 async function moveRoster(delta) {
@@ -614,9 +771,8 @@ async function moveRoster(delta) {
   const index = [...state.selectedRoster][0];
   const newIndex = index + delta;
   if (newIndex < 0 || newIndex >= state.roster.length) return;
-  const tmp = state.roster[index];
-  state.roster[index] = state.roster[newIndex];
-  state.roster[newIndex] = tmp;
+  const [item] = state.roster.splice(index, 1);
+  state.roster.splice(newIndex, 0, item);
   state.selectedRoster.clear();
   state.selectedRoster.add(newIndex);
   await api("save_roster_order", state.roster.map((e) => e.personaKey));
@@ -711,6 +867,7 @@ function setGenerating(on) {
     const chip = $(`chipFormat${fmt[0].toUpperCase()}${fmt.slice(1)}`);
     if (chip) chip.disabled = on;
   });
+  renderRoster();
   syncSlot2Options();
 }
 
@@ -910,7 +1067,7 @@ async function generateReport() {
   const config = {
     paths: state.filePaths,
     outputPath,
-    slotFilter: $("slotFilter").value,
+    slotFilter: "all",
     includeSpells: state.includeSpells,
     includeAchievements: state.includeAchievements,
     includeSlot2: state.includeSlot2,

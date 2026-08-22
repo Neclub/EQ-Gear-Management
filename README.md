@@ -41,7 +41,7 @@ EQ writes those files to your **EverQuest Logs** folder.
 
 1. Open **EQ Gear Management**.
 2. Click **EQ Folder** and pick your EverQuest Logs folder; select which characters to import.
-3. Adjust **Export options** on the right if needed. **Browse…** under **Output folder** picks where to save; the file is always named `{Server}_Team Inventory.xlsx` (or `{Character}_…` for a single character).
+3. Drag names in **Team characters** to set column order if you want. Adjust **Export options** on the right if needed. **Browse…** under **Output folder** picks where to save; the file is always named `{Server}_Team Inventory.xlsx` (or `{Character}_…` for a single character).
 4. Choose **Excel**, **HTML**, or **Both**, then click **Generate Report**.
 
 <p align="center">
