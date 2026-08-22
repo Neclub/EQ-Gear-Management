@@ -2864,7 +2864,6 @@ function raidBisCostTip(slot, currencyName) {
 }
 
 function raidBisCoinHtml(slot, currencyName, icons, currencyIconId) {
-  if (slot.currentIsEvolver) return "";
   const tip = raidBisCostTip(slot, currencyName);
   if (!tip) return "";
   let inner = '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-coins"></use></svg>';
@@ -2883,7 +2882,7 @@ function hideRaidBisTipBalloon() {
 function raidBisSectionTips(currencyName) {
   const lines = [
     "Current raid gear only.",
-    "Evolvers are not scored and may still be BiS — they are skipped when choosing coin purchases.",
+    "Evolvers are not scored and may still be BiS — vendor cost is still shown, but they are skipped when choosing coin purchases.",
     "Waist belts are a personal choice — pick among the three effect belts in Best in slot.",
   ];
   if (currencyName) {
@@ -3218,7 +3217,7 @@ function updateRaidBisContent(panel, section) {
       const recBit = slot.recommendedName && slot.recommendedName !== slot.currentName
         ? ` → ${slot.recommendedName}`
         : "";
-      const costBit = !slot.currentIsEvolver && slot.vendorCost != null
+      const costBit = slot.vendorCost != null
         ? ` (${slot.vendorCost}${currencyName ? ` ${currencyName}` : ""})`
         : "";
       box.title = `${slotName}: ${showName || "empty"}${recBit}${costBit}`;

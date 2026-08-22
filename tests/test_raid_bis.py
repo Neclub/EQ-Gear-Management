@@ -400,7 +400,7 @@ def test_html_section_present(tmp_path: Path):
     assert "raid-bis-heading" in html
     assert "raidBisSectionTips" in html
     assert "Current raid gear only." in html
-    assert "Evolvers are not scored and may still be BiS — they are skipped when choosing coin purchases." in html
+    assert "Evolvers are not scored and may still be BiS — vendor cost is still shown, but they are skipped when choosing coin purchases." in html
     assert "Waist belts are a personal choice — pick among the three effect belts in Best in slot." in html
     assert "Enter this character's ${currencyName} to mark the best vendor ore purchase(s) among upgrades." in html
     assert "raid-bis-tip-list" in html
@@ -431,6 +431,9 @@ def test_html_section_present(tmp_path: Path):
     assert "icon-evolver" in html
     assert "currentIsEvolver" in html
     assert "raidBisEvolverHtml" in html
+    assert "raidBisCoinHtml" in html
+    assert "if (s.currentIsEvolver) return false;" in html
+    assert "if (slot.currentIsEvolver) return \"\";" not in html
     assert 'data-tip="Evolver"' in html
     assert "Waist is a personal choice among Overdrive Punch, Treaded Boon of Potential, and Crippling Slicer." in html
     assert "raidBisCostHtml" not in html
