@@ -108,6 +108,7 @@ class Slot2Export:
     show_server_in_columns: bool = False
     roster: list[Slot2RosterEntry] = field(default_factory=list)
     include_anniversary: bool = False
+    icon_data_uris: dict[str, str] = field(default_factory=dict)
 
 
 def build_farm_list(
@@ -427,6 +428,23 @@ def build_slot2_export(
         characters, roster, lore_group_by_id=lore_group_by_id
     )
 
+    from inventory_parser.raid_bis.icons import collect_icon_data_uris
+
+    icon_ids: set[str] = set()
+    for ch in characters:
+        for cmp_ in ch.comparisons:
+            if cmp_.current_icon_id:
+                icon_ids.add(cmp_.current_icon_id)
+            if cmp_.recommended_icon_id:
+                icon_ids.add(cmp_.recommended_icon_id)
+    for aug in ranked:
+        if aug.icon_id:
+            icon_ids.add(aug.icon_id)
+    icon_data_uris = collect_icon_data_uris(
+        icon_ids,
+        allow_network=fetch_eqr_augs and not eqr_aug_html_by_id,
+    )
+
     return Slot2Export(
         profile=primary_profile,
         profile_label=PROFILE_LABELS[primary_profile],
@@ -441,4 +459,5 @@ def build_slot2_export(
         show_server_in_columns=show_server,
         roster=roster,
         include_anniversary=include_anniversary,
+        icon_data_uris=icon_data_uris,
     )

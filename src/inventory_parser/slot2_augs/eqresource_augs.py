@@ -31,9 +31,10 @@ from inventory_parser.slot2_augs.paths import appdata_dir
 USER_AGENT = "EQ-Augs/0.2 (Slot2 type 7/8 checker; local tool)"
 CACHE_FILENAME = "eqresource_aug_cache.json"
 EXPANSION_CACHE_FILENAME = "eqresource_expansion_cache.json"
-CACHE_STATS_VERSION = 4
+CACHE_STATS_VERSION = 5
 EQRESOURCE_ITEM_URL = "https://items.eqresource.com/items.php?id={item_id}"
 
+_ICON_RE = re.compile(r"itemimages/(\d+)\.(?:png|gif|jpg|webp)", re.IGNORECASE)
 _EXPAC_IMG_RE = re.compile(
     r'expacimages/([a-z0-9_-]+)\.(?:jpg|png|gif|webp)',
     re.IGNORECASE,
@@ -468,6 +469,7 @@ def parse_eqresource_aug_html(
     if not stats:
         return None
 
+    icon_m = _ICON_RE.search(html)
     return AugCandidate(
         item_id=item_id,
         name=name,
@@ -486,6 +488,7 @@ def parse_eqresource_aug_html(
         source="EQ Resource",
         stats=stats,
         aug_types=parse_aug_slot_types(html),
+        icon_id=icon_m.group(1) if icon_m else None,
     )
 
 
@@ -516,6 +519,10 @@ def fetch_eqresource_aug(
             stats = clean_stats(entry.get("stats") or {})
             focus, ac, hp, atk = legacy_from_stats(stats, profile)
             types = frozenset(int(t) for t in (entry.get("aug_types") or []) if str(t).isdigit())
+            icon_raw = entry.get("icon_id")
+            icon_id = str(icon_raw).strip() if icon_raw not in (None, "") else None
+            if icon_id and not icon_id.isdigit():
+                icon_id = None
             return AugCandidate(
                 item_id=item_id,
                 name=str(entry.get("name") or name_hint or f"Item {item_id}"),
@@ -537,6 +544,7 @@ def fetch_eqresource_aug(
                 source="EQ Resource",
                 stats=stats,
                 aug_types=types,
+                icon_id=icon_id,
             )
 
     try:
@@ -572,6 +580,7 @@ def fetch_eqresource_aug(
                 "stats": dict(aug.stats),
                 "stats_v": CACHE_STATS_VERSION,
                 "aug_types": sorted(aug.aug_types),
+                "icon_id": aug.icon_id,
             }
         _save_cache(cache)
     return aug

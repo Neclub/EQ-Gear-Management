@@ -47,6 +47,7 @@ def test_parse_eqresource_aug_acrobat_dex():
     assert "Charm" not in aug.allowed_bases
     assert "Range" not in aug.allowed_bases
     assert aug.aug_types == frozenset({7, 8})
+    assert aug.icon_id == "1996"
 
 
 def test_parse_eqresource_aug_phantasmal_no_dex_focus():

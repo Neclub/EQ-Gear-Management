@@ -93,6 +93,8 @@ class Slot2Comparison:
     craft_component_name: str | None = None
     craft_component_id: int | None = None
     craft_component_owned: bool | None = None
+    current_icon_id: str | None = None
+    recommended_icon_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -1118,6 +1120,8 @@ def _finalize_comparison(
         craft_component_name=craft_name,
         craft_component_id=craft_id,
         craft_component_owned=craft_owned,
+        current_icon_id=cur_aug.icon_id if cur_aug else None,
+        recommended_icon_id=recommended.icon_id if recommended else None,
     )
 
 

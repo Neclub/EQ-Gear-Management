@@ -51,6 +51,7 @@ def test_parse_eqresource_search_html_stats():
     assert set(by_id) >= {88785, 175573, 175571, 175572}
     mystic = by_id[175573]
     assert mystic.name.startswith("Mystic")
+    assert mystic.icon_id == "1980"
     assert mystic.stats.get("spell_damage") == 118
     assert mystic.stats.get("hint") == 61
     assert mystic.stats.get("hwis") == 61
@@ -59,6 +60,9 @@ def test_parse_eqresource_search_html_stats():
     defender = by_id[175571]
     assert defender.stats.get("spell_damage") == 111
     assert defender.stats.get("hp") == 2040
+    assert defender.icon_id == "1966"
+    assert by_id[88785].icon_id == "6618"
+    assert by_id[175572].icon_id == "1996"
 
 
 def test_eqresource_catalog_hydrates_lore_group():
@@ -72,6 +76,9 @@ def test_eqresource_catalog_hydrates_lore_group():
     assert by_id[175573].lore_group == "Intellect or Might of Unraveling Order"
     assert by_id[175571].lore_group == "Intellect or Might of Unraveling Order"
     assert by_id[175573].stats.get("spell_damage") == 118
+    # Search-row icon kept when item-page HTML has no icon.
+    assert by_id[175573].icon_id == "1980"
+    assert by_id[88785].icon_id == "6618"
     kept = unique_by_lore_group(
         [by_id[175573], by_id[175571], by_id[88785]]
     )

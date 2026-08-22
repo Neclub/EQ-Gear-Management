@@ -74,6 +74,8 @@ def test_type5_html_template_has_per_character_cards() -> None:
     assert ".type5-augs .card" in html
     assert ".type5-augs .card-head" in html
     assert "raid-bis-char-plate" in html
+    assert "function buildInventoryPaperdoll" in html
+    assert "paperdollCellFromType5" in html
 
 
 def test_type5_serialize_empty_and_stats() -> None:
@@ -116,7 +118,9 @@ def test_type5_serialize_empty_and_stats() -> None:
     assert by_slot["Head"]["expansion"] == "The Outer Brood"
     assert by_slot["Head"]["hsta"] == 135
     assert by_slot["Head"]["hstr"] == 41
+    assert by_slot["Head"]["iconId"] == "6467"
     assert by_slot["Ear-1"]["empty"] is True
     assert by_slot["Ear-1"]["name"] is None
+    assert "iconDataUris" in payload
     assert by_slot["Ear-1"]["expansion"] is None
     assert payload["catalogUrl"] == TYPE5_CATALOG_URL

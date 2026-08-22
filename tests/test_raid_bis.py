@@ -3,7 +3,13 @@ from pathlib import Path
 from inventory_parser.export_bundle import build_export_bundle
 from inventory_parser.html_export import extract_report_json, write_team_html
 from inventory_parser.items import EquippedItem
-from inventory_parser.raid_bis.catalog import parse_raidarmor_html, parse_raidgear_html, parse_item_page
+from inventory_parser.raid_bis.catalog import (
+    hydrate_item_ids,
+    parse_item_page,
+    parse_raidarmor_html,
+    parse_raidgear_html,
+    should_skip_name,
+)
 from inventory_parser.raid_bis.compare import (
     build_ideal_loadout,
     compare_character,
@@ -369,6 +375,50 @@ def test_paperdoll_follows_inventory_window():
     assert chest.deltas["ac"] == 60
     assert chest.deltas["hdex"] == 6
     assert report.total_deltas["ac"] == 60
+
+
+def test_catalog_skip_does_not_drop_riven_arcana_power_source():
+    """Listing junk uses 'riven arcana'; equipped Power Sources still need icons."""
+    assert should_skip_name("Crate of Riven Arcana Armor")
+    assert should_skip_name("Riven Arcana Armor Lining")
+    html = """
+    <font size="+1"><b><center>Riven Arcana Protector Source<br><br></center></b></font>
+    Class: All
+    Slot: Power Source
+    <img src="itemimages/2097.png" loading="lazy">
+    """
+    item = parse_item_page(html, 175183)
+    assert item is not None
+    assert item.name == "Riven Arcana Protector Source"
+    assert item.icon_id == "2097"
+    assert "Power Source" in item.slots
+
+
+def test_paperdoll_hydrates_riven_arcana_power_source_icon():
+    html = """
+    <font size="+1"><b><center>Riven Arcana Protector Source<br><br></center></b></font>
+    Class: All
+    Slot: Power Source
+    <img src="itemimages/2097.png" loading="lazy">
+    """
+    equipped = hydrate_item_ids(
+        [175183],
+        item_html_by_id={175183: html},
+        allow_network=False,
+    )
+    ch = CharacterGear(
+        character="Warlub",
+        server="test",
+        filepath="x",
+        class_abbr="WAR",
+    )
+    ch.slots["Power Source"] = EquippedItem(
+        name="Riven Arcana Protector Source", item_id=175183
+    )
+    report = compare_character(ch, [], equipped_stats=equipped)
+    power = next(s for s in report.slots if s.gear_slot == "Power Source")
+    assert power.current_name == "Riven Arcana Protector Source"
+    assert power.current_icon_id == "2097"
 
 
 def test_html_section_present(tmp_path: Path):
