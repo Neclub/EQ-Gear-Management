@@ -85,7 +85,7 @@ class SuggestionPick:
 class SuggestionRow:
     class_abbr: str
     class_name: str
-    priority: str  # primary | optional | fortification
+    priority: str  # primary | optional | filler
     rank: int
     guide_name: str
     suggested: SuggestionPick | None
@@ -100,7 +100,7 @@ class ClassSuggestions:
     class_name: str
     primary: list[SuggestionRow] = field(default_factory=list)
     optional: list[SuggestionRow] = field(default_factory=list)
-    fortification: list[SuggestionRow] = field(default_factory=list)
+    filler: list[SuggestionRow] = field(default_factory=list)
     caster_stats: bool = False
 
 
@@ -333,8 +333,9 @@ def build_class_suggestions(
     """
     Build per-class suggestion rows from the cheat sheet + live catalog.
 
-    Defense-family guide picks are moved from Primary to Optional. Unused
-    Fortification catalog augs are listed under Optional, greatest stats first.
+    Defense-family guide picks are moved from Primary to Optional. The top two
+    unused Fortification catalog augs (greatest stats) are appended to Optional.
+    Unused Enhancement catalog augs are listed under Filler, greatest first.
 
     When ``class_abbrs`` is set (team characters), those classes are listed first.
     ``owned_ids_by_class`` / ``owned_names_by_class`` mark suggestions owned in
@@ -409,18 +410,21 @@ def build_class_suggestions(
                 else:
                     block.optional.append(row)
 
-        used_ids = {
-            r.suggested.item_id
-            for r in (*block.primary, *block.optional)
-            if r.suggested is not None
-        }
-        used_names = {
-            r.suggested.name.casefold()
-            for r in (*block.primary, *block.optional)
-            if r.suggested is not None and r.suggested.name
-        }
-        used_names.update(reserved)
+        def _used() -> tuple[set[int], set[str]]:
+            ids = {
+                r.suggested.item_id
+                for r in (*block.primary, *block.optional, *block.filler)
+                if r.suggested is not None
+            }
+            names = {
+                r.suggested.name.casefold()
+                for r in (*block.primary, *block.optional, *block.filler)
+                if r.suggested is not None and r.suggested.name
+            }
+            names.update(reserved)
+            return ids, names
 
+        used_ids, used_names = _used()
         fort_unused = [
             e
             for e in catalog
@@ -429,18 +433,54 @@ def build_class_suggestions(
             and e.name.casefold() not in used_names
         ]
         fort_unused.sort(key=lambda e: stats_rank_key(e.stats, e.name))
-        for rank, entry in enumerate(fort_unused, start=1):
+        optional_rank = len(block.optional)
+        for entry in fort_unused[:2]:
+            optional_rank += 1
             alt = _anniversary_alternative(
                 entry,
                 entry.name,
                 catalog=catalog,
                 reserved_names=used_names,
             )
-            block.fortification.append(
+            block.optional.append(
                 _make_row(
                     abbr=abbr,
                     class_name=guide.name,
-                    priority="fortification",
+                    priority="optional",
+                    rank=optional_rank,
+                    guide_name=entry.name,
+                    suggested=entry,
+                    alternative=alt,
+                    upgraded=False,
+                    owned_ids=owned_ids,
+                    owned_names=owned_names,
+                )
+            )
+            used_names.add(entry.name.casefold())
+            if entry.item_id > 0:
+                used_ids.add(entry.item_id)
+
+        used_ids, used_names = _used()
+        enh_unused = [
+            e
+            for e in catalog
+            if e.category == "Enhancement"
+            and e.item_id not in used_ids
+            and e.name.casefold() not in used_names
+        ]
+        enh_unused.sort(key=lambda e: stats_rank_key(e.stats, e.name))
+        for rank, entry in enumerate(enh_unused, start=1):
+            alt = _anniversary_alternative(
+                entry,
+                entry.name,
+                catalog=catalog,
+                reserved_names=used_names,
+            )
+            block.filler.append(
+                _make_row(
+                    abbr=abbr,
+                    class_name=guide.name,
+                    priority="filler",
                     rank=rank,
                     guide_name=entry.name,
                     suggested=entry,

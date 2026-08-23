@@ -27,7 +27,6 @@ CATEGORY_KEYWORDS: tuple[str, ...] = (
 )
 
 ANNIVERSARY_NAME_MARKERS: tuple[str, ...] = (
-    "selenelion",
     "jubilation",
     "enduring harmony",
 )

@@ -87,7 +87,10 @@ def test_category_from_name_longest_match():
 
 
 def test_anniversary_markers():
-    assert is_anniversary_aug("Acolyte's Attacker of the Selenelion")
+    # Selenelion augs are jeweler crafts (Focus recipes), not anniversary.
+    assert not is_anniversary_aug("Acolyte's Fortification of the Selenelion")
+    assert not is_anniversary_aug("Devotee's Assault of the Selenelion")
+    assert not is_anniversary_aug("Acolyte's Attacker of the Selenelion")
     assert is_anniversary_aug("Silver Attacker of Jubilation")
     assert is_anniversary_aug("Devotee's Attacker of Enduring Harmony")
     assert not is_anniversary_aug("Acolyte's Attacker of the Harbinger")
@@ -162,7 +165,7 @@ def test_fetch_catalog_offline_classifies_and_sorts():
     assert by_id[169780].lore_group == "Acolyte's Combatant Augmentation Group"
     assert by_id[169791].aug_type == 19
     assert by_id[169791].type_label == "19"
-    assert by_id[109559].anniversary is True
+    assert by_id[109559].anniversary is False  # Selenelion crafts are not anniversary
     assert by_id[138886].anniversary is True
     assert by_id[169781].category == "Assaulting"
 
@@ -300,7 +303,7 @@ def test_cheat_sheet_and_anniversary_alternative():
             category="Fortification",
             lore_group=None,
             item_lore="Devotee's Fortification of the Selenelion",
-            anniversary=True,
+            anniversary=False,
             stats={"hp": 500, "ac": 50, "mana": 500},
         )
     )
@@ -315,6 +318,32 @@ def test_cheat_sheet_and_anniversary_alternative():
             item_lore=None,
             anniversary=False,
             stats={"hp": 200, "ac": 20},
+        )
+    )
+    entries.append(
+        Type18CatalogEntry(
+            item_id=999020,
+            name="Acolyte's Enhancement of Whispering Midnight",
+            aug_type=18,
+            type_label="18/19",
+            category="Enhancement",
+            lore_group=None,
+            item_lore=None,
+            anniversary=False,
+            stats={"hp": 300, "ac": 30},
+        )
+    )
+    entries.append(
+        Type18CatalogEntry(
+            item_id=999021,
+            name="Acolyte's Enhancement of the Selenelion",
+            aug_type=18,
+            type_label="18/19",
+            category="Enhancement",
+            lore_group=None,
+            item_lore=None,
+            anniversary=False,
+            stats={"hp": 450, "ac": 45},
         )
     )
     blocks = build_class_suggestions(entries, class_abbrs=["WAR", "WIZ"])
@@ -337,11 +366,19 @@ def test_cheat_sheet_and_anniversary_alternative():
     assert enduring.alternative is not None
     assert enduring.alternative.anniversary is False
     assert "Enduring Harmony" not in enduring.alternative.name
-    assert war.fortification
-    assert war.fortification[0].suggested is not None
-    assert war.fortification[0].suggested.category == "Fortification"
-    # Greatest unused Fortification first (999002 hp 500 before 999003 hp 200).
-    assert war.fortification[0].suggested.item_id == 999002
+    # Top 2 unused Fortifications append to Optional (999002 before 999003).
+    fort_opts = [
+        r
+        for r in war.optional
+        if r.suggested and r.suggested.category == "Fortification"
+        and r.suggested.item_id in {999002, 999003}
+    ]
+    assert [r.suggested.item_id for r in fort_opts] == [999002, 999003]
+    assert war.filler
+    assert war.filler[0].suggested is not None
+    assert war.filler[0].suggested.category == "Enhancement"
+    # Greatest unused Enhancement first (999021 hp 450 before 999020 hp 300).
+    assert war.filler[0].suggested.item_id == 999021
 
     wiz = next(b for b in blocks if b.class_abbr == "WIZ")
     assert wiz.caster_stats is True
@@ -360,7 +397,7 @@ def test_cheat_sheet_and_anniversary_alternative():
     assert fort_harb.owned is True
     assert all(
         not getattr(r, "note", None)
-        for r in (*war_owned.primary, *war_owned.optional, *war_owned.fortification)
+        for r in (*war_owned.primary, *war_owned.optional, *war_owned.filler)
     )
 
 
@@ -378,7 +415,11 @@ def test_type18_html_template_has_filters() -> None:
     assert 'section.type === "type18_augs"' in html
     assert "toolbar-char-wrap" in html
     assert "Alternative" in html
-    assert "Fortification (unused)" in html
+    assert 'renderPriority("Filler", filler)' in html
+    assert "type18-craft-copy" in html
+    assert "type18CraftCopyHtml" in html
+    assert "TYPE18_CARD_TIPS" in html
+    assert "type18-card-heading" in html
     assert "Spell Dmg" in html
     assert "badge owned" in html
     assert ">Owned<" in html
@@ -422,5 +463,5 @@ def test_build_type18_export_categories():
     assert all(
         not r.get("owned")
         for block in data["suggestions"]
-        for r in (*block["primary"], *block["optional"], *block["fortification"])
+        for r in (*block["primary"], *block["optional"], *block["filler"])
     )

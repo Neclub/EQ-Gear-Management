@@ -6,6 +6,16 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.0] - 2026-08-23
+
+### Changed
+
+- **Type 18/19 Augs:** Renamed the unused Fortification section to **Filler** (Enhancement augs, greatest→least). The top two unused Fortification augs now append to **Optional**.
+- **Type 18/19 Augs:** Selenelion augs are no longer treated as anniversary. They are jeweler crafts from Focus recipes ([Acolyte](https://www.eqtraders.com/search/reverse_recipe_search.php?item=71853&menustr=010000000000) / [Devotee](https://www.eqtraders.com/search/reverse_recipe_search.php?item=71872&menustr=010000000000)); anniversary markers are Jubilation and Enduring Harmony only.
+- **Type 18/19 Augs:** Non-anniversary augs show a craft (anvil) icon in HTML; click copies the item name to the clipboard. The icon is a filled side-profile anvil with a glowing purple style.
+- **Type 18/19 Augs:** Suggestion card titles include a hover tip: suggestions are advisory, and the anvil icon copies names for EQ Traders / Sharecraft recipes.
+- **Type 18/19 Augs:** When an **Alternative** is owned by the selected character, an Owned chip is shown next to it instead of the craft copy icon.
+
 ## [1.33.1] - 2026-08-23
 
 ### Changed

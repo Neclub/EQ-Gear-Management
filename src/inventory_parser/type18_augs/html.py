@@ -103,7 +103,7 @@ def serialize_type18_section(bundle: Type18Export) -> dict:
                 "casterStats": bool(block.caster_stats),
                 "primary": [_row_dict(r) for r in block.primary],
                 "optional": [_row_dict(r) for r in block.optional],
-                "fortification": [_row_dict(r) for r in block.fortification],
+                "filler": [_row_dict(r) for r in block.filler],
             }
         )
 

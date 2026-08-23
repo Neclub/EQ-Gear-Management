@@ -60,7 +60,7 @@ Suggested augs to wear or farm. If an aug should move to another slot, Upgrade t
 Shows which type 5 augs people already have equipped (and empty holes). Preference only — no upgrade suggestions.
 
 ### 🔮 Type 18/19 Augs *(work in progress)*
-Per-class suggestions from the Zarax cheat sheet, plus the full catalog. Pick a character to set class and see what they already own. Still being refined.
+Per-class suggestions from the Zarax cheat sheet (Primary / Optional / Filler), plus the full catalog. Pick a character to set class and see what they already own. Craft anvil copies non-anniversary names for EQ Traders. Still being refined.
 
 ### 👑 Raid BiS
 Compares what you are wearing to this expansion’s raid armor and jewelry.

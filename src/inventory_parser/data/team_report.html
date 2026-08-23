@@ -728,6 +728,17 @@ th.copy-col-head {
   justify-content: space-between;
 }
 .type18-augs .card-title { font-weight: 600; font-size: 14px; }
+.type18-augs .type18-card-heading {
+  display: inline-block;
+  cursor: help;
+  border-bottom: 1px dotted var(--muted);
+}
+.type18-augs .type18-card-heading:hover,
+.type18-augs .type18-card-heading:focus {
+  color: #fde68a;
+  border-bottom-color: #fde68a;
+  outline: none;
+}
 .type18-augs .card-sub { color: var(--muted); font-size: 12px; }
 .type18-augs .card-body { padding: 0; min-width: 0; }
 .type18-augs .table-scroll { overflow: auto; max-height: min(70vh, 820px); }
@@ -783,6 +794,38 @@ th.copy-col-head {
 .type18-augs .badge.owned {
   background: rgba(60, 140, 90, 0.28);
   color: #8fd4a8;
+}
+.type18-augs .type18-craft-copy {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: -3px;
+  margin-left: 6px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid rgba(168, 85, 247, 0.55);
+  border-radius: 6px;
+  background: rgba(76, 29, 149, 0.35);
+  color: #e9d5ff;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(168, 85, 247, 0.35);
+}
+.type18-augs .type18-craft-copy svg {
+  width: 14px;
+  height: 14px;
+  filter: drop-shadow(0 0 3px rgba(216, 180, 254, 0.85));
+}
+.type18-augs .type18-craft-copy:hover {
+  border-color: rgba(216, 180, 254, 0.9);
+  color: #f3e8ff;
+  background: rgba(91, 33, 182, 0.55);
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.55);
+}
+.type18-augs .type18-craft-copy.copied {
+  border-color: rgba(192, 132, 252, 0.95);
+  color: #f5d0fe;
+  box-shadow: 0 0 14px rgba(192, 132, 252, 0.7);
 }
 .type18-augs .muted { color: var(--muted); }
 .type18-augs .empty-msg { color: var(--muted); margin: 0; padding: 22px 16px; }
@@ -1258,14 +1301,16 @@ th.copy-col-head {
     <path d="M12 7v14"/>
     <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/>
   </symbol>
-  <symbol id="icon-anvil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M7 10H6a4 4 0 0 1 4-4"/>
-    <path d="M7 14v6"/>
-    <path d="M11 14v6"/>
-    <path d="M15 14v6"/>
-    <path d="M18 10h1a4 4 0 0 0-4-4"/>
-    <path d="M7 10h10"/>
-    <path d="M8 18h8"/>
+  <symbol id="icon-anvil" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M4 6H15.2C17.2 6 19.8 6.9 21.2 8.4C21.7 8.95 21.55 9.75 20.9 10.2C19.2 11.25 17.3 11.55 15.7 11.65C15.4 13.5 14.4 15.25 12.7 16.35H19V17.5L17.7 19.6H14.3C13.35 18.45 12.55 18.2 12 18.2C11.45 18.2 10.65 18.45 9.7 19.6H6.3L5 17.5V16.35H10.5C8.55 15.1 7.55 13.3 7.35 11.5C5.7 11.35 4.1 10.9 3.1 9.95C2.5 9.4 2.55 8.5 3.2 7.95C3.1 7.35 3.25 6.55 4 6Z"/>
+  </symbol>
+  <symbol id="icon-anvil-craft" viewBox="0 0 24 24">
+    <path fill="#8b5cf6" d="M4 6H15.2C17.2 6 19.8 6.9 21.2 8.4C21.7 8.95 21.55 9.75 20.9 10.2C19.2 11.25 17.3 11.55 15.7 11.65C15.4 13.5 14.4 15.25 12.7 16.35H19V17.5L17.7 19.6H14.3C13.35 18.45 12.55 18.2 12 18.2C11.45 18.2 10.65 18.45 9.7 19.6H6.3L5 17.5V16.35H10.5C8.55 15.1 7.55 13.3 7.35 11.5C5.7 11.35 4.1 10.9 3.1 9.95C2.5 9.4 2.55 8.5 3.2 7.95C3.1 7.35 3.25 6.55 4 6Z"/>
+    <path fill="none" stroke="#f5e8ff" stroke-width="1.15" stroke-linecap="round" d="M4.4 7.2h9.8"/>
+    <path fill="none" stroke="#f5e8ff" stroke-width="1.1" stroke-linecap="round" d="M5.8 9.8c.3 2.1 1.3 3.9 3.3 5.1"/>
+    <path fill="none" stroke="#f5e8ff" stroke-width="1.05" stroke-linecap="round" d="M15.7 6.6c1.8.5 3.5 1.2 4.7 2.1"/>
+    <path fill="none" stroke="#f5e8ff" stroke-width="1" stroke-linecap="round" d="M14.7 11.2v1.4"/>
+    <path fill="none" stroke="#f5e8ff" stroke-width="1.05" stroke-linecap="round" d="M6.4 18.4h2.1M15.5 18.4h2.1"/>
   </symbol>
   <symbol id="icon-chest" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
     <rect width="20" height="5" x="2" y="3" rx="1"/>
@@ -2916,6 +2961,49 @@ function type18SuggestionOwned(sug, character) {
   return (character.ownedNames || []).some((n) => String(n).toLowerCase() === name);
 }
 
+function type18CraftCopyHtml(name) {
+  const text = String(name || "").trim();
+  if (!text) return "";
+  return (
+    `<button type="button" class="type18-craft-copy" data-copy="${slot2Esc(text)}" ` +
+    `title="Craftable — click to copy name" aria-label="Copy craftable aug name">` +
+    `<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-anvil-craft"></use></svg>` +
+    `</button>`
+  );
+}
+
+const TYPE18_CARD_TIPS = [
+  "These augs are suggestions—if you have a better option, use it.",
+  "Click the anvil icon to copy an aug name to the clipboard, then paste it into EQ Traders or Sharecraft for recipes.",
+];
+
+function type18BindCardTitleTips(titleEl) {
+  if (!titleEl) return;
+  titleEl.tabIndex = 0;
+  titleEl.addEventListener("mouseenter", () => showRaidBisTipBalloon(titleEl, TYPE18_CARD_TIPS));
+  titleEl.addEventListener("mouseleave", hideRaidBisTipBalloon);
+  titleEl.addEventListener("focus", () => showRaidBisTipBalloon(titleEl, TYPE18_CARD_TIPS));
+  titleEl.addEventListener("blur", hideRaidBisTipBalloon);
+}
+
+function type18BindCraftCopy(root) {
+  root.addEventListener("click", (ev) => {
+    const btn = ev.target.closest(".type18-craft-copy");
+    if (!btn || !root.contains(btn)) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    const text = btn.getAttribute("data-copy") || "";
+    if (!text) return;
+    copyTextToClipboard(text)
+      .then(() => {
+        btn.classList.add("copied");
+        showCopyBalloon(btn, text);
+        setTimeout(() => btn.classList.remove("copied"), 900);
+      })
+      .catch(() => {});
+  });
+}
+
 function type18DefaultClass(data) {
   const filters = type18FilterState();
   const character = type18DefaultCharacter(data);
@@ -2936,6 +3024,7 @@ function updateType18AugsContent(panel, section) {
   const q = (state.searches[section.id] || "").trim().toLowerCase();
   const filters = type18FilterState();
   const root = el("div", "type18-augs");
+  type18BindCraftCopy(root);
 
   const viewBar = el("div", "filters");
   viewBar.appendChild(el("span", "filter-label", "View"));
@@ -3008,7 +3097,7 @@ function renderType18Suggestions(root, data, url, q, filters) {
   const allRows = [
     ...(block.primary || []),
     ...(block.optional || []),
-    ...(block.fortification || []),
+    ...(block.filler || []),
   ].map((r) => ({
     ...r,
     owned: type18SuggestionOwned(r.suggested, character),
@@ -3038,7 +3127,9 @@ function renderType18Suggestions(root, data, url, q, filters) {
     const who = character
       ? `${character.displayName || character.name} · ${block.className}`
       : block.className;
-    head.appendChild(el("div", "card-title", `${who} · ${title}`));
+    const titleEl = el("div", "card-title type18-card-heading", `${who} · ${title}`);
+    type18BindCardTitleTips(titleEl);
+    head.appendChild(titleEl);
     head.appendChild(el("div", "card-sub", `${list.length} suggestion${list.length === 1 ? "" : "s"}`));
     card.appendChild(head);
     const body = el("div", "card-body");
@@ -3067,11 +3158,24 @@ function renderType18Suggestions(root, data, url, q, filters) {
         nameBadges.push('<span class="badge anniv">Anniversary</span>');
       }
       if (r.upgraded) nameBadges.push('<span class="badge lore">Upgraded</span>');
+      const sugCraft =
+        sug.name && !(sug.anniversary || r.anniversary)
+          ? type18CraftCopyHtml(sug.name)
+          : "";
       const sugHtml = sug.name
-        ? slot2ItemLink(url, sug.name, sug.itemId) + nameBadges.join("")
+        ? slot2ItemLink(url, sug.name, sug.itemId) + sugCraft + nameBadges.join("")
         : slot2Esc(r.guideName || "—");
+      const altOwned = type18SuggestionOwned(alt, character);
+      let altExtra = "";
+      if (alt.name) {
+        if (altOwned) {
+          altExtra = '<span class="badge owned">Owned</span>';
+        } else if (!alt.anniversary) {
+          altExtra = type18CraftCopyHtml(alt.name);
+        }
+      }
       const altHtml = alt.name
-        ? slot2ItemLink(url, alt.name, alt.itemId)
+        ? slot2ItemLink(url, alt.name, alt.itemId) + altExtra
         : (sug.anniversary || r.anniversary ? "<span class=\"muted\">—</span>" : "");
       const ownedHtml = r.owned ? '<span class="badge owned">Owned</span>' : "";
       const statA = casterStats ? (Number(sug.mana) || 0) : (Number(sug.ac) || 0);
@@ -3097,14 +3201,14 @@ function renderType18Suggestions(root, data, url, q, filters) {
 
   const primary = rows.filter((r) => r.priority === "primary");
   const optional = rows.filter((r) => r.priority === "optional");
-  const fortification = rows.filter((r) => r.priority === "fortification");
+  const filler = rows.filter((r) => r.priority === "filler");
   if (!rows.length) {
     root.appendChild(el("p", "empty-msg", "No suggestions match the search."));
     return;
   }
   renderPriority("Primary", primary);
   renderPriority("Optional", optional);
-  renderPriority("Optional · Fortification (unused)", fortification);
+  renderPriority("Filler", filler);
 }
 
 function renderType18Catalog(root, data, url, q, filters) {
@@ -3304,7 +3408,8 @@ function renderType18Catalog(root, data, url, q, filters) {
         badges.push('<span class="badge lore" title="Only one of this lore group may be equipped">Lore 1</span>');
       }
       if (r.anniversary) badges.push('<span class="badge anniv">Anniversary</span>');
-      const nameHtml = slot2ItemLink(url, r.name, r.itemId) + badges.join("");
+      const craftBtn = !r.anniversary && r.name ? type18CraftCopyHtml(r.name) : "";
+      const nameHtml = slot2ItemLink(url, r.name, r.itemId) + craftBtn + badges.join("");
       const label = type18RowLabel(r);
       tr.innerHTML = [
         `<td>${slot2Esc(label)}</td>`,

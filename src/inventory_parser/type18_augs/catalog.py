@@ -49,13 +49,13 @@ TYPE19_CATALOG_URL = (
 )
 
 # Member search caps at 50 rows and POST page>1 repeats page 1, so always merge
-# focused name queries (each stays under the cap). Include anniversary markers.
+# focused name queries (each stays under the cap).
 _TYPE19_SUPPLEMENTAL_QUERIES: tuple[str, ...] = (
     # Anniversary event markers (substring match).
-    "Selenelion",
     "Jubilation",
     "Enduring Harmony",
-    # Older expansion families.
+    # Crafted Focus lines and older expansion families.
+    "Selenelion",
     "Blazing Euphoria",
     "Whispering Midnight",
     "Weeping Heaven",
@@ -300,9 +300,9 @@ def fetch_type19_search_rows(
     """
     Load augs that fit Type 19 holes via advanced search (Fits Aug Slot / augtype=19).
 
-    Always merges focused name queries (anniversary + families). EQ Resource member
-    search caps at 50 rows and ignores ``page`` on POST, so broad queries alone miss
-    items such as anniversary Enduring Harmony / Selenelion augs.
+    Always merges focused name queries (anniversary + craft/family markers). EQ Resource
+    member search caps at 50 rows and ignores ``page`` on POST, so broad queries alone miss
+    items such as anniversary Enduring Harmony / Jubilation augs.
     """
     by_id: dict[int, EqrSearchRow] = {}
 

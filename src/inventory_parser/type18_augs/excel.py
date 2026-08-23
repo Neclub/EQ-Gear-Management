@@ -138,7 +138,7 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
     def write_block(character_label: str, block, *, owned_ids: set[int], owned_names: set[str]) -> None:
         nonlocal row_idx
         caster = bool(block.caster_stats) or is_caster_class(block.class_abbr)
-        for row in (*block.primary, *block.optional, *block.fortification):
+        for row in (*block.primary, *block.optional, *block.filler):
             sug = row.suggested
             alt = row.alternative
             ws.cell(row_idx, 1, character_label)
@@ -160,7 +160,6 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
                 if (
                     "enduring harmony" in row.guide_name.casefold()
                     or "jubilation" in row.guide_name.casefold()
-                    or "selenelion" in row.guide_name.casefold()
                 ):
                     name_cell.fill = FILL_ANNIVERSARY
             if alt is not None:
