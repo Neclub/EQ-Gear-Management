@@ -51,7 +51,6 @@ def serialize_type5_section(bundle: Type5Export) -> dict:
                     "parentName": slot.parent_name,
                     "parentId": slot.parent_id,
                     "empty": slot.name is None or slot.item_id is None,
-                    "iconId": slot.icon_id,
                     "hstr": int(stats.get("hstr", 0)),
                     "hsta": int(stats.get("hsta", 0)),
                     "hint": int(stats.get("hint", 0)),
@@ -83,6 +82,5 @@ def serialize_type5_section(bundle: Type5Export) -> dict:
         "characters": char_meta,
         "rows": rows,
         "heroicKeys": list(HEROIC_STAT_KEYS),
-        "iconDataUris": bundle.icon_data_uris,
         "eqResourceItemUrl": EQRESOURCE_ITEM_URL,
     }

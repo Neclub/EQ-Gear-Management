@@ -61,7 +61,6 @@ class Type5SlotRow:
     parent_id: int | None = None
     expansion: str | None = None
     stats: dict[str, int] = field(default_factory=dict)
-    icon_id: str | None = None
 
 
 @dataclass
@@ -81,7 +80,6 @@ class Type5Export:
     export_prefix: str = "Team"
     show_server_in_columns: bool = False
     catalog_url: str = TYPE5_CATALOG_URL
-    icon_data_uris: dict[str, str] = field(default_factory=dict)
 
 
 def _slot_sort_key(gear_slot: str) -> tuple[int, str]:
@@ -223,12 +221,8 @@ def build_type5_export(
             expansion: str | None = None
             if aug.item_id and aug.item_id in aug_by_id:
                 stats = _heroic_from_aug_stats(aug_by_id[aug.item_id].stats)
-                icon_id = aug_by_id[aug.item_id].icon_id
             elif aug.item_id:
                 stats = _heroic_from_aug_stats(None)
-                icon_id = None
-            else:
-                icon_id = None
             if aug.item_id:
                 expansion = expansions.get(aug.item_id)
             slot_rows.append(
@@ -241,7 +235,6 @@ def build_type5_export(
                     parent_id=aug.parent_id,
                     expansion=expansion,
                     stats=stats,
-                    icon_id=icon_id,
                 )
             )
         characters.append(
@@ -260,19 +253,6 @@ def build_type5_export(
     server = unique_servers[0] if len(unique_servers) == 1 else ""
     prefix = default_export_prefix_from_report(team) or (server or "Team")
 
-    from inventory_parser.raid_bis.icons import collect_icon_data_uris
-
-    icon_ids = {
-        slot.icon_id
-        for ch in characters
-        for slot in ch.slots
-        if slot.icon_id
-    }
-    icon_data_uris = collect_icon_data_uris(
-        icon_ids,
-        allow_network=fetch_eqr_augs and not eqr_aug_html_by_id,
-    )
-
     return Type5Export(
         characters=characters,
         roster=roster,
@@ -281,5 +261,4 @@ def build_type5_export(
         export_prefix=str(prefix),
         show_server_in_columns=show_server,
         catalog_url=TYPE5_CATALOG_URL,
-        icon_data_uris=icon_data_uris,
     )

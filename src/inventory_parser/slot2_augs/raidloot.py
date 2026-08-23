@@ -175,7 +175,6 @@ class AugCandidate:
     source: str = ""
     stats: dict[str, int] = field(default_factory=dict)
     aug_types: frozenset[int] = field(default_factory=frozenset)
-    icon_id: str | None = None
 
     def lore_group_key(self) -> str:
         """Casefolded lore-group id/name, or empty when the aug is not grouped."""

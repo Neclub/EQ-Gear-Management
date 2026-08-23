@@ -6,18 +6,6 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
-### Added
-
-- **Type 7/8 Augs / Type 5 Augs:** HTML reports show the same inventory-window paperdoll as Raid BiS, with aug icons in each slot (Type 7/8: green BiS / gold upgrade; Type 5: equipped vs empty). Slots without that hole stay dim. Type 7/8 **Slot recommendations** is one card per character with the paperdoll beside the table.
-
-### Changed
-
-- **Docs:** HowToUse, README, site index, and Discord instructions note the Type 7/8 and Type 5 HTML inventory paperdolls.
-
-### Fixed
-
-- **Raid BiS:** HTML paperdoll shows the equipped Power Source icon for current-expansion `Riven Arcana … Source` items. Those names were treated as catalog junk, so the slot fell back to a text link.
-
 ## [1.32.0] - 2026-08-22
 
 ### Added

@@ -50,7 +50,6 @@ _HEADER_TO_STAT: dict[str, str] = {
 }
 
 _ITEM_HREF_RE = re.compile(r"items\.php\?id=(\d+)", re.IGNORECASE)
-_ICON_RE = re.compile(r"itemimages/(\d+)\.(?:png|gif|jpg|webp)", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -58,7 +57,6 @@ class EqrSearchRow:
     item_id: int
     name: str
     stats: dict[str, int]
-    icon_id: str | None = None
 
 
 class _SearchTableParser(HTMLParser):
@@ -69,35 +67,27 @@ class _SearchTableParser(HTMLParser):
         self._in_td = False
         self._td_parts: list[str] = []
         self._td_href = ""
-        self._td_icon = ""
-        self._row_cells: list[tuple[str, str, str]] = []
+        self._row_cells: list[tuple[str, str]] = []
         self.header: list[str] = []
-        self.rows: list[tuple[int, str, str | None, list[str]]] = []
+        self.rows: list[tuple[int, str, list[str]]] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        ad = dict(attrs)
         if tag == "tr":
             self._row_cells = []
         elif tag == "td":
             self._in_td = True
             self._td_parts = []
             self._td_href = ""
-            self._td_icon = ""
         elif tag == "a" and self._in_td:
-            href = ad.get("href") or ""
+            href = dict(attrs).get("href") or ""
             if href:
                 self._td_href = href
-        elif tag == "img" and self._in_td:
-            src = ad.get("src") or ""
-            m = _ICON_RE.search(src)
-            if m:
-                self._td_icon = m.group(1)
 
     def handle_endtag(self, tag: str) -> None:
         if tag == "td" and self._in_td:
             self._in_td = False
             text = re.sub(r"\s+", " ", " ".join(self._td_parts)).strip()
-            self._row_cells.append((self._td_href, text, self._td_icon))
+            self._row_cells.append((self._td_href, text))
         elif tag == "tr":
             self._finish_row()
 
@@ -110,24 +100,21 @@ class _SearchTableParser(HTMLParser):
         self._row_cells = []
         if not cells:
             return
-        texts = [t for _h, t, _i in cells]
+        texts = [t for _h, t in cells]
         joined = " ".join(texts).casefold()
         if "item name" in joined and "ac" in joined:
             self.header = [t.strip() for t in texts]
             return
         item_id = 0
         name = ""
-        icon = None
-        for href, text, icon_id in cells:
+        for href, text in cells:
             m = _ITEM_HREF_RE.search(href) or _ITEM_HREF_RE.search(text)
             if m:
                 item_id = int(m.group(1))
                 name = text.strip() or name
-            if icon_id and not icon:
-                icon = icon_id
         if item_id <= 0:
             return
-        self.rows.append((item_id, name, icon, texts))
+        self.rows.append((item_id, name, texts))
 
 
 def parse_eqresource_search_html(html: str) -> list[EqrSearchRow]:
@@ -146,7 +133,7 @@ def parse_eqresource_search_html(html: str) -> list[EqrSearchRow]:
 
     out: list[EqrSearchRow] = []
     seen: set[int] = set()
-    for item_id, name, icon, texts in parser.rows:
+    for item_id, name, texts in parser.rows:
         if item_id in seen:
             continue
         seen.add(item_id)
@@ -170,7 +157,6 @@ def parse_eqresource_search_html(html: str) -> list[EqrSearchRow]:
                 item_id=item_id,
                 name=name or f"Item {item_id}",
                 stats=clean_stats(stats),
-                icon_id=icon,
             )
         )
     return out
@@ -272,7 +258,6 @@ def _row_to_candidate(row: EqrSearchRow, profile: ProfileId) -> AugCandidate:
         lore=True,
         source="EQ Resource",
         stats=stats,
-        icon_id=row.icon_id,
     )
 
 
@@ -317,13 +302,7 @@ def fetch_eqresource_catalog(
                 "fetched_at": now,
                 "url": url,
                 "rows": [
-                    {
-                        "item_id": r.item_id,
-                        "name": r.name,
-                        "stats": r.stats,
-                        "icon_id": r.icon_id,
-                    }
-                    for r in rows
+                    {"item_id": r.item_id, "name": r.name, "stats": r.stats} for r in rows
                 ],
             }
             _save_cache(cache)
@@ -335,12 +314,6 @@ def fetch_eqresource_catalog(
                     item_id=int(d["item_id"]),
                     name=str(d.get("name") or f"Item {d['item_id']}"),
                     stats=clean_stats(d.get("stats") or {}),
-                    icon_id=(
-                        str(d["icon_id"]).strip()
-                        if d.get("icon_id") not in (None, "")
-                        and str(d["icon_id"]).strip().isdigit()
-                        else None
-                    ),
                 )
                 for d in cached["rows"]
             ]
@@ -383,7 +356,6 @@ def fetch_eqresource_catalog(
                 atk=atk or aug.atk,
                 stats=stats,
                 source=aug.source or "EQ Resource",
-                icon_id=aug.icon_id or row.icon_id,
             )
         )
 

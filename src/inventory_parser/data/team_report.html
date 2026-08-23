@@ -466,39 +466,6 @@ th.copy-col-head {
 }
 .quest-empty { color: var(--muted); margin: 12px 4px; }
 .slot2-augs { display: flex; flex-direction: column; gap: 16px; }
-.slot2-augs .slot-rec-cards { display: flex; flex-direction: column; gap: 16px; }
-.slot2-augs .slot-rec-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-}
-.slot2-augs .slot-rec-card .card-head {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 6px;
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
-}
-.slot2-augs .slot-rec-card .card-sub { margin: 0; color: var(--muted); font-size: 12px; }
-.slot2-augs .slot-rec-card .card-body {
-  padding: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  align-items: flex-start;
-  min-width: 0;
-}
-.slot2-augs .slot-rec-table-wrap { flex: 1 1 280px; min-width: 0; overflow-x: auto; }
-.slot2-augs .slot-rec-help {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 8px;
-  color: var(--muted);
-  font-size: 12.5px;
-}
 .slot2-augs .card {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -671,15 +638,8 @@ th.copy-col-head {
   border-bottom: 1px solid var(--border);
 }
 .type5-augs .card-sub { margin: 0; color: var(--muted); font-size: 12px; }
-.type5-augs .card-body {
-  padding: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  align-items: flex-start;
-  min-width: 0;
-}
-.type5-augs .table-scroll { overflow: auto; max-height: min(70vh, 820px); flex: 1 1 280px; min-width: 0; }
+.type5-augs .card-body { padding: 16px; min-width: 0; }
+.type5-augs .table-scroll { overflow: auto; max-height: min(70vh, 820px); }
 .type5-augs table {
   width: auto;
   max-width: 100%;
@@ -841,8 +801,7 @@ th.copy-col-head {
 }
 .raid-bis .card-sub { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; white-space: normal; }
 .raid-bis .card-body { padding: 16px; display: flex; flex-wrap: wrap; gap: 24px; align-items: flex-start; min-width: 0; }
-.raid-bis-paperdoll,
-.paperdoll {
+.raid-bis-paperdoll {
   display: grid;
   grid-template-columns: repeat(4, 48px);
   grid-template-rows: repeat(8, 48px);
@@ -853,8 +812,7 @@ th.copy-col-head {
   border-radius: 4px;
   padding: 8px;
 }
-.raid-bis-portrait,
-.paperdoll-portrait {
+.raid-bis-portrait {
   grid-column: 2 / 4;
   grid-row: 2 / 6;
   border: 1px solid #3d4a63;
@@ -869,16 +827,14 @@ th.copy-col-head {
   font-weight: 700;
   letter-spacing: 0.08em;
 }
-.raid-bis-spacer,
-.paperdoll-spacer {
+.raid-bis-spacer {
   grid-column: 1;
   grid-row: 7;
   border: 1px solid #3d4a63;
   border-radius: 2px;
   background: #0b1220;
 }
-.raid-bis-slot,
-.paperdoll-slot {
+.raid-bis-slot {
   min-height: 0;
   border: 1px solid #3d4a63;
   border-radius: 2px;
@@ -893,15 +849,13 @@ th.copy-col-head {
   cursor: default;
   position: relative;
 }
-.raid-bis-slot img,
-.paperdoll-slot img {
+.raid-bis-slot img {
   width: 40px;
   height: 40px;
   image-rendering: pixelated;
   flex: 0 0 auto;
 }
-.raid-bis-slot .slot-name,
-.paperdoll-slot .slot-name {
+.raid-bis-slot .slot-name {
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -910,21 +864,13 @@ th.copy-col-head {
   -webkit-box-orient: vertical;
   line-height: 1.15;
 }
-.raid-bis-slot a,
-.paperdoll-slot a { color: var(--link); text-decoration: none; word-break: break-word; }
-.raid-bis-slot a:hover,
-.paperdoll-slot a:hover { text-decoration: underline; }
-.raid-bis-slot.status-bis,
-.paperdoll-slot.status-bis { box-shadow: inset 0 0 0 1px var(--bis); }
-.raid-bis-slot.status-upgrade,
-.paperdoll-slot.status-upgrade { box-shadow: inset 0 0 0 1px var(--upgrade); }
-.raid-bis-slot.status-empty,
-.paperdoll-slot.status-empty { box-shadow: inset 0 0 0 1px var(--empty-status); }
-.raid-bis-slot.status-unknown,
-.paperdoll-slot.status-unknown { box-shadow: inset 0 0 0 1px var(--unknown); }
-.raid-bis-slot.status-weapon,
-.paperdoll-slot.status-weapon,
-.paperdoll-slot.status-none { opacity: 0.85; }
+.raid-bis-slot a { color: var(--link); text-decoration: none; word-break: break-word; }
+.raid-bis-slot a:hover { text-decoration: underline; }
+.raid-bis-slot.status-bis { box-shadow: inset 0 0 0 1px var(--bis); }
+.raid-bis-slot.status-upgrade { box-shadow: inset 0 0 0 1px var(--upgrade); }
+.raid-bis-slot.status-empty { box-shadow: inset 0 0 0 1px var(--empty-status); }
+.raid-bis-slot.status-unknown { box-shadow: inset 0 0 0 1px var(--unknown); }
+.raid-bis-slot.status-weapon { opacity: 0.85; }
 .raid-bis-slot .pet-focus {
   position: absolute;
   top: 1px;
@@ -2434,116 +2380,22 @@ function updateSlot2AugsContent(panel, section) {
 
   let upgrades = (data.upgrades || []).filter((u) => slot2MatchesChar(u, data));
   if (q) upgrades = upgrades.filter((u) => JSON.stringify(u).toLowerCase().includes(q));
+  let upHtml;
+  if (!(data.upgrades || []).length) upHtml = '<p class="empty-msg">No graded type 7/8 slots found.</p>';
+  else if (!upgrades.length) upHtml = '<p class="empty-msg">No rows for this character.</p>';
+  else {
+    let body = "";
+    upgrades.forEach((u) => {
+      const cur = u.currentName ? slot2ItemLink(url, u.currentName, u.currentId) : '<span class="muted-cell">(empty)</span>';
+      const rec = u.recommendedName ? slot2ItemLink(url, u.recommendedName, u.recommendedId) + badge(u.recommendedOwned, u.moveFromSlot, u.craftComponentOwned, u.craftComponentName, u.craftComponentId) : "";
+      const status = String(u.status || "").toLowerCase();
+      body += `<tr class="status-${slot2Esc(status)}"><td>${pill(status)}</td><td>${slot2Esc(u.displayName || u.character)}</td><td>${slot2Esc(u.gearSlot)}</td><td>${cur}</td><td>${rec}</td><td>${slot2Esc(u.recommendedExpansion || "")}</td><td class="muted-cell">${slot2Esc(u.note || "")}</td></tr>`;
+    });
+    upHtml = `<table><thead><tr><th>Status</th><th>Character</th><th>Slot</th><th>Current</th><th>Upgrade to</th><th>Expansion</th><th>Note</th></tr></thead><tbody>${body}</tbody></table>`;
+  }
   const slotRecTip =
     "These are recommendations. Some classes already sit at a stat cap, so it is up to you to decide whether a suggested change is the best fit.";
-  const slotRecSection = el("section", "card");
-  const slotRecHead = el("div", "card-head");
-  const slotRecH2 = document.createElement("h2");
-  const slotRecBtn = document.createElement("button");
-  slotRecBtn.type = "button";
-  slotRecBtn.className = "card-toggle";
-  slotRecBtn.setAttribute("aria-expanded", "true");
-  slotRecBtn.innerHTML = `<span class="chevron" aria-hidden="true"></span>Slot recommendations`;
-  slotRecBtn.addEventListener("click", () => {
-    const c = slotRecSection.classList.toggle("collapsed");
-    slotRecBtn.setAttribute("aria-expanded", c ? "false" : "true");
-  });
-  slotRecH2.appendChild(slotRecBtn);
-  const slotRecHelp = document.createElement("span");
-  slotRecHelp.className = "raid-bis-help raid-bis-tip";
-  slotRecHelp.tabIndex = 0;
-  slotRecHelp.setAttribute("aria-label", "Slot recommendations note");
-  slotRecHelp.setAttribute("data-tip", slotRecTip);
-  slotRecHelp.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-help"></use></svg>';
-  slotRecH2.appendChild(slotRecHelp);
-  slotRecHead.appendChild(slotRecH2);
-  slotRecSection.appendChild(slotRecHead);
-  const slotRecBody = el("div", "card-body");
-  const icons = data.iconDataUris || {};
-
-  if (!(data.upgrades || []).length) {
-    slotRecBody.appendChild(el("p", "empty-msg", "No graded type 7/8 slots found."));
-  } else if (!upgrades.length) {
-    slotRecBody.appendChild(el("p", "empty-msg", "No rows for this character."));
-  } else {
-    const byKey = new Map();
-    upgrades.forEach((u) => {
-      const key = u.personaKey || u.displayName || u.character || "";
-      if (!byKey.has(key)) byKey.set(key, []);
-      byKey.get(key).push(u);
-    });
-    const chars = data.characters || [];
-    const ordered = [];
-    const seen = new Set();
-    chars.forEach((ch) => {
-      const key = ch.personaKey || ch.displayName || ch.columnLabel || ch.character || "";
-      if (!byKey.has(key)) return;
-      ordered.push({ meta: ch, rows: byKey.get(key) });
-      seen.add(key);
-    });
-    byKey.forEach((rows, key) => {
-      if (seen.has(key)) return;
-      ordered.push({
-        meta: {
-          personaKey: key,
-          character: rows[0].character || key,
-          displayName: rows[0].displayName || rows[0].character || key,
-          classAbbr: "",
-        },
-        rows,
-      });
-    });
-
-    const cards = el("div", "slot-rec-cards");
-    ordered.forEach(({ meta, rows }) => {
-      const charCard = el("div", "slot-rec-card");
-      charCard.dataset.personaKey = meta.personaKey || meta.displayName || meta.character || "";
-      const head = el("div", "card-head");
-      head.appendChild(raidBisCharTitle(meta));
-      const changed = rows.filter((r) => {
-        const s = String(r.status || "").toLowerCase();
-        return s === "upgrade" || s === "empty" || s === "unknown";
-      }).length;
-      const sub = el("div", "card-sub");
-      sub.textContent = changed
-        ? `${changed} slot(s) to upgrade`
-        : "already BiS";
-      head.appendChild(sub);
-      charCard.appendChild(head);
-
-      const body = el("div", "card-body");
-      const bySlot = {};
-      rows.forEach((r) => {
-        bySlot[r.gearSlot] = paperdollCellFromSlot2(r.gearSlot, r);
-      });
-      RAID_BIS_LAYOUT.forEach((slotName) => {
-        if (!bySlot[slotName]) bySlot[slotName] = paperdollCellFromSlot2(slotName, null);
-      });
-      body.appendChild(buildInventoryPaperdoll({
-        classAbbr: meta.classAbbr || "",
-        portraitTitle: meta.displayName || meta.character || "",
-        bySlot,
-        icons,
-        url,
-      }));
-
-      let tableBody = "";
-      rows.forEach((u) => {
-        const cur = u.currentName ? slot2ItemLink(url, u.currentName, u.currentId) : '<span class="muted-cell">(empty)</span>';
-        const rec = u.recommendedName ? slot2ItemLink(url, u.recommendedName, u.recommendedId) + badge(u.recommendedOwned, u.moveFromSlot, u.craftComponentOwned, u.craftComponentName, u.craftComponentId) : "";
-        const status = String(u.status || "").toLowerCase();
-        tableBody += `<tr class="status-${slot2Esc(status)}"><td>${pill(status)}</td><td>${slot2Esc(u.gearSlot)}</td><td>${cur}</td><td>${rec}</td><td>${slot2Esc(u.recommendedExpansion || "")}</td><td class="muted-cell">${slot2Esc(u.note || "")}</td></tr>`;
-      });
-      const tableWrap = el("div", "slot-rec-table-wrap");
-      tableWrap.innerHTML = `<table><thead><tr><th>Status</th><th>Slot</th><th>Current</th><th>Upgrade to</th><th>Expansion</th><th>Note</th></tr></thead><tbody>${tableBody}</tbody></table>`;
-      body.appendChild(tableWrap);
-      charCard.appendChild(body);
-      cards.appendChild(charCard);
-    });
-    slotRecBody.appendChild(cards);
-  }
-  slotRecSection.appendChild(slotRecBody);
-  root.appendChild(slotRecSection);
+  root.appendChild(card("Slot recommendations", upHtml, false, null, null, slotRecTip));
 
   let farm = (data.farmList || []).filter((f) => slot2MatchesChar(f, data));
   if (q) farm = farm.filter((f) => JSON.stringify(f).toLowerCase().includes(q));
@@ -2802,22 +2654,6 @@ function updateType5AugsContent(panel, section) {
     card.appendChild(head);
 
     const body = el("div", "card-body");
-    const icons = data.iconDataUris || {};
-    const allRowsForDoll = allForChar;
-    const bySlot = {};
-    allRowsForDoll.forEach((r) => {
-      bySlot[r.gearSlot] = paperdollCellFromType5(r.gearSlot, r);
-    });
-    RAID_BIS_LAYOUT.forEach((slotName) => {
-      if (!bySlot[slotName]) bySlot[slotName] = paperdollCellFromType5(slotName, null);
-    });
-    body.appendChild(buildInventoryPaperdoll({
-      classAbbr: ch.classAbbr || "",
-      portraitTitle: ch.displayName || ch.character || "",
-      bySlot,
-      icons,
-      url,
-    }));
     const wrap = el("div", "table-scroll");
     const table = el("table", "type5-table");
     const thead = document.createElement("thead");
@@ -2910,117 +2746,6 @@ const RAID_BIS_LAYOUT = [
   "Fingers-1", "Fingers-2", "Power Source",
   "Primary", "Secondary", "Range", "Ammo",
 ];
-
-/** Build the shared inventory-window paperdoll.
- *  bySlot maps gearSlot → cell descriptor:
- *  { status, showName, showId, iconId, title, petFocus, currentIsEvolver, waist }
- */
-function buildInventoryPaperdoll(opts) {
-  const classAbbr = opts.classAbbr || "";
-  const portraitTitle = opts.portraitTitle || "";
-  const bySlot = opts.bySlot || {};
-  const icons = opts.icons || {};
-  const url = opts.url;
-  const doll = el("div", "raid-bis-paperdoll paperdoll");
-  const portrait = el("div", "raid-bis-portrait paperdoll-portrait", classAbbr);
-  portrait.title = portraitTitle;
-  doll.appendChild(portrait);
-  doll.appendChild(el("div", "raid-bis-spacer paperdoll-spacer"));
-  RAID_BIS_LAYOUT.forEach((slotName) => {
-    const cls = RAID_BIS_SLOT_CLASS[slotName];
-    if (!cls) return;
-    const cell = bySlot[slotName] || { status: "none" };
-    const status = cell.status || "none";
-    const box = el("div", `raid-bis-slot paperdoll-slot ${cls} status-${status}`);
-    if (cell.waist) box.dataset.raidBisWaistSlot = "1";
-    box.title = cell.title || slotName;
-    const wrap = el("div", "slot-name");
-    wrap.innerHTML = raidBisItemHtml(url, cell.showName, cell.showId, icons, cell.iconId);
-    box.appendChild(wrap);
-    if (cell.petFocus) box.appendChild(el("div", "pet-focus", "✦"));
-    if (cell.currentIsEvolver) {
-      const gem = el("div", "evolver-gem raid-bis-tip");
-      gem.dataset.tip = "Evolver";
-      gem.tabIndex = 0;
-      gem.setAttribute("aria-label", "Evolver");
-      gem.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-evolver"></use></svg>';
-      box.appendChild(gem);
-    }
-    doll.appendChild(box);
-  });
-  return doll;
-}
-
-function paperdollCellFromRaidBisSlot(slotName, slot, currencyName) {
-  const unscored = slotName === "Primary" || slotName === "Secondary" || slotName === "Ammo" || slotName === "Power Source";
-  const resolved = slot || { gearSlot: slotName, status: "unknown", scored: !unscored };
-  const showName = resolved.status === "bis" || resolved.status === "weapon"
-    ? resolved.currentName
-    : (resolved.recommendedName || resolved.currentName);
-  const showId = resolved.status === "bis" || resolved.status === "weapon"
-    ? resolved.currentId
-    : (resolved.recommendedId || resolved.currentId);
-  const iconId = resolved.status === "bis" || resolved.status === "weapon"
-    ? resolved.currentIconId
-    : (resolved.recommendedIconId || resolved.currentIconId);
-  const recBit = resolved.recommendedName && resolved.recommendedName !== resolved.currentName
-    ? ` → ${resolved.recommendedName}`
-    : "";
-  const costBit = resolved.vendorCost != null
-    ? ` (${resolved.vendorCost}${currencyName ? ` ${currencyName}` : ""})`
-    : "";
-  return {
-    status: resolved.status || "unknown",
-    showName,
-    showId,
-    iconId,
-    title: `${slotName}: ${showName || "empty"}${recBit}${costBit}`,
-    petFocus: !!resolved.petFocus,
-    currentIsEvolver: !!resolved.currentIsEvolver,
-    waist: slotName === "Waist",
-  };
-}
-
-function paperdollCellFromSlot2(slotName, row) {
-  if (!row) {
-    return { status: "none", title: `${slotName}: no type 7/8 hole` };
-  }
-  const status = String(row.status || "unknown").toLowerCase();
-  const isBis = status === "bis";
-  const showName = isBis
-    ? row.currentName
-    : (row.recommendedName || row.currentName);
-  const showId = isBis
-    ? row.currentId
-    : (row.recommendedId || row.currentId);
-  const iconId = isBis
-    ? row.currentIconId
-    : (row.recommendedIconId || row.currentIconId);
-  const recBit = row.recommendedName && row.recommendedName !== row.currentName
-    ? ` → ${row.recommendedName}`
-    : "";
-  return {
-    status,
-    showName,
-    showId,
-    iconId,
-    title: `${slotName}: ${showName || "empty"}${recBit}`,
-  };
-}
-
-function paperdollCellFromType5(slotName, row) {
-  if (!row) {
-    return { status: "none", title: `${slotName}: no type 5 hole` };
-  }
-  const empty = !!row.empty || !row.name;
-  return {
-    status: empty ? "empty" : "equipped",
-    showName: empty ? null : row.name,
-    showId: empty ? null : row.itemId,
-    iconId: empty ? null : row.iconId,
-    title: `${slotName}: ${empty ? "Empty" : (row.name || "")}`,
-  };
-}
 
 function raidBisMatchesChar(ch) {
   const toolbar = state.chars.raid_bis || "";
@@ -3466,22 +3191,51 @@ function updateRaidBisContent(panel, section) {
     }
     card.appendChild(head);
     const body = el("div", "card-body");
+    const doll = el("div", "raid-bis-paperdoll");
+    const portrait = el("div", "raid-bis-portrait", ch.classAbbr || "");
+    portrait.title = ch.displayName || ch.character;
+    doll.appendChild(portrait);
+    doll.appendChild(el("div", "raid-bis-spacer"));
     const bySlot = {};
-    resolved.forEach((slot) => {
-      bySlot[slot.gearSlot] = paperdollCellFromRaidBisSlot(slot.gearSlot, slot, currencyName);
-    });
+    resolved.forEach((slot) => { bySlot[slot.gearSlot] = slot; });
     RAID_BIS_LAYOUT.forEach((slotName) => {
-      if (!bySlot[slotName]) {
-        bySlot[slotName] = paperdollCellFromRaidBisSlot(slotName, null, currencyName);
+      const cls = RAID_BIS_SLOT_CLASS[slotName];
+      if (!cls) return;
+      const unscored = slotName === "Primary" || slotName === "Secondary" || slotName === "Ammo" || slotName === "Power Source";
+      const slot = bySlot[slotName] || { gearSlot: slotName, status: "unknown", scored: !unscored };
+      const box = el("div", `raid-bis-slot ${cls} status-${slot.status || "unknown"}`);
+      if (slotName === "Waist") box.dataset.raidBisWaistSlot = "1";
+      const showName = slot.status === "bis" || slot.status === "weapon"
+        ? slot.currentName
+        : (slot.recommendedName || slot.currentName);
+      const showId = slot.status === "bis" || slot.status === "weapon"
+        ? slot.currentId
+        : (slot.recommendedId || slot.currentId);
+      const iconId = slot.status === "bis" || slot.status === "weapon"
+        ? slot.currentIconId
+        : (slot.recommendedIconId || slot.currentIconId);
+      const recBit = slot.recommendedName && slot.recommendedName !== slot.currentName
+        ? ` → ${slot.recommendedName}`
+        : "";
+      const costBit = slot.vendorCost != null
+        ? ` (${slot.vendorCost}${currencyName ? ` ${currencyName}` : ""})`
+        : "";
+      box.title = `${slotName}: ${showName || "empty"}${recBit}${costBit}`;
+      const wrap = el("div", "slot-name");
+      wrap.innerHTML = raidBisItemHtml(url, showName, showId, icons, iconId);
+      box.appendChild(wrap);
+      if (slot.petFocus) box.appendChild(el("div", "pet-focus", "✦"));
+      if (slot.currentIsEvolver) {
+        const gem = el("div", "evolver-gem raid-bis-tip");
+        gem.dataset.tip = "Evolver";
+        gem.tabIndex = 0;
+        gem.setAttribute("aria-label", "Evolver");
+        gem.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><use href="#icon-evolver"></use></svg>';
+        box.appendChild(gem);
       }
+      doll.appendChild(box);
     });
-    body.appendChild(buildInventoryPaperdoll({
-      classAbbr: ch.classAbbr || "",
-      portraitTitle: ch.displayName || ch.character || "",
-      bySlot,
-      icons,
-      url,
-    }));
+    body.appendChild(doll);
     const deltas = el("div", "raid-bis-deltas");
     let rows = scored.slice();
     if (q) {

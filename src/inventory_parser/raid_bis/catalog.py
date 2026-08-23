@@ -378,16 +378,13 @@ def _labeled_spell_names(html: str, pattern: re.Pattern[str]) -> str:
 
 
 def parse_item_page(html: str, item_id: int, *, name_hint: str = "") -> RaidGearCandidate | None:
-    """Hydrate stats, class, slot, focus, effect, and icon from an EQ Resource item page.
-
-    Do not apply catalog skip-name rules here: equipped items (including current-expansion
-    Power Sources named ``Riven Arcana … Source``) are fetched by id and still need an icon.
-    """
+    """Hydrate stats, class, slot, focus, effect, and icon from an EQ Resource item page."""
     if not html or item_id <= 0:
         return None
     name_m = _NAME_RE.search(html)
     name = (name_m.group(1).strip() if name_m else "") or (name_hint or f"Item {item_id}")
-    name = re.sub(r"\s+", " ", name).strip()
+    if should_skip_name(name):
+        return None
     stats = _stats_from_eqr_html(html)
     classes = frozenset(parse_eqresource_item_classes(html))
     slot_m = _SLOT_RE.search(html)

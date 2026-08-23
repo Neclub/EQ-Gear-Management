@@ -122,8 +122,6 @@ def serialize_slot2_section(bundle: Slot2Export) -> dict:
                     ),
                     "status": cmp_.status,
                     "note": cmp_.note,
-                    "currentIconId": cmp_.current_icon_id,
-                    "recommendedIconId": cmp_.recommended_icon_id,
                 }
             )
 
@@ -207,7 +205,6 @@ def serialize_slot2_section(bundle: Slot2Export) -> dict:
         "statSummary": stat_summary_rows,
         "upgrades": rows,
         "farmList": farm_rows,
-        "iconDataUris": bundle.icon_data_uris,
         "rankedAugs": [
             {
                 "name": a.name,
