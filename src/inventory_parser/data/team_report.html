@@ -678,6 +678,114 @@ th.copy-col-head {
 .type5-augs tbody tr:nth-child(even):not(.status-empty) { background: var(--row-alt); }
 .type5-augs .muted-cell { color: var(--muted); }
 .type5-augs .empty-msg { color: var(--muted); margin: 0; padding: 22px 16px; }
+.type18-augs { display: flex; flex-direction: column; gap: 14px; }
+.type18-augs .meta {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+.type18-augs .meta a { color: #8cb4ff; }
+.type18-augs .filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.type18-augs .filter-label {
+  color: var(--muted);
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-right: 2px;
+}
+.type18-augs .filter-chip {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.type18-augs .filter-chip.active {
+  border-color: #8cb4ff;
+  background: rgba(140, 180, 255, 0.14);
+  color: #cfe0ff;
+}
+.type18-augs .card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.type18-augs .card-head {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.type18-augs .card-title { font-weight: 600; font-size: 14px; }
+.type18-augs .card-sub { color: var(--muted); font-size: 12px; }
+.type18-augs .card-body { padding: 0; min-width: 0; }
+.type18-augs .table-scroll { overflow: auto; max-height: min(70vh, 820px); }
+.type18-augs table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.type18-augs th, .type18-augs td {
+  padding: 8px 10px;
+  vertical-align: top;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.type18-augs th {
+  background: var(--header);
+  color: #c5ccda;
+  font-weight: 600;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  cursor: pointer;
+  user-select: none;
+}
+.type18-augs th.sort-asc::after { content: " ▲"; font-size: 10px; }
+.type18-augs th.sort-desc::after { content: " ▼"; font-size: 10px; }
+.type18-augs td.col-name { white-space: normal; max-width: 32ch; }
+.type18-augs td.col-lore { white-space: normal; max-width: 28ch; color: var(--muted); }
+.type18-augs td.num { text-align: right; font-variant-numeric: tabular-nums; }
+.type18-augs tbody tr:nth-child(even) { background: var(--row-alt); }
+.type18-augs tbody tr.anniv { background: rgba(180, 140, 60, 0.12); }
+.type18-augs .badge {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 11px;
+  margin-left: 6px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.type18-augs .badge.lore {
+  border-color: rgba(140, 180, 255, 0.45);
+  color: #cfe0ff;
+}
+.type18-augs .badge.anniv {
+  border-color: rgba(212, 168, 75, 0.55);
+  color: #e8c97a;
+}
+.type18-augs .badge.owned {
+  background: rgba(60, 140, 90, 0.28);
+  color: #8fd4a8;
+}
+.type18-augs .muted { color: var(--muted); }
+.type18-augs .empty-msg { color: var(--muted); margin: 0; padding: 22px 16px; }
 #toolbar .toolbar-spacer { flex: 1 1 auto; min-width: 12px; }
 #toolbar .toolbar-char-wrap {
   display: inline-flex;
@@ -1261,6 +1369,7 @@ const SECTION_ICONS = {
   achievement_summary: "icon-trophy",
   slot2_augs: "icon-gem",
   type5_augs: "icon-gem",
+  type18_augs: "icon-gem",
   raid_bis: "icon-armor",
 };
 const CHAR_COLORS = [
@@ -1524,6 +1633,8 @@ function updateToolbar() {
     search.placeholder = "Search augs…";
   } else if (section.type === "type5_augs") {
     search.placeholder = "Search type 5 augs…";
+  } else if (section.type === "type18_augs") {
+    search.placeholder = "Search type 18/19 augs…";
   } else if (section.type === "raid_bis") {
     search.placeholder = "Search items…";
   } else if (section.id === "quests") {
@@ -1612,6 +1723,39 @@ function updateToolbar() {
         );
         if (match) selected = match.personaKey || match.displayName;
       }
+    }
+    sel.value = selected;
+    sel.addEventListener("change", () => {
+      state.chars[section.id] = sel.value;
+      refreshContent();
+    });
+    wrap.appendChild(el("label", null, "Character"));
+    wrap.appendChild(sel);
+    toolbar.appendChild(wrap);
+  }
+
+  if (section.type === "type18_augs" && (section.data.characters || []).length) {
+    const wrap = el("div", "toolbar-char-wrap");
+    const sel = document.createElement("select");
+    const chars = section.data.characters;
+    const options = chars.map((c) => ({
+      value: c.key || c.name || c.displayName || "",
+      label: c.displayName || c.name || c.key || "",
+    }));
+    sel.innerHTML = options.map((opt) => optionHtml(opt.value, opt.label)).join("");
+    let selected = state.chars[section.id] || "";
+    if (!selected || !options.some((opt) => opt.value === selected)) {
+      const targets = selectedCharacterNames();
+      if (targets && targets.length === 1) {
+        const match = chars.find(
+          (c) => c.displayName === targets[0] || c.name === targets[0]
+        );
+        if (match) selected = match.key || match.name || match.displayName;
+      }
+      if (!selected || !options.some((opt) => opt.value === selected)) {
+        selected = options[0] ? options[0].value : "";
+      }
+      state.chars[section.id] = selected;
     }
     sel.value = selected;
     sel.addEventListener("change", () => {
@@ -2711,6 +2855,501 @@ function updateType5AugsContent(panel, section) {
   panel.appendChild(root);
 }
 
+function type18FilterState() {
+  if (!state.type18Filters) {
+    state.type18Filters = {
+      view: "suggestions",
+      classAbbr: "",
+      category: "",
+      augType: "",
+      anniversary: "all",
+      groupBy: "lore",
+    };
+  }
+  if (!state.type18Filters.view) state.type18Filters.view = "suggestions";
+  if (!state.type18Filters.groupBy) state.type18Filters.groupBy = "lore";
+  return state.type18Filters;
+}
+
+function type18RowLabel(r) {
+  return r.typeLabel || (Number(r.augType) === 18 ? "18/19" : String(r.augType || ""));
+}
+
+function type18Characters(data) {
+  return data.characters || [];
+}
+
+function type18FindCharacter(data, key) {
+  const chars = type18Characters(data);
+  if (!chars.length) return null;
+  if (key) {
+    const hit = chars.find((c) => c.key === key || c.name === key || c.displayName === key);
+    if (hit) return hit;
+  }
+  return chars[0] || null;
+}
+
+function type18DefaultCharacter(data) {
+  const chars = type18Characters(data);
+  if (!chars.length) return null;
+  const toolbarKey = state.chars.type18_augs || "";
+  if (toolbarKey) {
+    const hit = type18FindCharacter(data, toolbarKey);
+    if (hit) return hit;
+  }
+  const targets = selectedCharacterNames();
+  if (targets && targets.length === 1) {
+    const match = chars.find(
+      (c) => c.displayName === targets[0] || c.name === targets[0]
+    );
+    if (match) return match;
+  }
+  return chars[0];
+}
+
+function type18SuggestionOwned(sug, character) {
+  if (!sug || !character) return false;
+  const id = Number(sug.itemId) || 0;
+  if (id > 0 && (character.ownedIds || []).includes(id)) return true;
+  const name = String(sug.name || "").toLowerCase();
+  if (!name) return false;
+  return (character.ownedNames || []).some((n) => String(n).toLowerCase() === name);
+}
+
+function type18DefaultClass(data) {
+  const filters = type18FilterState();
+  const character = type18DefaultCharacter(data);
+  if (character && character.classAbbr) return character.classAbbr;
+  if (filters.classAbbr) return filters.classAbbr;
+  const team = data.teamClassAbbrs || [];
+  const suggestions = data.suggestions || [];
+  if (team.length) {
+    const hit = suggestions.find((s) => s.classAbbr === team[0]);
+    if (hit) return hit.classAbbr;
+  }
+  return suggestions.length ? suggestions[0].classAbbr : "";
+}
+
+function updateType18AugsContent(panel, section) {
+  const data = section.data || {};
+  const url = data.eqResourceItemUrl;
+  const q = (state.searches[section.id] || "").trim().toLowerCase();
+  const filters = type18FilterState();
+  const root = el("div", "type18-augs");
+
+  const viewBar = el("div", "filters");
+  viewBar.appendChild(el("span", "filter-label", "View"));
+  [
+    { value: "suggestions", label: "Suggestions" },
+    { value: "catalog", label: "Full catalog" },
+  ].forEach((opt) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "filter-chip" + ((filters.view || "suggestions") === opt.value ? " active" : "");
+    chip.textContent = opt.label;
+    chip.addEventListener("click", () => {
+      filters.view = opt.value;
+      refreshContent();
+    });
+    viewBar.appendChild(chip);
+  });
+  root.appendChild(viewBar);
+
+  if ((filters.view || "suggestions") === "suggestions") {
+    renderType18Suggestions(root, data, url, q, filters);
+  } else {
+    renderType18Catalog(root, data, url, q, filters);
+  }
+  panel.appendChild(root);
+}
+
+function renderType18Suggestions(root, data, url, q, filters) {
+  const suggestions = data.suggestions || [];
+  if (!suggestions.length) {
+    root.appendChild(el("p", "empty-msg", "No class suggestions available."));
+    return;
+  }
+
+  const characters = type18Characters(data);
+  let character = null;
+  if (characters.length) {
+    character = type18DefaultCharacter(data);
+    if (character) {
+      filters.classAbbr = character.classAbbr || "";
+      if (!state.chars.type18_augs) {
+        state.chars.type18_augs = character.key || character.name || character.displayName || "";
+      }
+    }
+  } else {
+    if (!filters.classAbbr) filters.classAbbr = type18DefaultClass(data);
+    const classBar = el("div", "filters");
+    classBar.appendChild(el("span", "filter-label", "Class"));
+    suggestions.forEach((block) => {
+      const chip = document.createElement("button");
+      chip.type = "button";
+      chip.className = "filter-chip" + (filters.classAbbr === block.classAbbr ? " active" : "");
+      chip.textContent = block.classAbbr;
+      chip.title = block.className;
+      chip.addEventListener("click", () => {
+        filters.classAbbr = block.classAbbr;
+        refreshContent();
+      });
+      classBar.appendChild(chip);
+    });
+    root.appendChild(classBar);
+  }
+
+  const classAbbr = character
+    ? character.classAbbr
+    : filters.classAbbr || type18DefaultClass(data);
+  const block = suggestions.find((s) => s.classAbbr === classAbbr) || suggestions[0];
+  const casterStats = !!block.casterStats;
+  const statHeaders = casterStats ? ["Mana", "Spell Dmg"] : ["AC", "HP"];
+  const allRows = [
+    ...(block.primary || []),
+    ...(block.optional || []),
+    ...(block.fortification || []),
+  ].map((r) => ({
+    ...r,
+    owned: type18SuggestionOwned(r.suggested, character),
+  }));
+  let rows = allRows;
+  if (q) {
+    rows = rows.filter((r) => {
+      const sug = r.suggested || {};
+      const alt = r.alternative || {};
+      const hay = [
+        r.guideName,
+        sug.name,
+        alt.name,
+        sug.category,
+        r.priority,
+        r.owned ? "owned" : "",
+      ]
+        .join(" ")
+        .toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  function renderPriority(title, list) {
+    const card = el("div", "card");
+    const head = el("div", "card-head");
+    const who = character
+      ? `${character.displayName || character.name} · ${block.className}`
+      : block.className;
+    head.appendChild(el("div", "card-title", `${who} · ${title}`));
+    head.appendChild(el("div", "card-sub", `${list.length} suggestion${list.length === 1 ? "" : "s"}`));
+    card.appendChild(head);
+    const body = el("div", "card-body");
+    if (!list.length) {
+      body.appendChild(el("p", "empty-msg", "None."));
+      card.appendChild(body);
+      root.appendChild(card);
+      return;
+    }
+    const wrap = el("div", "table-scroll");
+    const table = document.createElement("table");
+    table.innerHTML =
+      "<thead><tr>" +
+      ["#", "Suggested", "Type", "Category", "Anniversary", "Alternative", "Owned", ...statHeaders]
+        .map((h) => `<th>${h}</th>`)
+        .join("") +
+      "</tr></thead>";
+    const tbody = document.createElement("tbody");
+    list.forEach((r) => {
+      const sug = r.suggested || {};
+      const alt = r.alternative || {};
+      const tr = document.createElement("tr");
+      if (r.anniversary || sug.anniversary) tr.classList.add("anniv");
+      const nameBadges = [];
+      if (sug.anniversary || r.anniversary) {
+        nameBadges.push('<span class="badge anniv">Anniversary</span>');
+      }
+      if (r.upgraded) nameBadges.push('<span class="badge lore">Upgraded</span>');
+      const sugHtml = sug.name
+        ? slot2ItemLink(url, sug.name, sug.itemId) + nameBadges.join("")
+        : slot2Esc(r.guideName || "—");
+      const altHtml = alt.name
+        ? slot2ItemLink(url, alt.name, alt.itemId)
+        : (sug.anniversary || r.anniversary ? "<span class=\"muted\">—</span>" : "");
+      const ownedHtml = r.owned ? '<span class="badge owned">Owned</span>' : "";
+      const statA = casterStats ? (Number(sug.mana) || 0) : (Number(sug.ac) || 0);
+      const statB = casterStats ? (Number(sug.spellDamage) || 0) : (Number(sug.hp) || 0);
+      tr.innerHTML = [
+        `<td class="num">${Number(r.rank) || ""}</td>`,
+        `<td class="col-name">${sugHtml}</td>`,
+        `<td>${slot2Esc(sug.typeLabel || "")}</td>`,
+        `<td>${slot2Esc(sug.category || "")}</td>`,
+        `<td>${sug.anniversary || r.anniversary ? "Yes" : ""}</td>`,
+        `<td class="col-name">${altHtml}</td>`,
+        `<td>${ownedHtml}</td>`,
+        `<td class="num">${statA}</td>`,
+        `<td class="num">${statB}</td>`,
+      ].join("");
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    body.appendChild(wrap);
+    card.appendChild(body);
+    root.appendChild(card);
+  }
+
+  const primary = rows.filter((r) => r.priority === "primary");
+  const optional = rows.filter((r) => r.priority === "optional");
+  const fortification = rows.filter((r) => r.priority === "fortification");
+  if (!rows.length) {
+    root.appendChild(el("p", "empty-msg", "No suggestions match the search."));
+    return;
+  }
+  renderPriority("Primary", primary);
+  renderPriority("Optional", optional);
+  renderPriority("Optional · Fortification (unused)", fortification);
+}
+
+function renderType18Catalog(root, data, url, q, filters) {
+  const groupBar = el("div", "filters");
+  groupBar.appendChild(el("span", "filter-label", "Group by"));
+  [
+    { value: "lore", label: "Lore" },
+    { value: "category", label: "Category" },
+  ].forEach((opt) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "filter-chip" + ((filters.groupBy || "lore") === opt.value ? " active" : "");
+    chip.textContent = opt.label;
+    chip.addEventListener("click", () => {
+      filters.groupBy = opt.value;
+      refreshContent();
+    });
+    groupBar.appendChild(chip);
+  });
+  root.appendChild(groupBar);
+
+  const filterBar = el("div", "filters");
+  filterBar.appendChild(el("span", "filter-label", "Category"));
+  const categories = ["", ...(data.categories || [])];
+  categories.forEach((cat) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "filter-chip" + ((filters.category || "") === cat ? " active" : "");
+    chip.textContent = cat || "All";
+    chip.addEventListener("click", () => {
+      filters.category = cat;
+      refreshContent();
+    });
+    filterBar.appendChild(chip);
+  });
+  root.appendChild(filterBar);
+
+  const typeBar = el("div", "filters");
+  typeBar.appendChild(el("span", "filter-label", "Type"));
+  [
+    { value: "", label: "All" },
+    { value: "18/19", label: "18/19" },
+    { value: "19", label: "19" },
+  ].forEach((opt) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "filter-chip" + (String(filters.augType || "") === opt.value ? " active" : "");
+    chip.textContent = opt.label;
+    chip.addEventListener("click", () => {
+      filters.augType = opt.value;
+      refreshContent();
+    });
+    typeBar.appendChild(chip);
+  });
+  root.appendChild(typeBar);
+
+  const annBar = el("div", "filters");
+  annBar.appendChild(el("span", "filter-label", "Anniversary"));
+  [
+    { value: "all", label: "Include" },
+    { value: "only", label: "Only" },
+    { value: "hide", label: "Hide" },
+  ].forEach((opt) => {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "filter-chip" + ((filters.anniversary || "all") === opt.value ? " active" : "");
+    chip.textContent = opt.label;
+    chip.addEventListener("click", () => {
+      filters.anniversary = opt.value;
+      refreshContent();
+    });
+    annBar.appendChild(chip);
+  });
+  root.appendChild(annBar);
+
+  let rows = data.rows || [];
+  if (filters.category) {
+    rows = rows.filter((r) => r.category === filters.category);
+  }
+  if (filters.augType) {
+    rows = rows.filter((r) => type18RowLabel(r) === filters.augType);
+  }
+  if (filters.anniversary === "hide") {
+    rows = rows.filter((r) => !r.anniversary);
+  } else if (filters.anniversary === "only") {
+    rows = rows.filter((r) => !!r.anniversary);
+  }
+  if (q) {
+    rows = rows.filter((r) => {
+      const hay = [
+        r.name,
+        r.category,
+        r.loreGroup,
+        r.itemLore,
+        type18RowLabel(r),
+        r.augType,
+      ].join(" ").toLowerCase();
+      return hay.includes(q);
+    });
+  }
+
+  if (!(data.rows || []).length) {
+    root.appendChild(el("p", "empty-msg", "No Type 18/19 augs in the catalog."));
+    return;
+  }
+  if (!rows.length) {
+    root.appendChild(el("p", "empty-msg", "No augs match the current filters."));
+    return;
+  }
+
+  const cols = [
+    { key: "typeLabel", label: "Type", value: (r) => type18RowLabel(r) },
+    { key: "name", label: "Name", value: (r) => r.name || "" },
+    { key: "category", label: "Category", value: (r) => r.category || "" },
+    { key: "loreGroup", label: "Lore group", value: (r) => r.loreGroup || r.itemLore || "" },
+    { key: "ac", label: "AC", value: (r) => Number(r.ac) || 0 },
+    { key: "hp", label: "HP", value: (r) => Number(r.hp) || 0 },
+    { key: "mana", label: "Mana", value: (r) => Number(r.mana) || 0 },
+    { key: "endurance", label: "End", value: (r) => Number(r.endurance) || 0 },
+    { key: "hstr", label: "HStr", value: (r) => Number(r.hstr) || 0 },
+    { key: "hsta", label: "HSta", value: (r) => Number(r.hsta) || 0 },
+    { key: "hint", label: "HInt", value: (r) => Number(r.hint) || 0 },
+    { key: "hwis", label: "HWis", value: (r) => Number(r.hwis) || 0 },
+    { key: "hagi", label: "HAgi", value: (r) => Number(r.hagi) || 0 },
+    { key: "hdex", label: "HDex", value: (r) => Number(r.hdex) || 0 },
+    { key: "hcha", label: "HCha", value: (r) => Number(r.hcha) || 0 },
+  ];
+
+  const groupBy = filters.groupBy || "lore";
+  const byGroup = new Map();
+  rows.forEach((r) => {
+    let key;
+    if (groupBy === "lore") {
+      key = r.loreGroup || r.itemLore || r.name || "Other";
+    } else {
+      key = r.category || "Other";
+    }
+    if (!byGroup.has(key)) byGroup.set(key, []);
+    byGroup.get(key).push(r);
+  });
+
+  const groupKeys = Array.from(byGroup.keys()).sort((a, b) =>
+    String(a).localeCompare(String(b), undefined, { sensitivity: "base" })
+  );
+
+  function renderTable(list, container) {
+    const wrap = el("div", "table-scroll");
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    const tbody = document.createElement("tbody");
+    const rowState = [];
+
+    function applySort() {
+      const sort = state.sorts.type18_augs || { col: null, dir: 1 };
+      const col = cols.find((c) => c.key === sort.col);
+      Array.from(headRow.children).forEach((th, i) => {
+        th.className = sort.col === cols[i].key ? (sort.dir > 0 ? "sort-asc" : "sort-desc") : "";
+      });
+      const ordered = rowState.slice().sort((a, b) => {
+        if (!col) return 0;
+        const av = col.value(a.data);
+        const bv = col.value(b.data);
+        if (typeof av === "number" && typeof bv === "number") return (av - bv) * sort.dir;
+        return String(av).localeCompare(String(bv)) * sort.dir;
+      });
+      ordered.forEach(({ tr }) => tbody.appendChild(tr));
+    }
+
+    cols.forEach((col) => {
+      const th = document.createElement("th");
+      th.textContent = col.label;
+      th.addEventListener("click", () => {
+        const next = state.sorts.type18_augs || { col: null, dir: 1 };
+        if (next.col === col.key) next.dir = -next.dir;
+        else {
+          next.col = col.key;
+          next.dir =
+            col.key === "name" || col.key === "loreGroup" || col.key === "category" || col.key === "typeLabel"
+              ? 1
+              : -1;
+        }
+        state.sorts.type18_augs = next;
+        applySort();
+      });
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    list.forEach((r) => {
+      const tr = document.createElement("tr");
+      if (r.anniversary) tr.classList.add("anniv");
+      const loreText = r.loreGroup || r.itemLore || "";
+      const badges = [];
+      if (r.loreGroup) {
+        badges.push('<span class="badge lore" title="Only one of this lore group may be equipped">Lore 1</span>');
+      }
+      if (r.anniversary) badges.push('<span class="badge anniv">Anniversary</span>');
+      const nameHtml = slot2ItemLink(url, r.name, r.itemId) + badges.join("");
+      const label = type18RowLabel(r);
+      tr.innerHTML = [
+        `<td>${slot2Esc(label)}</td>`,
+        `<td class="col-name">${nameHtml}</td>`,
+        `<td>${slot2Esc(r.category || "")}</td>`,
+        `<td class="col-lore">${slot2Esc(loreText)}</td>`,
+        `<td class="num">${Number(r.ac) || 0}</td>`,
+        `<td class="num">${Number(r.hp) || 0}</td>`,
+        `<td class="num">${Number(r.mana) || 0}</td>`,
+        `<td class="num">${Number(r.endurance) || 0}</td>`,
+        `<td class="num">${Number(r.hstr) || 0}</td>`,
+        `<td class="num">${Number(r.hsta) || 0}</td>`,
+        `<td class="num">${Number(r.hint) || 0}</td>`,
+        `<td class="num">${Number(r.hwis) || 0}</td>`,
+        `<td class="num">${Number(r.hagi) || 0}</td>`,
+        `<td class="num">${Number(r.hdex) || 0}</td>`,
+        `<td class="num">${Number(r.hcha) || 0}</td>`,
+      ].join("");
+      rowState.push({ tr, data: r });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    container.appendChild(wrap);
+    applySort();
+  }
+
+  groupKeys.forEach((key) => {
+    const groupRows = byGroup.get(key) || [];
+    const card = el("div", "card");
+    const head = el("div", "card-head");
+    head.appendChild(el("div", "card-title", key));
+    const subBits = [`${groupRows.length} aug${groupRows.length === 1 ? "" : "s"}`];
+    if (groupBy === "lore") subBits.push("equip only one");
+    head.appendChild(el("div", "card-sub", subBits.join(" · ")));
+    card.appendChild(head);
+    const body = el("div", "card-body");
+    renderTable(groupRows, body);
+    card.appendChild(body);
+    root.appendChild(card);
+  });
+}
+
+
 const RAID_BIS_SLOT_CLASS = {
   "Ear-1": "s-ear1",
   Head: "s-head",
@@ -3302,6 +3941,8 @@ function updatePanelContent(panel, section) {
     updateSlot2AugsContent(panel, section);
   } else if (section.type === "type5_augs") {
     updateType5AugsContent(panel, section);
+  } else if (section.type === "type18_augs") {
+    updateType18AugsContent(panel, section);
   } else if (section.type === "raid_bis") {
     updateRaidBisContent(panel, section);
   }

@@ -107,6 +107,7 @@ def write_team_workbook(
     unmade_entries: list[UnmadeGearEntry] | None = None,
     slot2=None,
     type5=None,
+    type18=None,
     raid_bis=None,
 ) -> Path:
     """Write team gear workbook with item sheet and SOR gap tracking sheet."""
@@ -172,6 +173,11 @@ def write_team_workbook(
         from inventory_parser.type5_augs.excel import append_type5_sheet
 
         append_type5_sheet(wb, type5)
+
+    if type18 is not None:
+        from inventory_parser.type18_augs.excel import append_type18_sheet
+
+        append_type18_sheet(wb, type18)
 
     if raid_bis is not None:
         from inventory_parser.raid_bis.excel import append_raid_bis_sheet

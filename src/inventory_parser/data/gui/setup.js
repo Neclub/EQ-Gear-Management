@@ -8,6 +8,7 @@ const state = {
   includeAchievements: false,
   includeSlot2: true,
   includeType5: true,
+  includeType18: true,
   includeRaidBis: true,
   includeAnniversary: false,
   optionsTab: "options",
@@ -363,6 +364,12 @@ function bindEvents() {
     toggleChip($("chipType5Augs"), state.includeType5);
     updateStatus();
   });
+  $("chipType18Augs").addEventListener("click", () => {
+    if ($("chipType18Augs").disabled) return;
+    state.includeType18 = !state.includeType18;
+    toggleChip($("chipType18Augs"), state.includeType18);
+    updateStatus();
+  });
   $("chipRaidBis").addEventListener("click", () => {
     if ($("chipRaidBis").disabled) return;
     state.includeRaidBis = !state.includeRaidBis;
@@ -533,6 +540,7 @@ async function refreshToggles() {
     state.includeAchievements = false;
     state.includeSlot2 = false;
     state.includeType5 = false;
+    state.includeType18 = false;
     state.includeRaidBis = false;
     spellsBtn.disabled = true;
     achBtn.disabled = true;
@@ -540,12 +548,15 @@ async function refreshToggles() {
     slot2Btn.disabled = true;
     const type5Btn = $("chipType5Augs");
     type5Btn.disabled = true;
+    const type18Btn = $("chipType18Augs");
+    type18Btn.disabled = true;
     const raidBisBtn = $("chipRaidBis");
     raidBisBtn.disabled = true;
     toggleChip(spellsBtn, false);
     toggleChip(achBtn, false);
     toggleChip(slot2Btn, false);
     toggleChip(type5Btn, false);
+    toggleChip(type18Btn, false);
     toggleChip(raidBisBtn, false);
     syncSlot2Options();
     return;
@@ -558,17 +569,21 @@ async function refreshToggles() {
   slot2Btn.disabled = false;
   const type5Btn = $("chipType5Augs");
   type5Btn.disabled = false;
+  const type18Btn = $("chipType18Augs");
+  type18Btn.disabled = false;
   const raidBisBtn = $("chipRaidBis");
   raidBisBtn.disabled = false;
   state.includeSpells = spellInfo.hasSpells;
   state.includeAchievements = achInfo.hasAchievements;
   state.includeSlot2 = true;
   state.includeType5 = true;
+  state.includeType18 = true;
   state.includeRaidBis = true;
   toggleChip(spellsBtn, state.includeSpells);
   toggleChip(achBtn, state.includeAchievements);
   toggleChip(slot2Btn, state.includeSlot2);
   toggleChip(type5Btn, state.includeType5);
+  toggleChip(type18Btn, state.includeType18);
   toggleChip(raidBisBtn, state.includeRaidBis);
   syncSlot2Options();
 }
@@ -850,6 +865,7 @@ async function updateStatus() {
   }
   if (state.includeSlot2) text += " • Type 7/8 Augs";
   if (state.includeType5) text += " • Type 5 Augs";
+  if (state.includeType18) text += " • Type 18/19 Augs";
   if (state.includeRaidBis) text += " • Raid BiS";
   status.textContent = text;
 }
@@ -1056,6 +1072,7 @@ async function generateReport() {
   $("status").textContent = buildingStatusText();
   if (state.includeSlot2) showGenProgress(0, "Building Type 7/8 aug catalog and report…");
   else if (state.includeType5) showGenProgress(0, "Looking up Type 5 sockets…");
+  else if (state.includeType18) showGenProgress(0, "Building Type 18/19 aug catalog…");
   else if (state.includeRaidBis) showGenProgress(0, "Building Raid BiS catalog and report…");
 
   const useAdvanced =
@@ -1072,6 +1089,7 @@ async function generateReport() {
     includeAchievements: state.includeAchievements,
     includeSlot2: state.includeSlot2,
     includeType5: state.includeType5,
+    includeType18: state.includeType18,
     includeRaidBis: state.includeRaidBis,
     includeAnniversary: state.includeAnniversary,
     advancedWeights: !!useAdvanced,

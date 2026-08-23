@@ -6,6 +6,25 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.33.0] - 2026-08-23
+
+### Added
+
+- **Type 18/19 Augs** *(work in progress)*: Excel and HTML tab with per-class suggestions from the [Zarax cheat sheet](https://docs.google.com/spreadsheets/d/1kwLn79RtRPGlUNssOPp8weE5RlQHXizX3c7Y1d9iuBw/edit?gid=1352580018), matched to the EQ Resource catalog. Expect further changes to suggestions, Owned logic, and layout. Anniversary picks are marked and always get a non-anniversary **Alternative**. HTML **Suggestions** uses the toolbar **Character** select (class and **Owned** come from that character); **Full catalog** remains available. Excel: **Type 18-19 Augs** (per character) + **Type 18-19 Catalog**. Dual-slot ``18, 19`` → **18/19**; ``19`` only → **19**. Toggle with the **Type 18/19 Augs** Include chip (on by default) or CLI `--type18` / `--no-type18`. Catalog is cached under `%LOCALAPPDATA%\EQGM\`.
+
+### Changed
+
+- **Docs:** HowToUse troubleshooting notes that the PyInstaller “Failed to remove temporary directory …\_MEI…” warning is harmless and unrelated to EQ Folder / Logs selection.
+- **Type 18/19 Augs:** Defense-family picks move from Primary to Optional. Unused Fortification augs are listed under Optional (greatest→least). Caster classes show Mana / Spell Damage instead of AC / HP. Excel columns auto-size to content.
+
+### Fixed
+
+- **Type 18/19 Augs:** Type 19 catalog search used EQ Resource ``augslot`` together with ``augtype=19``, which returns no rows. Fits Aug Slot is ``augtype`` only; raid-only augs such as [Devotee's Defense of the Harbinger](https://items.eqresource.com/items.php?id=169790) are included again.
+- **Type 18/19 Augs:** Anniversary augs (Selenelion / Jubilation / Enduring Harmony) are always pulled via focused name searches. EQ Resource member search caps at 50 rows and ignores POST ``page``, so broad Type 19 queries alone missed some. Back cloaks from the Enduring Harmony name list (Mantle / Cloak / Cape of Enduring Harmony) are ignored.
+- **Type 18/19 Augs:** Spell Damage is read from EQ Resource item pages (label/value in adjacent table cells). Stale item-meta cache entries are refreshed so caster suggestions no longer show 0.
+- **Type 18/19 Augs:** Wizard primary suggestions match Magician. HTML suggestions view no longer shows the intro blurb or Type 18/19 EQ Resource links.
+- **Type 18/19 Augs:** Suggestions **Note** column replaced with **Owned** (chip when the selected character has the suggested aug in inventory). Status notes such as “Unused Fortification (catalog)” are removed.
+
 ## [1.32.0] - 2026-08-22
 
 ### Added

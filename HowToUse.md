@@ -1,6 +1,6 @@
 # How to Use — EQ Gear Management (EQGM)
 
-Turn your raid’s EverQuest inventory files into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, unmade craft mats, optional missing Rank III spell runes, optional achievement collections/quests/raid progress, optional Type 7/8 aug recommendations, optional Type 5 aug display, and optional current-expansion Raid BiS.
+Turn your raid’s EverQuest inventory files into one Excel workbook (and optionally an interactive HTML report): who is wearing what, gear tier level per slot, unmade craft mats, optional missing Rank III spell runes, optional achievement collections/quests/raid progress, optional Type 7/8 aug recommendations, optional Type 5 aug display, optional Type 18/19 aug catalog, and optional current-expansion Raid BiS.
 
 Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
 
@@ -94,7 +94,7 @@ The app uses a **dark HTML interface** with a split-pane setup screen. When HTML
 | Area | Contents |
 |------|----------|
 | **Left** | **Team characters** roster with class icons; **EQ Folder** below the list |
-| **Right (top)** | **Export options** — **Spells**, **Achievements**, **Type 7/8 Augs**, **Type 5 Augs**, and **Raid BiS** chips |
+| **Right (top)** | **Export options** — **Spells**, **Achievements**, **Type 7/8 Augs**, **Type 5 Augs**, **Type 18/19 Augs**, and **Raid BiS** chips |
 | **Right (bottom)** | **Output folder** path and **Browse…**; **Up** / **Down** / **Remove** / **Clear** for the roster |
 | **Footer** | Status line; **Excel** / **HTML** / **Both** output chips; **Generate Report** |
 
@@ -124,6 +124,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
    - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs
    - **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Artisan's Prize is recommended for Ear when it is in the inventory file. An equipped Velium Empowered Gem of Freezing is kept as a must-have and placed in the legal slot with the best stat trade-off. Only augs that fit type 7/8 holes are recommended (type 5 and similar are excluded). Generate shows a progress bar while sockets and catalogs are fetched.
    - **Type 5 Augs** chip — on by default when inventories are loaded; uncheck to skip the Type 5 display sheet. Shows equipped type 5 augs (and Empty holes) with heroic stats; no upgrade suggestions. Uses parent-item socket maps (cached with Type 7/8). Link to the EQ Resource Type 5 list is included in the report.
+   - **Type 18/19 Augs** chip — *(work in progress)* on by default when inventories are loaded; uncheck to skip Type 18/19 sheets. Per-class suggestions (Primary / Optional) from the Zarax cheat sheet, matched to the EQ Resource catalog. Anniversary augs are marked and always show a non-anniversary **Alternative**. HTML defaults to Suggestions with a toolbar **Character** select (class comes from the character; **Owned** is that character’s inventory); Full catalog is still available. Excel: **Type 18-19 Augs** + **Type 18-19 Catalog**. Catalog is cached under `%LOCALAPPDATA%\EQGM\`.
    - **Raid BiS** chip — on by default when inventories are loaded; uncheck to skip the Raid BiS sheet and catalog fetch. Compares equipped armor and jewelry to current-expansion raid T1 and T2 (weapons are shown but not scored). MAG/BST/NEC keep a pet-focus ear. HTML cards take raid coin counts to mark the best vendor ore purchase. The first run needs network access to EQ Resource.
 
 6. **Output**
@@ -265,6 +266,10 @@ When a recommended aug still needs a Focus of Fortitude (Unraveling, Otherworldl
 
 Display-only list of what is in each type 5 hole (often inventory Slot2 on current gear, but the dump SlotN comes from the parent item’s socket map). Empty holes show as **Empty**. Columns include **Expansion** (from EQ Resource) and heroic stats (HStr through HCha) when an aug is equipped. No BiS or farm suggestions — preference only. Excel adds a **Type 5 Augs** sheet; HTML adds a **Type 5 Augs** section with **one card per character** (same gold nameplate and class badge as Raid BiS), a **Character** filter (All or one character), clickable column headers to sort, and a link to the [EQ Resource Type 5 list](https://items.eqresource.com/itemsearch.php?searchid=481762). Uncheck the chip to skip.
 
+### Type 18/19 Augs *(if enabled — work in progress)*
+
+Per-class **Primary** and **Optional** suggestions from the Zarax Type 18/19 cheat sheet, resolved against the EQ Resource catalog (stats / item links). This feature is still being refined. Defense-family picks are moved to Optional. Unused **Fortification** augs from the catalog are listed under Optional (greatest→least). If a better aug exists in the same category, type, and expansion series, that pick is used. **Anniversary** augs (Selenelion / Jubilation / Enduring Harmony) are marked and always get a non-anniversary **Alternative**. Caster classes show **Mana** / **Spell Damage** instead of AC / HP. HTML: **Suggestions** view with a toolbar **Character** select (sets class; **Owned** when that character has the aug); **Full catalog** view keeps lore/category filters. Excel: **Type 18-19 Augs** (suggestions per character; columns auto-sized) and **Type 18-19 Catalog**. Dual-slot ``18, 19`` → **18/19**; ``19`` only → **19**. Needs a network fetch the first time; later runs use `%LOCALAPPDATA%\EQGM\`. Toggle with the Include chip or CLI `--type18` / `--no-type18`.
+
 ### Raid BiS *(if enabled)*
 
 Current-expansion raid T1 and T2 armor and jewelry vs what each character is wearing, scored with the same class/slot weights as Type 7/8 augs. T1 can beat T2. Evolvers are not scored and may still be BiS; they still get a Best in slot pick and show vendor cost, but that slot is skipped when choosing coin purchases. A pulsing magenta gem next to the equipped item marks an Evolver on hover. MAG, BST, and NEC keep a pet-focus ear (`Enhanced Minion` or `Summoner` in the name). Primary, Secondary, Ammo, and Power Source are shown on the paperdoll but not scored. Wrist items are not Lore, so both wrist slots can recommend the same bracer. An item already equipped is not suggested as BiS for a different slot.
@@ -291,7 +296,7 @@ When **HTML** or **Both** is selected next to **Generate Report** (default **Bot
 
 **Sections**
 
-Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Missing Collections, Quests, Achievement Summary, Raid Achievements, **Type 7/8 Augs** when that chip is on, **Type 5 Augs** when that chip is on, and **Raid BiS** when that chip is on.
+Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Missing Collections, Quests, Achievement Summary, Raid Achievements, **Type 7/8 Augs** when that chip is on, **Type 5 Augs** when that chip is on, **Type 18/19 Augs** when that chip is on, and **Raid BiS** when that chip is on.
 
 **Filters & tools**
 
@@ -339,5 +344,7 @@ Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.
 | Type 7/8 Augs sheets missing or empty | Leave the **Type 7/8 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
 | Type 7/8 note says to move an aug, but **Upgrade to** is blank | Use **1.30.3** or newer and regenerate the report. Older builds marked that donor hole as BiS. |
 | Type 5 Augs sheet missing or empty | Leave the **Type 5 Augs** chip on; sockets and aug stats use the same `%LOCALAPPDATA%\EQGM\` cache as Type 7/8 (first run may need network). |
+| Type 18/19 Augs sheet missing or empty | Leave the **Type 18/19 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
 | Raid BiS sheet missing or slots look empty | Leave the **Raid BiS** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
 | HTML looks outdated after an update | Regenerate the report. |
+| Warning: “Failed to remove temporary directory …\_MEI…” | Harmless packaging cleanup from the single-file `.exe`. Windows (or antivirus) sometimes keeps a handle open after exit, so PyInstaller cannot delete its extract folder. Click **OK** and keep working. You can delete leftover `_MEI*` folders under `%TEMP%` when EQGM is closed. It is unrelated to reading your Logs folder. |

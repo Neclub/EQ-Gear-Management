@@ -59,6 +59,9 @@ Suggested augs to wear or farm. If an aug should move to another slot, Upgrade t
 ### 💠 Type 5 Augs
 Shows which type 5 augs people already have equipped (and empty holes). Preference only — no upgrade suggestions.
 
+### 🔮 Type 18/19 Augs *(work in progress)*
+Per-class suggestions from the Zarax cheat sheet, plus the full catalog. Pick a character to set class and see what they already own. Still being refined.
+
 ### 👑 Raid BiS
 Compares what you are wearing to this expansion’s raid armor and jewelry.
 
@@ -113,6 +116,7 @@ That’s all you do in-game.
 > 🏆 **Achievements** — collections, quests, raid progress
 > 💎 **Type 7/8 Augs** — aug suggestions
 > 💠 **Type 5 Augs** — equipped type 5 augs (display only)
+> 🔮 **Type 18/19 Augs** — class suggestions *(work in progress)*
 > 👑 **Raid BiS** — best-in-slot raid gear comparison
 
 **7.** Choose **Excel**, **HTML** (web page), or **Both**.

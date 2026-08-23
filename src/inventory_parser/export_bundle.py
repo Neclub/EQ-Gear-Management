@@ -27,6 +27,7 @@ from inventory_parser.slot2_augs.build import Slot2Export, build_slot2_export
 from inventory_parser.slot2_augs.chest_class import apply_resolved_classes_to_team
 from inventory_parser.slot2_augs.eqresource_gear_tier import apply_resolved_gear_tiers_to_team
 from inventory_parser.type5_augs.build import Type5Export, build_type5_export
+from inventory_parser.type18_augs.build import Type18Export, build_type18_export
 
 
 @dataclass
@@ -41,6 +42,7 @@ class ExportBundle:
     slot_filter: SlotFilter = "all"
     slot2: Slot2Export | None = None
     type5: Type5Export | None = None
+    type18: Type18Export | None = None
     raid_bis: RaidBisExport | None = None
 
 
@@ -57,6 +59,7 @@ def build_export_bundle(
     include_achievements: bool = True,
     include_slot2: bool = True,
     include_type5: bool = False,
+    include_type18: bool = False,
     include_raid_bis: bool = False,
     include_anniversary: bool = False,
     session_weights: dict[str, float] | None = None,
@@ -140,6 +143,12 @@ def build_export_bundle(
     type5_eqr_aug_html_by_id = slot2_kwargs.pop("type5_eqr_aug_html_by_id", None)
     type5_fetch_eqr_augs = slot2_kwargs.pop("type5_fetch_eqr_augs", True)
 
+    type18_html_by_page = slot2_kwargs.pop("type18_html_by_page", None)
+    type19_html_overrides = slot2_kwargs.pop("type19_html_overrides", None)
+    type18_item_html_by_id = slot2_kwargs.pop("type18_item_html_by_id", None)
+    type18_allow_network = slot2_kwargs.pop("type18_allow_network", True)
+    type18_catalog = slot2_kwargs.pop("type18_catalog", None)
+
     slot2 = None
     if include_slot2:
         slot2 = build_slot2_export(
@@ -165,6 +174,45 @@ def build_export_bundle(
         )
         warnings.extend(type5.warnings)
 
+    type18 = None
+    if include_type18:
+        from inventory_parser.parser import collect_owned_item_ids, collect_owned_item_names
+        from inventory_parser.type18_augs.build import Type18Character
+
+        type18_characters: list[Type18Character] = []
+        type18_class_abbrs: list[str] = []
+        for ch in report.characters:
+            abbr = (ch.class_abbr or "").strip().upper()
+            if not abbr:
+                continue
+            type18_class_abbrs.append(abbr)
+            owned_ids: set[int] = set()
+            owned_names: set[str] = set()
+            if ch.inventory_data is not None:
+                owned_ids = collect_owned_item_ids(ch.inventory_data)
+                owned_names = collect_owned_item_names(ch.inventory_data)
+            type18_characters.append(
+                Type18Character(
+                    key=ch.persona_key,
+                    name=ch.character,
+                    display_name=ch.display_name,
+                    class_abbr=abbr,
+                    owned_ids=owned_ids,
+                    owned_names=owned_names,
+                )
+            )
+        type18 = build_type18_export(
+            allow_network=bool(type18_allow_network),
+            type18_html_by_page=type18_html_by_page,
+            type19_html_overrides=type19_html_overrides,
+            item_html_by_id=type18_item_html_by_id,
+            catalog=type18_catalog,
+            class_abbrs=type18_class_abbrs,
+            characters=type18_characters,
+            on_progress=on_progress,
+        )
+        warnings.extend(type18.warnings)
+
     raid_bis = None
     if include_raid_bis:
         raid_bis = build_raid_bis_export(
@@ -189,5 +237,6 @@ def build_export_bundle(
         slot_filter=slot_filter,
         slot2=slot2,
         type5=type5,
+        type18=type18,
         raid_bis=raid_bis,
     )

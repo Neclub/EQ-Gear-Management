@@ -24,6 +24,7 @@ def generate_workbook(
     include_achievements: bool = True,
     include_slot2: bool = True,
     include_type5: bool = True,
+    include_type18: bool = True,
     include_raid_bis: bool = True,
     include_anniversary: bool = False,
     also_html: bool = False,
@@ -37,6 +38,7 @@ def generate_workbook(
         include_achievements=include_achievements,
         include_slot2=include_slot2,
         include_type5=include_type5,
+        include_type18=include_type18,
         include_raid_bis=include_raid_bis,
         include_anniversary=include_anniversary,
         character_column_order=character_column_order,
@@ -54,6 +56,7 @@ def generate_workbook(
             unmade_entries=bundle.unmade_entries,
             slot2=bundle.slot2,
             type5=bundle.type5,
+            type18=bundle.type18,
             raid_bis=bundle.raid_bis,
         )
         html_saved = None
@@ -137,6 +140,20 @@ def main(argv: list[str] | None = None) -> int:
         action="store_false",
         help="Skip Type 5 aug sheet and socket/stat lookups",
     )
+    type18 = p.add_mutually_exclusive_group()
+    type18.add_argument(
+        "--type18",
+        dest="include_type18",
+        action="store_true",
+        default=True,
+        help="Include Type 18/19 aug catalog sheet (default)",
+    )
+    type18.add_argument(
+        "--no-type18",
+        dest="include_type18",
+        action="store_false",
+        help="Skip Type 18/19 aug catalog and network fetch",
+    )
     raid_bis = p.add_mutually_exclusive_group()
     raid_bis.add_argument(
         "--raid-bis",
@@ -180,6 +197,7 @@ def main(argv: list[str] | None = None) -> int:
             include_achievements=not args.no_achievements,
             include_slot2=args.include_slot2,
             include_type5=args.include_type5,
+            include_type18=args.include_type18,
             include_raid_bis=args.include_raid_bis,
             include_anniversary=args.include_anniversary,
             also_html=args.also_html,
