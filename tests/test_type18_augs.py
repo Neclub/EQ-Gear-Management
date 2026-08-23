@@ -14,7 +14,10 @@ from inventory_parser.type18_augs.catalog import (
     TYPE18_CATALOG_URL,
     _extra_stats_from_item_html,
     _is_ignored_non_aug,
+    _save_json,
+    catalog_cache_path,
     fetch_type18_catalog,
+    item_meta_cache_path,
     parse_item_lore,
     parse_total_results,
     type19_search_payload,
@@ -416,6 +419,7 @@ def test_type18_html_template_has_filters() -> None:
     assert "type18DefaultCharacter" in html
     assert "type18SuggestionOwned" in html
     assert "type18SuggestionEquippedLocation" in html
+    assert "altLocation" in html
     assert 'section.type === "type18_augs"' in html
     assert "toolbar-char-wrap" in html
     assert "Alternative" in html
@@ -429,6 +433,67 @@ def test_type18_html_template_has_filters() -> None:
     assert "badge equipped" in html
     assert ">Owned<" in html
     assert "18/19" in html
+
+
+def test_fetch_type18_catalog_uses_disk_cache_before_network(
+    tmp_path: Path, monkeypatch
+) -> None:
+    """Repeat runs should not re-hit EQ Resource search when cache rows exist."""
+    monkeypatch.setattr(
+        "inventory_parser.type18_augs.catalog.appdata_dir",
+        lambda: tmp_path,
+    )
+
+    def boom(*_args, **_kwargs):
+        raise AssertionError("network should not be used when catalog cache is warm")
+
+    monkeypatch.setattr("inventory_parser.type18_augs.catalog._http_get", boom)
+    monkeypatch.setattr("inventory_parser.type18_augs.catalog._http_post", boom)
+
+    _save_json(
+        catalog_cache_path(),
+        {
+            "fetched_at": "2026-01-01T00:00:00+00:00",
+            "rows": [
+                {
+                    "item_id": 169780,
+                    "name": "Ornate Attacker of the Harbinger",
+                    "stats": {"ac": 10, "hp": 100},
+                },
+                {
+                    "item_id": 169791,
+                    "name": "Devotee's Attacker of the Harbinger",
+                    "stats": {"ac": 12, "hp": 120},
+                },
+            ],
+        },
+    )
+    _save_json(
+        item_meta_cache_path(),
+        {
+            "169780": {
+                "ok": True,
+                "stats_v": 2,
+                "lore_group": "Ornate",
+                "item_lore": "Ornate Attacker of the Harbinger",
+                "aug_types": [18, 19],
+                "extra_stats": {},
+            },
+            "169791": {
+                "ok": True,
+                "stats_v": 2,
+                "lore_group": "Devotee's",
+                "item_lore": "Devotee's Attacker of the Harbinger",
+                "aug_types": [19],
+                "extra_stats": {},
+            },
+        },
+    )
+
+    result = fetch_type18_catalog(allow_network=True)
+    assert result.from_cache is True
+    assert len(result.entries) >= 2
+    assert {e.item_id for e in result.entries} >= {169780, 169791}
 
 
 def test_build_type18_export_categories():

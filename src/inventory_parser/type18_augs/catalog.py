@@ -9,6 +9,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -35,6 +36,9 @@ from inventory_parser.type18_augs.categories import (
 
 CACHE_FILENAME = "eqresource_type18_catalog_cache.json"
 ITEM_META_CACHE_FILENAME = "eqresource_type18_item_meta_cache.json"
+# Live Type 19 search issues many POSTs; prefer disk cache on later runs.
+_TYPE19_SEARCH_WORKERS = 6
+_ITEM_META_WORKERS = 6
 
 TYPE18_SEARCH_URL = (
     "https://items.eqresource.com/itemsearch.php?searchid=255223&page={page}"
@@ -327,14 +331,16 @@ def fetch_type19_search_rows(
         )
         return [r for r in parse_eqresource_search_html(html) if keep(r)]
 
-    for name in ("", *_TYPE19_SUPPLEMENTAL_QUERIES):
-        try:
-            for row in collect_from_payload(name):
-                by_id.setdefault(row.item_id, row)
-        except (urllib.error.URLError, TimeoutError, OSError, ValueError):
-            continue
-        if name:
-            time.sleep(0.05)
+    queries = ("", *_TYPE19_SUPPLEMENTAL_QUERIES)
+    workers = min(_TYPE19_SEARCH_WORKERS, len(queries))
+    with ThreadPoolExecutor(max_workers=workers) as pool:
+        futures = [pool.submit(collect_from_payload, name) for name in queries]
+        for fut in as_completed(futures):
+            try:
+                for row in fut.result():
+                    by_id.setdefault(row.item_id, row)
+            except (urllib.error.URLError, TimeoutError, OSError, ValueError):
+                continue
 
     return list(by_id.values())
 
@@ -395,7 +401,7 @@ def resolve_item_meta(
     html_overrides: dict[int, str] | None = None,
     allow_network: bool = True,
     force_refresh: bool = False,
-    polite_delay_s: float = 0.05,
+    polite_delay_s: float = 0.0,
     on_progress: ProgressFn | None = None,
 ) -> dict[int, _ItemMeta]:
     """Fetch (or cache) lore group, item lore, and aug slot types per item id."""
@@ -403,12 +409,29 @@ def resolve_item_meta(
     unique = sorted({int(i) for i in item_ids if int(i) > 0})
     overrides = html_overrides or {}
     cache = _load_json(item_meta_cache_path())
-    fetched_live = 0
     total = len(unique)
     dirty = False
+    need_fetch: list[int] = []
 
     if total == 0 and on_progress is not None:
         on_progress(0, 0)
+
+    def meta_from_cache_entry(entry: dict) -> _ItemMeta:
+        types = frozenset(
+            int(t) for t in (entry.get("aug_types") or []) if str(t).isdigit()
+        )
+        return _ItemMeta(
+            lore_group=(
+                str(entry["lore_group"]).strip() if entry.get("lore_group") else None
+            )
+            or None,
+            item_lore=(
+                str(entry["item_lore"]).strip() if entry.get("item_lore") else None
+            )
+            or None,
+            aug_types=types,
+            extra_stats=clean_stats(entry.get("extra_stats") or {}),
+        )
 
     for i, item_id in enumerate(unique, start=1):
         if item_id in overrides:
@@ -423,24 +446,7 @@ def resolve_item_meta(
             and key in cache
             and _item_meta_cache_usable(cache[key])
         ):
-            entry = cache[key]
-            types = frozenset(
-                int(t) for t in (entry.get("aug_types") or []) if str(t).isdigit()
-            )
-            result[item_id] = _ItemMeta(
-                lore_group=(
-                    str(entry["lore_group"]).strip()
-                    if entry.get("lore_group")
-                    else None
-                )
-                or None,
-                item_lore=(
-                    str(entry["item_lore"]).strip() if entry.get("item_lore") else None
-                )
-                or None,
-                aug_types=types,
-                extra_stats=clean_stats(entry.get("extra_stats") or {}),
-            )
+            result[item_id] = meta_from_cache_entry(cache[key])
             if on_progress is not None:
                 on_progress(i, total)
             continue
@@ -450,14 +456,19 @@ def resolve_item_meta(
                 on_progress(i, total)
             continue
 
+        need_fetch.append(item_id)
+
+    done = total - len(need_fetch)
+    if on_progress is not None and need_fetch:
+        on_progress(done, total)
+
+    def fetch_one(item_id: int) -> tuple[int, _ItemMeta | None, dict | None]:
+        if polite_delay_s > 0:
+            time.sleep(polite_delay_s)
         try:
-            if fetched_live > 0 and polite_delay_s > 0:
-                time.sleep(polite_delay_s)
             html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item_id))
             meta = _parse_item_meta(html)
-            fetched_live += 1
-            result[item_id] = meta
-            cache[key] = {
+            entry = {
                 "ok": True,
                 "stats_v": 2,
                 "fetched_at": datetime.now(timezone.utc).isoformat(),
@@ -466,16 +477,28 @@ def resolve_item_meta(
                 "aug_types": sorted(meta.aug_types),
                 "extra_stats": dict(meta.extra_stats),
             }
-            dirty = True
+            return item_id, meta, entry
         except (urllib.error.URLError, TimeoutError, OSError, ValueError):
-            cache[key] = {
+            entry = {
                 "ok": False,
                 "fetched_at": datetime.now(timezone.utc).isoformat(),
             }
-            dirty = True
+            return item_id, None, entry
 
-        if on_progress is not None:
-            on_progress(i, total)
+    if need_fetch:
+        workers = min(_ITEM_META_WORKERS, len(need_fetch))
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            futures = [pool.submit(fetch_one, item_id) for item_id in need_fetch]
+            for fut in as_completed(futures):
+                item_id, meta, entry = fut.result()
+                if meta is not None:
+                    result[item_id] = meta
+                if entry is not None:
+                    cache[str(item_id)] = entry
+                    dirty = True
+                done += 1
+                if on_progress is not None:
+                    on_progress(done, total)
 
     if dirty:
         _save_json(item_meta_cache_path(), cache)
@@ -512,6 +535,9 @@ def fetch_type18_catalog(
 
     Search rows supply stats; item pages supply slot types, lore group, and item lore.
     Classification uses slot types (18 present, including dual 18+19 → 18; 19-only → 19).
+
+    When a disk catalog cache already has search rows, live EQ Resource searches are
+    skipped unless ``force_refresh`` is set (Type 19 alone issues dozens of POSTs).
     """
     from inventory_parser.type18_augs.categories import category_from_name
 
@@ -527,43 +553,57 @@ def fetch_type18_catalog(
         or item_html_by_id is not None
     )
 
-    try:
-        if type18_html_by_page is not None or allow_network:
-            for row in fetch_type18_search_rows(
-                html_by_page=type18_html_by_page,
-                allow_network=allow_network and type18_html_by_page is None,
-            ):
-                rows_by_id.setdefault(row.item_id, row)
-    except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
-        warnings.append(f"Type 18 search failed ({exc}).")
+    cached_rows = cache.get("rows") if not force_refresh else None
+    if (
+        not use_overrides
+        and cached_rows
+        and isinstance(cached_rows, list)
+        and len(cached_rows) > 0
+    ):
+        rows_by_id = {
+            r.item_id: r for r in (_row_from_dict(d) for d in cached_rows)
+        }
+        from_cache = True
+    else:
+        try:
+            if type18_html_by_page is not None or allow_network:
+                for row in fetch_type18_search_rows(
+                    html_by_page=type18_html_by_page,
+                    allow_network=allow_network and type18_html_by_page is None,
+                ):
+                    rows_by_id.setdefault(row.item_id, row)
+        except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
+            warnings.append(f"Type 18 search failed ({exc}).")
 
-    try:
-        if type19_html_overrides is not None or allow_network:
-            for row in fetch_type19_search_rows(
-                html_overrides=type19_html_overrides,
-                allow_network=allow_network and type19_html_overrides is None,
-            ):
-                rows_by_id.setdefault(row.item_id, row)
-    except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
-        warnings.append(f"Type 19 search failed ({exc}).")
+        try:
+            if type19_html_overrides is not None or allow_network:
+                for row in fetch_type19_search_rows(
+                    html_overrides=type19_html_overrides,
+                    allow_network=allow_network and type19_html_overrides is None,
+                ):
+                    rows_by_id.setdefault(row.item_id, row)
+        except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
+            warnings.append(f"Type 19 search failed ({exc}).")
 
-    if not rows_by_id:
-        cached_rows = cache.get("rows") if not force_refresh else None
-        if cached_rows:
-            rows_by_id = {
-                r.item_id: r for r in (_row_from_dict(d) for d in cached_rows)
-            }
-            from_cache = True
-            warnings.append("Live Type 18/19 search returned no augs; using cached catalog.")
-        else:
-            detail = "; ".join(warnings) if warnings else "no results"
-            raise ValueError(f"Type 18/19 search returned no augs ({detail})")
-    elif allow_network and not use_overrides:
-        cache["fetched_at"] = now
-        cache["rows"] = [_row_dict(r) for r in rows_by_id.values()]
-        cache["type18_url"] = TYPE18_CATALOG_URL
-        cache["type19_url"] = TYPE19_CATALOG_URL
-        _save_json(catalog_cache_path(), cache)
+        if not rows_by_id:
+            fallback_rows = cache.get("rows") if not force_refresh else None
+            if fallback_rows:
+                rows_by_id = {
+                    r.item_id: r for r in (_row_from_dict(d) for d in fallback_rows)
+                }
+                from_cache = True
+                warnings.append(
+                    "Live Type 18/19 search returned no augs; using cached catalog."
+                )
+            else:
+                detail = "; ".join(warnings) if warnings else "no results"
+                raise ValueError(f"Type 18/19 search returned no augs ({detail})")
+        elif allow_network and not use_overrides:
+            cache["fetched_at"] = now
+            cache["rows"] = [_row_dict(r) for r in rows_by_id.values()]
+            cache["type18_url"] = TYPE18_CATALOG_URL
+            cache["type19_url"] = TYPE19_CATALOG_URL
+            _save_json(catalog_cache_path(), cache)
 
     meta_by_id = resolve_item_meta(
         rows_by_id.keys(),

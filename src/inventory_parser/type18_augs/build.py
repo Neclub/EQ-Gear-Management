@@ -99,7 +99,12 @@ def build_type18_export(
             item_html_by_id=item_html_by_id,
             on_progress=_hydrate_progress if on_progress else None,
         )
-    report_progress(on_progress, "Building Type 18/19 aug catalog…", s0, s1, 1, 1)
+    if catalog.from_cache:
+        report_progress(
+            on_progress, "Using cached Type 18/19 aug catalog…", s0, s1, 1, 1
+        )
+    else:
+        report_progress(on_progress, "Building Type 18/19 aug catalog…", s0, s1, 1, 1)
 
     if catalog.warning:
         warnings.append(catalog.warning)

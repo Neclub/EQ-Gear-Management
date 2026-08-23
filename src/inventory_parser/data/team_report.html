@@ -3188,11 +3188,14 @@ function renderType18Suggestions(root, data, url, q, filters) {
         ? slot2ItemLink(url, sug.name, sug.itemId) + sugCraft + nameBadges.join("")
         : slot2Esc(r.guideName || "—");
       const altOwned = type18SuggestionOwned(alt, character);
+      const altLocation = type18SuggestionEquippedLocation(alt, character);
       let altExtra = "";
       if (alt.name) {
-        if (altOwned) {
-          altExtra = '<span class="badge owned">Owned</span>';
-        } else if (!alt.anniversary) {
+        if (altOwned && altLocation) {
+          altExtra =
+            '<span class="badge owned">Owned</span>' +
+            `<span class="badge equipped" title="Equipped in this gear slot">${slot2Esc(altLocation)}</span>`;
+        } else {
           altExtra = type18CraftCopyHtml(alt.name);
         }
       }

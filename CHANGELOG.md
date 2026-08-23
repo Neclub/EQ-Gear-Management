@@ -6,6 +6,13 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.2] - 2026-08-23
+
+### Changed
+
+- **Type 18/19 Augs:** For an **Alternative**, if it is owned and equipped, show Owned plus a gear-slot chip next to the name; otherwise show the craft (anvil) copy icon.
+- **Type 18/19 Augs:** Catalog builds reuse the disk search cache under `%LOCALAPPDATA%\EQGM\` instead of re-querying EQ Resource on every run (Type 19 alone was dozens of sequential POSTs). Cold/refresh fetches run Type 19 name searches and item-meta downloads in parallel.
+
 ## [1.34.1] - 2026-08-23
 
 ### Added
