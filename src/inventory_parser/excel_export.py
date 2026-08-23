@@ -40,6 +40,7 @@ from inventory_parser.excel_theme import (
     FONT_SECTION,
     SHEET_BACKGROUND_COLS,
     SHEET_BACKGROUND_ROWS,
+    apply_workbook_dark_mode,
     spell_block_header_fill,
     spell_tier_fill,
     tier_code_fill,
@@ -184,6 +185,7 @@ def write_team_workbook(
 
         append_raid_bis_sheet(wb, raid_bis)
 
+    apply_workbook_dark_mode(wb)
     return _save_with_fallback(wb, output_path)
 
 

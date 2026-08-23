@@ -3052,7 +3052,7 @@ function renderType18Suggestions(root, data, url, q, filters) {
     const table = document.createElement("table");
     table.innerHTML =
       "<thead><tr>" +
-      ["#", "Suggested", "Type", "Category", "Anniversary", "Alternative", "Owned", ...statHeaders]
+      ["#", "Suggested", "Type", "Category", "Alternative", "Owned", ...statHeaders]
         .map((h) => `<th>${h}</th>`)
         .join("") +
       "</tr></thead>";
@@ -3081,7 +3081,6 @@ function renderType18Suggestions(root, data, url, q, filters) {
         `<td class="col-name">${sugHtml}</td>`,
         `<td>${slot2Esc(sug.typeLabel || "")}</td>`,
         `<td>${slot2Esc(sug.category || "")}</td>`,
-        `<td>${sug.anniversary || r.anniversary ? "Yes" : ""}</td>`,
         `<td class="col-name">${altHtml}</td>`,
         `<td>${ownedHtml}</td>`,
         `<td class="num">${statA}</td>`,

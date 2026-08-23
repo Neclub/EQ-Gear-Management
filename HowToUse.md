@@ -140,7 +140,7 @@ If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, et
 
 ## Reading the workbook
 
-The file uses a **dark theme** (black background, light text). Item names link to [EQ Resource](https://items.eqresource.com/) when the inventory file includes item IDs.
+The file uses a **dark theme** on every sheet (black chrome, light text, shared header and status colors). Item names link to [EQ Resource](https://items.eqresource.com/) when the inventory file includes item IDs.
 
 ### Team Gear
 
@@ -268,7 +268,7 @@ Display-only list of what is in each type 5 hole (often inventory Slot2 on curre
 
 ### Type 18/19 Augs *(if enabled — work in progress)*
 
-Per-class **Primary** and **Optional** suggestions from the Zarax Type 18/19 cheat sheet, resolved against the EQ Resource catalog (stats / item links). This feature is still being refined. Defense-family picks are moved to Optional. Unused **Fortification** augs from the catalog are listed under Optional (greatest→least). If a better aug exists in the same category, type, and expansion series, that pick is used. **Anniversary** augs (Selenelion / Jubilation / Enduring Harmony) are marked and always get a non-anniversary **Alternative**. Caster classes show **Mana** / **Spell Damage** instead of AC / HP. HTML: **Suggestions** view with a toolbar **Character** select (sets class; **Owned** when that character has the aug); **Full catalog** view keeps lore/category filters. Excel: **Type 18-19 Augs** (suggestions per character; columns auto-sized) and **Type 18-19 Catalog**. Dual-slot ``18, 19`` → **18/19**; ``19`` only → **19**. Needs a network fetch the first time; later runs use `%LOCALAPPDATA%\EQGM\`. Toggle with the Include chip or CLI `--type18` / `--no-type18`.
+Per-class **Primary** and **Optional** suggestions from the Zarax Type 18/19 cheat sheet, resolved against the EQ Resource catalog (stats / item links). This feature is still being refined. Defense-family picks are moved to Optional. Unused **Fortification** augs from the catalog are listed under Optional (greatest→least). If a better aug exists in the same category, type, and expansion series, that pick is used. **Anniversary** augs (Selenelion / Jubilation / Enduring Harmony) are marked on the item name (HTML chip / Excel highlight) and always get a non-anniversary **Alternative**. Caster classes show **Mana** / **Spell Damage** instead of AC / HP. HTML: **Suggestions** view with a toolbar **Character** select (sets class; **Owned** when that character has the aug); **Full catalog** view keeps lore/category filters. Excel: **Type 18-19 Augs** (suggestions per character; columns auto-sized) and **Type 18-19 Catalog**. Dual-slot ``18, 19`` → **18/19**; ``19`` only → **19**. Needs a network fetch the first time; later runs use `%LOCALAPPDATA%\EQGM\`. Toggle with the Include chip or CLI `--type18` / `--no-type18`.
 
 ### Raid BiS *(if enabled)*
 

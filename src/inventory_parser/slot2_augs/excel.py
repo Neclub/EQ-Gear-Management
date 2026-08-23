@@ -2,29 +2,24 @@
 
 from __future__ import annotations
 
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter
 
 from inventory_parser import APP_NAME, __version__
+from inventory_parser.excel_theme import (
+    FILL_HEADER,
+    FONT_HEADER,
+    FONT_LINK,
+    FONT_LINK_ON_STATUS,
+    FONT_MUTED,
+    FONT_ON_STATUS,
+    STATUS_FILLS,
+)
 from inventory_parser.slot2_augs.compare import NEEDS_UPGRADE_STATUSES, REPORT_ROW_STATUSES
 from inventory_parser.slot2_augs.build import Slot2Export
 from inventory_parser.slot2_augs.html import format_catalog_fetched_at
 from inventory_parser.slot2_augs.profiles import PROFILE_FOCUS_LABEL
 from inventory_parser.items import EQRESOURCE_ITEM_URL
-
-STATUS_FILLS = {
-    "bis": PatternFill("solid", fgColor="166534"),  # green
-    "upgrade": PatternFill("solid", fgColor="854D0E"),  # amber
-    "empty": PatternFill("solid", fgColor="7F1D1D"),  # red
-    "unknown": PatternFill("solid", fgColor="1E3A5F"),  # blue-gray
-    "no_fit": PatternFill("solid", fgColor="374151"),  # gray
-}
-
-HEADER_FILL = PatternFill("solid", fgColor="1E2430")
-HEADER_FONT = Font(color="EEF0F4", bold=True)
-WHITE_FONT = Font(color="F9FAFB")
-LINK_FONT = Font(color="8CB4FF", underline="single")
-LINK_FONT_ON_FILL = Font(color="F9FAFB", underline="single")
 
 
 def _set_item_cell(cell, name: str | None, item_id: int | None, *, on_fill: bool) -> None:
@@ -32,9 +27,9 @@ def _set_item_cell(cell, name: str | None, item_id: int | None, *, on_fill: bool
     cell.value = label
     if name and item_id and item_id > 0:
         cell.hyperlink = EQRESOURCE_ITEM_URL.format(item_id=item_id)
-        cell.font = LINK_FONT_ON_FILL if on_fill else LINK_FONT
+        cell.font = FONT_LINK_ON_STATUS if on_fill else FONT_LINK
     elif on_fill:
-        cell.font = WHITE_FONT
+        cell.font = FONT_ON_STATUS
 
 
 def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
@@ -43,6 +38,7 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
 
     # --- Sheet 1: Stat summary (totals if suggested augs equipped) ---
     ws_sum = wb.create_sheet("Stat Summary")
+    ws_sum.sheet_properties.tabColor = "2D4A38"
     sum_headers = [
         "Character",
         "Slots changed",
@@ -56,8 +52,8 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
     ]
     for col, h in enumerate(sum_headers, start=1):
         cell = ws_sum.cell(1, col, h)
-        cell.fill = HEADER_FILL
-        cell.font = HEADER_FONT
+        cell.fill = FILL_HEADER
+        cell.font = FONT_HEADER
 
     sum_row = 2
     for i, ch in enumerate(bundle.characters):
@@ -91,6 +87,7 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
 
     # --- Sheet 2: All current type 7/8 augs ---
     ws = wb.create_sheet("Augs")
+    ws.sheet_properties.tabColor = "283850"
 
     headers = [
         "Character",
@@ -104,8 +101,8 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
     ]
     for col, h in enumerate(headers, start=1):
         cell = ws.cell(1, col, h)
-        cell.fill = HEADER_FILL
-        cell.font = HEADER_FONT
+        cell.fill = FILL_HEADER
+        cell.font = FONT_HEADER
 
     row_i = 2
     for i, ch in enumerate(bundle.characters):
@@ -138,7 +135,7 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
             else:
                 rec_cell.value = ""
                 if on_fill:
-                    rec_cell.font = WHITE_FONT
+                    rec_cell.font = FONT_ON_STATUS
 
             owned_cell = ws.cell(row_i, 5)
             if show_upgrade and cmp_.move_from_slot:
@@ -169,7 +166,7 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
                     cell = ws.cell(row_i, col)
                     cell.fill = fill
                     if col not in (3, 4):
-                        cell.font = WHITE_FONT
+                        cell.font = FONT_ON_STATUS
                 _set_item_cell(
                     ws.cell(row_i, 3),
                     cmp_.current_name,
@@ -185,10 +182,10 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
                     )
                 else:
                     ws.cell(row_i, 4).value = ""
-                    ws.cell(row_i, 4).font = WHITE_FONT
+                    ws.cell(row_i, 4).font = FONT_ON_STATUS
                 rec_cell.alignment = Alignment(wrap_text=True, vertical="top")
                 status_cell.alignment = Alignment(vertical="top")
-                note_cell.font = WHITE_FONT
+                note_cell.font = FONT_ON_STATUS
             row_i += 1
 
     if row_i == 2:
@@ -201,11 +198,12 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
 
     # --- Sheet 3: Need to Farm ---
     ws_farm = wb.create_sheet("Need to Farm")
+    ws_farm.sheet_properties.tabColor = "4A2830"
     farm_headers = ["Character", "Slot", "Aug", "Expansion"]
     for col, h in enumerate(farm_headers, start=1):
         cell = ws_farm.cell(1, col, h)
-        cell.fill = HEADER_FILL
-        cell.font = HEADER_FONT
+        cell.fill = FILL_HEADER
+        cell.font = FONT_HEADER
 
     farm_row = 2
     for entry in bundle.farm_list:
@@ -232,6 +230,7 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
 
     # --- Sheet 4: Ranked reference ---
     ws2 = wb.create_sheet("Ranked Augs")
+    ws2.sheet_properties.tabColor = "252528"
     meta = [
         f"Profile: {bundle.profile_label}",
         f"Artisan's Prize owned: {'Yes' if bundle.artisans_prize_owned else 'No'} (from inventory)",
@@ -242,7 +241,7 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
     ]
     if bundle.warnings:
         meta.extend(bundle.warnings)
-    ws2.cell(1, 1, " | ".join(meta)).font = Font(italic=True, color="666666")
+    ws2.cell(1, 1, " | ".join(meta)).font = FONT_MUTED
 
     focus_header = "Focus"
     ref_headers = [
@@ -262,8 +261,8 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
     ]
     for col, h in enumerate(ref_headers, start=1):
         cell = ws2.cell(3, col, h)
-        cell.fill = HEADER_FILL
-        cell.font = HEADER_FONT
+        cell.fill = FILL_HEADER
+        cell.font = FONT_HEADER
 
     for i, aug in enumerate(bundle.ranked_augs, start=1):
         row = i + 3
@@ -296,7 +295,7 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
             ws2.cell(row, col, val)
         name_cell = ws2.cell(row, 2)
         name_cell.hyperlink = EQRESOURCE_ITEM_URL.format(item_id=aug.item_id)
-        name_cell.font = Font(color="0563C1", underline="single")
+        name_cell.font = FONT_LINK
 
     widths2 = [4, 40, 10, 8, 8, 6, 8, 6, 6, 8, 10, 40, 40]
     for i, w in enumerate(widths2, start=1):
@@ -304,8 +303,9 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
 
     # --- Sheet 5: Legend ---
     ws3 = wb.create_sheet("Aug Legend")
-    ws3.cell(1, 1, "Status").font = Font(bold=True)
-    ws3.cell(1, 2, "Meaning").font = Font(bold=True)
+    ws3.sheet_properties.tabColor = "2D2D32"
+    ws3.cell(1, 1, "Status").font = FONT_HEADER
+    ws3.cell(1, 2, "Meaning").font = FONT_HEADER
     legend = [
         ("upgrade", "Better type 7/8 aug available"),
         ("empty", "Type 7/8 hole is empty"),
@@ -316,25 +316,25 @@ def append_slot2_sheets(wb, bundle: Slot2Export) -> None:
     for i, (status, meaning) in enumerate(legend, start=2):
         cell = ws3.cell(i, 1, status)
         cell.fill = STATUS_FILLS[status]
-        cell.font = WHITE_FONT
+        cell.font = FONT_ON_STATUS
         ws3.cell(i, 2, meaning)
-    ws3.cell(8, 1, "Owned?").font = Font(bold=True)
+    ws3.cell(8, 1, "Owned?").font = FONT_HEADER
     ws3.cell(8, 2, "Recommended upgrade present in inventory, or move from another slot")
-    ws3.cell(9, 1, "Need to farm").font = Font(bold=True)
+    ws3.cell(9, 1, "Need to farm").font = FONT_HEADER
     ws3.cell(9, 2, "Recommended upgrade missing from inventory (see Need to Farm sheet)")
-    ws3.cell(10, 1, "Have Focus/Ore").font = Font(bold=True)
+    ws3.cell(10, 1, "Have Focus/Ore").font = FONT_HEADER
     ws3.cell(
         10,
         2,
         "Need to farm, but the matching Focus of Fortitude (or Ensanguined ore) is in bags/bank",
     )
-    ws3.cell(10, 1, "Move from").font = Font(bold=True)
+    ws3.cell(10, 1, "Move from").font = FONT_HEADER
     ws3.cell(
         10,
         2,
         "Recommended aug is already equipped in another slot (e.g. Range → Head)",
     )
-    ws3.cell(11, 1, "Stat Summary").font = Font(bold=True)
+    ws3.cell(11, 1, "Stat Summary").font = FONT_HEADER
     ws3.cell(
         11,
         2,

@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 from openpyxl.styles import Font, PatternFill
+from openpyxl.workbook.workbook import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
 
 # Base surfaces (sheet background)
 FILL_SHEET = PatternFill("solid", fgColor="000000")
@@ -20,6 +22,11 @@ COLOR_LINK = "8CB4FF"
 FONT_HEADER = Font(name="Calibri", size=11, bold=True, color=COLOR_TEXT)
 FONT_BODY = Font(name="Calibri", size=11, color=COLOR_TEXT)
 FONT_LINK = Font(name="Calibri", size=11, color=COLOR_LINK, underline="single")
+FONT_ON_STATUS = Font(name="Calibri", size=11, color=COLOR_TEXT)
+FONT_LINK_ON_STATUS = Font(
+    name="Calibri", size=11, color=COLOR_TEXT, underline="single"
+)
+FONT_MUTED = Font(name="Calibri", size=11, italic=True, color=COLOR_TEXT_MUTED)
 FONT_LEGEND_TITLE = Font(name="Calibri", size=11, bold=True, color=COLOR_TEXT)
 FONT_LEGEND = Font(name="Calibri", size=10, color=COLOR_TEXT_MUTED)
 
@@ -55,6 +62,24 @@ _TIER_BUCKET_FILLS: dict[str, PatternFill] = {
     TIER_COLOR_ORANGE: PatternFill("solid", fgColor=TIER_COLOR_ORANGE),
     TIER_COLOR_RED: PatternFill("solid", fgColor=TIER_COLOR_RED),
 }
+
+# Shared status fills for Type 7/8 / Raid BiS (muted dark-mode palette)
+STATUS_FILL_BIS = PatternFill("solid", fgColor=TIER_COLOR_GREEN)
+STATUS_FILL_UPGRADE = PatternFill("solid", fgColor=TIER_COLOR_YELLOW)
+STATUS_FILL_EMPTY = PatternFill("solid", fgColor=TIER_COLOR_RED)
+STATUS_FILL_UNKNOWN = PatternFill("solid", fgColor="283850")
+STATUS_FILL_NEUTRAL = PatternFill("solid", fgColor="374151")
+STATUS_FILLS: dict[str, PatternFill] = {
+    "bis": STATUS_FILL_BIS,
+    "upgrade": STATUS_FILL_UPGRADE,
+    "empty": STATUS_FILL_EMPTY,
+    "unknown": STATUS_FILL_UNKNOWN,
+    "weapon": STATUS_FILL_NEUTRAL,
+    "no_fit": STATUS_FILL_NEUTRAL,
+}
+
+FILL_ANNIVERSARY = PatternFill("solid", fgColor="3A3350")
+FILL_OWNED = PatternFill("solid", fgColor=TIER_COLOR_GREEN)
 
 # Missing Spells sheet
 SPELL_BLOCK_HEADER_COLORS: dict[str, str] = {
@@ -94,6 +119,20 @@ FONT_COUNT = Font(name="Calibri", size=11, bold=True, color=COLOR_TEXT_ACCENT)
 FONT_SECTION = Font(name="Calibri", size=13, bold=True, color=COLOR_TEXT)
 FONT_BLOCK_HEADER = Font(name="Calibri", size=11, bold=True, color=COLOR_TEXT)
 FONT_BLOCK_SUB = Font(name="Calibri", size=10, color=COLOR_TEXT_MUTED)
+
+_LIGHT_TEXT_HEX = frozenset(
+    {
+        COLOR_TEXT.upper(),
+        COLOR_TEXT_MUTED.upper(),
+        COLOR_LINK.upper(),
+        COLOR_TEXT_ACCENT.upper(),
+        "EEF0F4",
+        "F9FAFB",
+        "FCA5A5",
+        "8FD4A8",
+        "E8C97A",
+    }
+)
 
 
 def gear_set_fill(key: str) -> PatternFill:
@@ -157,3 +196,80 @@ def build_gear_legend() -> list[dict[str, str]]:
         {"key": "red", "label": "Red — LS, NoS, SOR group, ???, other", "color": TIER_COLOR_RED},
         {"key": "evolver", "label": "Purple — Evolver", "color": GEAR_SET_FILLS["evolver"]},
     ]
+
+
+def _font_hex(font: Font | None) -> str | None:
+    if font is None or font.color is None:
+        return None
+    color = font.color
+    if getattr(color, "type", None) == "theme":
+        return None
+    rgb = getattr(color, "rgb", None)
+    if not rgb:
+        return None
+    hex_val = str(rgb).upper()
+    if len(hex_val) == 8 and hex_val.startswith("FF"):
+        hex_val = hex_val[2:]
+    if hex_val in ("000000", "00000000"):
+        return None
+    return hex_val[-6:] if len(hex_val) >= 6 else hex_val
+
+
+def _needs_light_text(font: Font | None) -> bool:
+    """True when the cell still uses Excel's default/dark text on a dark sheet."""
+    hex_val = _font_hex(font)
+    if hex_val is None:
+        return True
+    return hex_val not in _LIGHT_TEXT_HEX
+
+
+def finalize_dark_sheet(
+    ws: Worksheet,
+    *,
+    pad_rows: int = SHEET_BACKGROUND_ROWS,
+    pad_cols: int = SHEET_BACKGROUND_COLS,
+) -> None:
+    """Apply uniform dark-mode fills/fonts to a sheet's used range and pad chrome."""
+    content_last_row = max(ws.max_row or 1, 1)
+    content_last_col = max(ws.max_column or 1, 1)
+    pad_rows = max(pad_rows, content_last_row + 2)
+    pad_cols = max(pad_cols, content_last_col)
+
+    for row in ws.iter_rows(
+        min_row=1,
+        max_row=content_last_row,
+        min_col=1,
+        max_col=content_last_col,
+    ):
+        for cell in row:
+            if cell.fill is None or cell.fill.fill_type is None:
+                cell.fill = FILL_ITEM_EMPTY if cell.value is not None else FILL_SHEET
+            if cell.value is None:
+                continue
+            if not _needs_light_text(cell.font):
+                continue
+            underline = bool(cell.font and cell.font.underline)
+            bold = bool(cell.font and cell.font.bold)
+            italic = bool(cell.font and cell.font.italic)
+            if cell.hyperlink or underline:
+                cell.font = FONT_LINK
+            elif bold:
+                cell.font = FONT_HEADER
+            elif italic:
+                cell.font = FONT_MUTED
+            else:
+                cell.font = FONT_BODY
+
+    for row_idx in range(1, pad_rows + 1):
+        for col_idx in range(1, pad_cols + 1):
+            if row_idx <= content_last_row and col_idx <= content_last_col:
+                continue
+            cell = ws.cell(row_idx, col_idx)
+            if cell.fill is None or cell.fill.fill_type is None:
+                cell.fill = FILL_SHEET
+
+
+def apply_workbook_dark_mode(wb: Workbook) -> None:
+    """Ensure every worksheet uses the same dark-mode chrome."""
+    for ws in wb.worksheets:
+        finalize_dark_sheet(ws)

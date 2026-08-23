@@ -2,9 +2,16 @@
 
 from __future__ import annotations
 
-from openpyxl.styles import Alignment, Font, PatternFill
+from openpyxl.styles import Alignment
 from openpyxl.utils import get_column_letter
 
+from inventory_parser.excel_theme import (
+    FILL_HEADER,
+    FONT_HEADER,
+    FONT_LINK,
+    FONT_ON_STATUS,
+    STATUS_FILLS,
+)
 from inventory_parser.items import EQRESOURCE_ITEM_URL
 from inventory_parser.raid_bis.build import RaidBisExport
 from inventory_parser.raid_bis.compare import format_stat_deltas
@@ -12,22 +19,10 @@ from inventory_parser.slot2_augs.html import format_catalog_fetched_at
 
 SHEET_NAME = "Raid BiS"
 
-STATUS_FILLS = {
-    "bis": PatternFill("solid", fgColor="166534"),
-    "upgrade": PatternFill("solid", fgColor="854D0E"),
-    "empty": PatternFill("solid", fgColor="7F1D1D"),
-    "unknown": PatternFill("solid", fgColor="1E3A5F"),
-    "weapon": PatternFill("solid", fgColor="374151"),
-}
-HEADER_FILL = PatternFill("solid", fgColor="1E2430")
-HEADER_FONT = Font(color="EEF0F4", bold=True)
-WHITE_FONT = Font(color="F9FAFB")
-LINK_FONT = Font(color="8CB4FF", underline="single")
-LINK_ON_FILL = Font(color="F9FAFB", underline="single")
-
 
 def append_raid_bis_sheet(wb, bundle: RaidBisExport) -> None:
     ws = wb.create_sheet(SHEET_NAME)
+    ws.sheet_properties.tabColor = "4A3520"
     headers = [
         "Character",
         "Class",
@@ -43,8 +38,8 @@ def append_raid_bis_sheet(wb, bundle: RaidBisExport) -> None:
     ]
     for col, h in enumerate(headers, start=1):
         cell = ws.cell(1, col, h)
-        cell.fill = HEADER_FILL
-        cell.font = HEADER_FONT
+        cell.fill = FILL_HEADER
+        cell.font = FONT_HEADER
         cell.alignment = Alignment(horizontal="center")
 
     row = 2
@@ -57,7 +52,7 @@ def append_raid_bis_sheet(wb, bundle: RaidBisExport) -> None:
             status_cell = ws.cell(row, 4, slot.status)
             if fill:
                 status_cell.fill = fill
-                status_cell.font = WHITE_FONT
+                status_cell.font = FONT_ON_STATUS
             _item_cell(ws.cell(row, 5), slot.current_name, slot.current_id)
             _item_cell(ws.cell(row, 6), slot.recommended_name, slot.recommended_id)
             ws.cell(row, 7, slot.recommended_tier)
@@ -90,4 +85,4 @@ def _item_cell(cell, name: str | None, item_id: int | None) -> None:
     cell.value = name
     if item_id and item_id > 0:
         cell.hyperlink = EQRESOURCE_ITEM_URL.format(item_id=item_id)
-        cell.font = LINK_FONT
+        cell.font = FONT_LINK

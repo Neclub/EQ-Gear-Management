@@ -6,6 +6,13 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.33.1] - 2026-08-23
+
+### Changed
+
+- **Type 18/19 Augs:** Dropped the Anniversary column from Suggestions (HTML) and Excel sheets; anniversary augs are marked on the item name (HTML chip / Excel highlight).
+- **Excel:** All workbook tabs use the same dark-mode styling (headers, body text, links, sheet chrome). Type 7/8, Type 5, Type 18/19, and Raid BiS sheets share the muted status palette with Team Gear.
+
 ## [1.33.0] - 2026-08-23
 
 ### Added

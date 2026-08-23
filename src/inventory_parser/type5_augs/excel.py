@@ -2,18 +2,20 @@
 
 from __future__ import annotations
 
-from openpyxl.styles import Font, PatternFill
+from openpyxl.styles import Font
 from openpyxl.utils import get_column_letter
 
+from inventory_parser.excel_theme import (
+    FILL_HEADER,
+    FONT_HEADER,
+    FONT_LINK,
+    STATUS_FILL_EMPTY,
+)
 from inventory_parser.items import EQRESOURCE_ITEM_URL
 from inventory_parser.team_report import format_character_display_name
 from inventory_parser.type5_augs.build import Type5Export
 
-HEADER_FILL = PatternFill("solid", fgColor="1E2430")
-HEADER_FONT = Font(color="EEF0F4", bold=True)
-LINK_FONT = Font(color="8CB4FF", underline="single")
-EMPTY_FILL = PatternFill("solid", fgColor="7F1D1D")
-EMPTY_FONT = Font(color="FCA5A5")
+EMPTY_FONT = Font(name="Calibri", size=11, color="FCA5A5")
 
 SHEET_NAME = "Type 5 Augs"
 
@@ -66,10 +68,11 @@ def _expansion_column_width(names: list[str]) -> float:
 def append_type5_sheet(wb, bundle: Type5Export) -> None:
     """Append a Type 5 Augs sheet onto an existing workbook."""
     ws = wb.create_sheet(SHEET_NAME)
+    ws.sheet_properties.tabColor = "2D4A38"
     for col, h in enumerate(_HEADERS, start=1):
         cell = ws.cell(1, col, h)
-        cell.fill = HEADER_FILL
-        cell.font = HEADER_FONT
+        cell.fill = FILL_HEADER
+        cell.font = FONT_HEADER
 
     show_server = bundle.show_server_in_columns
     aug_names: list[str] = []
@@ -93,16 +96,16 @@ def append_type5_sheet(wb, bundle: Type5Export) -> None:
             expansion_names.append(expansion)
             exp_cell = ws.cell(row_idx, 3, expansion)
             if empty:
-                exp_cell.fill = EMPTY_FILL
+                exp_cell.fill = STATUS_FILL_EMPTY
             aug_label = "Empty" if empty else (slot.name or "")
             aug_names.append(aug_label)
             aug_cell = ws.cell(row_idx, 4, aug_label)
             if empty:
-                aug_cell.fill = EMPTY_FILL
+                aug_cell.fill = STATUS_FILL_EMPTY
                 aug_cell.font = EMPTY_FONT
             elif slot.item_id and slot.item_id > 0:
                 aug_cell.hyperlink = EQRESOURCE_ITEM_URL.format(item_id=slot.item_id)
-                aug_cell.font = LINK_FONT
+                aug_cell.font = FONT_LINK
             values = [
                 int(stats.get("hstr", 0)) if not empty else "",
                 int(stats.get("hsta", 0)) if not empty else "",
@@ -115,7 +118,7 @@ def append_type5_sheet(wb, bundle: Type5Export) -> None:
             for col, val in enumerate(values, start=5):
                 cell = ws.cell(row_idx, col, val)
                 if empty:
-                    cell.fill = EMPTY_FILL
+                    cell.fill = STATUS_FILL_EMPTY
             row_idx += 1
 
     if row_idx == 2:
@@ -126,7 +129,7 @@ def append_type5_sheet(wb, bundle: Type5Export) -> None:
     ws.cell(note_row, 1, "Type 5 list (EQ Resource):")
     link = ws.cell(note_row, 2, bundle.catalog_url)
     link.hyperlink = bundle.catalog_url
-    link.font = LINK_FONT
+    link.font = FONT_LINK
 
     for col, w in _FIXED_WIDTHS.items():
         ws.column_dimensions[get_column_letter(col)].width = w

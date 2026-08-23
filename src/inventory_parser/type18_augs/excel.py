@@ -2,20 +2,20 @@
 
 from __future__ import annotations
 
-from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
+from inventory_parser.excel_theme import (
+    FILL_ANNIVERSARY,
+    FILL_HEADER,
+    FILL_OWNED,
+    FONT_HEADER,
+    FONT_LINK,
+)
 from inventory_parser.items import EQRESOURCE_ITEM_URL
 from inventory_parser.type18_augs.build import Type18Export
 from inventory_parser.type18_augs.categories import HEROIC_STAT_KEYS
 from inventory_parser.type18_augs.suggestions import is_caster_class
-
-HEADER_FILL = PatternFill("solid", fgColor="1E2430")
-HEADER_FONT = Font(color="EEF0F4", bold=True)
-LINK_FONT = Font(color="8CB4FF", underline="single")
-ANNIV_FILL = PatternFill("solid", fgColor="3B2F1A")
-OWNED_FILL = PatternFill("solid", fgColor="1A3B2A")
 
 SHEET_NAME = "Type 18-19 Augs"
 CATALOG_SHEET_NAME = "Type 18-19 Catalog"
@@ -30,7 +30,6 @@ _SUGGEST_HEADERS = (
     "Suggested",
     "Type",
     "Category",
-    "Anniversary",
     "Alternative (non-anniv)",
     "Alt type",
     "Owned",
@@ -53,7 +52,6 @@ _CATALOG_HEADERS = (
     "Category",
     "Lore group",
     "Item Lore",
-    "Anniversary",
     "Name",
     "AC",
     "HP",
@@ -74,7 +72,7 @@ def _link_name(cell, name: str, item_id: int | None) -> None:
     cell.value = name
     if item_id and item_id > 0:
         cell.hyperlink = EQRESOURCE_ITEM_URL.format(item_id=item_id)
-        cell.font = LINK_FONT
+        cell.font = FONT_LINK
 
 
 def _autosize_columns(ws: Worksheet, *, max_width: float = 48.0) -> None:
@@ -95,12 +93,12 @@ def _write_suggest_stats(ws, row_idx: int, stats: dict, *, caster: bool) -> None
     mana = int(stats.get("mana", 0) or 0)
     spell_dmg = int(stats.get("spell_damage", 0) or 0)
     # Dual-purpose columns: casters see Mana / Spell Damage in the lead pair.
-    ws.cell(row_idx, 14, mana if caster else ac)
-    ws.cell(row_idx, 15, spell_dmg if caster else hp)
-    ws.cell(row_idx, 16, mana)
-    ws.cell(row_idx, 17, spell_dmg)
-    ws.cell(row_idx, 18, int(stats.get("endurance", 0) or 0))
-    for col, key in enumerate(HEROIC_STAT_KEYS, start=19):
+    ws.cell(row_idx, 13, mana if caster else ac)
+    ws.cell(row_idx, 14, spell_dmg if caster else hp)
+    ws.cell(row_idx, 15, mana)
+    ws.cell(row_idx, 16, spell_dmg)
+    ws.cell(row_idx, 17, int(stats.get("endurance", 0) or 0))
+    for col, key in enumerate(HEROIC_STAT_KEYS, start=18):
         ws.cell(row_idx, col, int(stats.get(key, 0) or 0))
 
 
@@ -128,10 +126,11 @@ def _write_catalog_stats(ws, row_idx: int, start_col: int, stats: dict) -> None:
 
 def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
     ws = wb.create_sheet(SHEET_NAME)
+    ws.sheet_properties.tabColor = "3A3350"
     for col, h in enumerate(_SUGGEST_HEADERS, start=1):
         cell = ws.cell(1, col, h)
-        cell.fill = HEADER_FILL
-        cell.font = HEADER_FONT
+        cell.fill = FILL_HEADER
+        cell.font = FONT_HEADER
 
     by_class = {b.class_abbr: b for b in bundle.suggestions}
     row_idx = 2
@@ -149,35 +148,30 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
             ws.cell(row_idx, 5, row.rank)
             ws.cell(row_idx, 6, row.guide_name)
             if sug is not None:
-                _link_name(ws.cell(row_idx, 7), sug.name, sug.item_id)
+                name_cell = ws.cell(row_idx, 7)
+                _link_name(name_cell, sug.name, sug.item_id)
+                if sug.anniversary:
+                    name_cell.fill = FILL_ANNIVERSARY
                 ws.cell(row_idx, 8, sug.type_label)
                 ws.cell(row_idx, 9, sug.category)
-                ann = ws.cell(row_idx, 10, "Yes" if sug.anniversary else "")
-                if sug.anniversary:
-                    ann.fill = ANNIV_FILL
                 _write_suggest_stats(ws, row_idx, sug.stats, caster=caster)
             else:
-                ws.cell(row_idx, 7, row.guide_name)
-                ann = ws.cell(
-                    row_idx,
-                    10,
-                    "Yes"
-                    if "enduring harmony" in row.guide_name.casefold()
+                name_cell = ws.cell(row_idx, 7, row.guide_name)
+                if (
+                    "enduring harmony" in row.guide_name.casefold()
                     or "jubilation" in row.guide_name.casefold()
                     or "selenelion" in row.guide_name.casefold()
-                    else "",
-                )
-                if ann.value == "Yes":
-                    ann.fill = ANNIV_FILL
+                ):
+                    name_cell.fill = FILL_ANNIVERSARY
             if alt is not None:
-                _link_name(ws.cell(row_idx, 11), alt.name, alt.item_id)
-                ws.cell(row_idx, 12, alt.type_label)
+                _link_name(ws.cell(row_idx, 10), alt.name, alt.item_id)
+                ws.cell(row_idx, 11, alt.type_label)
             owned = _suggestion_owned(
                 sug, owned_ids=owned_ids, owned_names=owned_names
             )
-            owned_cell = ws.cell(row_idx, 13, "Yes" if owned else "")
+            owned_cell = ws.cell(row_idx, 12, "Yes" if owned else "")
             if owned:
-                owned_cell.fill = OWNED_FILL
+                owned_cell.fill = FILL_OWNED
             row_idx += 1
 
     if bundle.characters:
@@ -208,7 +202,7 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
         ws.cell(note_row, 1, "Class cheat sheet:")
         link = ws.cell(note_row, 2, bundle.cheat_sheet_url)
         link.hyperlink = bundle.cheat_sheet_url
-        link.font = LINK_FONT
+        link.font = FONT_LINK
         note_row += 1
     ws.cell(
         note_row,
@@ -219,13 +213,13 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
     ws.cell(
         note_row,
         1,
-        "AC/Mana and HP/Spell Dmg columns use Mana + Spell Damage for caster classes.",
+        "Anniversary suggestions are highlighted on the Suggested name and always include a non-anniversary Alternative.",
     )
     note_row += 1
     ws.cell(
         note_row,
         1,
-        "Anniversary suggestions always include a non-anniversary Alternative.",
+        "AC/Mana and HP/Spell Dmg columns use Mana + Spell Damage for caster classes.",
     )
 
     ws.row_dimensions[1].height = 20
@@ -237,10 +231,11 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
 
 def _append_catalog_sheet(wb, bundle: Type18Export) -> None:
     ws = wb.create_sheet(CATALOG_SHEET_NAME)
+    ws.sheet_properties.tabColor = "283850"
     for col, h in enumerate(_CATALOG_HEADERS, start=1):
         cell = ws.cell(1, col, h)
-        cell.fill = HEADER_FILL
-        cell.font = HEADER_FONT
+        cell.fill = FILL_HEADER
+        cell.font = FONT_HEADER
 
     row_idx = 2
     for e in bundle.entries:
@@ -253,11 +248,11 @@ def _append_catalog_sheet(wb, bundle: Type18Export) -> None:
         ws.cell(row_idx, 2, e.category)
         ws.cell(row_idx, 3, e.lore_group or "")
         ws.cell(row_idx, 4, e.item_lore or "")
-        anniv_cell = ws.cell(row_idx, 5, "Yes" if e.anniversary else "")
+        name_cell = ws.cell(row_idx, 5)
+        _link_name(name_cell, e.name or "", e.item_id)
         if e.anniversary:
-            anniv_cell.fill = ANNIV_FILL
-        _link_name(ws.cell(row_idx, 6), e.name or "", e.item_id)
-        _write_catalog_stats(ws, row_idx, 7, stats)
+            name_cell.fill = FILL_ANNIVERSARY
+        _write_catalog_stats(ws, row_idx, 6, stats)
         row_idx += 1
 
     if row_idx == 2:
