@@ -60,6 +60,16 @@ def _character_dict(ch: Type18Character) -> dict:
         "classAbbr": ch.class_abbr,
         "ownedIds": sorted(int(i) for i in ch.owned_ids if int(i) > 0),
         "ownedNames": sorted(ch.owned_names),
+        "equippedLocationsById": {
+            str(int(iid)): loc
+            for iid, loc in sorted(ch.equipped_locations_by_id.items())
+            if int(iid) > 0 and loc
+        },
+        "equippedLocationsByName": {
+            name: loc
+            for name, loc in sorted(ch.equipped_locations_by_name.items())
+            if name and loc
+        },
     }
 
 

@@ -3,6 +3,7 @@ from pathlib import Path
 from inventory_parser.parser import (
     InventoryData,
     InventoryItem,
+    collect_equipped_aug_locations,
     collect_owned_item_ids,
     extract_equipped_items,
     extract_slot2_augs,
@@ -43,6 +44,30 @@ def test_parse_inventory_filename_with_class() -> None:
         "Deflub",
         "bristle",
     )
+
+
+def test_collect_equipped_aug_locations() -> None:
+    data = InventoryData(
+        character="Test",
+        server="bristle",
+        filepath="test.txt",
+        items=[
+            InventoryItem("Chest", "Some Chest", 1, 1, 6),
+            InventoryItem("Chest-Slot3", "Ornate Attacker of the Harbinger", 169780, 1, 0),
+            InventoryItem("Ear", "Left Ear", 2, 1, 6),
+            InventoryItem("Ear-Slot1", "Aug In Ear One", 100, 1, 0),
+            InventoryItem("Ear", "Right Ear", 3, 1, 6),
+            InventoryItem("Ear-Slot1", "Aug In Ear Two", 101, 1, 0),
+            InventoryItem("General 1-Slot1", "Ornate Attacker of the Harbinger", 169780, 1, 0),
+        ],
+    )
+    by_id, by_name = collect_equipped_aug_locations(data)
+    assert by_id[169780] == "Chest"
+    assert by_id[100] == "Ear-1"
+    assert by_id[101] == "Ear-2"
+    assert by_name["ornate attacker of the harbinger"] == "Chest"
+    # Bag copy does not override or append as a bag location.
+    assert "General" not in by_id[169780]
 
 
 def test_parse_inventory_file_stores_class_abbr() -> None:

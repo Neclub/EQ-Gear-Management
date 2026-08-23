@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.1] - 2026-08-23
+
+### Added
+
+- **Type 18/19 Augs:** When a suggested aug is owned and equipped in a gear slot, the **Owned** chip is followed by a location chip (HTML) or slot name in parentheses (Excel), e.g. Chest or Fingers-1.
+
 ## [1.34.0] - 2026-08-23
 
 ### Changed

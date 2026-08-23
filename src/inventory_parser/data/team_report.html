@@ -795,6 +795,12 @@ th.copy-col-head {
   background: rgba(60, 140, 90, 0.28);
   color: #8fd4a8;
 }
+.type18-augs .badge.equipped {
+  background: rgba(59, 111, 212, 0.28);
+  color: #9ec0ff;
+  border-color: rgba(140, 180, 255, 0.45);
+  margin-left: 4px;
+}
 .type18-augs .type18-craft-copy {
   display: inline-flex;
   align-items: center;
@@ -2961,6 +2967,20 @@ function type18SuggestionOwned(sug, character) {
   return (character.ownedNames || []).some((n) => String(n).toLowerCase() === name);
 }
 
+function type18SuggestionEquippedLocation(sug, character) {
+  if (!sug || !character) return "";
+  const id = Number(sug.itemId) || 0;
+  const byId = character.equippedLocationsById || {};
+  if (id > 0) {
+    const loc = byId[String(id)] || byId[id];
+    if (loc) return String(loc);
+  }
+  const name = String(sug.name || "").toLowerCase();
+  if (!name) return "";
+  const byName = character.equippedLocationsByName || {};
+  return byName[name] ? String(byName[name]) : "";
+}
+
 function type18CraftCopyHtml(name) {
   const text = String(name || "").trim();
   if (!text) return "";
@@ -3101,6 +3121,7 @@ function renderType18Suggestions(root, data, url, q, filters) {
   ].map((r) => ({
     ...r,
     owned: type18SuggestionOwned(r.suggested, character),
+    equippedLocation: type18SuggestionEquippedLocation(r.suggested, character),
   }));
   let rows = allRows;
   if (q) {
@@ -3114,6 +3135,7 @@ function renderType18Suggestions(root, data, url, q, filters) {
         sug.category,
         r.priority,
         r.owned ? "owned" : "",
+        r.equippedLocation || "",
       ]
         .join(" ")
         .toLowerCase();
@@ -3177,7 +3199,14 @@ function renderType18Suggestions(root, data, url, q, filters) {
       const altHtml = alt.name
         ? slot2ItemLink(url, alt.name, alt.itemId) + altExtra
         : (sug.anniversary || r.anniversary ? "<span class=\"muted\">—</span>" : "");
-      const ownedHtml = r.owned ? '<span class="badge owned">Owned</span>' : "";
+      let ownedHtml = "";
+      if (r.owned) {
+        ownedHtml = '<span class="badge owned">Owned</span>';
+        if (r.equippedLocation) {
+          ownedHtml +=
+            `<span class="badge equipped" title="Equipped in this gear slot">${slot2Esc(r.equippedLocation)}</span>`;
+        }
+      }
       const statA = casterStats ? (Number(sug.mana) || 0) : (Number(sug.ac) || 0);
       const statB = casterStats ? (Number(sug.spellDamage) || 0) : (Number(sug.hp) || 0);
       tr.innerHTML = [

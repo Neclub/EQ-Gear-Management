@@ -222,6 +222,8 @@ def test_include_type18_offline_adds_section(tmp_path: Path) -> None:
     assert data["characters"]
     assert data["characters"][0]["classAbbr"]
     assert "ownedIds" in data["characters"][0]
+    assert "equippedLocationsById" in data["characters"][0]
+    assert "equippedLocationsByName" in data["characters"][0]
     assert any(r["anniversary"] for r in data["rows"])
     assert any(r.get("typeLabel") == "18/19" for r in data["rows"])
     assert any(r.get("typeLabel") == "19" for r in data["rows"])
@@ -233,6 +235,7 @@ def test_include_type18_offline_adds_section(tmp_path: Path) -> None:
     assert CATALOG_SHEET_NAME in wb.sheetnames
     suggest = wb[SHEET_NAME]
     assert suggest.cell(1, 1).value == "Character"
+    assert suggest.cell(1, 12).value == "Owned"
     assert suggest.cell(2, 1).value  # character name on first data row
 
 
@@ -412,6 +415,7 @@ def test_type18_html_template_has_filters() -> None:
     assert "renderType18Suggestions" in html
     assert "type18DefaultCharacter" in html
     assert "type18SuggestionOwned" in html
+    assert "type18SuggestionEquippedLocation" in html
     assert 'section.type === "type18_augs"' in html
     assert "toolbar-char-wrap" in html
     assert "Alternative" in html
@@ -422,6 +426,7 @@ def test_type18_html_template_has_filters() -> None:
     assert "type18-card-heading" in html
     assert "Spell Dmg" in html
     assert "badge owned" in html
+    assert "badge equipped" in html
     assert ">Owned<" in html
     assert "18/19" in html
 

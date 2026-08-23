@@ -111,6 +111,24 @@ def _suggestion_owned(sug, *, owned_ids: set[int], owned_names: set[str]) -> boo
     return bool(name) and name in owned_names
 
 
+def _suggestion_equipped_location(
+    sug,
+    *,
+    equipped_by_id: dict[int, str],
+    equipped_by_name: dict[str, str],
+) -> str:
+    if sug is None:
+        return ""
+    if sug.item_id > 0:
+        loc = equipped_by_id.get(sug.item_id) or ""
+        if loc:
+            return loc
+    name = (sug.name or "").casefold()
+    if not name:
+        return ""
+    return equipped_by_name.get(name) or ""
+
+
 def _write_catalog_stats(ws, row_idx: int, start_col: int, stats: dict) -> None:
     values = [
         int(stats.get("ac", 0) or 0),
@@ -135,7 +153,15 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
     by_class = {b.class_abbr: b for b in bundle.suggestions}
     row_idx = 2
 
-    def write_block(character_label: str, block, *, owned_ids: set[int], owned_names: set[str]) -> None:
+    def write_block(
+        character_label: str,
+        block,
+        *,
+        owned_ids: set[int],
+        owned_names: set[str],
+        equipped_by_id: dict[int, str],
+        equipped_by_name: dict[str, str],
+    ) -> None:
         nonlocal row_idx
         caster = bool(block.caster_stats) or is_caster_class(block.class_abbr)
         for row in (*block.primary, *block.optional, *block.filler):
@@ -168,7 +194,20 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
             owned = _suggestion_owned(
                 sug, owned_ids=owned_ids, owned_names=owned_names
             )
-            owned_cell = ws.cell(row_idx, 12, "Yes" if owned else "")
+            location = ""
+            if owned:
+                location = _suggestion_equipped_location(
+                    sug,
+                    equipped_by_id=equipped_by_id,
+                    equipped_by_name=equipped_by_name,
+                )
+            if owned and location:
+                owned_text = f"Yes ({location})"
+            elif owned:
+                owned_text = "Yes"
+            else:
+                owned_text = ""
+            owned_cell = ws.cell(row_idx, 12, owned_text)
             if owned:
                 owned_cell.fill = FILL_OWNED
             row_idx += 1
@@ -183,6 +222,8 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
                 block,
                 owned_ids=ch.owned_ids,
                 owned_names=ch.owned_names,
+                equipped_by_id=ch.equipped_locations_by_id,
+                equipped_by_name=ch.equipped_locations_by_name,
             )
     else:
         for block in bundle.suggestions:
@@ -191,6 +232,8 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
                 block,
                 owned_ids=set(),
                 owned_names=set(),
+                equipped_by_id={},
+                equipped_by_name={},
             )
 
     if row_idx == 2:
@@ -206,7 +249,9 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
     ws.cell(
         note_row,
         1,
-        "Owned is Yes when that character’s inventory contains the suggested aug.",
+        "Owned is Yes when that character’s inventory contains the suggested aug. "
+        "When the aug is currently equipped, Owned also includes the gear slot "
+        "(e.g. Yes (Chest)).",
     )
     note_row += 1
     ws.cell(

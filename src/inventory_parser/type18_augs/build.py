@@ -37,6 +37,9 @@ class Type18Character:
     class_abbr: str
     owned_ids: set[int] = field(default_factory=set)
     owned_names: set[str] = field(default_factory=set)
+    # item id / casefolded name → team gear slot when the aug is equipped
+    equipped_locations_by_id: dict[int, str] = field(default_factory=dict)
+    equipped_locations_by_name: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass

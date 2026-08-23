@@ -354,6 +354,66 @@ def collect_owned_item_names(data: InventoryData) -> set[str]:
     return owned
 
 
+def collect_equipped_aug_locations(
+    data: InventoryData,
+) -> tuple[dict[int, str], dict[str, str]]:
+    """Map equipped aug item id / casefolded name → team gear slot.
+
+    Only inventory rows under equipment (e.g. ``Chest-Slot3``, ``Ear-Slot1``).
+    Paired slots become ``Ear-1`` / ``Ear-2``, ``Fingers-1`` / ``Fingers-2``,
+    ``Wrist-1`` / ``Wrist-2``. Bags and bank are ignored. When the same aug
+    appears in more than one equipped hole, locations are joined with ``, ``.
+    """
+    by_id: dict[int, list[str]] = {}
+    by_name: dict[str, list[str]] = {}
+    ear_n = 0
+    finger_n = 0
+    wrist_n = 0
+    current_key_by_base: dict[str, str] = {}
+
+    for item in data.items:
+        loc = item.location
+        if "-Slot" not in loc:
+            base = loc.split("-")[0].strip()
+            if base not in EQUIPMENT_SLOT_BASES:
+                continue
+            key, ear_n, finger_n, wrist_n = _gear_slot_key_for_base(
+                base, ear_n=ear_n, finger_n=finger_n, wrist_n=wrist_n
+            )
+            current_key_by_base[base] = key
+            continue
+
+        parsed = _is_equipped_aug_location(loc)
+        if parsed is None:
+            continue
+        parent, _slot_n = parsed
+        base = parent.split("-")[0].strip()
+        gear_slot = current_key_by_base.get(base)
+        if gear_slot is None:
+            gear_slot, ear_n, finger_n, wrist_n = _gear_slot_key_for_base(
+                base, ear_n=ear_n, finger_n=finger_n, wrist_n=wrist_n
+            )
+            current_key_by_base[base] = gear_slot
+
+        name = item.name.strip()
+        if not name or name.casefold() == "empty" or item.item_id <= 0:
+            continue
+
+        if item.item_id > 0:
+            slots = by_id.setdefault(item.item_id, [])
+            if gear_slot not in slots:
+                slots.append(gear_slot)
+        key_name = name.casefold()
+        name_slots = by_name.setdefault(key_name, [])
+        if gear_slot not in name_slots:
+            name_slots.append(gear_slot)
+
+    return (
+        {iid: ", ".join(slots) for iid, slots in by_id.items()},
+        {name: ", ".join(slots) for name, slots in by_name.items()},
+    )
+
+
 def collect_equipped_parent_ids(data: InventoryData) -> list[int]:
     """Equipped parent item IDs that need type 7/8 socket lookup."""
     ids: list[int] = []

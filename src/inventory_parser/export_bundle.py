@@ -176,7 +176,11 @@ def build_export_bundle(
 
     type18 = None
     if include_type18:
-        from inventory_parser.parser import collect_owned_item_ids, collect_owned_item_names
+        from inventory_parser.parser import (
+            collect_equipped_aug_locations,
+            collect_owned_item_ids,
+            collect_owned_item_names,
+        )
         from inventory_parser.type18_augs.build import Type18Character
 
         type18_characters: list[Type18Character] = []
@@ -188,9 +192,14 @@ def build_export_bundle(
             type18_class_abbrs.append(abbr)
             owned_ids: set[int] = set()
             owned_names: set[str] = set()
+            equipped_by_id: dict[int, str] = {}
+            equipped_by_name: dict[str, str] = {}
             if ch.inventory_data is not None:
                 owned_ids = collect_owned_item_ids(ch.inventory_data)
                 owned_names = collect_owned_item_names(ch.inventory_data)
+                equipped_by_id, equipped_by_name = collect_equipped_aug_locations(
+                    ch.inventory_data
+                )
             type18_characters.append(
                 Type18Character(
                     key=ch.persona_key,
@@ -199,6 +208,8 @@ def build_export_bundle(
                     class_abbr=abbr,
                     owned_ids=owned_ids,
                     owned_names=owned_names,
+                    equipped_locations_by_id=equipped_by_id,
+                    equipped_locations_by_name=equipped_by_name,
                 )
             )
         type18 = build_type18_export(
