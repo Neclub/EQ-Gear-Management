@@ -104,7 +104,13 @@ def _tier_cell(item: EquippedItem | None) -> dict | None:
     label = equipped_tier_label(item)
     if not label:
         return None
-    return {"label": label, "tierCode": label}
+    return {
+        "label": label,
+        "tierCode": label,
+        "name": item.name,
+        "itemId": item.item_id,
+        "url": _item_url(item.item_id),
+    }
 
 
 def _gear_matrix(report: TeamGearReport, slots: tuple[str, ...], *, tier_mode: bool) -> dict:

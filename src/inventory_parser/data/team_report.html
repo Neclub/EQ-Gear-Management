@@ -2103,7 +2103,19 @@ function updateGearMatrixContent(content, section, tierMode) {
       if (!cell) {
         td.className = "empty";
       } else if (tierMode) {
-        td.textContent = cell.label || "";
+        const label = cell.label || "";
+        if (cell.url) {
+          const a = document.createElement("a");
+          a.href = cell.url;
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.textContent = label;
+          if (cell.name) a.title = cell.name;
+          td.appendChild(a);
+        } else {
+          td.textContent = label;
+          if (cell.name) td.title = cell.name;
+        }
         const style = gearStyle(cell);
         if (style) td.setAttribute("style", style);
       } else {

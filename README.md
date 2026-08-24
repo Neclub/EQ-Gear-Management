@@ -53,7 +53,7 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 ### What you get
 
 - **Team Gear** — equipped items by slot, color-coded by tier
-- **Gear T-Level** — expansion tier codes per slot (unknown items looked up on EQ Resource)
+- **Gear T-Level** — expansion tier codes per slot (unknown items looked up on EQ Resource); codes link to the item, hover for the name
 - **Unmade Gear** — raid craft mats and T1 containers still sitting in bags
 - **Missing Runes / Spells / Useful Spells** — from MissingSpells output files, including spells that were never purchased; HTML Missing Runes can sort columns (roster, name, class, most missing) and filter by expansion
 - **Rune Inventory** — raid runes on hand

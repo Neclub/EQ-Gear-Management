@@ -120,6 +120,20 @@ def test_html_includes_item_link(tmp_path: Path) -> None:
     assert "items.eqresource.com/items.php?id=173940" in text
 
 
+def test_html_gear_t_level_item_link_and_name(tmp_path: Path) -> None:
+    inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
+    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False, include_slot2=False)
+    out = tmp_path / "crew.html"
+    write_team_html(bundle, out)
+    report = extract_report_json(out.read_text(encoding="utf-8"))
+    section = next(s for s in report["sections"] if s["id"] == "gear_t_level")
+    charm = next(row for row in section["data"]["rows"] if row["slot"] == "Charm")
+    cell = charm["cells"][0]
+    assert cell["label"] == "TOB-R2"
+    assert cell["name"] == "Defender's Charm of Rebellion"
+    assert cell["url"] == "https://items.eqresource.com/items.php?id=173940"
+
+
 def test_html_achievement_expansion_labels(tmp_path: Path) -> None:
     inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
     bundle = build_export_bundle([inv], include_spells=False, include_achievements=False, include_slot2=False)

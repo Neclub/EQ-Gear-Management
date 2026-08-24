@@ -237,6 +237,23 @@ def test_sor_gaps_markers_on_deflub(tmp_path: Path) -> None:
     assert ws.cell(charm_row, _FIRST_CHAR_COL).value == "TOB-R2"
 
 
+def test_gear_t_level_hyperlink_and_item_name_hover(tmp_path: Path) -> None:
+    paths = [EXAMPLES / "Deflub_bristle-Inventory.txt"]
+    out = tmp_path / "sor.xlsx"
+    write_team_workbook(build_team_report(paths), out)
+
+    wb = load_workbook(out, data_only=False)
+    ws = wb[GEAR_T_LEVEL_SHEET_NAME]
+    charm_row = _sor_slot_row(out, "Charm")
+    cell = ws.cell(charm_row, _FIRST_CHAR_COL)
+    assert cell.value == "TOB-R2"
+    assert cell.hyperlink is not None
+    assert cell.hyperlink.target == "https://items.eqresource.com/items.php?id=173940"
+    assert cell.hyperlink.tooltip == "Defender's Charm of Rebellion"
+    assert cell.comment is not None
+    assert cell.comment.text == "Defender's Charm of Rebellion"
+
+
 def test_gear_t_level_sor_r2_on_deflub_fingers(tmp_path: Path) -> None:
     paths = [EXAMPLES / "Deflub_bristle-Inventory.txt"]
     out = tmp_path / "gear_t_level.xlsx"

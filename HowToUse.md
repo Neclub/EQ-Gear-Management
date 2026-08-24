@@ -140,7 +140,7 @@ If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, et
 
 ## Reading the workbook
 
-The file uses a **dark theme** on every sheet (black chrome, light text, shared header and status colors). Item names link to [EQ Resource](https://items.eqresource.com/) when the inventory file includes item IDs.
+The file uses a **dark theme** on every sheet (black chrome, light text, shared header and status colors). Item names and Gear T-Level codes link to [EQ Resource](https://items.eqresource.com/) when the inventory file includes item IDs; hover a T-code to see the item name.
 
 ### Team Gear
 
@@ -151,7 +151,7 @@ The file uses a **dark theme** on every sheet (black chrome, light text, shared 
 
 ### Gear T-Level
 
-Same layout as Team Gear, but cells show **what tier is equipped** in each slot:
+Same layout as Team Gear, but cells show **what tier is equipped** in each slot. Tier codes link to [EQ Resource](https://items.eqresource.com/) when the inventory includes item IDs; hover a cell to see the item name.
 
 | Cell value | Meaning |
 |------------|---------|
@@ -314,7 +314,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 | **Column headers** | Table | Click to sort |
 | **Missing Item** | Missing Collections | Hover the header for a copy reminder; click an item name to copy it |
 
-Gear-set and tier colors match the Excel theme. Item names link to EQ Resource.
+Gear-set and tier colors match the Excel theme. Item names and Gear T-Level codes link to EQ Resource; hover a T-code for the item name.
 
 ---
 

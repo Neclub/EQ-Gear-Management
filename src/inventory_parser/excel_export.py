@@ -5,10 +5,14 @@ from __future__ import annotations
 from pathlib import Path
 
 from openpyxl import Workbook
+from openpyxl.cell.cell import Cell
+from openpyxl.comments import Comment
 from openpyxl.styles import Alignment, Border, PatternFill, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.hyperlink import Hyperlink
 from openpyxl.worksheet.worksheet import Worksheet
+
+from inventory_parser import APP_NAME_SHORT
 
 from inventory_parser.team_report import CharacterGear, TeamGearReport
 from inventory_parser.achievement_report import AchievementReport
@@ -233,11 +237,8 @@ def _write_sor_gaps_sheet(ws: Worksheet, report: TeamGearReport, slots: tuple[st
             char_row = report.characters[col - _FIRST_CHAR_COL]
             item = char_row.slots.get(slot)
             label = equipped_tier_label(item)
-            if label:
-                cell = ws.cell(row_idx, col, label)
-                cell.font = FONT_BODY
-                cell.alignment = _ALIGN
-                cell.fill = _fill_for_tier_code(label)
+            if label and item is not None:
+                _write_tier_code_cell(ws, row_idx, col, item, label)
             else:
                 ws.cell(row_idx, col).fill = FILL_ITEM_EMPTY
     if slots:
@@ -352,10 +353,31 @@ def _write_item_cell(ws: Worksheet, row_idx: int, col: int, item: EquippedItem) 
     cell = ws.cell(row_idx, col, item.name)
     cell.alignment = _ALIGN
     cell.fill = _fill_for_equipped_item(item)
+    _apply_item_link(cell, item)
+
+
+def _write_tier_code_cell(
+    ws: Worksheet, row_idx: int, col: int, item: EquippedItem, label: str
+) -> None:
+    cell = ws.cell(row_idx, col, label)
+    cell.alignment = _ALIGN
+    cell.fill = _fill_for_tier_code(label)
+    _apply_item_link(cell, item, tooltip=True)
+
+
+def _apply_item_link(
+    cell: Cell, item: EquippedItem, *, tooltip: bool = False
+) -> None:
     url = item.eqresource_url
     cell.font = FONT_LINK if url else FONT_BODY
     if url:
-        cell.hyperlink = Hyperlink(ref=cell.coordinate, target=url)
+        cell.hyperlink = Hyperlink(
+            ref=cell.coordinate,
+            target=url,
+            tooltip=item.name if tooltip else None,
+        )
+    if tooltip and item.name:
+        cell.comment = Comment(item.name, APP_NAME_SHORT)
 
 
 def _write_gear_legend_on_sheet(ws: Worksheet) -> None:

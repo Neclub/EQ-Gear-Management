@@ -1312,7 +1312,7 @@ async function showHelpTiers() {
           Evolver: equipped items whose inventory file includes the final augment row. Tier is resolved first;
           Evolver only when the item has no recognized tier pattern.
         </p>
-        <p style="font-size:12px;color:var(--muted)">Unlisted items show as red (???). Item names link to EQ Resource.</p>
+        <p style="font-size:12px;color:var(--muted)">Unlisted items show as red (???). Team Gear names and Gear T-Level codes link to EQ Resource; hover a T-code for the item name.</p>
         <p style="margin-top:16px;font-weight:600">Visible vs non-visible slots</p>
         <p style="font-size:12px">Visible: ${data.visibleSlots.join(", ")}</p>
         <p style="font-size:12px">Non-visible: ${data.nonVisibleSlots.join(", ")}</p>

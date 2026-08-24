@@ -6,6 +6,10 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+### Added
+
+- **Gear T-Level:** tier-code cells link to EQ Resource; hover shows the equipped item name (Excel and HTML).
+
 ## [1.34.3] - 2026-08-23
 
 ### Fixed
