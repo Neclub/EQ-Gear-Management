@@ -67,6 +67,12 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 
 For file naming, Alternate Personas, reading each sheet, and troubleshooting, see **[HowToUse.md](HowToUse.md)**.
 
+## Developers
+
+From-source setup, CLI flags, `%LOCALAPPDATA%\EQGM\` cache refresh, Type 18/19 catalog internals, tests, and the GitHub Release pipeline: **[DEVELOPMENT.md](DEVELOPMENT.md)**.
+
+Adding a new EverQuest expansion (scrapes and config): **[Expansion Update Plan](Expansion%20Update%20Plan/README.md)**.
+
 ## License
 
 Apache License 2.0. See [LICENSE](LICENSE).

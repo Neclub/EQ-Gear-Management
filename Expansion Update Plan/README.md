@@ -2,6 +2,8 @@
 
 Maintainer documentation for adding a new EverQuest expansion to EQ Gear Management.
 
+From-source setup, CLI, caches, tests, and the release pipeline: [DEVELOPMENT.md](../DEVELOPMENT.md).
+
 ## Contents
 
 | Document | Purpose |

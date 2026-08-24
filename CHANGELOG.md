@@ -6,6 +6,10 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+### Changed
+
+- **Docs:** added [DEVELOPMENT.md](DEVELOPMENT.md) for from-source setup, CLI, `%LOCALAPPDATA%\EQGM\` cache files, Type 18/19 catalog internals, tests, and the GitHub Release pipeline. HowToUse troubleshooting notes how to force a catalog refresh (delete cache JSON; there is no refresh button).
+
 ## [1.34.4] - 2026-08-23
 
 ### Added
