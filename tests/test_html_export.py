@@ -43,6 +43,8 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
     assert "function filterChipLabel" in text
     assert "function rowMatchesCharacterFilter" in text
     assert "function sortedColumnIndices" in text
+    assert "function cellText" in text
+    assert "cell-chip" in text
     assert "Most missing" in text
     assert "Roster order" in text
     assert ">Visibility<" not in text
@@ -196,6 +198,7 @@ def test_html_spell_list_has_character_filter(tmp_path: Path) -> None:
     assert data["runeOptions"]
     assert data["rows"]
     assert any(row[3] for row in data["rows"])
+    assert "cell-chip" in text
 
 
 def test_cli_also_html_flag(tmp_path: Path) -> None:
@@ -290,3 +293,35 @@ def test_html_report_escapes_script_breakout_in_item_name(tmp_path: Path) -> Non
         if cell
     ]
     assert "</script><script>alert(1)</script>" in names
+
+
+def test_html_not_purchased_spell_chip(tmp_path: Path) -> None:
+    inv = tmp_path / "Zenbane_bristle-Inventory.txt"
+    inv.write_text(
+        "Location\tName\tID\tCount\tSlots\nChest\tCloth Shirt\t1001\t1\t5\n",
+        encoding="utf-8",
+    )
+    spell = tmp_path / "Zenbane_bristle-CLR-MissingSpells.txt"
+    spell.write_text(
+        "126\tAppeasement\n126\tAwestruck XVII\n126\tWord of Wellbeing Rk. II\n",
+        encoding="utf-8",
+    )
+    bundle = build_export_bundle(
+        [inv, spell],
+        include_achievements=False,
+        include_slot2=False,
+        include_raid_bis=False,
+        fetch_chest_class=False,
+        fetch_eqr_gear_tiers=False,
+    )
+    out = tmp_path / "zenbane.html"
+    write_team_html(bundle, out)
+    report = extract_report_json(out.read_text(encoding="utf-8"))
+    spell_section = next(s for s in report["sections"] if s["id"] == "spell_list")
+    by_spell = {row[4]["text"] if isinstance(row[4], dict) else row[4]: row[4] for row in spell_section["data"]["rows"]}
+    assert by_spell["Appeasement Rk. III"] == {
+        "text": "Appeasement Rk. III",
+        "chip": "Not Purchased",
+    }
+    assert by_spell["Awestruck XVII Rk. III"]["chip"] == "Not Purchased"
+    assert by_spell["Word of Wellbeing Rk. III"] == "Word of Wellbeing Rk. III"

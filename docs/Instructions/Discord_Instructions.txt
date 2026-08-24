@@ -45,7 +45,7 @@ Same layout, but shows the tier name instead of the item name (for example `SOR-
 Craft materials and T1 containers still sitting in bags — listed so you know they are there, even if that slot is already geared.
 
 ### 📘 Missing Runes / Spells / Useful Spells
-Who still needs spell runes, which spells they are missing, and which of those spells are the most useful ones.
+Who still needs spell runes, which spells they are missing (including spells that were never purchased), and which of those spells are the most useful ones.
 
 ### 🎒 Rune Inventory
 Raid runes people already have in bags or bank.

@@ -1,4 +1,5 @@
 from pathlib import Path
+import re
 
 from inventory_parser.team_report import (
     CharacterGear,
@@ -14,6 +15,7 @@ from inventory_parser.missing_spells import (
     is_missing_rank_ii,
     is_missing_rank_iii,
     is_missing_spells_file,
+    lacks_rank_suffix,
     normalize_spell_rank_iii,
     parse_missing_spells_file,
     parse_missing_spells_filename,
@@ -93,11 +95,24 @@ def test_rank_ii_detection_and_normalization() -> None:
     assert counts_as_missing_rk3("Concussive Blast XII Rk. II") is True
     assert counts_as_missing_rk3("Committal Rk. III") is True
     assert counts_as_missing_rk3("Aurora of Sunlight XI") is False
+    assert counts_as_missing_rk3("Appeasement") is False
+    assert counts_as_missing_rk3("Awestruck XVII") is False
+    assert counts_as_missing_rk3("Yaulp XIX") is False
+    assert lacks_rank_suffix("Appeasement") is True
+    assert lacks_rank_suffix("Awestruck XVII") is True
+    assert lacks_rank_suffix("Yaulp XIX") is True
+    assert lacks_rank_suffix("Committal Rk. III") is False
+    assert lacks_rank_suffix("Concussive Blast XII Rk. II") is False
     assert strip_spell_rank("Concussive Blast XII Rk. II") == "Concussive Blast XII"
+    assert strip_spell_rank("Awestruck XVII") == "Awestruck XVII"
+    assert strip_spell_rank("Yaulp XIX") == "Yaulp XIX"
     assert normalize_spell_rank_iii("Concussive Blast XII Rk. II") == (
         "Concussive Blast XII Rk. III"
     )
     assert normalize_spell_rank_iii("Committal Rk. III") == "Committal Rk. III"
+    assert normalize_spell_rank_iii("Appeasement") == "Appeasement Rk. III"
+    assert normalize_spell_rank_iii("Awestruck XVII") == "Awestruck XVII Rk. III"
+    assert normalize_spell_rank_iii("Yaulp XIX") == "Yaulp XIX Rk. III"
 
 
 def test_discover_spell_files_from_examples() -> None:
@@ -127,7 +142,11 @@ def test_deflub_126_130_rune_counts() -> None:
     assert counts["Lesser"] == 7
     assert counts["Median"] == 5
     assert counts["Greater"] == 5
-    assert counts["Glowing"] == 5
+    assert counts["Glowing"] == 7
+    aurora = next(e for e in report.entries if e.spell_name == "Aurora of Sunlight XI Rk. III")
+    assert aurora.not_purchased is True
+    revocation = next(e for e in report.entries if e.spell_name == "Force of Revocation Rk. III")
+    assert revocation.not_purchased is True
 
 
 def test_spell_report_entries_have_rune() -> None:
@@ -231,3 +250,69 @@ def test_spell_path_for_persona_falls_back_to_unique_character() -> None:
     assert spell_path_for_persona("Deflub", "bristle", None, paths) == spell
     paths[persona_key("Deflub", "bristle", "SHD")] = spell
     assert spell_path_for_persona("Deflub", "bristle", "WIZ", paths) is None
+
+
+def test_unpurchased_rank1_listed_as_rk3_not_purchased(tmp_path: Path) -> None:
+    spell_file = tmp_path / "Zenbane_bristle-CLR-MissingSpells.txt"
+    spell_file.write_text(
+        "\n".join(
+            [
+                "1\tCure Poison",
+                "126\tAppeasement",
+                "126\tAwestruck XVII",
+                "126\tYaulp XIX",
+                "126\tWord of Wellbeing Rk. II",
+                "129\tMastery: Purge Corruption",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    pk = persona_key("Zenbane", "bristle", "CLR")
+    team = TeamGearReport(
+        spell_characters=[
+            CharacterGear(
+                character="Zenbane",
+                server="bristle",
+                filepath="",
+                class_abbr="CLR",
+            )
+        ]
+    )
+    report = build_spell_rune_report(team, spell_paths={pk: spell_file})
+    assert report is not None
+    by_name = {e.spell_name: e for e in report.entries}
+
+    assert by_name["Appeasement Rk. III"].not_purchased is True
+    assert by_name["Appeasement Rk. III"].level == 126
+    assert by_name["Awestruck XVII Rk. III"].not_purchased is True
+    assert by_name["Yaulp XIX Rk. III"].not_purchased is True
+    assert by_name["Word of Wellbeing Rk. III"].not_purchased is False
+    assert "Mastery: Purge Corruption Rk. III" not in by_name
+    assert "Cure Poison Rk. III" not in by_name
+    assert all(not re.search(r"Rk\.\s*I\b", e.spell_name) for e in report.entries)
+
+
+def test_dedupe_unpurchased_and_rk2_same_level(tmp_path: Path) -> None:
+    spell_file = tmp_path / "Dedupe_bristle-CLR-MissingSpells.txt"
+    spell_file.write_text(
+        "126\tAppeasement\n126\tAppeasement Rk. II\n",
+        encoding="utf-8",
+    )
+    pk = persona_key("Dedupe", "bristle", "CLR")
+    team = TeamGearReport(
+        spell_characters=[
+            CharacterGear(
+                character="Dedupe",
+                server="bristle",
+                filepath="",
+                class_abbr="CLR",
+            )
+        ]
+    )
+    report = build_spell_rune_report(team, spell_paths={pk: spell_file})
+    assert report is not None
+    matches = [e for e in report.entries if e.level == 126 and "Appeasement" in e.spell_name]
+    assert len(matches) == 1
+    assert matches[0].spell_name == "Appeasement Rk. III"
+    assert matches[0].not_purchased is False

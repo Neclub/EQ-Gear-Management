@@ -385,3 +385,26 @@ def test_rune_inventory_sheet_omitted_without_runes(tmp_path: Path) -> None:
     out = tmp_path / "no_runes.xlsx"
     write_team_workbook(report, out)
     assert RUNE_INVENTORY_SHEET_NAME not in load_workbook(out).sheetnames
+
+
+def test_excel_not_purchased_next_to_rk3_name(tmp_path: Path) -> None:
+    from inventory_parser.missing_spells import persona_key
+    from inventory_parser.team_report import CharacterGear, TeamGearReport
+
+    spell_file = tmp_path / "Zenbane_bristle-CLR-MissingSpells.txt"
+    spell_file.write_text("126\tAppeasement\n126\tWord of Wellbeing Rk. II\n", encoding="utf-8")
+    char = CharacterGear(
+        character="Zenbane",
+        server="bristle",
+        filepath="",
+        class_abbr="CLR",
+    )
+    team = TeamGearReport(characters=[char], spell_characters=[char])
+    spell = build_spell_rune_report(team, spell_paths={persona_key("Zenbane", "bristle", "CLR"): spell_file})
+    assert spell is not None
+    out = tmp_path / "zenbane.xlsx"
+    write_team_workbook(team, out, spell_report=spell)
+    ws = load_workbook(out, data_only=True)[MISSING_SPELLS_SHEET_NAME]
+    names = {ws.cell(r, 5).value for r in range(1, ws.max_row + 1)}
+    assert "Appeasement Rk. III  Not Purchased" in names
+    assert "Word of Wellbeing Rk. III" in names

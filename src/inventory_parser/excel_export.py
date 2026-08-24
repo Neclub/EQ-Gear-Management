@@ -757,6 +757,8 @@ def _write_spell_list_sheet(
         spell_cell.font = FONT_BODY
         spell_cell.alignment = _ALIGN
         spell_cell.fill = row_fill
+        if entry.not_purchased:
+            spell_cell.value = f"{entry.spell_name}  Not Purchased"
 
         _apply_spell_table_borders(ws, row, row, 1, 5)
         row += 1
@@ -770,7 +772,8 @@ def _write_spell_list_sheet(
     note = ws.cell(
         row,
         1,
-        "Only Rank III lines are listed. Rune tier matches spell level within each band. "
+        "Rank III lines, plus unpurchased rank 1 spells shown as Rk. III with Not Purchased. "
+        "Rune tier matches spell level within each band. "
         "Add blocks in spell_rune_bands.json for future level caps.",
     )
     note.font = FONT_LEGEND

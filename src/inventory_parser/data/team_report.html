@@ -257,6 +257,19 @@ th, td {
   vertical-align: middle;
   white-space: nowrap;
 }
+.cell-chip {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  vertical-align: middle;
+  background: var(--empty-status-soft);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
 th {
   background: var(--header);
   position: sticky;
@@ -1638,11 +1651,31 @@ function gearStyle(cell) {
   return REPORT.theme.tierCodes[code] ? `background:#${REPORT.theme.tierCodes[code]}` : "";
 }
 
+function cellText(val) {
+  if (val == null) return "";
+  if (typeof val === "object") {
+    const bits = [];
+    if (val.text != null) bits.push(String(val.text));
+    if (val.chip) bits.push(String(val.chip));
+    return bits.join(" ");
+  }
+  return String(val);
+}
+
+function cellPlainText(val) {
+  if (val == null) return "";
+  if (typeof val === "object" && val.text != null) return String(val.text);
+  return String(val);
+}
+
 function compareValues(a, b) {
-  if (a == null) a = "";
-  if (b == null) b = "";
-  if (typeof a === "number" && typeof b === "number") return a - b;
-  return String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: "base" });
+  const av = typeof a === "object" && a && "text" in a ? a.text : a;
+  const bv = typeof b === "object" && b && "text" in b ? b.text : b;
+  if (av == null && bv == null) return 0;
+  if (av == null) return -1;
+  if (bv == null) return 1;
+  if (typeof av === "number" && typeof bv === "number") return av - bv;
+  return String(av).localeCompare(String(bv), undefined, { numeric: true, sensitivity: "base" });
 }
 
 function activeSection() {
@@ -2101,7 +2134,7 @@ function filteredTableRows(section) {
   const sort = state.sorts[section.id] || { col: null, dir: 1 };
   let rows = data.rows.slice();
   const q = (state.searches[section.id] || "").trim().toLowerCase();
-  if (q) rows = rows.filter((r) => r.join(" ").toLowerCase().includes(q));
+  if (q) rows = rows.filter((r) => r.map(cellText).join(" ").toLowerCase().includes(q));
 
   const charFilter = state.chars[section.id] || "";
   if (data.characterColumn != null) {
@@ -2237,8 +2270,8 @@ function updateTableContent(content, section) {
   rows.forEach((row) => {
     const tr = document.createElement("tr");
     row.forEach((val, idx) => {
-      const text = val == null ? "" : String(val);
-      if (data.copyColumn === idx && text) {
+      if (data.copyColumn === idx && cellPlainText(val)) {
+        const text = cellPlainText(val);
         const td = document.createElement("td");
         const btn = document.createElement("button");
         btn.type = "button";
@@ -2255,8 +2288,13 @@ function updateTableContent(content, section) {
         });
         td.appendChild(btn);
         tr.appendChild(td);
+      } else if (val && typeof val === "object" && val.chip) {
+        const td = document.createElement("td");
+        td.appendChild(document.createTextNode(cellPlainText(val)));
+        td.appendChild(el("span", "cell-chip", String(val.chip)));
+        tr.appendChild(td);
       } else {
-        tr.appendChild(el("td", null, text));
+        tr.appendChild(el("td", null, cellPlainText(val)));
       }
     });
     tbody.appendChild(tr);

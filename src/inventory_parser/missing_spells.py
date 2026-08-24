@@ -17,7 +17,8 @@ _FILENAME_RE = re.compile(
 )
 _RANK_III_RE = re.compile(r"Rk\.?\s*III\b", re.IGNORECASE)
 _RANK_II_RE = re.compile(r"Rk\.?\s*II\b", re.IGNORECASE)
-_RANK_SUFFIX_RE = re.compile(r"\s*Rk\.?\s*(?:II|III)\b", re.IGNORECASE)
+# Rank suffix only — never the spell-line roman numeral (Yaulp XIX, Awestruck XVII).
+_RANK_SUFFIX_RE = re.compile(r"\s*Rk\.?\s*(?:III|II|I)\b", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -65,17 +66,36 @@ def is_missing_rank_ii(spell_name: str) -> bool:
 
 
 def strip_spell_rank(spell_name: str) -> str:
-    """Remove trailing rank suffix for deduplication keys."""
+    """Remove trailing ``Rk. I/II/III`` suffix for deduplication keys.
+
+    Spell-line roman numerals (``Yaulp XIX``, ``Awestruck XVII``) are kept.
+    Rank 1 dumps omit ``Rk. I`` entirely, so those names are already bare.
+    """
     return _RANK_SUFFIX_RE.sub("", spell_name).strip()
 
 
 def normalize_spell_rank_iii(spell_name: str) -> str:
-    """Show missing Rk. II lines as Rk. III in rune reports."""
-    return _RANK_II_RE.sub("Rk. III", spell_name)
+    """Display name for a missing Rank III spell (Rk. II / unpurchased → Rk. III)."""
+    return f"{strip_spell_rank(spell_name)} Rk. III"
 
 
 def counts_as_missing_rk3(spell_name: str) -> bool:
+    """True when the dump lists a missing Rk. II or Rk. III line."""
     return is_missing_rank_iii(spell_name) or is_missing_rank_ii(spell_name)
+
+
+def lacks_rank_suffix(spell_name: str) -> bool:
+    """True when the dump has no ``Rk. II`` / ``Rk. III`` (unpurchased rank 1)."""
+    return not counts_as_missing_rk3(spell_name)
+
+
+def spell_rank_priority(spell_name: str) -> int:
+    """Higher wins when the same spell appears at multiple ranks."""
+    if is_missing_rank_iii(spell_name):
+        return 3
+    if is_missing_rank_ii(spell_name):
+        return 2
+    return 1
 
 
 def parse_missing_spells_file(path: str | Path) -> list[MissingSpellLine]:

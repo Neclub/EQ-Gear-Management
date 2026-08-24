@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.3] - 2026-08-23
+
+### Fixed
+
+- **Missing Spells:** EQGM now recognizes missing spells that were never purchased. Rank 1 appears in `/outputfile missingspells` by name only (EverQuest does not write `Rk. I`); those spells are listed as missing Rk. III with a **Not Purchased** chip. Spell-line roman numerals such as Yaulp XIX are not ranks.
+
 ## [1.34.2] - 2026-08-23
 
 ### Changed

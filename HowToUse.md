@@ -57,7 +57,7 @@ Files named like:
 
 Example: `Healub_bristle-CLR-MissingSpells.txt`
 
-From `/outputfile missingspells`. One line per spell: `level` + tab + `spell name`. Only **Rk. III** lines are counted. The **CLASS** in the MissingSpells filename identifies the persona for pairing files; class-tagged inventory filenames use the same abbreviation. Column labels and useful-spell matching prefer the worn Chest class when it can be resolved.
+From `/outputfile missingspells`. One line per spell: `level` + tab + `spell name`. Rank 1 spells that were never purchased are listed by name only (EverQuest does not write `Rk. I`). Rank is only `Rk. II` or `Rk. III`; roman numerals in the spell name (for example Yaulp XIX) are the spell line, not rank. EQGM treats never-purchased rank 1 and missing Rk. II as missing Rk. III. The **CLASS** in the MissingSpells filename identifies the persona for pairing files; class-tagged inventory filenames use the same abbreviation. Column labels and useful-spell matching prefer the worn Chest class when it can be resolved.
 
 You can put spell files:
 
@@ -191,13 +191,13 @@ How many Minor / Lesser / Median / Greater / Glowing runes each character still 
 
 ### Missing Spells *(if enabled)*
 
-Every missing **Rk. III** spell (and missing **Rk. II** at levels 121–130, displayed as Rk. III) with character, level, rune tier, **expansion**, and spell name.
+Every missing **Rk. III** spell at levels 121–130, including missing **Rk. II** and spells that were **never purchased**, displayed as Rk. III. Columns: character, level, rune tier, **expansion**, and spell name. Never-purchased spells show a **Not Purchased** chip in HTML, or the same label after the name in Excel.
 
 **Columns:** Character · Level · Rune · Expansion · Spell
 
 Expansion is looked up from a bundled EQ Resource catalog for levels **121–130**. The same level band can mix expansions — e.g. a level 123 wizard may need Laurion's Song runes for some spells and The Outer Brood runes for others. Use Excel or HTML filters on **Expansion** or **Rune type** to narrow the list.
 
-Missing Rk. II lines at rune-relevant levels count toward **Missing Runes** the same as Rk. III. Spells not in the catalog (gates, Mastery lines, etc.) may list with a blank expansion and are not counted on **Missing Runes**.
+Missing Rk. II lines and never-purchased rank 1 spells at rune-relevant levels count toward **Missing Runes** the same as Rk. III. Spells not in the catalog (gates, Mastery lines, etc.) may list with a blank expansion and are not counted on **Missing Runes**.
 
 Older level bands (111–120) are in config but not shown until enabled in `spell_rune_bands.json`.
 

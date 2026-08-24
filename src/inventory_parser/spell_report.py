@@ -11,10 +11,11 @@ from inventory_parser.missing_spells import (
     MissingSpellLine,
     counts_as_missing_rk3,
     discover_missing_spells_for_inventories,
-    is_missing_rank_iii,
+    lacks_rank_suffix,
     normalize_spell_rank_iii,
     parse_missing_spells_file,
     spell_path_for_persona,
+    spell_rank_priority,
     strip_spell_rank,
 )
 from inventory_parser.spell_runes import (
@@ -26,7 +27,7 @@ from inventory_parser.spell_runes import (
     missing_rune_expansion_groups,
     rune_tier_for_level,
 )
-from inventory_parser.spell_catalog import lookup_expansion_label
+from inventory_parser.spell_catalog import load_spell_catalog, lookup_expansion, lookup_expansion_label
 
 
 @dataclass(frozen=True)
@@ -40,6 +41,7 @@ class MissingRankIII:
     rune_tier: str
     turn_in_theme: str
     expansion: str = ""
+    not_purchased: bool = False
 
 
 @dataclass
@@ -102,6 +104,7 @@ def build_spell_rune_report(
         return None
 
     persona_order = [c.persona_key for c in personas]
+    catalog = load_spell_catalog()
     report = SpellRuneReport(
         persona_keys=persona_order,
         blocks=blocks,
@@ -130,16 +133,26 @@ def build_spell_rune_report(
 
         candidates: dict[tuple[int, str], MissingSpellLine] = {}
         for line in parse_missing_spells_file(spell_path):
-            if not counts_as_missing_rk3(line.name):
-                continue
             tier = rune_tier_for_level(line.level, config)
             if tier is None:
                 continue
+            if not counts_as_missing_rk3(line.name):
+                # Rank 1 is listed by name only (no "Rk. I"). Include when the
+                # catalog has a Rk. III version so AAs / mastery lines stay out.
+                if (
+                    lookup_expansion(
+                        char_gear.class_abbr,
+                        line.level,
+                        line.name,
+                        catalog=catalog,
+                    )
+                    is None
+                ):
+                    continue
             dedupe_key = (line.level, strip_spell_rank(line.name).casefold())
             existing = candidates.get(dedupe_key)
-            if existing is None or (
-                is_missing_rank_iii(line.name)
-                and not is_missing_rank_iii(existing.name)
+            if existing is None or spell_rank_priority(line.name) > spell_rank_priority(
+                existing.name
             ):
                 candidates[dedupe_key] = line
 
@@ -148,20 +161,23 @@ def build_spell_rune_report(
             assert tier is not None
             block = block_for_level(line.level, config)
             assert block is not None
+            display_name = normalize_spell_rank_iii(line.name)
             entry = MissingRankIII(
                 persona_key=pk,
                 display_name=char_gear.display_name,
                 character=char_gear.character,
                 level=line.level,
-                spell_name=normalize_spell_rank_iii(line.name),
+                spell_name=display_name,
                 block_label=block.label,
                 rune_tier=tier,
                 turn_in_theme=block.turn_in_theme,
                 expansion=lookup_expansion_label(
                     char_gear.class_abbr,
                     line.level,
-                    normalize_spell_rank_iii(line.name),
+                    display_name,
+                    catalog=catalog,
                 ),
+                not_purchased=lacks_rank_suffix(line.name),
             )
             report.entries.append(entry)
             if entry.expansion:
