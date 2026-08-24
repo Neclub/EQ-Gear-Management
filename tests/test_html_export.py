@@ -64,6 +64,8 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
 
     report = extract_report_json(text)
     assert report["meta"]["version"]
+    assert report["meta"]["appNameShort"] == "EQGM"
+    assert "${appShort} v${meta.version}" in text
     assert report["meta"]["reportTitle"]
     assert report["meta"]["characterCount"] >= 1
     assert report["meta"]["characters"]

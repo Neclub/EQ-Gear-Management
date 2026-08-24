@@ -4,7 +4,7 @@ Turn your raid’s EverQuest inventory files into one Excel workbook (and option
 
 Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
 
-The app version is shown in the window title and under **Help → About EQGM**. When the app opens, it checks the latest GitHub Release. If a newer version is available, a popup shows the current and newest versions and asks whether to download. **Yes** opens the official GitHub download in your browser; the app does not install or run the file. **Help → Check for Updates** runs the same check on demand. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details), with company **Lubworks**.
+The app version is shown in the window title and under **Help → About EQGM**. HTML reports also show it on the title graphic next to the generated date (for example `9 characters · generated 2026-08-24 · EQGM v1.34.4`), so a shared file tells you which build produced it. When the app opens, it checks the latest GitHub Release. If a newer version is available, a popup shows the current and newest versions and asks whether to download. **Yes** opens the official GitHub download in your browser; the app does not install or run the file. **Help → Check for Updates** runs the same check on demand. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details), with company **Lubworks**.
 
 ---
 
@@ -291,7 +291,7 @@ When **HTML** or **Both** is selected next to **Generate Report** (default **Bot
 **Layout**
 
 - **Left sidebar** — EQGM crest, gold-rail section buttons (same look as [Lub Inventory](https://neclub.github.io/Lub-Inventory/)), Lucide-style icons, then **Character filter** chips (directly under the nav, not at the bottom of the window)
-- **Main area** — rounded title nameplate (e.g. `Bristlebane Team Inventory`, character count, generation date), toolbar, and the active section’s table
+- **Main area** — rounded title nameplate (e.g. `Bristlebane Team Inventory`, character count, generation date, and EQGM version), toolbar, and the active section’s table
 - **Footer** — gear-tier color legend when viewing **Team Gear**
 
 **Sections**

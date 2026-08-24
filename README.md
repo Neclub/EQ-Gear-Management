@@ -63,7 +63,7 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 - **Type 18/19 Augs** — *(work in progress)* optional per-class suggestions from the Zarax cheat sheet (on by default); pick a character to set class and see **Owned** for that inventory (with gear-slot chip when equipped); **Alternative** shows Owned + slot when equipped, otherwise the craft anvil; top unused Fortifications append to Optional; Enhancement augs under **Filler**; anniversary picks (Jubilation / Enduring Harmony) marked on the item name with non-anniversary alternatives; catalog reuses disk cache after the first fetch; full catalog view still available
 - **Raid BiS** — optional current-expansion raid T1/T2 armor and jewelry vs equipped gear (on by default); Evolvers still get a Best in slot pick but are skipped for coin purchases (magenta gem on hover); gold nameplate and Character filter; enter raid coins to highlight the best vendor upgrade
 - **Excel workbook** — dark theme on every sheet (shared headers, status colors, and chrome)
-- **HTML report** — the same data in a browser, searchable and filterable
+- **HTML report** — the same data in a browser, searchable and filterable; the title graphic shows character count, generated date, and EQGM version
 
 For file naming, Alternate Personas, reading each sheet, and troubleshooting, see **[HowToUse.md](HowToUse.md)**.
 

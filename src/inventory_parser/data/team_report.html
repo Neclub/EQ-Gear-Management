@@ -4360,7 +4360,9 @@ function init() {
   }
   const title = meta.reportTitle || "Team Inventory";
   const datePart = (meta.generatedAt || "").split(" ")[0];
-  const subtitle = `${meta.characterCount || 0} characters · generated ${datePart}`;
+  const appShort = meta.appNameShort || "EQGM";
+  const versionPart = meta.version ? ` · ${appShort} v${meta.version}` : "";
+  const subtitle = `${meta.characterCount || 0} characters · generated ${datePart}${versionPart}`;
   document.getElementById("reportMeta").textContent = subtitle;
   paintTitleGraphic(title, subtitle, meta.logoDataUri || "");
 

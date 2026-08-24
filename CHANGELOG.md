@@ -6,8 +6,11 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.4] - 2026-08-23
+
 ### Added
 
+- **HTML report:** title graphic subtitle includes the EQGM version after the generated date (e.g. `9 characters · generated 2026-08-24 · EQGM v1.34.4`).
 - **Gear T-Level:** tier-code cells link to EQ Resource; hover shows the equipped item name (Excel and HTML).
 
 ## [1.34.3] - 2026-08-23

@@ -1,5 +1,5 @@
 """Parse EverQuest inventory dumps and export team gear spreadsheets."""
 
-__version__ = "1.34.3"
+__version__ = "1.34.4"
 APP_NAME = "EQ Gear Management"
 APP_NAME_SHORT = "EQGM"

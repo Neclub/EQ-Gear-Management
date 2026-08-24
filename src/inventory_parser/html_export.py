@@ -7,7 +7,7 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from inventory_parser import APP_NAME, __version__
+from inventory_parser import APP_NAME, APP_NAME_SHORT, __version__
 from inventory_parser.achievement_parser import (
     EVERQUEST_BASE_LABEL,
     EXPANSIONS_NEWEST_FIRST,
@@ -594,6 +594,7 @@ def serialize_report(bundle: ExportBundle) -> dict:
         "meta": {
             "version": __version__,
             "appName": APP_NAME,
+            "appNameShort": APP_NAME_SHORT,
             "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC"),
             "reportTitle": f"{prefix} Team Inventory" if prefix else "Team Inventory",
             "characterCount": len(report.characters),
