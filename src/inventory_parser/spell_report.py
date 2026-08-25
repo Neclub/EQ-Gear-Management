@@ -27,7 +27,13 @@ from inventory_parser.spell_runes import (
     missing_rune_expansion_groups,
     rune_tier_for_level,
 )
-from inventory_parser.spell_catalog import load_spell_catalog, lookup_expansion, lookup_expansion_label
+from inventory_parser.spell_catalog import (
+    eqresource_spell_url,
+    load_spell_catalog,
+    lookup_expansion,
+    lookup_expansion_label,
+    lookup_spell_id,
+)
 
 
 @dataclass(frozen=True)
@@ -42,6 +48,7 @@ class MissingRankIII:
     turn_in_theme: str
     expansion: str = ""
     not_purchased: bool = False
+    eqresource_url: str = ""
 
 
 @dataclass
@@ -162,6 +169,12 @@ def build_spell_rune_report(
             block = block_for_level(line.level, config)
             assert block is not None
             display_name = normalize_spell_rank_iii(line.name)
+            spell_id = lookup_spell_id(
+                char_gear.class_abbr,
+                line.level,
+                display_name,
+                catalog=catalog,
+            )
             entry = MissingRankIII(
                 persona_key=pk,
                 display_name=char_gear.display_name,
@@ -178,6 +191,12 @@ def build_spell_rune_report(
                     catalog=catalog,
                 ),
                 not_purchased=lacks_rank_suffix(line.name),
+                eqresource_url=eqresource_spell_url(
+                    spell_id,
+                    display_name,
+                    class_abbr=char_gear.class_abbr,
+                    level=line.level,
+                ),
             )
             report.entries.append(entry)
             if entry.expansion:

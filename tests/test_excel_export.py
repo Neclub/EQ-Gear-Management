@@ -425,3 +425,9 @@ def test_excel_not_purchased_next_to_rk3_name(tmp_path: Path) -> None:
     names = {ws.cell(r, 5).value for r in range(1, ws.max_row + 1)}
     assert "Appeasement Rk. III  Not Purchased" in names
     assert "Word of Wellbeing Rk. III" in names
+    wb = load_workbook(out, data_only=False)
+    ws = wb[MISSING_SPELLS_SHEET_NAME]
+    by_name = {ws.cell(r, 5).value: ws.cell(r, 5) for r in range(1, ws.max_row + 1)}
+    appease = by_name["Appeasement Rk. III  Not Purchased"]
+    assert appease.hyperlink is not None
+    assert appease.hyperlink.target == "https://spells.eqresource.com/spells.php?id=71168"

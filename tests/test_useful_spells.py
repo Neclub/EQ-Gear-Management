@@ -117,6 +117,15 @@ def test_html_missing_useful_has_character_filter() -> None:
     credit = section["data"]["credit"]
     assert credit["text"] == 'Based on "SOR - Raccoo\'s list of useful spells"'
     assert "docs.google.com/spreadsheets" in credit["url"]
+    expansions = {row[2] for row in section["data"]["rows"] if row[2]}
+    assert "Shattering of Ro (2025)" in expansions
+    assert not any(value in {"SOR", "TOB", "LS"} for value in expansions)
+    spell_cells = [row[3] for row in section["data"]["rows"]]
+    assert all(isinstance(cell, dict) and cell.get("url") for cell in spell_cells)
+    brilliant = next(c for c in spell_cells if "Brilliant Expurgation" in c["text"])
+    assert brilliant["url"] == "https://spells.eqresource.com/spells.php?id=71326"
+    low_level = next(row for row in section["data"]["rows"] if row[1] < 121)
+    assert "spells.eqresource.com" in low_level[3]["url"]
 
 
 def test_excel_missing_useful_credit_hyperlink(tmp_path: Path) -> None:
@@ -138,6 +147,15 @@ def test_excel_missing_useful_credit_hyperlink(tmp_path: Path) -> None:
     cell = ws.cell(credit_row, 1)
     assert cell.hyperlink is not None
     assert "docs.google.com/spreadsheets" in cell.hyperlink.target
+    header_row = next(r for r in range(1, ws.max_row + 1) if ws.cell(r, 1).value == "Character")
+    spell_links = [
+        ws.cell(r, 4).hyperlink.target
+        for r in range(header_row + 1, ws.max_row + 1)
+        if ws.cell(r, 4).hyperlink is not None
+    ]
+    assert spell_links
+    assert any("spells.eqresource.com" in url for url in spell_links)
+    assert any("spells.php?id=71326" in url for url in spell_links)
 
 
 def test_no_useful_tab_without_entries(tmp_path: Path) -> None:

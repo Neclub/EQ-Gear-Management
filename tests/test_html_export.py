@@ -3,7 +3,7 @@ import json
 
 from dataclasses import replace
 
-from inventory_parser.achievement_parser import EVERQUEST_BASE_LABEL
+from inventory_parser.achievement_parser import EVERQUEST_BASE_LABEL, expansion_sort_key
 from inventory_parser.achievement_report import build_achievement_report
 from inventory_parser.cli import generate_workbook
 from inventory_parser.export_bundle import build_export_bundle
@@ -82,7 +82,9 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
     assert report["meta"]["characters"][0]["classAbbr"]
     missing_runes = next(s for s in report["sections"] if s["id"] == "missing_runes")
     assert missing_runes["data"]["classAbbrs"]
-    assert missing_runes["data"]["expansionOptions"]
+    assert missing_runes["data"]["expansionOptions"][0] == "Shattering of Ro (2025)"
+    assert "The Outer Brood (2024)" in missing_runes["data"]["expansionOptions"]
+    assert "Laurion's Song (2023)" in missing_runes["data"]["expansionOptions"]
 
 
 def test_html_rune_inventory_present(tmp_path: Path) -> None:
@@ -96,9 +98,10 @@ def test_html_rune_inventory_present(tmp_path: Path) -> None:
     section = next(s for s in report["sections"] if s["id"] == "rune_inventory")
     assert section["type"] == "rune_inventory"
     assert section["title"] == "Rune Inventory"
-    assert section["data"]["expansionOptions"]
-    assert "ToB" in section["data"]["expansionOptions"]
-    tob = next(f for f in section["data"]["families"] if f["label"] == "ToB")
+    options = section["data"]["expansionOptions"]
+    assert "The Outer Brood (2024)" in options
+    assert options == sorted(options, key=expansion_sort_key)
+    tob = next(f for f in section["data"]["families"] if f["label"] == "The Outer Brood (2024)")
     deflub_idx = section["data"]["characters"].index("Deflub ( PAL )")
     minor_row = next(r for r in tob["rows"] if r["tier"] == "Minor")
     assert minor_row["counts"][deflub_idx] == 1
@@ -196,8 +199,9 @@ def test_html_spell_list_has_character_filter(tmp_path: Path) -> None:
     write_team_html(bundle, out)
     text = out.read_text(encoding="utf-8")
     assert "All characters" in text
+    assert "All expansions" in text
     assert "function refreshContent()" in text
-    assert "ACHIEVEMENT_EXPANSION_TABS" in text
+    assert "function orderExpansionLabels" in text
     assert "activeExpansionFilter" in text
     assert "expansionFilterOptions" in text
     assert "zoneFilterOptions" in text
@@ -215,6 +219,8 @@ def test_html_spell_list_has_character_filter(tmp_path: Path) -> None:
     assert data["rows"]
     assert any(row[3] for row in data["rows"])
     assert "cell-chip" in text
+    assert "spells.eqresource.com/spells.php?id=" in text
+    assert "val.url" in text
 
 
 def test_cli_also_html_flag(tmp_path: Path) -> None:
@@ -337,7 +343,12 @@ def test_html_not_purchased_spell_chip(tmp_path: Path) -> None:
     by_spell = {row[4]["text"] if isinstance(row[4], dict) else row[4]: row[4] for row in spell_section["data"]["rows"]}
     assert by_spell["Appeasement Rk. III"] == {
         "text": "Appeasement Rk. III",
+        "url": "https://spells.eqresource.com/spells.php?id=71168",
         "chip": "Not Purchased",
     }
     assert by_spell["Awestruck XVII Rk. III"]["chip"] == "Not Purchased"
-    assert by_spell["Word of Wellbeing Rk. III"] == "Word of Wellbeing Rk. III"
+    assert by_spell["Awestruck XVII Rk. III"]["url"] == "https://spells.eqresource.com/spells.php?id=71056"
+    assert by_spell["Word of Wellbeing Rk. III"] == {
+        "text": "Word of Wellbeing Rk. III",
+        "url": "https://spells.eqresource.com/spells.php?id=71171",
+    }

@@ -45,7 +45,7 @@ Same layout, but shows the tier name instead of the item name (for example `SOR-
 Craft materials and T1 containers still sitting in bags — listed so you know they are there, even if that slot is already geared.
 
 ### 📘 Missing Runes / Spells / Useful Spells
-Who still needs spell runes, which spells they are missing (including spells that were never purchased), and which of those spells are the most useful ones.
+Who still needs spell runes, which spells they are missing (including spells that were never purchased), and which of those spells are the most useful ones. Spell names link to EQ Resource.
 
 ### 🎒 Rune Inventory
 Raid runes people already have in bags or bank.
@@ -69,7 +69,7 @@ Enter raid coins on each character card to highlight the best vendor upgrade. Ev
 
 -# Current raid gear only. Hover **Raid BiS** in the web report for the scoring notes.
 
-Clicking an item name opens **EQ Resource** for more info.
+Clicking an item or spell name opens **EQ Resource** for more info.
 
 ===== MESSAGE 3: HOW TO USE (IN EVERQUEST) =====
 # How to use — Part 1

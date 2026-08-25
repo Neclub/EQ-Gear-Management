@@ -369,15 +369,19 @@ def _apply_item_link(
     cell: Cell, item: EquippedItem, *, tooltip: bool = False
 ) -> None:
     url = item.eqresource_url
+    _apply_url_link(cell, url, tooltip=item.name if tooltip else None)
+    if tooltip and item.name:
+        cell.comment = Comment(item.name, APP_NAME_SHORT)
+
+
+def _apply_url_link(cell: Cell, url: str | None, *, tooltip: str | None = None) -> None:
     cell.font = FONT_LINK if url else FONT_BODY
     if url:
         cell.hyperlink = Hyperlink(
             ref=cell.coordinate,
             target=url,
-            tooltip=item.name if tooltip else None,
+            tooltip=tooltip,
         )
-    if tooltip and item.name:
-        cell.comment = Comment(item.name, APP_NAME_SHORT)
 
 
 def _write_gear_legend_on_sheet(ws: Worksheet) -> None:
@@ -770,17 +774,17 @@ def _write_spell_list_sheet(
         rune_cell.alignment = _ALIGN_CENTER
         rune_cell.fill = spell_tier_fill(entry.rune_tier)
 
-        expansion_cell = ws.cell(row, 4, entry.expansion or None)
+        expansion_cell = ws.cell(row, 4, format_expansion_label(entry.expansion) or None)
         expansion_cell.font = FONT_BODY
         expansion_cell.alignment = _ALIGN
         expansion_cell.fill = row_fill
 
         spell_cell = ws.cell(row, 5, entry.spell_name)
-        spell_cell.font = FONT_BODY
         spell_cell.alignment = _ALIGN
         spell_cell.fill = row_fill
         if entry.not_purchased:
             spell_cell.value = f"{entry.spell_name}  Not Purchased"
+        _apply_url_link(spell_cell, entry.eqresource_url or None)
 
         _apply_spell_table_borders(ws, row, row, 1, 5)
         row += 1
@@ -859,7 +863,7 @@ def _write_missing_useful_spells_sheet(
         values = (
             entry.display_name,
             entry.level,
-            entry.expansion or None,
+            format_expansion_label(entry.expansion) or None,
             entry.spell_name,
             entry.highest_rk or None,
             entry.comments or None,
@@ -874,9 +878,12 @@ def _write_missing_useful_spells_sheet(
         )
         for col, (value, alignment) in enumerate(zip(values, alignments), start=1):
             cell = ws.cell(row, col, value)
-            cell.font = FONT_BODY
             cell.alignment = alignment
             cell.fill = row_fill
+            if col == 4:
+                _apply_url_link(cell, entry.eqresource_url or None)
+            else:
+                cell.font = FONT_BODY
 
         _apply_spell_table_borders(ws, row, row, 1, col_count)
         row += 1
@@ -947,7 +954,7 @@ def _write_unmade_gear_sheet(ws: Worksheet, entries: list[UnmadeGearEntry]) -> N
             entry.item_name,
             entry.count,
             entry.bag_location,
-            entry.expansion,
+            format_expansion_label(entry.expansion),
             entry.material,
             entry.target_slot or "",
             entry.equipped_tier,

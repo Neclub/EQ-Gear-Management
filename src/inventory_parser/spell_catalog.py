@@ -6,12 +6,16 @@ import json
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any
+from urllib.parse import urlencode
 
 from inventory_parser.achievement_parser import format_expansion_label
 from inventory_parser.missing_spells import strip_spell_rank
 from inventory_parser.package_data import read_data_text
 
 _CATALOG_NAME = "spell_expansions_121_130.json"
+
+EQRESOURCE_SPELL_URL = "https://spells.eqresource.com/spells.php?id={spell_id}"
+EQRESOURCE_SPELL_SEARCH_URL = "https://spells.eqresource.com/spellsearch.php"
 
 
 @dataclass(frozen=True)
@@ -90,3 +94,42 @@ def lookup_expansion_label(
     if expansion is None:
         return ""
     return format_expansion_label(expansion)
+
+
+def lookup_spell_id(
+    class_abbr: str | None,
+    level: int,
+    spell_name: str,
+    *,
+    catalog: SpellCatalog | None = None,
+) -> int | None:
+    """Return the EQ Resource spell id, if known."""
+    cat = catalog or load_spell_catalog()
+    entry = cat.lookup(class_abbr, level, spell_name)
+    if entry is None:
+        return None
+    return entry.spell_id
+
+
+def eqresource_spell_url(
+    spell_id: int | None,
+    spell_name: str,
+    *,
+    class_abbr: str | None = None,
+    level: int | None = None,
+) -> str:
+    """Direct spell page when id is known; otherwise an EQ Resource name search."""
+    if spell_id is not None and spell_id > 0:
+        return EQRESOURCE_SPELL_URL.format(spell_id=spell_id)
+    params: dict[str, str] = {
+        "name": spell_name,
+        "searchname": "true",
+        "source": "live",
+        "strict": "true",
+    }
+    if class_abbr:
+        params["class"] = class_abbr.lower()
+    if level is not None:
+        params["level"] = str(level)
+        params["range"] = "equal"
+    return f"{EQRESOURCE_SPELL_SEARCH_URL}?{urlencode(params)}"

@@ -245,6 +245,7 @@ body {
   border: 1px solid var(--border);
   border-radius: 8px;
 }
+.table-wrap a { text-decoration: underline; }
 table { width: 100%; border-collapse: collapse; }
 table.gear-table {
   width: max-content;
@@ -1463,24 +1464,10 @@ const state = {
   raidBisCoins: {},
   copyBalloonTimer: 0,
 };
-const ACHIEVEMENT_EXPANSION_TABS = new Set([
-  "missing_collections",
-  "quests",
-  "raid_achievements",
-  "achievement_summary",
-]);
-
-function sectionExpansions(section) {
-  if (section.type !== "table" || section.data.expansionColumn == null) return [];
-  const col = section.data.expansionColumn;
-  const fromOrder = REPORT.expansionOrder.filter((label) =>
-    section.data.rows.some((r) => r[col] === label)
-  );
-  if (fromOrder.length) return fromOrder;
+function uniqueExpansionLabels(values) {
   const seen = new Set();
   const out = [];
-  for (const row of section.data.rows) {
-    const value = row[col];
+  for (const value of values) {
     if (value && !seen.has(value)) {
       seen.add(value);
       out.push(value);
@@ -1489,20 +1476,32 @@ function sectionExpansions(section) {
   return out;
 }
 
+function orderExpansionLabels(labels) {
+  const seen = new Set(labels);
+  const fromOrder = (REPORT.expansionOrder || []).filter((label) => seen.has(label));
+  const rest = labels.filter((label) => !fromOrder.includes(label));
+  return fromOrder.concat(rest);
+}
+
+function sectionExpansions(section) {
+  if (section.type !== "table" || section.data.expansionColumn == null) return [];
+  const col = section.data.expansionColumn;
+  return orderExpansionLabels(uniqueExpansionLabels(section.data.rows.map((r) => r[col])));
+}
+
 function expansionFilterOptions(section) {
-  const fromData = sectionExpansions(section);
-  if (!ACHIEVEMENT_EXPANSION_TABS.has(section.id)) return fromData;
-  const current = REPORT.meta.currentExpansion;
-  if (!current || fromData.includes(current)) return fromData;
-  return [current, ...fromData];
+  if (section.type === "table" && section.data.expansionColumn != null) {
+    return sectionExpansions(section);
+  }
+  if (section.data?.expansionOptions?.length) {
+    return orderExpansionLabels(section.data.expansionOptions);
+  }
+  return [];
 }
 
 function activeExpansionFilter(section) {
   if (Object.prototype.hasOwnProperty.call(state.expansions, section.id)) {
     return state.expansions[section.id];
-  }
-  if (ACHIEVEMENT_EXPANSION_TABS.has(section.id)) {
-    return REPORT.meta.currentExpansion || "";
   }
   return "";
 }
@@ -1891,13 +1890,14 @@ function updateToolbar() {
 
   if (
     (section.type === "rune_inventory" || section.type === "missing_runes") &&
-    section.data.expansionOptions?.length
+    expansionFilterOptions(section).length
   ) {
     const sel = document.createElement("select");
+    const expansions = expansionFilterOptions(section);
     sel.innerHTML =
       optionHtml("", "All expansions") +
-      section.data.expansionOptions.map((x) => optionHtml(x, x)).join("");
-    sel.value = state.expansions[section.id] || "";
+      expansions.map((x) => optionHtml(x, x)).join("");
+    sel.value = activeExpansionFilter(section);
     sel.addEventListener("change", () => {
       state.expansions[section.id] = sel.value;
       refreshContent();
@@ -1960,13 +1960,6 @@ function updateToolbar() {
       optionHtml("", "All expansions") +
       expansions.map((x) => optionHtml(x, x)).join("");
     const selected = activeExpansionFilter(section);
-    if (
-      !Object.prototype.hasOwnProperty.call(state.expansions, section.id) &&
-      ACHIEVEMENT_EXPANSION_TABS.has(section.id) &&
-      selected
-    ) {
-      state.expansions[section.id] = selected;
-    }
     sel.value = selected;
     sel.addEventListener("change", () => {
       state.expansions[section.id] = sel.value;
@@ -2300,10 +2293,20 @@ function updateTableContent(content, section) {
         });
         td.appendChild(btn);
         tr.appendChild(td);
-      } else if (val && typeof val === "object" && val.chip) {
+      } else if (val && typeof val === "object" && (val.chip || val.url)) {
         const td = document.createElement("td");
-        td.appendChild(document.createTextNode(cellPlainText(val)));
-        td.appendChild(el("span", "cell-chip", String(val.chip)));
+        const text = cellPlainText(val);
+        if (val.url) {
+          const a = document.createElement("a");
+          a.href = val.url;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.textContent = text;
+          td.appendChild(a);
+        } else {
+          td.appendChild(document.createTextNode(text));
+        }
+        if (val.chip) td.appendChild(el("span", "cell-chip", String(val.chip)));
         tr.appendChild(td);
       } else {
         tr.appendChild(el("td", null, cellPlainText(val)));

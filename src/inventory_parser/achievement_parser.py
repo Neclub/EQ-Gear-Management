@@ -45,6 +45,49 @@ _EXPANSION_ALIASES: dict[str, str] = {
     "the ruins of kunark": "Ruins of Kunark",
 }
 
+# Short codes used in dumps, vendor JSON, useful-spell lists, and rune families.
+_EXPANSION_ABBREVS: dict[str, str] = {
+    "classic": "EverQuest",
+    "rok": "Ruins of Kunark",
+    "kunark": "Ruins of Kunark",
+    "sov": "Scars of Velious",
+    "velious": "Scars of Velious",
+    "sol": "Shadows of Luclin",
+    "luclin": "Shadows of Luclin",
+    "pop": "Planes of Power",
+    "loy": "Legacy of Ykesha",
+    "ldon": "Lost Dungeons of Norrath",
+    "god": "Gates of Discord",
+    "oow": "Omens of War",
+    "don": "Dragons of Norrath",
+    "dod": "Depths of Darkhollow",
+    "por": "Prophecy of Ro",
+    "tss": "The Serpent's Spine",
+    "tbs": "The Buried Sea",
+    "sof": "Secrets of Faydwer",
+    "sod": "Seeds of Destruction",
+    "uf": "Underfoot",
+    "hot": "House of Thule",
+    "voa": "Veil of Alaris",
+    "rof": "Rain of Fear",
+    "cotf": "Call of the Forsaken",
+    "cof": "Call of the Forsaken",
+    "tds": "The Darkened Sea",
+    "tbm": "The Broken Mirror",
+    "eok": "Empires of Kunark",
+    "ros": "Ring of Scale",
+    "tbl": "The Burning Lands",
+    "tov": "Torment of Velious",
+    "cov": "Claws of Veeshan",
+    "tol": "Terror of Luclin",
+    "nos": "Night of Shadows",
+    "ls": "Laurion's Song",
+    "tob": "The Outer Brood",
+    "sor": "Shattering of Ro",
+}
+
+_YEAR_SUFFIX_RE = re.compile(r"\s+\(\d{4}\)\s*$")
+
 _EXTRA_KNOWN_EXPANSIONS = (
     "Anashti Sul",
     "Veeshan's Peak",
@@ -276,8 +319,38 @@ def _is_quest_meta_objective(name: str) -> bool:
     return name.casefold().startswith("complete either")
 
 
+def _canonical_expansion_name(candidate: str) -> str | None:
+    key = candidate.casefold()
+    if key in _EXPANSION_ALIASES:
+        return _EXPANSION_ALIASES[key]
+    if key in _EXPANSION_ABBREVS:
+        return _EXPANSION_ABBREVS[key]
+    if key in {"everquest", "classic"}:
+        return "EverQuest"
+    for name, _year in EXPANSIONS_NEWEST_FIRST:
+        if name.casefold() == key:
+            return name
+    if key.startswith("the "):
+        rest = candidate[4:].strip()
+        for name, _year in EXPANSIONS_NEWEST_FIRST:
+            if name.casefold() == rest.casefold():
+                return name
+    return None
+
+
 def _normalize_expansion_name(section: str) -> str:
-    return _EXPANSION_ALIASES.get(section.casefold(), section)
+    raw = (section or "").strip()
+    if not raw:
+        return raw
+    matched = _canonical_expansion_name(raw)
+    if matched is not None:
+        return matched
+    no_year = _YEAR_SUFFIX_RE.sub("", raw).strip()
+    if no_year and no_year != raw:
+        matched = _canonical_expansion_name(no_year)
+        if matched is not None:
+            return matched
+    return raw
 
 
 def _expansion_year(section: str) -> int | None:
@@ -289,12 +362,15 @@ def _expansion_year(section: str) -> int | None:
 
 
 def format_expansion_label(section: str) -> str:
-    """Display label for expansion filters (newest expansions include release year)."""
-    if section.casefold() == "everquest":
+    """Display label for expansion filters: full name plus release year."""
+    if not section:
+        return ""
+    normalized = _normalize_expansion_name(section)
+    if normalized.casefold() == "everquest":
         return EVERQUEST_BASE_LABEL
-    year = _expansion_year(section)
+    year = _expansion_year(normalized)
     if year is not None:
-        return f"{_normalize_expansion_name(section)} ({year})"
+        return f"{normalized} ({year})"
     return section
 
 
@@ -304,9 +380,9 @@ def expansion_sort_key(section: str) -> tuple[int, str]:
     for index, (name, _year) in enumerate(EXPANSIONS_NEWEST_FIRST):
         if name == normalized:
             return (index, section.casefold())
-    if section.casefold() == "everquest":
+    if normalized.casefold() == "everquest":
         return (len(EXPANSIONS_NEWEST_FIRST), section.casefold())
-    if section in GENERAL_CATEGORIES:
+    if section in GENERAL_CATEGORIES or normalized in GENERAL_CATEGORIES:
         return (len(EXPANSIONS_NEWEST_FIRST) + 1, section.casefold())
     return (len(EXPANSIONS_NEWEST_FIRST) + 2, section.casefold())
 

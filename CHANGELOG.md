@@ -6,6 +6,16 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.5] - 2026-08-25
+
+### Added
+
+- **Missing Spells / Missing Useful Spells:** Spell names link to EQ Resource in Excel and HTML (direct spell page when the bundled catalog has an id; otherwise a name search).
+
+### Changed
+
+- **Expansion labels:** Short codes such as SOR, ToB, and LS (and labels that already include a year) now display as full expansion names with release year, so Missing Useful Spells matches Missing Spells.
+
 ## [1.34.4] - 2026-08-23
 
 ### Added

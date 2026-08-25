@@ -18,6 +18,11 @@ from inventory_parser.missing_spells import (
     strip_spell_rank,
 )
 from inventory_parser.package_data import read_data_text
+from inventory_parser.spell_catalog import (
+    eqresource_spell_url,
+    load_spell_catalog,
+    lookup_spell_id,
+)
 from inventory_parser.team_report import TeamGearReport
 
 _CATALOG_NAME = "useful_spells.json"
@@ -53,6 +58,7 @@ class MissingUsefulSpell:
     spell_name: str
     highest_rk: str
     comments: str
+    eqresource_url: str = ""
 
 
 @dataclass
@@ -200,6 +206,7 @@ def build_missing_useful_spells_report(
         return None
 
     catalog = useful_by_class if useful_by_class is not None else load_useful_spells()
+    spell_catalog = load_spell_catalog()
     persona_order = [c.persona_key for c in personas]
     report = MissingUsefulSpellsReport(persona_keys=persona_order, warnings=warnings)
 
@@ -231,16 +238,29 @@ def build_missing_useful_spells_report(
             best = _pick_best_missing(useful, missing_lines)
             if best is None:
                 continue
+            level = best.level if useful.level is None else useful.level
+            spell_id = lookup_spell_id(
+                class_abbr,
+                level,
+                best.name,
+                catalog=spell_catalog,
+            )
             report.entries.append(
                 MissingUsefulSpell(
                     persona_key=pk,
                     display_name=char_gear.display_name,
                     character=char_gear.character,
-                    level=best.level if useful.level is None else useful.level,
+                    level=level,
                     expansion=useful.expansion,
                     spell_name=best.name,
                     highest_rk=useful.highest_rk,
                     comments=useful.comments,
+                    eqresource_url=eqresource_spell_url(
+                        spell_id,
+                        best.name,
+                        class_abbr=class_abbr,
+                        level=level,
+                    ),
                 )
             )
 

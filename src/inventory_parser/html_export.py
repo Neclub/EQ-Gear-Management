@@ -11,6 +11,7 @@ from inventory_parser import APP_NAME, APP_NAME_SHORT, __version__
 from inventory_parser.achievement_parser import (
     EVERQUEST_BASE_LABEL,
     EXPANSIONS_NEWEST_FIRST,
+    expansion_sort_key,
     format_expansion_label,
 )
 from inventory_parser.team_report import CharacterGear, TeamGearReport
@@ -85,6 +86,22 @@ def _item_url(item_id: int) -> str | None:
     return None
 
 
+def _spell_name_cell(
+    name: str,
+    url: str,
+    *,
+    chip: str | None = None,
+) -> str | dict[str, str]:
+    if not url and not chip:
+        return name
+    cell: dict[str, str] = {"text": name}
+    if url:
+        cell["url"] = url
+    if chip:
+        cell["chip"] = chip
+    return cell
+
+
 def _gear_item_cell(item: EquippedItem | None) -> dict | None:
     if item is None:
         return None
@@ -141,18 +158,17 @@ def _serialize_spell_list(spell_report: SpellRuneReport, characters: list[Charac
     columns = ["Character", "Level", "Rune", "Expansion", "Spell"]
     rows = []
     for entry in spell_report.entries:
-        spell_cell: str | dict[str, str]
-        if entry.not_purchased:
-            spell_cell = {"text": entry.spell_name, "chip": "Not Purchased"}
-        else:
-            spell_cell = entry.spell_name
         rows.append(
             [
                 entry.display_name,
                 entry.level,
                 entry.rune_tier,
-                entry.expansion,
-                spell_cell,
+                format_expansion_label(entry.expansion),
+                _spell_name_cell(
+                    entry.spell_name,
+                    entry.eqresource_url,
+                    chip="Not Purchased" if entry.not_purchased else None,
+                ),
             ]
         )
     tiers_in_data = {entry.rune_tier for entry in spell_report.entries}
@@ -174,8 +190,8 @@ def _serialize_missing_useful(report: MissingUsefulSpellsReport) -> dict:
         [
             entry.display_name,
             entry.level,
-            entry.expansion,
-            entry.spell_name,
+            format_expansion_label(entry.expansion),
+            _spell_name_cell(entry.spell_name, entry.eqresource_url),
             entry.highest_rk,
             entry.comments,
         ]
@@ -211,7 +227,7 @@ def _serialize_missing_runes(
             block_rows.append({"tier": tier, "counts": counts})
         blocks.append(
             {
-                "label": group.label,
+                "label": format_expansion_label(group.label),
                 "theme": group.turn_in_theme,
                 "rows": block_rows,
             }
@@ -220,7 +236,9 @@ def _serialize_missing_runes(
         "characters": [c.display_name for c in characters],
         "classAbbrs": [(c.class_abbr or "") for c in characters],
         "blocks": blocks,
-        "expansionOptions": [group.label for group in spell_report.expansion_groups],
+        "expansionOptions": [
+            format_expansion_label(group.label) for group in spell_report.expansion_groups
+        ],
     }
 
 
@@ -236,16 +254,19 @@ def _serialize_rune_inventory(report: RuneInventoryReport) -> dict:
             ]
             family_rows.append({"tier": tier, "counts": counts})
         has_counts = any(count > 0 for row in family_rows for count in row["counts"])
+        label = format_expansion_label(family.label)
         if has_counts:
-            expansion_options.append(family.label)
+            expansion_options.append(label)
         families.append(
             {
                 "id": family.id,
-                "label": family.label,
+                "label": label,
                 "itemPattern": family.item_pattern,
                 "rows": family_rows,
             }
         )
+    families.sort(key=lambda family: expansion_sort_key(str(family["label"])))
+    expansion_options.sort(key=expansion_sort_key)
     return {
         "characters": [c.display_name for c in report.characters],
         "families": families,
@@ -393,7 +414,7 @@ def serialize_report(bundle: ExportBundle) -> dict:
                             entry.item_name,
                             entry.count,
                             entry.bag_location,
-                            entry.expansion,
+                            format_expansion_label(entry.expansion),
                             entry.material,
                             entry.target_slot or "",
                             entry.equipped_tier,

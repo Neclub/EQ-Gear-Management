@@ -3,9 +3,11 @@ from __future__ import annotations
 from pathlib import Path
 
 from inventory_parser.spell_catalog import (
+    eqresource_spell_url,
     load_spell_catalog,
     lookup_expansion,
     lookup_expansion_label,
+    lookup_spell_id,
 )
 from inventory_parser.spell_scrape import parse_spell_search_html
 
@@ -46,3 +48,25 @@ def test_lookup_expansion_unknown_returns_none() -> None:
 
 def test_lookup_expansion_requires_class() -> None:
     assert lookup_expansion(None, 126, "Committal Rk. III") is None
+
+
+def test_lookup_spell_id_for_cleric_appeasement() -> None:
+    catalog = load_spell_catalog()
+    assert lookup_spell_id("CLR", 126, "Appeasement Rk. III", catalog=catalog) == 71168
+    assert lookup_spell_id("CLR", 126, "Not A Real Spell Rk. III", catalog=catalog) is None
+
+
+def test_eqresource_spell_url_prefers_id() -> None:
+    assert (
+        eqresource_spell_url(71168, "Appeasement Rk. III", class_abbr="CLR", level=126)
+        == "https://spells.eqresource.com/spells.php?id=71168"
+    )
+
+
+def test_eqresource_spell_url_search_fallback() -> None:
+    url = eqresource_spell_url(None, "Dichotomic Fury VI", class_abbr="BER", level=101)
+    assert url.startswith("https://spells.eqresource.com/spellsearch.php?")
+    assert "name=Dichotomic+Fury+VI" in url
+    assert "class=ber" in url
+    assert "level=101" in url
+    assert "strict=true" in url

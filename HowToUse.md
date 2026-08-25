@@ -140,7 +140,7 @@ If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, et
 
 ## Reading the workbook
 
-The file uses a **dark theme** on every sheet (black chrome, light text, shared header and status colors). Item names and Gear T-Level codes link to [EQ Resource](https://items.eqresource.com/) when the inventory file includes item IDs; hover a T-code to see the item name.
+The file uses a **dark theme** on every sheet (black chrome, light text, shared header and status colors). Item names and Gear T-Level codes link to [EQ Resource](https://items.eqresource.com/) when the inventory file includes item IDs; hover a T-code to see the item name. Missing Spells and Missing Useful Spells names link to [EQ Resource spells](https://spells.eqresource.com).
 
 ### Team Gear
 
@@ -191,7 +191,7 @@ How many Minor / Lesser / Median / Greater / Glowing runes each character still 
 
 ### Missing Spells *(if enabled)*
 
-Every missing **Rk. III** spell at levels 121–130, including missing **Rk. II** and spells that were **never purchased**, displayed as Rk. III. Columns: character, level, rune tier, **expansion**, and spell name. Never-purchased spells show a **Not Purchased** chip in HTML, or the same label after the name in Excel.
+Every missing **Rk. III** spell at levels 121–130, including missing **Rk. II** and spells that were **never purchased**, displayed as Rk. III. Columns: character, level, rune tier, **expansion**, and spell name. Never-purchased spells show a **Not Purchased** chip in HTML, or the same label after the name in Excel. Spell names link to [EQ Resource](https://spells.eqresource.com) (direct spell page when the catalog has an id; otherwise a name search).
 
 **Columns:** Character · Level · Rune · Expansion · Spell
 
@@ -207,7 +207,7 @@ Useful spells from [Raccoo’s curated list](https://docs.google.com/spreadsheet
 
 **Columns:** Character · Level · Expansion · Spell · Highest RK · Comments
 
-Matching is by class (worn Chest when known, otherwise the MissingSpells filename) against the bundled useful-spell catalog. Use Excel auto-filter or the HTML **Character** / **Expansion** dropdowns to focus on one persona. The sheet includes a credit link: **Based on "SOR - Raccoo's list of useful spells"**.
+Matching is by class (worn Chest when known, otherwise the MissingSpells filename) against the bundled useful-spell catalog. Spell names link to EQ Resource the same way as **Missing Spells**. Use Excel auto-filter or the HTML **Character** / **Expansion** dropdowns to focus on one persona. The sheet includes a credit link: **Based on "SOR - Raccoo's list of useful spells"**.
 
 ### Rune Inventory *(if runes found)*
 
@@ -307,14 +307,14 @@ Same sections as Excel (omitted when empty, same rules as the workbook): Team Ge
 | **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
 | **Character** dropdown | Toolbar (table tabs, Type 7/8 Augs, Type 5 Augs, and Raid BiS) | Filter Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, Quests, etc. to one character; on **Type 5 Augs** / **Type 7/8 Augs** / **Raid BiS**, filter to one persona |
 | **Rune type** | Toolbar (Missing Spells) | All / Minor / Lesser / Median / Greater / Glowing |
-| **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells** by exact spell expansion; filter **Missing Useful Spells** by short expansion code (SOR, TOB, …); filter achievement tables by expansion (defaults to the **current expansion** on first open); on **Missing Runes** and **Rune Inventory**, filter to one expansion / rune family |
+| **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells**, **Missing Useful Spells**, and achievement tables by expansion (full name plus year; defaults to the **current expansion** on first open for achievements); on **Missing Runes** and **Rune Inventory**, filter to one expansion / rune family |
 | **Zone** | Toolbar (Quests) | Filter Mercenary/Partisan rows to one zone (options follow the current Expansion filter) |
 | **Event** | Toolbar (Raid Achievements) | Filter raid cards to one event (e.g. Echo of Hate). Options follow the current Expansion filter |
 | **Sort** | Toolbar (Missing Runes) | Reorder character columns: roster order, name, class, or most missing (uses the Expansion filter when one is selected) |
 | **Column headers** | Table | Click to sort |
 | **Missing Item** | Missing Collections | Hover the header for a copy reminder; click an item name to copy it |
 
-Gear-set and tier colors match the Excel theme. Item names and Gear T-Level codes link to EQ Resource; hover a T-code for the item name.
+Gear-set and tier colors match the Excel theme. Item names, Gear T-Level codes, and Missing Spells / Missing Useful Spells names link to EQ Resource; hover a T-code for the item name.
 
 ---
 

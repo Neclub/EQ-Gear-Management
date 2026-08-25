@@ -242,6 +242,14 @@ def test_format_expansion_label() -> None:
     assert format_expansion_label("Rain of Fear") == "Rain of Fear (2012)"
     assert format_expansion_label("EverQuest") == EVERQUEST_BASE_LABEL
     assert format_expansion_label("General") == "General"
+    assert format_expansion_label("SOR") == "Shattering of Ro (2025)"
+    assert format_expansion_label("SoR") == "Shattering of Ro (2025)"
+    assert format_expansion_label("ToB") == "The Outer Brood (2024)"
+    assert format_expansion_label("LS") == "Laurion's Song (2023)"
+    assert format_expansion_label("NoS") == "Night of Shadows (2022)"
+    assert format_expansion_label("The Shadows of Luclin") == "Shadows of Luclin (2001)"
+    assert format_expansion_label("Shattering of Ro (2025)") == "Shattering of Ro (2025)"
+    assert format_expansion_label("") == ""
 
 
 def test_build_achievement_report_includes_sorted_raid_rows() -> None:
