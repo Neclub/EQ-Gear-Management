@@ -290,13 +290,18 @@ When **HTML** or **Both** is selected next to **Generate Report** (default **Bot
 
 **Layout**
 
-- **Left sidebar** — EQGM crest, gold-rail section buttons (same look as [Lub Inventory](https://neclub.github.io/Lub-Inventory/)), Lucide-style icons, then **Character filter** chips (directly under the nav, not at the bottom of the window)
+- **Left sidebar** — EQGM crest, collapsible section groups (**Gear**, **Spells**, **Augs**, **Quests & Achievements**), gold-rail section buttons (same look as [Lub Inventory](https://neclub.github.io/Lub-Inventory/)), Lucide-style icons, then **Character filter** chips (directly under the nav, not at the bottom of the window). Groups start collapsed; click a group heading to expand or collapse its tabs. The browser remembers which groups you leave open.
 - **Main area** — rounded title nameplate (e.g. `Bristlebane Team Inventory`, character count, generation date, and EQGM version), toolbar, and the active section’s table
 - **Footer** — gear-tier color legend when viewing **Team Gear**
 
 **Sections**
 
-Same sections as Excel (omitted when empty, same rules as the workbook): Team Gear, Gear T-Level, Missing Runes, Missing Spells, Missing Useful Spells, Rune Inventory, Unmade Gear, Missing Collections, Quests, Achievement Summary, Raid Achievements, **Type 7/8 Augs** when that chip is on, **Type 5 Augs** when that chip is on, **Type 18/19 Augs** when that chip is on, and **Raid BiS** when that chip is on.
+Same sections as Excel (omitted when empty, same rules as the workbook), grouped in the sidebar:
+
+- **Gear** — Team Gear, Gear T-Level, Raid BiS, Unmade Gear
+- **Spells** — Missing Spells, Missing Useful Spells, Missing Runes, Rune Inventory
+- **Augs** — Type 7/8 Augs, Type 5 Augs, Type 18/19 Augs (each when that chip is on)
+- **Quests & Achievements** — Missing Collections, Quests, Raid Achievements, Achievement Summary
 
 **Filters & tools**
 

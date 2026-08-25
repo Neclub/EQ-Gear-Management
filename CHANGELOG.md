@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.6] - 2026-08-25
+
+### Added
+
+- **HTML report:** sidebar tabs collapse into **Gear**, **Spells**, **Augs**, and **Quests & Achievements** groups (collapsed by default). Click a group heading to hide or show its tabs; open/closed state is remembered in the browser.
+
 ## [1.34.5] - 2026-08-25
 
 ### Added

@@ -50,6 +50,10 @@ body {
   display: flex;
   flex-direction: column;
   padding: 16px 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
 }
 .sidebar-brand {
   display: flex;
@@ -65,13 +69,77 @@ body {
 .sidebar-brand:hover span { color: var(--link); }
 .sidebar-brand img { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; }
 .sidebar-brand span { font-weight: 600; font-size: 14px; line-height: 1.3; }
-#navList { display: flex; flex-direction: column; gap: 8px; padding: 0 8px; }
+#navList { display: flex; flex-direction: column; gap: 10px; padding: 0 8px; }
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.nav-group + .nav-group {
+  border-top: 1px solid var(--border);
+  padding-top: 8px;
+}
+.nav-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 4px 6px 6px;
+  border: 0;
+  background: transparent;
+  color: var(--gold);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+.nav-group-toggle:hover { color: var(--text); }
+.nav-group-toggle:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.nav-group.has-active .nav-group-toggle { color: var(--link); }
+.nav-group.has-active.collapsed .nav-group-toggle {
+  border-radius: 6px;
+  background: var(--accent-soft);
+}
+.nav-group-toggle svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+}
+.nav-group-toggle span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nav-group-toggle .nav-chevron {
+  width: 12px;
+  height: 12px;
+  margin-left: auto;
+  transition: transform 0.15s ease;
+}
+.nav-group.collapsed .nav-chevron { transform: rotate(-90deg); }
+.nav-group.collapsed .nav-group-items { display: none; }
+.nav-group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 .nav-btn {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding: 10px 12px;
+  padding: 8px 10px;
   border: 1px solid var(--border);
   border-left: 3px solid var(--gold-soft);
   border-radius: 8px;
@@ -1291,7 +1359,13 @@ th.copy-col-head {
 .s-ammo { grid-column: 4; grid-row: 8; }
 @media (max-width: 900px) {
   #app { flex-direction: column; }
-  #sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  #sidebar {
+    width: 100%;
+    height: auto;
+    position: static;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
   .char-filter-section { margin-top: 12px; }
 }
 </style>
@@ -1381,6 +1455,9 @@ th.copy-col-head {
   <symbol id="icon-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
     <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/>
     <circle cx="12" cy="10" r="3"/>
+  </symbol>
+  <symbol id="icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6 9 12 15 18 9"/>
   </symbol>
 </svg>
 <div id="app">
@@ -4149,10 +4226,73 @@ function renderActivePanel() {
   updateToolbar();
 }
 
+function loadNavGroupExpanded() {
+  try {
+    const raw = localStorage.getItem("eqgm-html-nav-groups");
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch (err) {
+    return {};
+  }
+}
+
+function saveNavGroupExpanded() {
+  const stored = {};
+  document.querySelectorAll(".nav-group").forEach((group) => {
+    stored[group.dataset.group] = !group.classList.contains("collapsed");
+  });
+  try {
+    localStorage.setItem("eqgm-html-nav-groups", JSON.stringify(stored));
+  } catch (err) { /* file:// or private mode */ }
+}
+
+function syncNavActive() {
+  document.querySelectorAll(".nav-btn").forEach((btn) => {
+    btn.classList.toggle("active", Number(btn.dataset.idx) === state.activeTab);
+  });
+  document.querySelectorAll(".nav-group").forEach((group) => {
+    group.classList.toggle("has-active", Boolean(group.querySelector(".nav-btn.active")));
+  });
+}
+
+function toggleNavGroup(group) {
+  group.classList.toggle("collapsed");
+  const expanded = !group.classList.contains("collapsed");
+  const toggle = group.querySelector(".nav-group-toggle");
+  if (toggle) toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+  saveNavGroupExpanded();
+}
+
+function groupedNavEntries() {
+  const byId = new Map(REPORT.sections.map((section, idx) => [section.id, { section, idx }]));
+  const used = new Set();
+  const groups = [];
+  for (const spec of REPORT.navGroups || []) {
+    const items = (spec.sectionIds || [])
+      .map((id) => byId.get(id))
+      .filter(Boolean);
+    items.forEach((item) => used.add(item.section.id));
+    if (items.length) groups.push({ ...spec, items });
+  }
+  const leftovers = REPORT.sections
+    .map((section, idx) => ({ section, idx }))
+    .filter((item) => !used.has(item.section.id));
+  if (leftovers.length) {
+    groups.push({
+      id: "other",
+      title: "Other",
+      icon: "icon-chest",
+      items: leftovers,
+    });
+  }
+  return groups;
+}
+
 function setActiveTab(idx) {
   state.activeTab = idx;
-  document.querySelectorAll(".nav-btn").forEach((b, i) => b.classList.toggle("active", i === idx));
   document.querySelectorAll(".panel").forEach((p, i) => p.classList.toggle("active", i === idx));
+  syncNavActive();
   renderActivePanel();
 }
 
@@ -4371,19 +4511,45 @@ function init() {
 
   const nav = document.getElementById("navList");
   const content = document.getElementById("content");
-  REPORT.sections.forEach((section, idx) => {
-    const btn = el("button", "nav-btn" + (idx === 0 ? " active" : ""));
-    btn.type = "button";
-    btn.appendChild(icon(SECTION_ICONS[section.id] || "icon-chest"));
-    btn.appendChild(document.createTextNode(section.title));
-    btn.addEventListener("click", () => setActiveTab(idx));
-    nav.appendChild(btn);
+  const savedGroups = loadNavGroupExpanded();
+  groupedNavEntries().forEach((group) => {
+    const wrap = el("div", "nav-group");
+    wrap.dataset.group = group.id;
+    const expanded = savedGroups[group.id] === true;
+    if (!expanded) wrap.classList.add("collapsed");
 
+    const toggle = el("button", "nav-group-toggle");
+    toggle.type = "button";
+    toggle.setAttribute("aria-expanded", expanded ? "true" : "false");
+    toggle.appendChild(icon(group.icon || "icon-chest"));
+    toggle.appendChild(el("span", null, group.title));
+    const chevron = icon("icon-chevron");
+    chevron.classList.add("nav-chevron");
+    toggle.appendChild(chevron);
+    toggle.addEventListener("click", () => toggleNavGroup(wrap));
+    wrap.appendChild(toggle);
+
+    const items = el("div", "nav-group-items");
+    group.items.forEach(({ section, idx }) => {
+      const btn = el("button", "nav-btn");
+      btn.type = "button";
+      btn.dataset.idx = String(idx);
+      btn.appendChild(icon(SECTION_ICONS[section.id] || "icon-chest"));
+      btn.appendChild(document.createTextNode(section.title));
+      btn.addEventListener("click", () => setActiveTab(idx));
+      items.appendChild(btn);
+    });
+    wrap.appendChild(items);
+    nav.appendChild(wrap);
+  });
+
+  REPORT.sections.forEach((section, idx) => {
     const panel = el("div", "panel" + (idx === 0 ? " active" : ""));
     panel.id = "panel-" + idx;
     content.appendChild(panel);
     if (idx === 0) updatePanelContent(panel, section);
   });
+  syncNavActive();
 
   initCharacterFilter();
   updateToolbar();

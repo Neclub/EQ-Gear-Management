@@ -44,6 +44,44 @@ from inventory_parser.useful_spells import (
 
 _REPORT_JSON_MARKER = "/*__REPORT_JSON__*/"
 
+# Sidebar groups in the HTML report. Section ids are included only when present.
+HTML_NAV_GROUPS: list[dict[str, object]] = [
+    {
+        "id": "gear",
+        "title": "Gear",
+        "icon": "icon-shield",
+        "sectionIds": ["team_gear", "gear_t_level", "raid_bis", "unmade_gear"],
+    },
+    {
+        "id": "spells",
+        "title": "Spells",
+        "icon": "icon-book",
+        "sectionIds": [
+            "spell_list",
+            "missing_useful_spells",
+            "missing_runes",
+            "rune_inventory",
+        ],
+    },
+    {
+        "id": "augs",
+        "title": "Augs",
+        "icon": "icon-gem",
+        "sectionIds": ["slot2_augs", "type5_augs", "type18_augs"],
+    },
+    {
+        "id": "quests",
+        "title": "Quests & Achievements",
+        "icon": "icon-trophy",
+        "sectionIds": [
+            "missing_collections",
+            "quests",
+            "raid_achievements",
+            "achievement_summary",
+        ],
+    },
+]
+
 
 def json_for_html_script(value: object) -> str:
     """JSON that is safe to embed inside a ``<script>`` tag.
@@ -638,6 +676,7 @@ def serialize_report(bundle: ExportBundle) -> dict:
         },
         "gearLegend": gear_legend,
         "expansionOrder": _expansion_filter_order(),
+        "navGroups": HTML_NAV_GROUPS,
         "sections": sections,
     }
 

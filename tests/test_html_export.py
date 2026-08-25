@@ -59,8 +59,11 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
         "icon-trophy",
         "icon-gem",
         "icon-armor",
+        "icon-chevron",
     ):
         assert f'id="{symbol_id}"' in text
+    assert "nav-group-toggle" in text
+    assert "function groupedNavEntries" in text
 
     report = extract_report_json(text)
     assert report["meta"]["version"]
@@ -85,6 +88,42 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
     assert missing_runes["data"]["expansionOptions"][0] == "Shattering of Ro (2025)"
     assert "The Outer Brood (2024)" in missing_runes["data"]["expansionOptions"]
     assert "Laurion's Song (2023)" in missing_runes["data"]["expansionOptions"]
+
+
+def test_html_nav_groups(tmp_path: Path) -> None:
+    inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
+    spell = SPELL_DATA / "Deflub_bristle-PAL-MissingSpells.txt"
+    bundle = build_export_bundle([inv, spell], include_achievements=False, include_slot2=False)
+    out = tmp_path / "crew.html"
+    write_team_html(bundle, out)
+    report = extract_report_json(out.read_text(encoding="utf-8"))
+    groups = {group["id"]: group for group in report["navGroups"]}
+    assert groups["gear"]["title"] == "Gear"
+    assert groups["gear"]["sectionIds"] == [
+        "team_gear",
+        "gear_t_level",
+        "raid_bis",
+        "unmade_gear",
+    ]
+    assert groups["spells"]["title"] == "Spells"
+    assert groups["spells"]["sectionIds"] == [
+        "spell_list",
+        "missing_useful_spells",
+        "missing_runes",
+        "rune_inventory",
+    ]
+    assert groups["augs"]["title"] == "Augs"
+    assert groups["augs"]["sectionIds"] == ["slot2_augs", "type5_augs", "type18_augs"]
+    assert groups["quests"]["title"] == "Quests & Achievements"
+    assert groups["quests"]["sectionIds"] == [
+        "missing_collections",
+        "quests",
+        "raid_achievements",
+        "achievement_summary",
+    ]
+    present = {section["id"] for section in report["sections"]}
+    grouped = {sid for group in report["navGroups"] for sid in group["sectionIds"]}
+    assert present <= grouped
 
 
 def test_html_rune_inventory_present(tmp_path: Path) -> None:
