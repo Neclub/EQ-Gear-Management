@@ -1,8 +1,4 @@
 <p align="center">
-  <img src="docs/img/eqgm-icon.png" alt="EQGM" width="160" height="160">
-</p>
-
-<p align="center">
   <img src="docs/img/eqgm-banner.png" alt="EQ Gear Management — Inventory & Augment Tracker">
 </p>
 
@@ -70,6 +66,10 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 - **HTML report** — the same data in a browser, searchable and filterable, with collapsible sidebar groups (Gear, Spells, Augs, Quests & Achievements); the title graphic shows character count, generated date, and EQGM version
 
 For file naming, Alternate Personas, reading each sheet, and troubleshooting, see **[HowToUse.md](HowToUse.md)**.
+
+<p align="center">
+  <img src="docs/img/eqgm-icon.png" alt="EQGM" width="160" height="160">
+</p>
 
 ## License
 
