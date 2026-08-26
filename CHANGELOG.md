@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.7] - 2026-08-25
+
+### Changed
+
+- **App icon:** Windows executable, GUI header badge, HTML report logo/favicon, and the product page now use the circular EQGM emblem.
+
 ## [1.34.6] - 2026-08-25
 
 ### Added

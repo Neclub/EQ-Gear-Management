@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="EQ Gear Management (EQGM) — turn EverQuest inventory output files into team Excel and HTML reports for gear, runes, spells, achievements, augs, and Raid BiS.">
   <title>EQGM — EQ Gear Management</title>
+  <link rel="icon" type="image/png" href="img/eqgm-icon.png">
+  <link rel="apple-touch-icon" href="img/eqgm-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&display=swap" rel="stylesheet">
@@ -97,6 +99,13 @@
       text-align: center;
       padding: 28px 0 8px;
       animation: fadeUp 0.6s ease both;
+    }
+
+    .intro-logo {
+      display: block;
+      width: 128px;
+      height: 128px;
+      margin: 0 auto 16px;
     }
 
     .intro h1 {
@@ -507,6 +516,7 @@
 
   <div class="page">
     <header class="intro">
+      <img class="intro-logo" src="img/eqgm-icon.png" alt="" width="128" height="128">
       <h1>EQ Gear Management</h1>
       <p class="tagline">
         A Windows program for EverQuest Live that reads team inventory dumps and builds one report you can open in Excel or your browser — gear, tiers, runes, spells, achievements, augs, and Raid BiS.

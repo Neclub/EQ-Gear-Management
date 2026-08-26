@@ -1,4 +1,8 @@
 <p align="center">
+  <img src="docs/img/eqgm-icon.png" alt="EQGM" width="160" height="160">
+</p>
+
+<p align="center">
   <img src="docs/img/eqgm-banner.png" alt="EQ Gear Management — Inventory & Augment Tracker">
 </p>
 
