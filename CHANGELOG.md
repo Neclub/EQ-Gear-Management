@@ -6,6 +6,10 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+### Changed
+
+- **Docs:** EQ Folder instructions now point at the EverQuest install root, not the Logs subfolder.
+
 ## [1.34.10] - 2026-08-26
 
 ### Changed

@@ -21,7 +21,7 @@ On each character, run these chat commands in EverQuest:
 | `/outputfile missingspells` | Missing spells file (`*-MissingSpells.txt`) |
 | `/outputfile achievements` | Achievement file (`*-Achievements.txt`) |
 
-EQ writes the files to your **`EverQuest/Logs`** folder (or the path your client uses for `/outputfile`). Point **EQ Folder** at that folder — each character needs their own inventory file; add spell and/or achievement files when you want those tabs.
+EQ writes the files to the root of your **EverQuest** folder (not `Logs`). Point **EQ Folder** at that folder — each character needs their own inventory file; add spell and/or achievement files when you want those tabs.
 
 ### Inventory files (required)
 
@@ -111,7 +111,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
    If a newer GitHub Release exists, a popup shows the current and newest versions and asks whether to download.
 
 3. **Add your files**
-   - **EQ Folder** (under the roster) — pick your **EverQuest/Logs** folder (or the path your client uses for `/outputfile`); in the picker, check the characters you want (optional **Server** filter), then **Add selected**. Inventory, MissingSpells, and Achievements files are grouped per character.
+   - **EQ Folder** (under the roster) — pick the root of your **EverQuest** folder (not `Logs`); in the picker, check the characters you want (optional **Server** filter), then **Add selected**. Inventory, MissingSpells, and Achievements files are grouped per character.
 
 4. **Manage the roster** (optional)
    - **Drag** names in **Team characters** — a gap opens to show where the name will land; that order is used for Excel and HTML columns (including Unmade Gear row order)
@@ -352,4 +352,4 @@ Gear-set and tier colors match the Excel theme. Item names, Gear T-Level codes, 
 | Type 18/19 Augs sheet missing or empty | Leave the **Type 18/19 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
 | Raid BiS sheet missing or slots look empty | Leave the **Raid BiS** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
 | HTML looks outdated after an update | Regenerate the report. |
-| Warning: “Failed to remove temporary directory …\_MEI…” | Harmless packaging cleanup from the single-file `.exe`. Windows (or antivirus) sometimes keeps a handle open after exit, so PyInstaller cannot delete its extract folder. Click **OK** and keep working. You can delete leftover `_MEI*` folders under `%TEMP%` when EQGM is closed. It is unrelated to reading your Logs folder. |
+| Warning: “Failed to remove temporary directory …\_MEI…” | Harmless packaging cleanup from the single-file `.exe`. Windows (or antivirus) sometimes keeps a handle open after exit, so PyInstaller cannot delete its extract folder. Click **OK** and keep working. You can delete leftover `_MEI*` folders under `%TEMP%` when EQGM is closed. It is unrelated to reading your EverQuest folder. |

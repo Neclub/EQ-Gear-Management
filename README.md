@@ -35,12 +35,12 @@ On each character, run in EverQuest chat:
 | `/outputfile missingspells` | Optional — spell and rune tabs |
 | `/outputfile achievements` | Optional — achievement tabs |
 
-EQ writes those files to your **EverQuest Logs** folder.
+EQ writes those files to the root of your **EverQuest** folder (not the Logs subfolder).
 
 ### 2. Generate the report
 
 1. Open **EQ Gear Management**.
-2. Click **EQ Folder** and pick your EverQuest Logs folder; select which characters to import.
+2. Click **EQ Folder** and pick the root of your EverQuest folder; select which characters to import.
 3. Drag names in **Team characters** to set column order if you want. Adjust **Export options** on the right if needed. **Browse…** under **Output folder** picks where to save; the file is always named `{Server}_Team Inventory.xlsx` (or `{Character}_…` for a single character).
 4. Choose **Excel**, **HTML**, or **Both**, then click **Generate Report**.
 
