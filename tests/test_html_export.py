@@ -41,6 +41,8 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
     assert "--gold:" in text
     assert "chip.dataset.key = character.name" in text
     assert "function filterChipLabel" in text
+    assert "char-chip-class" in text
+    assert "grid-template-columns: repeat(2, minmax(0, 1fr))" in text
     assert "function rowMatchesCharacterFilter" in text
     assert "function sortedColumnIndices" in text
     assert "function cellText" in text

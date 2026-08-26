@@ -28,7 +28,7 @@ Get the file named `EQGM-x.y.z.exe`
 ===== MESSAGE 2: FUNCTIONS =====
 # What the report shows
 
-After you generate a report, you get an **Excel** file, a **web page**, or both. The web page opens in your browser and is easy to search.
+After you generate a report, you get an **Excel** file, a **web page**, or both. The web page opens in your browser and is easy to search. Character filter chips on the left show each name and class.
 
 ### 🛡️ Team Gear
 A grid of everyone on the team. Each row is a gear slot. Item names are color-coded:

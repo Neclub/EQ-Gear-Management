@@ -199,22 +199,54 @@ body {
   color: var(--muted);
   margin-bottom: 10px;
 }
-#characterFilter { display: flex; flex-wrap: wrap; gap: 6px; }
+#characterFilter {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  align-items: stretch;
+}
 .char-chip {
-  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+  padding: 5px 8px;
   border-radius: 6px;
   border: 1px solid var(--border);
   background: var(--input);
   color: var(--text);
   font: inherit;
   font-size: 12px;
+  line-height: 1.2;
+  text-align: left;
   cursor: pointer;
   opacity: 1;
   transition: opacity 0.15s ease;
 }
-.char-chip.active { font-weight: 600; }
+.char-chip-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.char-chip-class {
+  flex: 0 0 2.6em;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: right;
+  color: inherit;
+  opacity: 0.8;
+}
+.char-chip.active .char-chip-class { opacity: 1; }
 #characterFilter.has-filter .char-chip { opacity: 0.45; }
 #characterFilter.has-filter .char-chip.active { opacity: 1; }
+.char-chip[data-idx="all"] {
+  justify-content: center;
+}
 .char-chip[data-idx="all"].active { border-color: var(--muted); }
 #main {
   flex: 1;
@@ -1367,6 +1399,7 @@ th.copy-col-head {
     border-bottom: 1px solid var(--border);
   }
   .char-filter-section { margin-top: 12px; }
+  #characterFilter { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 }
 </style>
 </head>
@@ -1631,10 +1664,13 @@ function charColor(index) {
 }
 
 function filterChipLabel(character, all) {
-  const shared = all.some(
+  const abbr = String(character.classAbbr || "").trim().toUpperCase();
+  const name = character.shortName || character.name;
+  if (abbr) return `${name} ( ${abbr} )`;
+  const shared = (all || []).some(
     (other) => other !== character && other.shortName === character.shortName
   );
-  return shared ? character.name : character.shortName;
+  return shared ? character.name : name;
 }
 
 function resolveCharacter(filterKey) {
@@ -4330,7 +4366,11 @@ function initCharacterFilter() {
     chip.type = "button";
     chip.dataset.key = character.name;
     chip.dataset.idx = String(idx);
-    chip.textContent = filterChipLabel(character, characters);
+    const label = filterChipLabel(character, characters);
+    chip.title = label;
+    chip.appendChild(el("span", "char-chip-name", character.shortName || character.name));
+    const abbr = String(character.classAbbr || "").trim().toUpperCase();
+    if (abbr) chip.appendChild(el("span", "char-chip-class", abbr));
     const color = charColor(idx);
     chip.style.borderColor = color.border;
     chip.addEventListener("click", () => setCharacterFilter(character.name));

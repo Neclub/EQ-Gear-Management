@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.8] - 2026-08-26
+
+### Changed
+
+- **HTML Character filter:** chips always show class when known (not only for shared-name personas) and sit in a two-column grid so names and class labels line up.
+
 ## [1.34.7] - 2026-08-25
 
 ### Changed

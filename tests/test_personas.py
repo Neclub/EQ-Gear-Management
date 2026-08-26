@@ -227,6 +227,8 @@ def test_html_character_filter_uses_persona_names(tmp_path: Path) -> None:
     text = out.read_text(encoding="utf-8")
     assert "chip.dataset.key = character.name" in text
     assert "function filterChipLabel" in text
+    assert "char-chip-class" in text
+    assert 'chip.appendChild(el("span", "char-chip-class", abbr))' in text
     report = extract_report_json(text)
     chars = report["meta"]["characters"]
     assert len(chars) == 3
