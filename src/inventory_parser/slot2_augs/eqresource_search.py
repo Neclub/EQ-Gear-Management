@@ -261,6 +261,23 @@ def _row_to_candidate(row: EqrSearchRow, profile: ProfileId) -> AugCandidate:
     )
 
 
+def _rows_from_cached_profile(cached: dict | None) -> list[EqrSearchRow]:
+    if not cached or not isinstance(cached.get("rows"), list):
+        return []
+    rows: list[EqrSearchRow] = []
+    for d in cached["rows"]:
+        if not isinstance(d, dict) or "item_id" not in d:
+            continue
+        rows.append(
+            EqrSearchRow(
+                item_id=int(d["item_id"]),
+                name=str(d.get("name") or f"Item {d['item_id']}"),
+                stats=clean_stats(d.get("stats") or {}),
+            )
+        )
+    return rows
+
+
 def fetch_eqresource_catalog(
     profile: ProfileId,
     *,
@@ -277,53 +294,63 @@ def fetch_eqresource_catalog(
     from_cache = False
     warning: str | None = None
     url = EQRESOURCE_SEARCH_URL
-
-    try:
-        html7 = fetch_eqresource_search_html(
-            profile, augtype="7", html_override=html_override
-        )
-        rows.extend(parse_eqresource_search_html(html7))
-        if html_override_augtype8 is not None or (allow_network and html_override is None):
-            html8 = fetch_eqresource_search_html(
-                profile, augtype="8", html_override=html_override_augtype8
+    use_overrides = (
+        html_override is not None
+        or html_override_augtype8 is not None
+        or item_html_by_id is not None
+    )
+    cached_rows = (
+        _rows_from_cached_profile(cache.get(profile))
+        if not force_refresh and not use_overrides
+        else []
+    )
+    if cached_rows:
+        rows = cached_rows
+        from_cache = True
+    else:
+        try:
+            html7 = fetch_eqresource_search_html(
+                profile, augtype="7", html_override=html_override
             )
-            rows.extend(parse_eqresource_search_html(html8))
-        # Prefer first occurrence (search is already score-sorted).
-        by_id: dict[int, EqrSearchRow] = {}
-        for row in rows:
-            by_id.setdefault(row.item_id, row)
-        rows = list(by_id.values())
-        if len([r for r in rows if r.item_id != ARTISANS_PRIZE_ID]) < 3:
-            raise ValueError(
-                f"EQ Resource search returned {len(rows)} augs (need a working parse)"
-            )
-        if html_override is None:
-            cache[profile] = {
-                "fetched_at": now,
-                "url": url,
-                "rows": [
-                    {"item_id": r.item_id, "name": r.name, "stats": r.stats} for r in rows
-                ],
-            }
-            _save_cache(cache)
-    except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
-        cached = cache.get(profile) if not force_refresh else None
-        if cached and cached.get("rows"):
-            rows = [
-                EqrSearchRow(
-                    item_id=int(d["item_id"]),
-                    name=str(d.get("name") or f"Item {d['item_id']}"),
-                    stats=clean_stats(d.get("stats") or {}),
+            rows.extend(parse_eqresource_search_html(html7))
+            if html_override_augtype8 is not None or (
+                allow_network and html_override is None
+            ):
+                html8 = fetch_eqresource_search_html(
+                    profile, augtype="8", html_override=html_override_augtype8
                 )
-                for d in cached["rows"]
-            ]
-            from_cache = True
-            warning = f"Live EQ Resource search failed ({exc}); using cached search."
-        else:
-            raise
+                rows.extend(parse_eqresource_search_html(html8))
+            # Prefer first occurrence (search is already score-sorted).
+            by_id: dict[int, EqrSearchRow] = {}
+            for row in rows:
+                by_id.setdefault(row.item_id, row)
+            rows = list(by_id.values())
+            if len([r for r in rows if r.item_id != ARTISANS_PRIZE_ID]) < 3:
+                raise ValueError(
+                    f"EQ Resource search returned {len(rows)} augs (need a working parse)"
+                )
+            if html_override is None:
+                cache[profile] = {
+                    "fetched_at": now,
+                    "url": url,
+                    "rows": [
+                        {"item_id": r.item_id, "name": r.name, "stats": r.stats}
+                        for r in rows
+                    ],
+                }
+                _save_cache(cache)
+        except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
+            cached = cache.get(profile) if not force_refresh else None
+            fallback_rows = _rows_from_cached_profile(cached)
+            if fallback_rows:
+                rows = fallback_rows
+                from_cache = True
+                warning = f"Live EQ Resource search failed ({exc}); using cached search."
+            else:
+                raise
 
     name_hints = {r.item_id: r.name for r in rows}
-    live_items = allow_network and html_override is None
+    live_items = allow_network and html_override is None and not from_cache
     hydrated = resolve_eqresource_augs(
         [r.item_id for r in rows],
         profile,

@@ -235,7 +235,7 @@ def fetch_item_expansion(
 
     cache = _load_expansion_cache()
     key = str(item_id)
-    if not force_refresh and key in cache and cache[key].get("ok"):
+    if not force_refresh and key in cache:
         name = cache[key].get("expansion")
         return str(name) if name else None
 
@@ -275,8 +275,10 @@ def resolve_item_expansions(
     html_overrides = html_overrides or {}
     result: dict[int, str] = {}
     unique = sorted({int(i) for i in item_ids if int(i) > 0})
+    cache = _load_expansion_cache() if not html_overrides else {}
     fetched_live = 0
     total = len(unique)
+    dirty = False
 
     if total == 0 and on_progress is not None:
         on_progress(0, 0)
@@ -284,7 +286,10 @@ def resolve_item_expansions(
     for i, item_id in enumerate(unique, start=1):
         override = html_overrides.get(item_id)
         if override is not None:
-            name = fetch_item_expansion(item_id, html_override=override)
+            name = parse_expansion_from_eqr_html(override)
+        elif not force_refresh and str(item_id) in cache:
+            raw = cache[str(item_id)].get("expansion")
+            name = str(raw) if raw else None
         elif allow_network:
             if fetched_live > 0 and polite_delay_s > 0:
                 time.sleep(polite_delay_s)
@@ -292,14 +297,23 @@ def resolve_item_expansions(
                 item_id,
                 force_refresh=force_refresh,
                 allow_network=True,
+                skip_cache_write=True,
             )
+            cache[str(item_id)] = {
+                "ok": name is not None,
+                "fetched_at": datetime.now(timezone.utc).isoformat(),
+                "expansion": name,
+            }
+            dirty = True
             fetched_live += 1
         else:
-            name = fetch_item_expansion(item_id, allow_network=False)
+            name = None
         if name:
             result[item_id] = name
         if on_progress is not None:
             on_progress(i, total)
+    if dirty:
+        _save_expansion_cache(cache)
     return result
 
 
@@ -489,6 +503,45 @@ def parse_eqresource_aug_html(
     )
 
 
+def _aug_from_cache_entry(
+    entry: dict,
+    profile: ProfileId,
+    item_id: int,
+    name_hint: str | None = None,
+) -> AugCandidate | None:
+    if not entry.get("ok"):
+        return None
+    if int(entry.get("stats_v", 0)) < CACHE_STATS_VERSION or not entry.get("stats"):
+        return None
+    stats = clean_stats(entry.get("stats") or {})
+    focus, ac, hp, atk = legacy_from_stats(stats, profile)
+    types = frozenset(
+        int(t) for t in (entry.get("aug_types") or []) if str(t).isdigit()
+    )
+    return AugCandidate(
+        item_id=item_id,
+        name=str(entry.get("name") or name_hint or f"Item {item_id}"),
+        profile=profile,
+        focus_heroic=focus or int(entry.get("focus_heroic", 0)),
+        ac=ac or int(entry.get("ac", 0)),
+        hp=hp or int(entry.get("hp", 0)),
+        atk=atk or int(entry.get("atk", 0)),
+        slot_text=str(entry.get("slot_text", "")),
+        excluded_bases=frozenset(entry.get("excluded_bases") or ()),
+        allowed_bases=frozenset(entry.get("allowed_bases") or ()),
+        ear_only=bool(entry.get("ear_only", False)),
+        lore=bool(entry.get("lore", False)),
+        lore_group=(
+            str(entry["lore_group"]).strip() if entry.get("lore_group") else None
+        )
+        or None,
+        shield_only=bool(entry.get("shield_only", False)),
+        source="EQ Resource",
+        stats=stats,
+        aug_types=types,
+    )
+
+
 def fetch_eqresource_aug(
     item_id: int,
     profile: ProfileId,
@@ -509,35 +562,12 @@ def fetch_eqresource_aug(
 
     cache = _load_cache()
     key = f"{profile}:{item_id}"
-    if not force_refresh and key in cache and cache[key].get("ok"):
-        entry = cache[key]
-        # Refresh thin legacy cache rows that lack expanded stats.
-        if int(entry.get("stats_v", 0)) >= CACHE_STATS_VERSION and entry.get("stats"):
-            stats = clean_stats(entry.get("stats") or {})
-            focus, ac, hp, atk = legacy_from_stats(stats, profile)
-            types = frozenset(int(t) for t in (entry.get("aug_types") or []) if str(t).isdigit())
-            return AugCandidate(
-                item_id=item_id,
-                name=str(entry.get("name") or name_hint or f"Item {item_id}"),
-                profile=profile,
-                focus_heroic=focus or int(entry.get("focus_heroic", 0)),
-                ac=ac or int(entry.get("ac", 0)),
-                hp=hp or int(entry.get("hp", 0)),
-                atk=atk or int(entry.get("atk", 0)),
-                slot_text=str(entry.get("slot_text", "")),
-                excluded_bases=frozenset(entry.get("excluded_bases") or ()),
-                allowed_bases=frozenset(entry.get("allowed_bases") or ()),
-                ear_only=bool(entry.get("ear_only", False)),
-                lore=bool(entry.get("lore", False)),
-                lore_group=(
-                    str(entry["lore_group"]).strip() if entry.get("lore_group") else None
-                )
-                or None,
-                shield_only=bool(entry.get("shield_only", False)),
-                source="EQ Resource",
-                stats=stats,
-                aug_types=types,
-            )
+    if not force_refresh and key in cache:
+        cached = _aug_from_cache_entry(
+            cache[key], profile, item_id, name_hint=name_hint
+        )
+        if cached is not None:
+            return cached
 
     try:
         html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item_id))
@@ -592,7 +622,9 @@ def resolve_eqresource_augs(
     name_hints = name_hints or {}
     result: dict[int, AugCandidate] = {}
     unique = sorted({int(i) for i in item_ids if int(i) > 0})
+    cache = _load_cache()
     fetched_live = 0
+    dirty = False
 
     for item_id in unique:
         override = html_overrides.get(item_id)
@@ -603,18 +635,57 @@ def resolve_eqresource_augs(
                 html_override=override,
                 name_hint=name_hints.get(item_id),
             )
-        elif allow_network:
-            if fetched_live > 0 and polite_delay_s > 0:
-                time.sleep(polite_delay_s)
-            aug = fetch_eqresource_aug(
-                item_id,
-                profile,
-                force_refresh=force_refresh,
-                name_hint=name_hints.get(item_id),
-            )
-            fetched_live += 1
         else:
-            continue
+            key = f"{profile}:{item_id}"
+            aug = None
+            if not force_refresh and key in cache:
+                aug = _aug_from_cache_entry(
+                    cache[key],
+                    profile,
+                    item_id,
+                    name_hint=name_hints.get(item_id),
+                )
+            if aug is None and allow_network:
+                if fetched_live > 0 and polite_delay_s > 0:
+                    time.sleep(polite_delay_s)
+                aug = fetch_eqresource_aug(
+                    item_id,
+                    profile,
+                    force_refresh=True,
+                    name_hint=name_hints.get(item_id),
+                    skip_cache_write=True,
+                )
+                if aug is None:
+                    cache[key] = {
+                        "ok": False,
+                        "fetched_at": datetime.now(timezone.utc).isoformat(),
+                    }
+                else:
+                    cache[key] = {
+                        "ok": True,
+                        "fetched_at": datetime.now(timezone.utc).isoformat(),
+                        "name": aug.name,
+                        "focus_heroic": aug.focus_heroic,
+                        "ac": aug.ac,
+                        "hp": aug.hp,
+                        "atk": aug.atk,
+                        "slot_text": aug.slot_text,
+                        "excluded_bases": sorted(aug.excluded_bases),
+                        "allowed_bases": sorted(aug.allowed_bases),
+                        "ear_only": aug.ear_only,
+                        "lore": aug.lore,
+                        "lore_group": aug.lore_group,
+                        "shield_only": aug.shield_only,
+                        "stats": dict(aug.stats),
+                        "stats_v": CACHE_STATS_VERSION,
+                        "aug_types": sorted(aug.aug_types),
+                    }
+                dirty = True
+                fetched_live += 1
+            elif aug is None:
+                continue
         if aug is not None:
             result[item_id] = aug
+    if dirty:
+        _save_cache(cache)
     return result

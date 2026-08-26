@@ -891,3 +891,44 @@ def test_evolver_equipped_still_recommends_bis_but_is_not_a_purchase():
     assert chest.vendor_cost == 786
     assert chest.score_gain > 0
 
+
+def test_fetch_catalog_uses_disk_cache_before_network(tmp_path, monkeypatch) -> None:
+    import json
+
+    from inventory_parser.raid_bis.catalog import cache_path, fetch_catalog
+
+    monkeypatch.setattr(
+        "inventory_parser.raid_bis.catalog.appdata_dir",
+        lambda: tmp_path,
+    )
+
+    def boom(*_args, **_kwargs):
+        raise AssertionError("warm Raid BiS catalog cache must not hit EQ Resource")
+
+    monkeypatch.setattr("inventory_parser.raid_bis.catalog._http_get", boom)
+    cache_path().write_text(
+        json.dumps(
+            {
+                "catalog": {
+                    "fetched_at": "2026-01-01T00:00:00+00:00",
+                    "urls": [],
+                    "items": [
+                        {
+                            "item_id": 175821,
+                            "name": "Test Chest",
+                            "stats": {"ac": 100, "hp": 1000},
+                            "classes": ["WAR"],
+                            "slots": ["Chest"],
+                            "tier": "SOR-R2",
+                        }
+                    ],
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    catalog = fetch_catalog(allow_network=True, hydrate=False)
+    assert catalog.from_cache is True
+    assert catalog.items[0].item_id == 175821
+    assert catalog.items[0].name == "Test Chest"
+

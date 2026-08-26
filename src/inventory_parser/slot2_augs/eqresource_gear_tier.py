@@ -6,6 +6,7 @@ import json
 import re
 import time
 import urllib.error
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterable
@@ -19,6 +20,7 @@ from inventory_parser.slot2_augs.eqresource_augs import (
 from inventory_parser.slot2_augs.paths import appdata_dir
 
 CACHE_FILENAME = "eqresource_gear_tier_cache.json"
+_HTTP_WORKERS = 6
 
 # EQ Resource expacimages stem → our T-code prefix.
 EXPAC_CODE_TO_TIER_PREFIX: dict[str, str] = {
@@ -88,7 +90,9 @@ def fetch_item_gear_tier(
 
     cache = _load_cache()
     key = str(item_id)
-    if not force_refresh and key in cache and cache[key].get("ok"):
+    # Honor negative cache (ok: false / no parseable T-code) so generate
+    # does not re-hit EQ Resource for the same unknown items every run.
+    if not force_refresh and key in cache:
         raw = cache[key].get("tier")
         code = str(raw) if raw else None
         return code if code in GEAR_TIER_BY_CODE else None
@@ -113,6 +117,20 @@ def fetch_item_gear_tier(
     return tier
 
 
+def _tier_from_cache_entry(entry: dict) -> str | None:
+    raw = entry.get("tier")
+    code = str(raw) if raw else None
+    return code if code in GEAR_TIER_BY_CODE else None
+
+
+def _fetch_live_gear_tier(item_id: int) -> str | None:
+    try:
+        html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item_id))
+        return parse_gear_tier_from_eqr_html(html)
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError):
+        return None
+
+
 def resolve_item_gear_tiers(
     item_ids: Iterable[int],
     *,
@@ -126,31 +144,83 @@ def resolve_item_gear_tiers(
     html_overrides = html_overrides or {}
     result: dict[int, str] = {}
     unique = sorted({int(i) for i in item_ids if int(i) > 0})
-    fetched_live = 0
     total = len(unique)
+    cache = _load_cache()
+    need_fetch: list[int] = []
+    done = 0
 
     if total == 0 and on_progress is not None:
         on_progress(0, 0)
 
-    for i, item_id in enumerate(unique, start=1):
+    for item_id in unique:
         override = html_overrides.get(item_id)
         if override is not None:
-            code = fetch_item_gear_tier(item_id, html_override=override)
-        elif allow_network:
-            if fetched_live > 0 and polite_delay_s > 0:
-                time.sleep(polite_delay_s)
-            code = fetch_item_gear_tier(
-                item_id,
-                force_refresh=force_refresh,
-                allow_network=True,
-            )
-            fetched_live += 1
+            code = parse_gear_tier_from_eqr_html(override)
+            if code:
+                result[item_id] = code
+            done += 1
+            if on_progress is not None:
+                on_progress(done, total)
+            continue
+        key = str(item_id)
+        if not force_refresh and key in cache:
+            code = _tier_from_cache_entry(cache[key])
+            if code:
+                result[item_id] = code
+            done += 1
+            if on_progress is not None:
+                on_progress(done, total)
+            continue
+        if allow_network:
+            need_fetch.append(item_id)
         else:
-            code = fetch_item_gear_tier(item_id, allow_network=False)
-        if code:
-            result[item_id] = code
-        if on_progress is not None:
-            on_progress(i, total)
+            done += 1
+            if on_progress is not None:
+                on_progress(done, total)
+
+    if need_fetch:
+        dirty = False
+        workers = min(_HTTP_WORKERS, len(need_fetch))
+        if workers <= 1:
+            fetched_live = 0
+            for item_id in need_fetch:
+                if fetched_live > 0 and polite_delay_s > 0:
+                    time.sleep(polite_delay_s)
+                code = _fetch_live_gear_tier(item_id)
+                cache[str(item_id)] = {
+                    "ok": code is not None,
+                    "fetched_at": datetime.now(timezone.utc).isoformat(),
+                    "tier": code,
+                }
+                dirty = True
+                fetched_live += 1
+                if code:
+                    result[item_id] = code
+                done += 1
+                if on_progress is not None:
+                    on_progress(done, total)
+        else:
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                futures = {
+                    pool.submit(_fetch_live_gear_tier, item_id): item_id
+                    for item_id in need_fetch
+                }
+                for fut in as_completed(futures):
+                    item_id = futures[fut]
+                    code = fut.result()
+                    cache[str(item_id)] = {
+                        "ok": code is not None,
+                        "fetched_at": datetime.now(timezone.utc).isoformat(),
+                        "tier": code,
+                    }
+                    dirty = True
+                    if code:
+                        result[item_id] = code
+                    done += 1
+                    if on_progress is not None:
+                        on_progress(done, total)
+        if dirty:
+            _save_cache(cache)
     return result
 
 

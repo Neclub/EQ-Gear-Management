@@ -345,6 +345,7 @@ def resolve_classes_for_inventories(
     classes_by_item: dict[int, list[str]] = {}
     fetch_ids = sorted(need_fetch)
     total = len(fetch_ids)
+    cache = _load_cache() if allow_network else {}
     if total == 0 and on_progress is not None:
         on_progress(0, 0)
 
@@ -355,10 +356,15 @@ def resolve_classes_for_inventories(
                 item_id, raidloot_html=ov[0], eqr_html=ov[1]
             )
         elif allow_network:
-            if fetched_live > 0 and polite_delay_s > 0:
-                time.sleep(polite_delay_s)
-            classes = fetch_item_classes(item_id)
-            fetched_live += 1
+            key = str(item_id)
+            if key in cache and "classes" in cache[key]:
+                raw = cache[key].get("classes") or []
+                classes = [str(c).upper() for c in raw if str(c).upper() in CLASS_TO_PROFILE]
+            else:
+                if fetched_live > 0 and polite_delay_s > 0:
+                    time.sleep(polite_delay_s)
+                classes = fetch_item_classes(item_id)
+                fetched_live += 1
         else:
             classes = []
         classes_by_item[item_id] = [c for c in classes if c in CLASS_TO_PROFILE]

@@ -8,6 +8,7 @@ import re
 import time
 import urllib.error
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -17,6 +18,7 @@ from inventory_parser.slot2_augs.paths import appdata_dir
 
 USER_AGENT = "EQ-Augs/0.2 (Slot2 type 7/8 checker; local tool)"
 CACHE_FILENAME = "item_sockets_cache.json"
+_HTTP_WORKERS = 6
 
 RAIDLOOT_ITEM_URL = "https://www.raidloot.com/items?name={item_id}"
 EQRESOURCE_ITEM_URL = "https://items.eqresource.com/items.php?id={item_id}"
@@ -199,6 +201,89 @@ def fetch_item_sockets(
     return sock_map
 
 
+def _resolve_socket_maps(
+    item_ids: Iterable[int],
+    *,
+    force_refresh: bool = False,
+    overrides: dict[int, tuple[str | None, str | None]] | None = None,
+    polite_delay_s: float = 0.05,
+    on_progress: Callable[[int, int], None] | None = None,
+) -> dict[int, ItemSocketMap]:
+    result: dict[int, ItemSocketMap] = {}
+    unique = sorted({int(i) for i in item_ids if int(i) > 0})
+    overrides = overrides or {}
+    cache = _load_cache()
+    need_fetch: list[int] = []
+    total = len(unique)
+    done = 0
+
+    if total == 0 and on_progress is not None:
+        on_progress(0, 0)
+
+    for item_id in unique:
+        ov = overrides.get(item_id)
+        if ov is not None:
+            result[item_id] = fetch_item_sockets(
+                item_id,
+                html_override=ov[0],
+                eqr_html_override=ov[1],
+            )
+            done += 1
+            if on_progress is not None:
+                on_progress(done, total)
+            continue
+        key = str(item_id)
+        if not force_refresh and key in cache and cache[key].get("sockets") is not None:
+            result[item_id] = _map_from_cache_entry(item_id, cache[key])
+            done += 1
+            if on_progress is not None:
+                on_progress(done, total)
+            continue
+        need_fetch.append(item_id)
+
+    if need_fetch:
+        dirty = False
+        workers = min(_HTTP_WORKERS, len(need_fetch))
+        if workers <= 1:
+            fetched_live = 0
+            for item_id in need_fetch:
+                if fetched_live > 0 and polite_delay_s > 0:
+                    time.sleep(polite_delay_s)
+                sock_map = fetch_item_sockets(
+                    item_id, force_refresh=force_refresh, skip_cache_write=True
+                )
+                result[item_id] = sock_map
+                cache[str(item_id)] = _cache_entry(sock_map)
+                dirty = True
+                fetched_live += 1
+                done += 1
+                if on_progress is not None:
+                    on_progress(done, total)
+        else:
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                futures = {
+                    pool.submit(
+                        fetch_item_sockets,
+                        item_id,
+                        force_refresh=force_refresh,
+                        skip_cache_write=True,
+                    ): item_id
+                    for item_id in need_fetch
+                }
+                for fut in as_completed(futures):
+                    item_id = futures[fut]
+                    sock_map = fut.result()
+                    result[item_id] = sock_map
+                    cache[str(item_id)] = _cache_entry(sock_map)
+                    dirty = True
+                    done += 1
+                    if on_progress is not None:
+                        on_progress(done, total)
+        if dirty:
+            _save_cache(cache)
+    return result
+
+
 def resolve_type78_slots(
     item_ids: Iterable[int],
     *,
@@ -214,34 +299,14 @@ def resolve_type78_slots(
     ``overrides`` maps item_id → (raidloot_html, eqr_html) for tests.
     ``on_progress(done, total)`` is called after each item (1-based done).
     """
-    result: dict[int, int | None] = {}
-    unique = sorted({int(i) for i in item_ids if int(i) > 0})
-    overrides = overrides or {}
-    fetched_live = 0
-    total = len(unique)
-
-    if total == 0 and on_progress is not None:
-        on_progress(0, 0)
-
-    for i, item_id in enumerate(unique, start=1):
-        ov = overrides.get(item_id)
-        if ov is not None:
-            sock_map = fetch_item_sockets(
-                item_id,
-                html_override=ov[0],
-                eqr_html_override=ov[1],
-            )
-        else:
-            if fetched_live > 0 and polite_delay_s > 0:
-                time.sleep(polite_delay_s)
-            sock_map = fetch_item_sockets(item_id, force_refresh=force_refresh)
-            if not sock_map.from_cache:
-                fetched_live += 1
-        result[item_id] = type78_dump_slot(sock_map.sockets)
-        if on_progress is not None:
-            on_progress(i, total)
-
-    return result
+    maps = _resolve_socket_maps(
+        item_ids,
+        force_refresh=force_refresh,
+        overrides=overrides,
+        polite_delay_s=polite_delay_s,
+        on_progress=on_progress,
+    )
+    return {item_id: type78_dump_slot(sock.sockets) for item_id, sock in maps.items()}
 
 
 def resolve_type5_slots(
@@ -259,31 +324,11 @@ def resolve_type5_slots(
     ``overrides`` maps item_id → (raidloot_html, eqr_html) for tests.
     ``on_progress(done, total)`` is called after each item (1-based done).
     """
-    result: dict[int, int | None] = {}
-    unique = sorted({int(i) for i in item_ids if int(i) > 0})
-    overrides = overrides or {}
-    fetched_live = 0
-    total = len(unique)
-
-    if total == 0 and on_progress is not None:
-        on_progress(0, 0)
-
-    for i, item_id in enumerate(unique, start=1):
-        ov = overrides.get(item_id)
-        if ov is not None:
-            sock_map = fetch_item_sockets(
-                item_id,
-                html_override=ov[0],
-                eqr_html_override=ov[1],
-            )
-        else:
-            if fetched_live > 0 and polite_delay_s > 0:
-                time.sleep(polite_delay_s)
-            sock_map = fetch_item_sockets(item_id, force_refresh=force_refresh)
-            if not sock_map.from_cache:
-                fetched_live += 1
-        result[item_id] = type5_dump_slot(sock_map.sockets)
-        if on_progress is not None:
-            on_progress(i, total)
-
-    return result
+    maps = _resolve_socket_maps(
+        item_ids,
+        force_refresh=force_refresh,
+        overrides=overrides,
+        polite_delay_s=polite_delay_s,
+        on_progress=on_progress,
+    )
+    return {item_id: type5_dump_slot(sock.sockets) for item_id, sock in maps.items()}

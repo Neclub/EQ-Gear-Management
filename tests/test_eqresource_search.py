@@ -98,3 +98,59 @@ def test_eqresource_catalog_drops_type5_after_hydrate():
     ids = {a.item_id for a in cat.augs}
     assert 173378 not in ids
     assert 175573 in ids
+
+
+def test_eqresource_catalog_uses_disk_cache_before_network(tmp_path, monkeypatch):
+    import json
+
+    from inventory_parser.slot2_augs.eqresource_search import cache_path
+
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.eqresource_search.appdata_dir",
+        lambda: tmp_path,
+    )
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.eqresource_augs.appdata_dir",
+        lambda: tmp_path,
+    )
+
+    def boom(*_args, **_kwargs):
+        raise AssertionError("warm type 7/8 search cache must not hit EQ Resource")
+
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.eqresource_search._http_post", boom
+    )
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.eqresource_augs._http_get", boom
+    )
+    cache_path().write_text(
+        json.dumps(
+            {
+                "int": {
+                    "fetched_at": "2026-01-01T00:00:00+00:00",
+                    "url": "https://items.eqresource.com/dosearch.php",
+                    "rows": [
+                        {
+                            "item_id": 175573,
+                            "name": "Mystic's Gem of Unraveling Order",
+                            "stats": {"spell_damage": 118, "hp": 1470},
+                        },
+                        {
+                            "item_id": 175571,
+                            "name": "Defender's Gem of Unraveling Order",
+                            "stats": {"spell_damage": 111, "hp": 2040},
+                        },
+                        {
+                            "item_id": 88785,
+                            "name": "Artisan's Prize",
+                            "stats": {},
+                        },
+                    ],
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    cat = fetch_eqresource_catalog("int", allow_network=True)
+    assert cat.from_cache is True
+    assert {a.item_id for a in cat.augs} >= {175573, 175571, 88785}

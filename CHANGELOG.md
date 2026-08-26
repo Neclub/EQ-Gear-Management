@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.10] - 2026-08-26
+
+### Changed
+
+- **Faster Generate Report:** Type 7/8 and Raid BiS catalogs reuse the disk cache instead of re-querying EQ Resource on every run. Failed gear T-level lookups are remembered so unknown items are not fetched again. Remaining live item lookups run in parallel.
+
 ## [1.34.9] - 2026-08-26
 
 ### Changed

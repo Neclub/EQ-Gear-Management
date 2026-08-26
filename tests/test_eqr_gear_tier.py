@@ -64,6 +64,48 @@ def test_export_bundle_assigns_eqr_tier_for_unknown_item(tmp_path: Path) -> None
     assert item.resolved_tier == "SOR-R2"
 
 
+def test_cached_miss_skips_network(tmp_path, monkeypatch) -> None:
+    import json
+
+    from inventory_parser.slot2_augs.eqresource_gear_tier import resolve_item_gear_tiers
+
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.eqresource_gear_tier.appdata_dir",
+        lambda: tmp_path,
+    )
+    (tmp_path / "eqresource_gear_tier_cache.json").write_text(
+        json.dumps(
+            {
+                "111665": {
+                    "ok": False,
+                    "fetched_at": "2026-08-26T00:00:00+00:00",
+                    "tier": None,
+                },
+                "175315": {
+                    "ok": True,
+                    "fetched_at": "2026-08-26T00:00:00+00:00",
+                    "tier": "SOR-G2",
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    def boom(*_args, **_kwargs):
+        raise AssertionError("cached gear-tier lookups must not hit EQ Resource")
+
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.eqresource_gear_tier._http_get", boom
+    )
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.eqresource_gear_tier._fetch_live_gear_tier",
+        boom,
+    )
+    resolved = resolve_item_gear_tiers([111665, 175315], allow_network=True)
+    assert 111665 not in resolved
+    assert resolved[175315] == "SOR-G2"
+
+
 def test_apply_skips_named_tiers() -> None:
     from inventory_parser.slot2_augs.eqresource_gear_tier import (
         apply_resolved_gear_tiers_to_team,

@@ -8,6 +8,7 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
@@ -40,6 +41,7 @@ from inventory_parser.slot2_augs.paths import appdata_dir
 CACHE_FILENAME = "raid_bis_catalog.json"
 ITEM_CACHE_FILENAME = "raid_bis_item_cache.json"
 ITEM_CACHE_VERSION = 6
+_CATALOG_FETCH_WORKERS = 6
 RAIDARMOR_URL = "https://sor.eqresource.com/raidarmor.php"
 RAIDGEAR_URL = "https://sor.eqresource.com/raidgear.php"
 RAIDVENDOR_URL = "https://sor.eqresource.com/raidvendorgood.php"
@@ -498,96 +500,133 @@ def fetch_catalog(
     items: list[RaidGearCandidate] = []
     from_cache = False
     vendor: RaidVendorCatalog | None = None
+    use_overrides = bool(html_overrides)
+    cached = cache.get("catalog") if not force_refresh else None
+    cached_items = cached.get("items") if isinstance(cached, dict) else None
 
-    try:
-        armor_html = html_overrides.get("raidarmor")
-        if armor_html is None:
-            if not allow_network:
-                raise RuntimeError("network disabled")
-            armor_html = _http_get(RAIDARMOR_URL)
-        items.extend(parse_raidarmor_html(armor_html))
-
-        for slot_type, slot_name in JEWELRY_TYPE_SLOTS:
-            key = f"raidgear:{slot_type}"
-            url = raidgear_url(slot_type)
-            urls.append(url)
-            gear_html = html_overrides.get(key)
-            if gear_html is None:
+    if (
+        not use_overrides
+        and isinstance(cached_items, list)
+        and len(cached_items) > 0
+    ):
+        items = [_candidate_from_dict(d) for d in cached_items]
+        from_cache = True
+        urls = list(cached.get("urls") or urls)
+        vendor = vendor_catalog_from_dict(cache.get("vendor"))
+    else:
+        try:
+            armor_html = html_overrides.get("raidarmor")
+            if armor_html is None:
                 if not allow_network:
-                    continue
-                if polite_delay_s > 0:
-                    time.sleep(polite_delay_s)
-                gear_html = _http_get(url)
-            items.extend(
-                parse_raidgear_html(gear_html, default_slot=slot_name)
-            )
-        if not items:
-            raise ValueError("EQ Resource raid catalog returned no items")
-        vendor = _load_vendor(
-            html_overrides=html_overrides,
-            allow_network=allow_network,
-            polite_delay_s=polite_delay_s,
-            cache=cache,
-            now=now,
-            force_refresh=force_refresh,
-        )
-        if html_overrides or allow_network:
-            cache["catalog"] = {
-                "fetched_at": now,
-                "urls": urls,
-                "items": [_candidate_to_dict(i) for i in items],
-            }
-            if vendor is not None:
-                cache["vendor"] = vendor_catalog_to_dict(vendor)
-                cache["vendor"]["fetched_at"] = now
-            if not html_overrides:
-                _save_json(cache_path(), cache)
-    except (urllib.error.URLError, TimeoutError, ValueError, OSError, RuntimeError) as exc:
-        cached = cache.get("catalog") if not force_refresh else None
-        if cached and cached.get("items"):
-            items = [_candidate_from_dict(d) for d in cached["items"]]
-            from_cache = True
-            warning = f"Live EQ Resource raid catalog failed ({exc}); using cache."
-            vendor = vendor_catalog_from_dict(cache.get("vendor"))
-        else:
-            fallback = _raidloot_fallback(
-                allow_network=allow_network and not html_overrides,
-                html_overrides=html_overrides,
-            )
-            if fallback:
-                items = fallback
-                warning = f"EQ Resource raid catalog failed ({exc}); using raidloot fallback."
-                vendor = _load_vendor(
-                    html_overrides=html_overrides,
-                    allow_network=allow_network,
-                    polite_delay_s=polite_delay_s,
-                    cache=cache,
-                    now=now,
-                    force_refresh=force_refresh,
-                )
+                    raise RuntimeError("network disabled")
+                armor_html = _http_get(RAIDARMOR_URL)
+            items.extend(parse_raidarmor_html(armor_html))
+
+            def _jewelry_job(
+                slot_type: str, slot_name: str
+            ) -> tuple[str, list[RaidGearCandidate]]:
+                key = f"raidgear:{slot_type}"
+                url = raidgear_url(slot_type)
+                gear_html = html_overrides.get(key)
+                if gear_html is None:
+                    if not allow_network:
+                        return url, []
+                    gear_html = _http_get(url)
+                return url, parse_raidgear_html(gear_html, default_slot=slot_name)
+
+            if use_overrides or _CATALOG_FETCH_WORKERS <= 1:
+                for slot_type, slot_name in JEWELRY_TYPE_SLOTS:
+                    url, parsed = _jewelry_job(slot_type, slot_name)
+                    urls.append(url)
+                    items.extend(parsed)
             else:
-                return RaidBisCatalog(
-                    items=[],
-                    fetched_at=now,
-                    from_cache=False,
-                    warning=f"Raid BiS catalog failed ({exc}).",
-                    urls=urls,
-                    vendor=_load_vendor(
+                with ThreadPoolExecutor(max_workers=_CATALOG_FETCH_WORKERS) as pool:
+                    futures = [
+                        pool.submit(_jewelry_job, slot_type, slot_name)
+                        for slot_type, slot_name in JEWELRY_TYPE_SLOTS
+                    ]
+                    for fut in as_completed(futures):
+                        url, parsed = fut.result()
+                        urls.append(url)
+                        items.extend(parsed)
+            if not items:
+                raise ValueError("EQ Resource raid catalog returned no items")
+            vendor = _load_vendor(
+                html_overrides=html_overrides,
+                allow_network=allow_network,
+                polite_delay_s=polite_delay_s,
+                cache=cache,
+                now=now,
+                force_refresh=force_refresh,
+            )
+            if html_overrides or allow_network:
+                cache["catalog"] = {
+                    "fetched_at": now,
+                    "urls": urls,
+                    "items": [_candidate_to_dict(i) for i in items],
+                }
+                if vendor is not None:
+                    cache["vendor"] = vendor_catalog_to_dict(vendor)
+                    cache["vendor"]["fetched_at"] = now
+                if not html_overrides:
+                    _save_json(cache_path(), cache)
+        except (
+            urllib.error.URLError,
+            TimeoutError,
+            ValueError,
+            OSError,
+            RuntimeError,
+        ) as exc:
+            cached = cache.get("catalog") if not force_refresh else None
+            if cached and cached.get("items"):
+                items = [_candidate_from_dict(d) for d in cached["items"]]
+                from_cache = True
+                warning = (
+                    f"Live EQ Resource raid catalog failed ({exc}); using cache."
+                )
+                vendor = vendor_catalog_from_dict(cache.get("vendor"))
+            else:
+                fallback = _raidloot_fallback(
+                    allow_network=allow_network and not html_overrides,
+                    html_overrides=html_overrides,
+                )
+                if fallback:
+                    items = fallback
+                    warning = (
+                        f"EQ Resource raid catalog failed ({exc}); "
+                        "using raidloot fallback."
+                    )
+                    vendor = _load_vendor(
                         html_overrides=html_overrides,
-                        allow_network=False,
-                        polite_delay_s=0,
+                        allow_network=allow_network,
+                        polite_delay_s=polite_delay_s,
                         cache=cache,
                         now=now,
                         force_refresh=force_refresh,
-                    ),
-                )
+                    )
+                else:
+                    return RaidBisCatalog(
+                        items=[],
+                        fetched_at=now,
+                        from_cache=False,
+                        warning=f"Raid BiS catalog failed ({exc}).",
+                        urls=urls,
+                        vendor=_load_vendor(
+                            html_overrides=html_overrides,
+                            allow_network=False,
+                            polite_delay_s=0,
+                            cache=cache,
+                            now=now,
+                            force_refresh=force_refresh,
+                        ),
+                    )
 
     by_id: dict[int, RaidGearCandidate] = {}
     for item in items:
         by_id.setdefault(item.item_id, item)
 
     if hydrate:
-        hydrate_network = bool(allow_network) and not html_overrides
+        hydrate_network = bool(allow_network) and not html_overrides and not from_cache
         hydrated = _hydrate_items(
             list(by_id.values()),
             item_html_by_id=item_html_by_id,
@@ -605,7 +644,7 @@ def fetch_catalog(
     if vendor is None:
         vendor = _load_vendor(
             html_overrides=html_overrides,
-            allow_network=allow_network and not html_overrides,
+            allow_network=allow_network and not html_overrides and not from_cache,
             polite_delay_s=polite_delay_s,
             cache=cache,
             now=now,
