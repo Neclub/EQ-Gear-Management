@@ -44,6 +44,7 @@ def test_simplified_role_focus_stats():
     assert resolve_weights("ROG", "Head") == {"hdex": 10.0}
     assert resolve_weights("RNG", "Head") == {"hdex": 10.0}
     assert resolve_weights("CLR", "Head") == {"hwis": 10.0}
+    assert resolve_weights("DRU", "Head") == {"spell_damage": 9.0, "hwis": 1.0}
     assert resolve_weights("WIZ", "Head") == {
         "spell_damage": 10.0,
         "hint": 1.0,
@@ -136,6 +137,27 @@ def test_feet_small_ac_edge_beats_focus_for_war():
     )
     order = sorted(
         [more_focus, more_ac], key=lambda a: rank_key(a, "WAR", "Feet")
+    )
+    assert order[0].item_id == 2
+
+
+def test_dru_prefers_spell_damage_over_hwis():
+    more_hwis = _aug(
+        item_id=1,
+        name="HWis Gem",
+        profile="wis",
+        focus_heroic=60,
+        stats={"hwis": 60, "spell_damage": 80, "ac": 100, "hp": 1000},
+    )
+    more_sd = _aug(
+        item_id=2,
+        name="Nuke Gem",
+        profile="wis",
+        focus_heroic=40,
+        stats={"hwis": 40, "spell_damage": 120, "ac": 100, "hp": 1000},
+    )
+    order = sorted(
+        [more_hwis, more_sd], key=lambda a: rank_key(a, "DRU", "Head")
     )
     assert order[0].item_id == 2
 

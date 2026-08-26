@@ -54,7 +54,7 @@ Raid runes people already have in bags or bank.
 What is still incomplete. For collections, you can also see who on the team already has the item. The Zone column uses a `(Zone)` suffix on the collection name, or a `{Zone} Scavenger` grouping. In the web report, click a missing item name to copy it.
 
 ### 💎 Type 7/8 Augs
-Suggested augs to wear or farm. If an aug should move to another slot, Upgrade to shows what replaces it. Hover **Slot recommendations** for a reminder that these are suggestions. **Need** / **Have** Focus chips open EQ Resource.
+Suggested augs to wear or farm, ranked by class weights (**DRU** Spell Damage first, then HWis). If an aug should move to another slot, Upgrade to shows what replaces it. Hover **Slot recommendations** for a reminder that these are suggestions. **Need** / **Have** Focus chips open EQ Resource.
 
 ### 💠 Type 5 Augs
 Shows which type 5 augs people already have equipped (and empty holes). Preference only — no upgrade suggestions.

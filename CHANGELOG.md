@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.9] - 2026-08-26
+
+### Changed
+
+- **DRU weights:** Type 7/8 and Raid BiS scoring now weights Spell Damage 9 and HWis 1 (was HWis 10).
+
 ## [1.34.8] - 2026-08-26
 
 ### Changed

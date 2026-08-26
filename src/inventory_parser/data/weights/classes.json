@@ -24,7 +24,10 @@
     "DRU": {
       "role": "priest",
       "profile": "wis",
-      "modifiers": {}
+      "modifiers": {
+        "spell_damage": 9.0,
+        "hwis": -9.0
+      }
     },
     "SHM": {
       "role": "priest",
