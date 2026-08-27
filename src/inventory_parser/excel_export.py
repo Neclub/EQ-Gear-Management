@@ -1243,14 +1243,18 @@ def _write_heroic_aa_sheet(ws: Worksheet, report: AchievementReport) -> None:
         cell.fill = FILL_HEADER
         cell.alignment = _ALIGN_HEADER
 
+    def _heroic_rank_cell(value: int) -> int | str:
+        """Blank when the achievement does not award that AA rank."""
+        return value if value else ""
+
     for row_idx, entry in enumerate(entries, start=2):
         values = (
             entry.character,
             format_expansion_label(entry.expansion),
             entry.achievement,
-            entry.fortitude,
-            entry.resolution,
-            entry.vitality,
+            _heroic_rank_cell(entry.fortitude),
+            _heroic_rank_cell(entry.resolution),
+            _heroic_rank_cell(entry.vitality),
             entry.status,
         )
         row_fill = FILL_SPELL_DETAIL if row_idx % 2 == 0 else FILL_SPELL_DETAIL_ALT

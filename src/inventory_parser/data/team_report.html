@@ -2808,8 +2808,10 @@ function updateHeroicAasContent(content, section) {
           R: labelOf("resolution", "Hero's Resolution"),
           V: labelOf("vitality", "Hero's Vitality"),
         };
-        [["F", row[3]], ["R", row[4]], ["V", row[5]]].forEach(([letter, on]) => {
-          const chip = el("span", on ? "heroic-chip on" : "heroic-chip", letter);
+        [["F", row[3]], ["R", row[4]], ["V", row[5]]].forEach(([letter, awarded]) => {
+          // Catalog 0 = not awarded for this achievement — omit the chip.
+          if (!awarded) return;
+          const chip = el("span", done ? "heroic-chip on" : "heroic-chip", letter);
           chip.title = chipTips[letter];
           chips.appendChild(chip);
         });

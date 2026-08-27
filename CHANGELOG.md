@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.1] - 2026-08-27
+
+### Changed
+
+- **Heroic AA:** F / R / V chips and Excel Fortitude / Resolution / Vitality cells only show ranks that achievement awards (for example Hero of Arcstone, Shattered Isles: Colossus has no Resolution). Lit chips mean Completed; muted chips mean still Incomplete; omitted / blank means not awarded.
+
 ## [1.35.0] - 2026-08-27
 
 ### Added

@@ -448,6 +448,14 @@ def test_achievement_sheets_in_workbook(tmp_path: Path) -> None:
         and heroic_ws.cell(row, 7).value == "Completed"
         for row in range(2, heroic_ws.max_row + 1)
     )
+    colossus = next(
+        row
+        for row in range(2, heroic_ws.max_row + 1)
+        if heroic_ws.cell(row, 3).value == "Hero of Arcstone, Shattered Isles: Colossus"
+    )
+    assert heroic_ws.cell(colossus, 4).value == 1
+    assert heroic_ws.cell(colossus, 5).value in (None, "")
+    assert heroic_ws.cell(colossus, 6).value == 1
     assert any(
         missing_ws.cell(row, 5).value == "Strange Black Rock"
         for row in range(2, missing_ws.max_row + 1)

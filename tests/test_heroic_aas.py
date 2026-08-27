@@ -101,3 +101,27 @@ def test_build_report_includes_heroic_rows() -> None:
     assert ach_report.heroic_aa_totals
     assert ach_report.heroic_aa_totals[0].total == 138
     assert {row.status for row in ach_report.heroic_aas} <= {"Completed", "Incomplete"}
+
+
+def test_colossus_does_not_award_resolution() -> None:
+    catalog = load_heroic_aa_catalog()
+    colossus = next(
+        item
+        for item in catalog.achievements
+        if item.name == "Hero of Arcstone, Shattered Isles: Colossus"
+    )
+    assert colossus.fortitude == 1
+    assert colossus.resolution == 0
+    assert colossus.vitality == 1
+    rows = _heroic_aa_rows_from_parse("Tester", [], catalog)
+    row = next(r for r in rows if r.achievement == colossus.name)
+    assert row.resolution == 0
+    assert row.status == "Incomplete"
+
+
+def test_html_skips_chips_for_unawarded_ranks() -> None:
+    from inventory_parser.package_data import read_data_text
+
+    html = read_data_text("team_report.html")
+    assert "if (!awarded) return;" in html
+    assert 'done ? "heroic-chip on" : "heroic-chip"' in html
