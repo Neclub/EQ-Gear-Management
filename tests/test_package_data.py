@@ -29,3 +29,9 @@ def test_read_spell_rune_config() -> None:
 def test_read_vendor_json() -> None:
     text = read_data_text("sor_r1_vendor_items.json")
     assert "tier_code" in text
+
+
+def test_read_heroic_aas_catalog() -> None:
+    text = read_data_text("heroic_aas.json")
+    assert "Hero's Fortitude" in text
+    assert '"fortitude": 114' in text

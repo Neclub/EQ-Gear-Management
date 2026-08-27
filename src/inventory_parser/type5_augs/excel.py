@@ -97,6 +97,9 @@ def append_type5_sheet(wb, bundle: Type5Export) -> None:
             exp_cell = ws.cell(row_idx, 3, expansion)
             if empty:
                 exp_cell.fill = STATUS_FILL_EMPTY
+            elif slot.expansion_url:
+                exp_cell.hyperlink = slot.expansion_url
+                exp_cell.font = FONT_LINK
             aug_label = "Empty" if empty else (slot.name or "")
             aug_names.append(aug_label)
             aug_cell = ws.cell(row_idx, 4, aug_label)

@@ -45,6 +45,8 @@ def serialize_type5_section(bundle: Type5Export) -> dict:
                     "displayName": display_name,
                     "gearSlot": slot.gear_slot,
                     "expansion": slot.expansion,
+                    "expansionUrl": slot.expansion_url,
+                    "expansionTitle": slot.expansion_title,
                     "name": slot.name,
                     "itemId": slot.item_id,
                     "dumpSlot": slot.dump_slot,

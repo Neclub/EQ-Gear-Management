@@ -22,6 +22,7 @@ from inventory_parser.slot2_augs.item_sockets import resolve_type5_slots
 from inventory_parser.slot2_augs.profiles import ProfileId, profile_for_class
 from inventory_parser.slots import TEAM_GEAR_SLOTS
 from inventory_parser.team_report import TeamGearReport
+from inventory_parser.type5_augs.vanquisher import vanquisher_label
 
 ProgressFn = Callable[[dict], None]
 
@@ -60,6 +61,8 @@ class Type5SlotRow:
     parent_name: str | None = None
     parent_id: int | None = None
     expansion: str | None = None
+    expansion_url: str | None = None
+    expansion_title: str | None = None
     stats: dict[str, int] = field(default_factory=dict)
 
 
@@ -219,12 +222,17 @@ def build_type5_export(
         for aug in sorted(per_char_augs[i], key=lambda a: _slot_sort_key(a.gear_slot)):
             stats: dict[str, int] = {}
             expansion: str | None = None
+            expansion_url: str | None = None
+            expansion_title: str | None = None
             if aug.item_id and aug.item_id in aug_by_id:
                 stats = _heroic_from_aug_stats(aug_by_id[aug.item_id].stats)
             elif aug.item_id:
                 stats = _heroic_from_aug_stats(None)
             if aug.item_id:
                 expansion = expansions.get(aug.item_id)
+            vanq = vanquisher_label(aug.item_id, aug.name)
+            if vanq is not None:
+                expansion, expansion_url, expansion_title = vanq
             slot_rows.append(
                 Type5SlotRow(
                     gear_slot=aug.gear_slot,
@@ -234,6 +242,8 @@ def build_type5_export(
                     parent_name=aug.parent_name,
                     parent_id=aug.parent_id,
                     expansion=expansion,
+                    expansion_url=expansion_url,
+                    expansion_title=expansion_title,
                     stats=stats,
                 )
             )

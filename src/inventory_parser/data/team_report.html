@@ -499,6 +499,98 @@ th.copy-col-head {
   color: #8cb4ff;
   text-decoration: underline;
 }
+.heroic-intro {
+  color: var(--muted);
+  max-width: 920px;
+  margin: 0 0 14px;
+  font-size: 13px;
+}
+.heroic-totals {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 920px;
+  margin-bottom: 16px;
+}
+.heroic-stat {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.heroic-stat-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.heroic-stat-value {
+  font-size: 22px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.heroic-stat-value .max {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+.heroic-totals-table {
+  max-width: 920px;
+  margin-bottom: 16px;
+}
+.heroic-group {
+  max-width: 920px;
+  margin-bottom: 16px;
+}
+.heroic-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.heroic-row:last-child { border-bottom: none; }
+.heroic-row-name { flex: 1; min-width: 0; }
+.heroic-row-meta {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 2px;
+}
+.heroic-chips {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.heroic-chip {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #1a2030;
+  color: #4b5563;
+  cursor: help;
+}
+.heroic-chip.on {
+  background: var(--bis-soft);
+  color: #86efac;
+}
+.heroic-status {
+  width: 88px;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 650;
+  flex-shrink: 0;
+}
+.heroic-status.completed { color: #86efac; }
+.heroic-status.incomplete { color: #fca5a5; }
+.heroic-empty {
+  color: var(--muted);
+  max-width: 920px;
+}
+@media (max-width: 900px) {
+  .heroic-totals { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 .quest-list {
   display: flex;
   flex-direction: column;
@@ -1541,6 +1633,7 @@ const SECTION_ICONS = {
   missing_collections: "icon-chest",
   quests: "icon-scroll",
   raid_achievements: "icon-trophy",
+  heroic_aas: "icon-trophy",
   achievement_summary: "icon-trophy",
   slot2_augs: "icon-gem",
   type5_augs: "icon-gem",
@@ -1570,6 +1663,7 @@ const state = {
   events: {},
   blocks: {},
   runes: {},
+  status: {},
   raidBisWaist: {},
   raidBisCoins: {},
   copyBalloonTimer: 0,
@@ -1594,13 +1688,19 @@ function orderExpansionLabels(labels) {
 }
 
 function sectionExpansions(section) {
-  if (section.type !== "table" || section.data.expansionColumn == null) return [];
+  if (
+    (section.type !== "table" && section.type !== "heroic_aas") ||
+    section.data.expansionColumn == null
+  ) return [];
   const col = section.data.expansionColumn;
   return orderExpansionLabels(uniqueExpansionLabels(section.data.rows.map((r) => r[col])));
 }
 
 function expansionFilterOptions(section) {
-  if (section.type === "table" && section.data.expansionColumn != null) {
+  if (
+    (section.type === "table" || section.type === "heroic_aas") &&
+    section.data.expansionColumn != null
+  ) {
     return sectionExpansions(section);
   }
   if (section.data?.expansionOptions?.length) {
@@ -1837,6 +1937,8 @@ function updateToolbar() {
     search.placeholder = "Search quests…";
   } else if (section.id === "raid_achievements") {
     search.placeholder = "Search raids…";
+  } else if (section.id === "heroic_aas") {
+    search.placeholder = "Search Heroic AAs…";
   } else {
     search.placeholder = "Search…";
   }
@@ -1963,7 +2065,11 @@ function updateToolbar() {
     toolbar.appendChild(wrap);
   }
 
-  if (section.type === "table" && section.data.characterColumn != null && section.data.rows.length) {
+  if (
+    (section.type === "table" || section.type === "heroic_aas") &&
+    section.data.characterColumn != null &&
+    section.data.rows.length
+  ) {
     const sel = document.createElement("select");
     const options = characterFilterOptions(section);
     sel.innerHTML = options.map((opt) => optionHtml(opt.value, opt.label)).join("");
@@ -2066,7 +2172,11 @@ function updateToolbar() {
     toolbar.appendChild(sel);
   }
 
-  if (section.type === "table" && section.data.expansionColumn != null && section.data.rows.length) {
+  if (
+    (section.type === "table" || section.type === "heroic_aas") &&
+    section.data.expansionColumn != null &&
+    section.data.rows.length
+  ) {
     const sel = document.createElement("select");
     const expansions = expansionFilterOptions(section);
     sel.innerHTML =
@@ -2098,6 +2208,21 @@ function updateToolbar() {
       }
     });
     toolbar.appendChild(el("label", null, "Expansion"));
+    toolbar.appendChild(sel);
+  }
+
+  if (section.type === "heroic_aas") {
+    const sel = document.createElement("select");
+    sel.innerHTML =
+      optionHtml("", "All") +
+      optionHtml("Completed", "Completed") +
+      optionHtml("Incomplete", "Incomplete");
+    sel.value = state.status[section.id] || "";
+    sel.addEventListener("change", () => {
+      state.status[section.id] = sel.value;
+      refreshContent();
+    });
+    toolbar.appendChild(el("label", null, "Achievements"));
     toolbar.appendChild(sel);
   }
 
@@ -2523,6 +2648,192 @@ function updateAchievementGroupsContent(content, section) {
     list.appendChild(card);
   });
   content.appendChild(list);
+}
+
+function filteredHeroicRows(section) {
+  const data = section.data;
+  let rows = data.rows.slice();
+  const q = (state.searches[section.id] || "").trim().toLowerCase();
+  if (q) rows = rows.filter((r) => r.map(cellText).join(" ").toLowerCase().includes(q));
+
+  const charFilter = state.chars[section.id] || "";
+  if (data.characterColumn != null) {
+    if (charFilter) {
+      rows = rows.filter((r) => r[data.characterColumn] === charFilter);
+    } else {
+      rows = rows.filter((r) => rowMatchesCharacterFilter(r[data.characterColumn]));
+    }
+  }
+  const expansionFilter = activeExpansionFilter(section);
+  if (expansionFilter && data.expansionColumn != null) {
+    rows = rows.filter((r) => r[data.expansionColumn] === expansionFilter);
+  }
+  const statusFilter = state.status[section.id] || "";
+  if (statusFilter && data.statusColumn != null) {
+    rows = rows.filter((r) => r[data.statusColumn] === statusFilter);
+  }
+  return rows;
+}
+
+function selectedHeroicTotals(section) {
+  const data = section.data;
+  const totals = data.totals || [];
+  const charFilter = state.chars[section.id] || "";
+  if (charFilter) {
+    return totals.filter((row) => row.character === charFilter);
+  }
+  const names = selectedCharacterNames();
+  if (!names) return totals;
+  const wanted = new Set(names);
+  return totals.filter((row) => wanted.has(row.character));
+}
+
+function heroicStatCard(label, value, max, description) {
+  const card = el("div", "heroic-stat");
+  card.title = description || "";
+  card.appendChild(el("div", "heroic-stat-label", label));
+  const valueEl = el("div", "heroic-stat-value");
+  valueEl.appendChild(document.createTextNode(String(value)));
+  if (max != null) {
+    const maxEl = el("span", "max", " / " + max);
+    valueEl.appendChild(maxEl);
+  }
+  card.appendChild(valueEl);
+  return card;
+}
+
+function updateHeroicAasContent(content, section) {
+  const data = section.data;
+  if (data.intro) content.appendChild(el("p", "heroic-intro", data.intro));
+
+  const selectedTotals = selectedHeroicTotals(section);
+  const abilities = data.abilities || [];
+  const desc = (id) => {
+    const match = abilities.find((item) => item.id === id);
+    return match ? match.description : "";
+  };
+  const labelOf = (id, fallback) => {
+    const match = abilities.find((item) => item.id === id);
+    return match ? match.label : fallback;
+  };
+
+  if (selectedTotals.length === 1) {
+    const total = selectedTotals[0];
+    const banner = el("div", "heroic-totals");
+    banner.appendChild(
+      heroicStatCard(
+        labelOf("fortitude", "Hero's Fortitude"),
+        total.fortitude,
+        data.maxFortitude,
+        desc("fortitude")
+      )
+    );
+    banner.appendChild(
+      heroicStatCard(
+        labelOf("resolution", "Hero's Resolution"),
+        total.resolution,
+        data.maxResolution,
+        desc("resolution")
+      )
+    );
+    banner.appendChild(
+      heroicStatCard(
+        labelOf("vitality", "Hero's Vitality"),
+        total.vitality,
+        data.maxVitality,
+        desc("vitality")
+      )
+    );
+    banner.appendChild(
+      heroicStatCard("Achievements", total.completed, total.total, "")
+    );
+    content.appendChild(banner);
+  } else if (selectedTotals.length) {
+    const wrap = el("div", "table-wrap heroic-totals-table");
+    const table = document.createElement("table");
+    const head = document.createElement("tr");
+    ["Character", "Fortitude", "Resolution", "Vitality", "Achievements"].forEach((label) => {
+      head.appendChild(el("th", null, label));
+    });
+    table.appendChild(document.createElement("thead")).appendChild(head);
+    const tbody = document.createElement("tbody");
+    selectedTotals.forEach((total) => {
+      const tr = document.createElement("tr");
+      tr.appendChild(el("td", null, total.character));
+      tr.appendChild(el("td", "count-cell", total.fortitude + " / " + data.maxFortitude));
+      tr.appendChild(el("td", "count-cell", total.resolution + " / " + data.maxResolution));
+      tr.appendChild(el("td", "count-cell", total.vitality + " / " + data.maxVitality));
+      tr.appendChild(el("td", "count-cell", total.completed + " / " + total.total));
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    content.appendChild(wrap);
+  }
+
+  const rows = filteredHeroicRows(section);
+  if (!rows.length) {
+    content.appendChild(el("p", "heroic-empty", "No matching Heroic AAs."));
+  } else {
+    const groups = [];
+    const index = new Map();
+    rows.forEach((row) => {
+      const expansion = String(row[1] || "");
+      let group = index.get(expansion);
+      if (!group) {
+        group = { expansion, items: [] };
+        index.set(expansion, group);
+        groups.push(group);
+      }
+      group.items.push(row);
+    });
+    groups.forEach((group) => {
+      const block = el("div", "heroic-group");
+      if (!activeExpansionFilter(section)) {
+        block.appendChild(el("div", "block-title", group.expansion));
+      }
+      const wrap = el("div", "table-wrap");
+      group.items.forEach((row) => {
+        const done = String(row[6] || "") === "Completed";
+        const line = el("div", done ? "heroic-row" : "heroic-row incomplete");
+        const nameWrap = el("div", "heroic-row-name");
+        nameWrap.appendChild(el("div", null, String(row[2] || "")));
+        if (selectedTotals.length !== 1) {
+          nameWrap.appendChild(el("div", "heroic-row-meta", String(row[0] || "")));
+        }
+        line.appendChild(nameWrap);
+        const chips = el("div", "heroic-chips");
+        const chipTips = {
+          F: labelOf("fortitude", "Hero's Fortitude"),
+          R: labelOf("resolution", "Hero's Resolution"),
+          V: labelOf("vitality", "Hero's Vitality"),
+        };
+        [["F", row[3]], ["R", row[4]], ["V", row[5]]].forEach(([letter, on]) => {
+          const chip = el("span", on ? "heroic-chip on" : "heroic-chip", letter);
+          chip.title = chipTips[letter];
+          chips.appendChild(chip);
+        });
+        line.appendChild(chips);
+        line.appendChild(
+          el("div", done ? "heroic-status completed" : "heroic-status incomplete", done ? "Completed" : "Incomplete")
+        );
+        wrap.appendChild(line);
+      });
+      block.appendChild(wrap);
+      content.appendChild(block);
+    });
+  }
+
+  if (data.credit && data.credit.text && data.credit.url) {
+    const credit = el("p", "section-credit");
+    const link = document.createElement("a");
+    link.href = data.credit.url;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.textContent = data.credit.text;
+    credit.appendChild(link);
+    content.appendChild(credit);
+  }
 }
 
 function updateMissingRunesContent(content, section) {
@@ -3046,11 +3357,20 @@ function updateType5AugsContent(panel, section) {
       const aug = empty
         ? '<span class="muted-cell">Empty</span>'
         : slot2ItemLink(url, r.name, r.itemId);
+      let expansionCell;
+      if (empty) {
+        expansionCell = '<td class="muted-cell">—</td>';
+      } else if (r.expansionUrl) {
+        const title = r.expansionTitle ? ` title="${slot2Esc(r.expansionTitle)}"` : "";
+        expansionCell =
+          `<td><a href="${slot2Esc(r.expansionUrl)}" target="_blank" rel="noopener"${title}>` +
+          `${slot2Esc(r.expansion || "")}</a></td>`;
+      } else {
+        expansionCell = `<td>${slot2Esc(r.expansion || "")}</td>`;
+      }
       const cells = [
         `<td>${slot2Esc(r.gearSlot || "")}</td>`,
-        empty
-          ? '<td class="muted-cell">—</td>'
-          : `<td>${slot2Esc(r.expansion || "")}</td>`,
+        expansionCell,
         `<td class="col-aug">${aug}</td>`,
       ];
       ["hstr", "hsta", "hint", "hwis", "hagi", "hdex", "hcha"].forEach((k) => {
@@ -4233,6 +4553,8 @@ function updatePanelContent(panel, section) {
     updateGearMatrixContent(panel, section, section.id === "gear_t_level");
   } else if (section.data && section.data.group) {
     updateAchievementGroupsContent(panel, section);
+  } else if (section.type === "heroic_aas") {
+    updateHeroicAasContent(panel, section);
   } else if (section.type === "table") {
     updateTableContent(panel, section);
   } else if (section.type === "missing_runes") {

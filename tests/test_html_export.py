@@ -121,6 +121,7 @@ def test_html_nav_groups(tmp_path: Path) -> None:
         "missing_collections",
         "quests",
         "raid_achievements",
+        "heroic_aas",
         "achievement_summary",
     ]
     present = {section["id"] for section in report["sections"]}
@@ -221,6 +222,21 @@ def test_html_achievement_expansion_labels(tmp_path: Path) -> None:
     assert "function updateAchievementGroupsContent" in text
     assert "quest-card" in text
     assert "Not Completed" in text
+    heroic = next(s for s in report["sections"] if s["id"] == "heroic_aas")
+    assert heroic["title"] == "Heroic AA"
+    assert heroic["type"] == "heroic_aas"
+    assert heroic["data"]["maxFortitude"] == 114
+    assert heroic["data"]["maxResolution"] == 57
+    assert heroic["data"]["maxVitality"] == 114
+    assert heroic["data"]["statusColumn"] == 6
+    assert any(row[2] == "Savior of The Hero's Forge: Heroes Are Forged" and row[6] == "Completed" for row in heroic["data"]["rows"])
+    assert any(row[2] == "Savior of West Karana (Ethernere)" and row[6] == "Incomplete" for row in heroic["data"]["rows"])
+    assert "function updateHeroicAasContent" in text
+    assert "All" in text
+    assert "chip.title = chipTips[letter]" in text
+    assert 'F: labelOf("fortitude", "Hero\'s Fortitude")' in text
+    assert 'R: labelOf("resolution", "Hero\'s Resolution")' in text
+    assert 'V: labelOf("vitality", "Hero\'s Vitality")' in text
 
 
 def test_html_unmade_gear_omitted_when_empty(tmp_path: Path) -> None:

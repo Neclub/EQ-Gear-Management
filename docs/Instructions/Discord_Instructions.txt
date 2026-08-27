@@ -50,14 +50,14 @@ Who still needs spell runes, which spells they are missing (including spells tha
 ### 🎒 Rune Inventory
 Raid runes people already have in bags or bank.
 
-### 🏆 Collections, Quests, Raid Achievements
-What is still incomplete. For collections, you can also see who on the team already has the item. The Zone column uses a `(Zone)` suffix on the collection name, or a `{Zone} Scavenger` grouping. In the web report, click a missing item name to copy it.
+### 🏆 Collections, Quests, Raid Achievements, Heroic AA
+What is still incomplete. For collections, you can also see who on the team already has the item. The Zone column uses a `(Zone)` suffix on the collection name, or a `{Zone} Scavenger` grouping. In the web report, click a missing item name to copy it. **Heroic AA** shows Fortitude / Resolution / Vitality ranks from the Fanra wiki list vs each character’s achievement dump; hover **F** / **R** / **V** for those names.
 
 ### 💎 Type 7/8 Augs
 Suggested augs to wear or farm, ranked by class weights (**DRU** Spell Damage first, then HWis). If an aug should move to another slot, Upgrade to shows what replaces it. Hover **Slot recommendations** for a reminder that these are suggestions. **Need** / **Have** Focus chips open EQ Resource. Catalog reuses disk cache after the first fetch.
 
 ### 💠 Type 5 Augs
-Shows which type 5 augs people already have equipped (and empty holes). Preference only — no upgrade suggestions.
+Shows which type 5 augs people already have equipped (and empty holes). Vanquisher rewards use short Expansion labels (`Vanq ToL`, `Vanq NoS`, `Vanq LS`, `Vanq ToB`, `Vanq SoR`) linked to the achievement. Preference only — no upgrade suggestions.
 
 ### 🔮 Type 18/19 Augs *(work in progress)*
 Per-class suggestions from the Zarax cheat sheet (Primary / Optional / Filler), plus the full catalog. Pick a character to set class and see what they already own (and which gear slot if equipped). Alternatives show Owned + slot when equipped, otherwise a craft anvil. Catalog reuses disk cache after the first fetch. Still being refined.

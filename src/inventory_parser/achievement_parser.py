@@ -166,12 +166,20 @@ class QuestAchievement:
     complete: bool
 
 
+@dataclass(frozen=True)
+class TopLevelAchievement:
+    section: str
+    name: str
+    complete: bool
+
+
 @dataclass
 class AchievementParseResult:
     missing_collections: list[MissingCollectionItem] = field(default_factory=list)
     missing_raid_achievements: list[MissingRaidAchievement] = field(default_factory=list)
     quest_achievements: list[QuestAchievement] = field(default_factory=list)
     section_summaries: list[SectionSummary] = field(default_factory=list)
+    top_level: list[TopLevelAchievement] = field(default_factory=list)
 
 
 def split_collection_name(name: str) -> tuple[str, str]:
@@ -407,6 +415,7 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
     missing_collections: list[MissingCollectionItem] = []
     missing_raid_achievements: list[MissingRaidAchievement] = []
     quest_achievements: list[QuestAchievement] = []
+    top_level: list[TopLevelAchievement] = []
 
     with Path(path).open(encoding="utf-8", errors="ignore") as handle:
         for raw_line in handle:
@@ -454,6 +463,13 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
                     section_completed[current_section] += 1
                 else:
                     section_incomplete[current_section] += 1
+                top_level.append(
+                    TopLevelAchievement(
+                        section=current_section,
+                        name=name,
+                        complete=status == "C",
+                    )
+                )
                 continue
 
             if (
@@ -543,4 +559,5 @@ def parse_achievements_file(path: Path) -> AchievementParseResult:
         missing_raid_achievements=missing_raid_achievements,
         quest_achievements=quest_achievements,
         section_summaries=summaries,
+        top_level=top_level,
     )

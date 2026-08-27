@@ -23,6 +23,7 @@ from inventory_parser.excel_export import (
     MISSING_USEFUL_SPELLS_SHEET_NAME,
     QUESTS_SHEET_NAME,
     RAID_ACHIEVEMENTS_SHEET_NAME,
+    HEROIC_AA_SHEET_NAME,
     RUNE_INVENTORY_SHEET_NAME,
     UNMADE_GEAR_SHEET_NAME,
 )
@@ -77,6 +78,7 @@ HTML_NAV_GROUPS: list[dict[str, object]] = [
             "missing_collections",
             "quests",
             "raid_achievements",
+            "heroic_aas",
             "achievement_summary",
         ],
     },
@@ -346,6 +348,71 @@ def _serialize_table(
     return data
 
 
+def _serialize_heroic_aas(ach) -> dict:
+    from inventory_parser.heroic_aas import load_heroic_aa_catalog
+
+    catalog = load_heroic_aa_catalog()
+    expansion_labels = []
+    seen = set()
+    for row in ach.heroic_aas:
+        label = format_expansion_label(row.expansion)
+        if label and label not in seen:
+            seen.add(label)
+            expansion_labels.append(label)
+    expansion_labels.sort(key=expansion_sort_key)
+    return {
+        "intro": catalog.intro,
+        "credit": {"text": catalog.credit_text, "url": catalog.credit_url},
+        "abilities": [
+            {
+                "id": ability.id,
+                "label": ability.label,
+                "description": ability.description,
+            }
+            for ability in catalog.abilities
+        ],
+        "maxFortitude": catalog.max_fortitude,
+        "maxResolution": catalog.max_resolution,
+        "maxVitality": catalog.max_vitality,
+        "characterColumn": 0,
+        "expansionColumn": 1,
+        "statusColumn": 6,
+        "expansionOptions": expansion_labels,
+        "totals": [
+            {
+                "character": total.character,
+                "fortitude": total.fortitude,
+                "resolution": total.resolution,
+                "vitality": total.vitality,
+                "completed": total.completed,
+                "total": total.total,
+            }
+            for total in ach.heroic_aa_totals
+        ],
+        "columns": [
+            "Character",
+            "Expansion",
+            "Achievement",
+            "Fortitude",
+            "Resolution",
+            "Vitality",
+            "Status",
+        ],
+        "rows": [
+            [
+                row.character,
+                format_expansion_label(row.expansion),
+                row.achievement,
+                row.fortitude,
+                row.resolution,
+                row.vitality,
+                row.status,
+            ]
+            for row in ach.heroic_aas
+        ],
+    }
+
+
 def serialize_report(bundle: ExportBundle) -> dict:
     """Build JSON payload for the HTML template."""
     report = bundle.team
@@ -572,6 +639,15 @@ def serialize_report(bundle: ExportBundle) -> dict:
                             "empty": "No matching raid achievements.",
                         },
                     ),
+                }
+            )
+        if ach.heroic_aas:
+            sections.append(
+                {
+                    "id": "heroic_aas",
+                    "title": HEROIC_AA_SHEET_NAME,
+                    "type": "heroic_aas",
+                    "data": _serialize_heroic_aas(ach),
                 }
             )
         if ach.summaries:

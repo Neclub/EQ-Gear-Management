@@ -12,9 +12,14 @@ from inventory_parser.achievement_parser import (
     MissingCollectionItem,
     MissingRaidAchievement,
     QuestAchievement,
-    SectionSummary,
+    TopLevelAchievement,
     expansion_sort_key,
     parse_achievements_file,
+)
+from inventory_parser.heroic_aas import (
+    HeroicAACatalog,
+    load_heroic_aa_catalog,
+    normalize_heroic_name,
 )
 from inventory_parser.team_report import TeamGearReport
 from inventory_parser.parser import parse_inventory_file
@@ -62,12 +67,35 @@ class QuestRow:
     status: str
 
 
+@dataclass(frozen=True)
+class HeroicAARow:
+    character: str
+    expansion: str
+    achievement: str
+    fortitude: int
+    resolution: int
+    vitality: int
+    status: str
+
+
+@dataclass(frozen=True)
+class HeroicAATotal:
+    character: str
+    fortitude: int
+    resolution: int
+    vitality: int
+    completed: int
+    total: int
+
+
 @dataclass
 class AchievementReport:
     missing_collections: list[MissingCollectionRow] = field(default_factory=list)
     raid_achievements: list[RaidAchievementRow] = field(default_factory=list)
     quests: list[QuestRow] = field(default_factory=list)
     summaries: list[AchievementSummaryRow] = field(default_factory=list)
+    heroic_aas: list[HeroicAARow] = field(default_factory=list)
+    heroic_aa_totals: list[HeroicAATotal] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
 
     @property
@@ -77,6 +105,7 @@ class AchievementReport:
             or self.raid_achievements
             or self.quests
             or self.summaries
+            or self.heroic_aas
         )
 
 
@@ -203,6 +232,71 @@ def _sort_quest_rows(rows: list[QuestRow]) -> list[QuestRow]:
     )
 
 
+def _sort_heroic_aa_rows(rows: list[HeroicAARow]) -> list[HeroicAARow]:
+    return sorted(
+        rows,
+        key=lambda row: (
+            expansion_sort_key(row.expansion),
+            row.achievement.casefold(),
+            row.character.casefold(),
+        ),
+    )
+
+
+def _dump_complete_by_name(entries: list[TopLevelAchievement]) -> dict[str, bool]:
+    found: dict[str, bool] = {}
+    for item in entries:
+        key = normalize_heroic_name(item.name)
+        if not key:
+            continue
+        found[key] = found.get(key, False) or item.complete
+    return found
+
+
+def _heroic_aa_rows_from_parse(
+    display_name: str,
+    top_level: list[TopLevelAchievement],
+    catalog: HeroicAACatalog,
+) -> list[HeroicAARow]:
+    dump_status = _dump_complete_by_name(top_level)
+    rows: list[HeroicAARow] = []
+    for entry in catalog.achievements:
+        complete = any(dump_status.get(key, False) for key in entry.match_keys())
+        rows.append(
+            HeroicAARow(
+                character=display_name,
+                expansion=entry.expansion,
+                achievement=entry.name,
+                fortitude=entry.fortitude,
+                resolution=entry.resolution,
+                vitality=entry.vitality,
+                status="Completed" if complete else "Incomplete",
+            )
+        )
+    return rows
+
+
+def _heroic_aa_totals_from_rows(rows: list[HeroicAARow]) -> list[HeroicAATotal]:
+    by_character: dict[str, list[HeroicAARow]] = defaultdict(list)
+    for row in rows:
+        by_character[row.character].append(row)
+    totals: list[HeroicAATotal] = []
+    for character, items in by_character.items():
+        completed_items = [item for item in items if item.status == "Completed"]
+        totals.append(
+            HeroicAATotal(
+                character=character,
+                fortitude=sum(item.fortitude for item in completed_items),
+                resolution=sum(item.resolution for item in completed_items),
+                vitality=sum(item.vitality for item in completed_items),
+                completed=len(completed_items),
+                total=len(items),
+            )
+        )
+    totals.sort(key=lambda row: row.character.casefold())
+    return totals
+
+
 def _quest_rows_from_parse(
     display_name: str,
     quests: list[QuestAchievement],
@@ -238,6 +332,7 @@ def _rows_from_parse(
     list[RaidAchievementRow],
     list[QuestRow],
     list[AchievementSummaryRow],
+    list[HeroicAARow],
 ]:
     missing = [
         MissingCollectionRow(
@@ -266,7 +361,12 @@ def _rows_from_parse(
     ]
     raids = _raid_rows_from_parse(display_name, parsed.missing_raid_achievements)
     quests = _quest_rows_from_parse(display_name, parsed.quest_achievements)
-    return missing, raids, quests, summaries
+    heroic = _heroic_aa_rows_from_parse(
+        display_name,
+        parsed.top_level,
+        load_heroic_aa_catalog(),
+    )
+    return missing, raids, quests, summaries, heroic
 
 
 def build_achievement_report(
@@ -307,7 +407,7 @@ def build_achievement_report(
                 f"Could not read achievements for {character.character}: {exc}"
             )
             continue
-        missing, raids, quests, summaries = _rows_from_parse(
+        missing, raids, quests, summaries, heroic = _rows_from_parse(
             character.character,
             parsed,
             item_holders,
@@ -316,11 +416,14 @@ def build_achievement_report(
         report.raid_achievements.extend(raids)
         report.quests.extend(quests)
         report.summaries.extend(summaries)
+        report.heroic_aas.extend(heroic)
 
     report.raid_achievements = _sort_raid_achievement_rows(report.raid_achievements)
     report.quests = _sort_quest_rows(report.quests)
     report.missing_collections = _sort_missing_collection_rows(report.missing_collections)
     report.summaries = _sort_achievement_summary_rows(report.summaries)
+    report.heroic_aas = _sort_heroic_aa_rows(report.heroic_aas)
+    report.heroic_aa_totals = _heroic_aa_totals_from_rows(report.heroic_aas)
 
     for key, path in achievement_paths.items():
         if key in seen_characters:

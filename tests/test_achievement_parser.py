@@ -27,6 +27,7 @@ from inventory_parser.excel_export import (
     MISSING_COLLECTIONS_SHEET_NAME,
     QUESTS_SHEET_NAME,
     RAID_ACHIEVEMENTS_SHEET_NAME,
+    HEROIC_AA_SHEET_NAME,
     write_team_workbook,
 )
 from inventory_parser.missing_spells import split_input_paths
@@ -396,6 +397,7 @@ def test_achievement_sheets_in_workbook(tmp_path: Path) -> None:
     assert ACHIEVEMENT_SUMMARY_SHEET_NAME in wb.sheetnames
     assert QUESTS_SHEET_NAME in wb.sheetnames
     assert RAID_ACHIEVEMENTS_SHEET_NAME in wb.sheetnames
+    assert HEROIC_AA_SHEET_NAME in wb.sheetnames
     missing_ws = wb[MISSING_COLLECTIONS_SHEET_NAME]
     assert missing_ws.cell(1, 5).value == "Missing Item"
     assert missing_ws.cell(1, 7).value == "Char Has"
@@ -430,6 +432,22 @@ def test_achievement_sheets_in_workbook(tmp_path: Path) -> None:
     )
     assert raid_ws.cell(2, 2).value == EVERQUEST_BASE_LABEL or " (20" in str(raid_ws.cell(2, 2).value)
     assert raid_ws.auto_filter.ref is not None
+    heroic_ws = wb[HEROIC_AA_SHEET_NAME]
+    assert [heroic_ws.cell(1, col).value for col in range(1, 8)] == [
+        "Character",
+        "Expansion",
+        "Achievement",
+        "Fortitude",
+        "Resolution",
+        "Vitality",
+        "Status",
+    ]
+    assert heroic_ws.auto_filter.ref is not None
+    assert any(
+        heroic_ws.cell(row, 3).value == "Savior of The Hero's Forge: Heroes Are Forged"
+        and heroic_ws.cell(row, 7).value == "Completed"
+        for row in range(2, heroic_ws.max_row + 1)
+    )
     assert any(
         missing_ws.cell(row, 5).value == "Strange Black Rock"
         for row in range(2, missing_ws.max_row + 1)

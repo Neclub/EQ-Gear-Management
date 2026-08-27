@@ -95,6 +95,7 @@ MISSING_COLLECTIONS_SHEET_NAME = "Missing Collections"
 ACHIEVEMENT_SUMMARY_SHEET_NAME = "Achievement Summary"
 QUESTS_SHEET_NAME = "Quests"
 RAID_ACHIEVEMENTS_SHEET_NAME = "Raid Achievements"
+HEROIC_AA_SHEET_NAME = "Heroic AA"
 RUNE_INVENTORY_SHEET_NAME = "Rune Inventory"
 MISSING_SPELLS_SHEET_NAME = "Missing Spells"
 MISSING_USEFUL_SPELLS_SHEET_NAME = "Missing Useful Spells"
@@ -168,6 +169,9 @@ def write_team_workbook(
         if achievement_report.raid_achievements:
             ws_raids = wb.create_sheet(RAID_ACHIEVEMENTS_SHEET_NAME)
             _write_raid_achievements_sheet(ws_raids, achievement_report)
+        if achievement_report.heroic_aas:
+            ws_heroic = wb.create_sheet(HEROIC_AA_SHEET_NAME)
+            _write_heroic_aa_sheet(ws_heroic, achievement_report)
 
     if slot2 is not None:
         from inventory_parser.slot2_augs.excel import append_slot2_sheets
@@ -1211,6 +1215,62 @@ def _write_raid_achievements_sheet(ws: Worksheet, report: AchievementReport) -> 
     ws.column_dimensions["D"].width = 28.0
     ws.column_dimensions["E"].width = _COL_ITEM_WIDTH
     ws.column_dimensions["F"].width = 12.0
+    _fill_sheet_padding(
+        ws,
+        content_last_row=last_row,
+        content_last_col=len(headers),
+        pad_rows=max(last_row, SHEET_BACKGROUND_ROWS),
+    )
+
+
+def _write_heroic_aa_sheet(ws: Worksheet, report: AchievementReport) -> None:
+    ws.sheet_properties.tabColor = "5A384A"
+    entries = report.heroic_aas
+    last_row = 1 + len(entries)
+
+    headers = (
+        "Character",
+        "Expansion",
+        "Achievement",
+        "Fortitude",
+        "Resolution",
+        "Vitality",
+        "Status",
+    )
+    for col, header in enumerate(headers, start=1):
+        cell = ws.cell(1, col, header)
+        cell.font = FONT_HEADER
+        cell.fill = FILL_HEADER
+        cell.alignment = _ALIGN_HEADER
+
+    for row_idx, entry in enumerate(entries, start=2):
+        values = (
+            entry.character,
+            format_expansion_label(entry.expansion),
+            entry.achievement,
+            entry.fortitude,
+            entry.resolution,
+            entry.vitality,
+            entry.status,
+        )
+        row_fill = FILL_SPELL_DETAIL if row_idx % 2 == 0 else FILL_SPELL_DETAIL_ALT
+        for col, value in enumerate(values, start=1):
+            cell = ws.cell(row_idx, col, value)
+            cell.font = FONT_BODY
+            cell.fill = row_fill
+            cell.alignment = _ALIGN if col <= 3 else _ALIGN_CENTER
+
+    if entries:
+        ws.auto_filter.ref = f"A1:G{1 + len(entries)}"
+        ws.freeze_panes = ws.cell(2, 1).coordinate
+
+    ws.column_dimensions["A"].width = _COL_SPELL_CHAR
+    ws.column_dimensions["B"].width = 22.0
+    ws.column_dimensions["C"].width = _COL_ITEM_WIDTH
+    ws.column_dimensions["D"].width = 12.0
+    ws.column_dimensions["E"].width = 12.0
+    ws.column_dimensions["F"].width = 12.0
+    ws.column_dimensions["G"].width = 14.0
     _fill_sheet_padding(
         ws,
         content_last_row=last_row,

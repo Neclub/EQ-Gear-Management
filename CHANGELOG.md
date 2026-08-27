@@ -6,6 +6,13 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.0] - 2026-08-27
+
+### Added
+
+- **Heroic AA tab:** Quests & Achievements now includes **Heroic AA** (HTML and Excel), matching the Fanra wiki list to `/outputfile achievements` dumps. Totals show Hero's Fortitude, Resolution, and Vitality ranks, with All / Completed / Incomplete and character filters. Hover **F** / **R** / **V** chips for Fortitude, Resolution, and Vitality.
+- **Type 5 Augs — Vanquisher labels:** Expansion-wide Vanquisher reward augs (Master's Curio, Divine Medallion, Mythic Charm, Defiant Claw, Arcane Tome) show short Expansion labels (`Vanq ToL`, `Vanq NoS`, `Vanq LS`, `Vanq ToB`, `Vanq SoR`) linked to the achievement page in HTML and Excel.
+
 ## [1.34.11] - 2026-08-26
 
 ### Added

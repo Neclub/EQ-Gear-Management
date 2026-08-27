@@ -255,6 +255,14 @@ Incomplete **raid** lines from each expansion’s **Raids** section. Fully compl
 
 Expansions show release year (e.g. `Shattering of Ro (2025)`) and rows are sorted **newest to oldest**. In HTML, **Character**, **Expansion**, and **Event** dropdowns narrow the list (expansion defaults to the current expansion; Event options follow the selected expansion).
 
+### Heroic AA *(if enabled)*
+
+Ranks of **Hero's Fortitude**, **Hero's Resolution**, and **Hero's Vitality** from completing the wiki list of Hero's Special AAs. Each `/outputfile achievements` dump is compared to that list (in-game names, with wiki aliases). Incomplete entries stay listed so you can see what is left.
+
+**Excel columns:** Character · Expansion · Achievement · Fortitude · Resolution · Vitality · Status (`Completed` / `Incomplete`)
+
+**HTML:** a totals banner (Fortitude / Resolution / Vitality / achievements completed) and an expansion-grouped list with F / R / V chips. Hover a total for the AA’s effect; hover **F** / **R** / **V** for Fortitude, Resolution, and Vitality. **Character**, **Expansion**, and **Achievements** (All / Completed / Incomplete) filters apply. Credit links to Fanra’s wiki.
+
 ### Type 7/8 Augs *(if enabled)*
 
 Type 7/8 (usually inventory Slot2) recommendations vs an EQ Resource catalog (raidloot fallback). Only augs that **fit type 7/8 holes** are recommended (type 5 and similar are excluded). Artisan's Prize is treated as owned when it appears in the inventory file. If **Velium Empowered Gem of Freezing** is equipped, it is kept and assigned to the legal slot with the best weighted trade-off against other BiS augs. Scoring uses class weights: tanks AC then HDex; melee HDex; priests (CLR, SHM) HWis; INT casters Spell Damage. **DRU** ranks Spell Damage first (weight 9) with HWis as a secondary (weight 1). Override for one character under **Advanced weights**. Excel adds **Stat Summary**, **Augs**, **Need to Farm**, **Ranked Augs**, and **Aug Legend**. HTML adds a **Type 7/8 Augs** section with the same cards. Needs a network fetch the first time; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache instead of re-querying EQ Resource. Uncheck the chip to skip this entirely.
@@ -265,7 +273,7 @@ When a recommended aug still needs a Focus of Fortitude (Unraveling, Otherworldl
 
 ### Type 5 Augs *(if enabled)*
 
-Display-only list of what is in each type 5 hole (often inventory Slot2 on current gear, but the dump SlotN comes from the parent item’s socket map). Empty holes show as **Empty**. Columns include **Expansion** (from EQ Resource) and heroic stats (HStr through HCha) when an aug is equipped. No BiS or farm suggestions — preference only. Excel adds a **Type 5 Augs** sheet; HTML adds a **Type 5 Augs** section with **one card per character** (same gold nameplate and class badge as Raid BiS), a **Character** filter (All or one character), clickable column headers to sort, and a link to the [EQ Resource Type 5 list](https://items.eqresource.com/itemsearch.php?searchid=481762). Uncheck the chip to skip.
+Display-only list of what is in each type 5 hole (often inventory Slot2 on current gear, but the dump SlotN comes from the parent item’s socket map). Empty holes show as **Empty**. Columns include **Expansion** (from EQ Resource) and heroic stats (HStr through HCha) when an aug is equipped. Vanquisher raid-achievement augs (from Terror of Luclin onward) show a short Expansion label instead — e.g. `Vanq ToL`, `Vanq NoS`, `Vanq LS`, `Vanq ToB`, `Vanq SoR` — linked to the achievement page (hover shows the full Vanquisher title). No BiS or farm suggestions — preference only. Excel adds a **Type 5 Augs** sheet; HTML adds a **Type 5 Augs** section with **one card per character** (same gold nameplate and class badge as Raid BiS), a **Character** filter (All or one character), clickable column headers to sort, and a link to the [EQ Resource Type 5 list](https://items.eqresource.com/itemsearch.php?searchid=481762). Uncheck the chip to skip.
 
 ### Type 18/19 Augs *(if enabled — work in progress)*
 
@@ -302,7 +310,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook), grouped
 - **Gear** — Team Gear, Gear T-Level, Raid BiS, Unmade Gear
 - **Spells** — Missing Spells, Missing Useful Spells, Missing Runes, Rune Inventory
 - **Augs** — Type 7/8 Augs, Type 5 Augs, Type 18/19 Augs (each when that chip is on)
-- **Quests & Achievements** — Missing Collections, Quests, Raid Achievements, Achievement Summary
+- **Quests & Achievements** — Missing Collections, Quests, Raid Achievements, Heroic AA, Achievement Summary
 
 **Filters & tools**
 
@@ -316,6 +324,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook), grouped
 | **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells**, **Missing Useful Spells**, and achievement tables by expansion (full name plus year; defaults to the **current expansion** on first open for achievements); on **Missing Runes** and **Rune Inventory**, filter to one expansion / rune family |
 | **Zone** | Toolbar (Quests) | Filter Mercenary/Partisan rows to one zone (options follow the current Expansion filter) |
 | **Event** | Toolbar (Raid Achievements) | Filter raid cards to one event (e.g. Echo of Hate). Options follow the current Expansion filter |
+| **Achievements** | Toolbar (Heroic AA) | All / Completed / Incomplete |
 | **Sort** | Toolbar (Missing Runes) | Reorder character columns: roster order, name, class, or most missing (uses the Expansion filter when one is selected) |
 | **Column headers** | Table | Click to sort |
 | **Missing Item** | Missing Collections | Hover the header for a copy reminder; click an item name to copy it |
