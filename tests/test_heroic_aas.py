@@ -8,7 +8,11 @@ from inventory_parser.achievement_report import (
     _heroic_aa_totals_from_rows,
     build_achievement_report,
 )
-from inventory_parser.heroic_aas import load_heroic_aa_catalog, normalize_heroic_name
+from inventory_parser.heroic_aas import (
+    heroic_aa_eqresource_url,
+    load_heroic_aa_catalog,
+    normalize_heroic_name,
+)
 from inventory_parser.team_report import build_team_report
 
 EXAMPLES = Path(__file__).resolve().parents[1] / "Examples"
@@ -27,6 +31,23 @@ def test_catalog_totals() -> None:
     assert sum(item.vitality for item in catalog.achievements) == 114
     assert catalog.credit_url.startswith("https://everquest.fanra.info/")
     assert any(ability.id == "fortitude" for ability in catalog.abilities)
+
+
+def test_catalog_eqresource_ids() -> None:
+    catalog = load_heroic_aa_catalog()
+    adept = next(
+        item
+        for item in catalog.achievements
+        if item.name == "Adept Hunter of The Ring of Scale"
+    )
+    assert adept.eqresource_id == 2500090
+    assert adept.eqresource_url == (
+        "https://achievements.eqresource.com/achievements.php?id=2500090"
+    )
+    assert all(item.eqresource_id for item in catalog.achievements)
+    assert heroic_aa_eqresource_url("Adept Hunter of The Ring of Scale") == (
+        "https://achievements.eqresource.com/achievements.php?id=2500090"
+    )
 
 
 def test_normalize_heroic_name_apostrophe_and_colon() -> None:
@@ -125,3 +146,46 @@ def test_html_skips_chips_for_unawarded_ranks() -> None:
     html = read_data_text("team_report.html")
     assert "if (!awarded) return;" in html
     assert 'done ? "heroic-chip on" : "heroic-chip"' in html
+    assert 'a.target = "_blank"' in html
+    assert 'a.rel = "noopener noreferrer"' in html
+
+
+def test_html_serialize_heroic_aa_links() -> None:
+    from dataclasses import replace
+
+    from inventory_parser.achievement_report import build_achievement_report
+    from inventory_parser.export_bundle import build_export_bundle
+    from inventory_parser.html_export import serialize_report
+
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    bundle = build_export_bundle(
+        [inv],
+        include_spells=False,
+        include_achievements=False,
+        include_slot2=False,
+    )
+    ach_report = build_achievement_report(
+        bundle.team,
+        achievement_paths={"shamlub_bristle": SHAMLUB_ACH},
+    )
+    assert ach_report is not None
+    bundle = replace(bundle, achievement_report=ach_report)
+    report = serialize_report(bundle)
+    heroic = next(s for s in report["sections"] if s["id"] == "heroic_aas")
+    linked = next(
+        row[2]
+        for row in heroic["data"]["rows"]
+        if isinstance(row[2], dict)
+        and row[2].get("text") == "Adept Hunter of The Ring of Scale"
+    )
+    assert linked["url"].endswith("achievements.php?id=2500090")
+    forged = next(
+        row
+        for row in heroic["data"]["rows"]
+        if isinstance(row[2], dict)
+        and row[2].get("text") == "Savior of The Hero's Forge: Heroes Are Forged"
+        and row[6] == "Completed"
+    )
+    assert forged[2]["url"].startswith(
+        "https://achievements.eqresource.com/achievements.php?id="
+    )

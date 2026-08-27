@@ -1247,6 +1247,8 @@ def _write_heroic_aa_sheet(ws: Worksheet, report: AchievementReport) -> None:
         """Blank when the achievement does not award that AA rank."""
         return value if value else ""
 
+    from inventory_parser.heroic_aas import heroic_aa_eqresource_url
+
     for row_idx, entry in enumerate(entries, start=2):
         values = (
             entry.character,
@@ -1263,6 +1265,8 @@ def _write_heroic_aa_sheet(ws: Worksheet, report: AchievementReport) -> None:
             cell.font = FONT_BODY
             cell.fill = row_fill
             cell.alignment = _ALIGN if col <= 3 else _ALIGN_CENTER
+            if col == 3:
+                _apply_url_link(cell, heroic_aa_eqresource_url(entry.achievement))
 
     if entries:
         ws.auto_filter.ref = f"A1:G{1 + len(entries)}"

@@ -349,7 +349,10 @@ def _serialize_table(
 
 
 def _serialize_heroic_aas(ach) -> dict:
-    from inventory_parser.heroic_aas import load_heroic_aa_catalog
+    from inventory_parser.heroic_aas import (
+        heroic_aa_eqresource_url,
+        load_heroic_aa_catalog,
+    )
 
     catalog = load_heroic_aa_catalog()
     expansion_labels = []
@@ -402,7 +405,10 @@ def _serialize_heroic_aas(ach) -> dict:
             [
                 row.character,
                 format_expansion_label(row.expansion),
-                row.achievement,
+                _spell_name_cell(
+                    row.achievement,
+                    heroic_aa_eqresource_url(row.achievement) or "",
+                ),
                 row.fortitude,
                 row.resolution,
                 row.vitality,

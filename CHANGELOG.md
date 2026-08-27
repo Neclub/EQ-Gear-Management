@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.2] - 2026-08-27
+
+### Added
+
+- **Heroic AA EQ Resource links:** Achievement names in the Heroic AA HTML tab and Excel sheet link to their EQ Resource achievement page when the catalog has an id.
+
 ## [1.35.1] - 2026-08-27
 
 ### Changed

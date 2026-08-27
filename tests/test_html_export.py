@@ -229,9 +229,23 @@ def test_html_achievement_expansion_labels(tmp_path: Path) -> None:
     assert heroic["data"]["maxResolution"] == 57
     assert heroic["data"]["maxVitality"] == 114
     assert heroic["data"]["statusColumn"] == 6
-    assert any(row[2] == "Savior of The Hero's Forge: Heroes Are Forged" and row[6] == "Completed" for row in heroic["data"]["rows"])
-    assert any(row[2] == "Savior of West Karana (Ethernere)" and row[6] == "Incomplete" for row in heroic["data"]["rows"])
+    assert any(
+        isinstance(row[2], dict)
+        and row[2].get("text") == "Savior of The Hero's Forge: Heroes Are Forged"
+        and row[2].get("url", "").startswith(
+            "https://achievements.eqresource.com/achievements.php?id="
+        )
+        and row[6] == "Completed"
+        for row in heroic["data"]["rows"]
+    )
+    assert any(
+        isinstance(row[2], dict)
+        and row[2].get("text") == "Savior of West Karana (Ethernere)"
+        and row[6] == "Incomplete"
+        for row in heroic["data"]["rows"]
+    )
     assert "function updateHeroicAasContent" in text
+    assert 'a.rel = "noopener noreferrer"' in text
     assert "All" in text
     assert "chip.title = chipTips[letter]" in text
     assert 'F: labelOf("fortitude", "Hero\'s Fortitude")' in text

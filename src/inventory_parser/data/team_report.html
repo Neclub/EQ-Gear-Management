@@ -2797,7 +2797,19 @@ function updateHeroicAasContent(content, section) {
         const done = String(row[6] || "") === "Completed";
         const line = el("div", done ? "heroic-row" : "heroic-row incomplete");
         const nameWrap = el("div", "heroic-row-name");
-        nameWrap.appendChild(el("div", null, String(row[2] || "")));
+        const achievement = row[2];
+        const nameEl = el("div", null, "");
+        if (achievement && typeof achievement === "object" && achievement.url) {
+          const a = document.createElement("a");
+          a.href = achievement.url;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.textContent = String(achievement.text || "");
+          nameEl.appendChild(a);
+        } else {
+          nameEl.textContent = cellPlainText(achievement);
+        }
+        nameWrap.appendChild(nameEl);
         if (selectedTotals.length !== 1) {
           nameWrap.appendChild(el("div", "heroic-row-meta", String(row[0] || "")));
         }

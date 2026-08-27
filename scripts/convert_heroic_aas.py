@@ -131,6 +131,59 @@ def _flag(value: object) -> int:
     return 1 if text in {"f", "r", "v", "1"} else 0
 
 
+def _existing_eqresource_ids(path: Path) -> dict[str, int]:
+    """Preserve EQ Resource ids across spreadsheet refreshes."""
+    if not path.is_file():
+        return {}
+    try:
+        from inventory_parser.heroic_aas import normalize_heroic_name
+    except ImportError:
+        # Allow running the script without an editable install.
+        import sys
+
+        sys.path.insert(0, str(ROOT / "src"))
+        from inventory_parser.heroic_aas import normalize_heroic_name
+
+    data = json.loads(path.read_text(encoding="utf-8"))
+    out: dict[str, int] = {}
+    for raw in data.get("achievements") or []:
+        if not isinstance(raw, dict):
+            continue
+        eid = raw.get("eqresource_id")
+        try:
+            value = int(eid)
+        except (TypeError, ValueError):
+            continue
+        if value <= 0:
+            continue
+        for label in (raw.get("name"), *(raw.get("aliases") or [])):
+            if not isinstance(label, str) or not label.strip():
+                continue
+            out[normalize_heroic_name(label)] = value
+    return out
+
+
+def _apply_preserved_eqresource_ids(payload: dict, existing: dict[str, int]) -> None:
+    if not existing:
+        return
+    try:
+        from inventory_parser.heroic_aas import normalize_heroic_name
+    except ImportError:
+        import sys
+
+        sys.path.insert(0, str(ROOT / "src"))
+        from inventory_parser.heroic_aas import normalize_heroic_name
+
+    for entry in payload.get("achievements") or []:
+        keys = [normalize_heroic_name(entry.get("name", ""))]
+        for alias in entry.get("aliases") or []:
+            keys.append(normalize_heroic_name(alias))
+        for key in keys:
+            if key and key in existing:
+                entry["eqresource_id"] = existing[key]
+                break
+
+
 def convert_workbook(xlsx_path: Path) -> dict:
     wb = load_workbook(xlsx_path, data_only=True)
     try:
@@ -197,6 +250,7 @@ def main(argv: list[str] | None = None) -> int:
         raise SystemExit(f"Input not found: {args.input}")
 
     payload = convert_workbook(args.input)
+    _apply_preserved_eqresource_ids(payload, _existing_eqresource_ids(args.output))
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(
         json.dumps(payload, indent=2, ensure_ascii=False) + "\n",

@@ -446,7 +446,18 @@ def test_achievement_sheets_in_workbook(tmp_path: Path) -> None:
     assert any(
         heroic_ws.cell(row, 3).value == "Savior of The Hero's Forge: Heroes Are Forged"
         and heroic_ws.cell(row, 7).value == "Completed"
+        and heroic_ws.cell(row, 3).hyperlink is not None
+        and "achievements.eqresource.com/achievements.php?id="
+        in str(heroic_ws.cell(row, 3).hyperlink.target)
         for row in range(2, heroic_ws.max_row + 1)
+    )
+    adept = next(
+        row
+        for row in range(2, heroic_ws.max_row + 1)
+        if heroic_ws.cell(row, 3).value == "Adept Hunter of The Ring of Scale"
+    )
+    assert heroic_ws.cell(adept, 3).hyperlink.target == (
+        "https://achievements.eqresource.com/achievements.php?id=2500090"
     )
     colossus = next(
         row

@@ -18,3 +18,6 @@ desktop.ini
 
 # Local coding dumps only — never publish
 Examples/
+
+# Local scrape cache for Heroic AA EQ Resource id lookup
+scripts/_eqr_achievement_index.json

@@ -257,11 +257,11 @@ Expansions show release year (e.g. `Shattering of Ro (2025)`) and rows are sorte
 
 ### Heroic AA *(if enabled)*
 
-Ranks of **Hero's Fortitude**, **Hero's Resolution**, and **Hero's Vitality** from completing the wiki list of Hero's Special AAs. Each `/outputfile achievements` dump is compared to that list (in-game names, with wiki aliases). Incomplete entries stay listed so you can see what is left. Not every achievement awards all three ranks — HTML only shows F / R / V chips for ranks that achievement grants (lit when Completed, muted when still Incomplete); Excel leaves Fortitude / Resolution / Vitality blank when that rank is not awarded.
+Ranks of **Hero's Fortitude**, **Hero's Resolution**, and **Hero's Vitality** from completing the wiki list of Hero's Special AAs. Each `/outputfile achievements` dump is compared to that list (in-game names, with wiki aliases). Incomplete entries stay listed so you can see what is left. Not every achievement awards all three ranks — HTML only shows F / R / V chips for ranks that achievement grants (lit when Completed, muted when still Incomplete); Excel leaves Fortitude / Resolution / Vitality blank when that rank is not awarded. Achievement names link to [EQ Resource](https://achievements.eqresource.com/) when the catalog includes an id.
 
 **Excel columns:** Character · Expansion · Achievement · Fortitude · Resolution · Vitality · Status (`Completed` / `Incomplete`)
 
-**HTML:** a totals banner (Fortitude / Resolution / Vitality / achievements completed) and an expansion-grouped list with F / R / V chips. Hover a total for the AA’s effect; hover **F** / **R** / **V** for Fortitude, Resolution, and Vitality. **Character**, **Expansion**, and **Achievements** (All / Completed / Incomplete) filters apply. Credit links to Fanra’s wiki.
+**HTML:** a totals banner (Fortitude / Resolution / Vitality / achievements completed) and an expansion-grouped list with F / R / V chips. Hover a total for the AA’s effect; hover **F** / **R** / **V** for Fortitude, Resolution, and Vitality. Click an achievement name to open EQ Resource. **Character**, **Expansion**, and **Achievements** (All / Completed / Incomplete) filters apply. Credit links to Fanra’s wiki.
 
 ### Type 7/8 Augs *(if enabled)*
 
