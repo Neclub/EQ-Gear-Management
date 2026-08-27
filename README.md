@@ -4,7 +4,7 @@
 
 # EQ Gear Management (EQGM)
 
-Turn EverQuest inventory output files into a team **Excel workbook** and optional **HTML report** — equipped gear, tier levels, unmade craft mats, runes, spells, achievements, optional Type 7/8 aug recommendations, Type 5 aug display, Type 18/19 class suggestions, and current-expansion Raid BiS.
+Turn EverQuest inventory output files into a team **Excel workbook** and optional **HTML report** covering **Gear**, **Spells**, **Augs**, and **Quests & Achievements**.
 
 Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
 
@@ -52,18 +52,35 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 
 ### What you get
 
+Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet. HTML is the same data in a browser — searchable and filterable, with a collapsible sidebar grouped like the sections below. Character filter chips show each name and class; the title graphic shows character count, generated date, and EQGM version. Type 7/8, Type 5, Type 18/19, and Raid BiS catalogs reuse disk cache after the first fetch.
+
+#### Gear *(inventory files)*
+
 - **Team Gear** — equipped items by slot, color-coded by tier
 - **Gear T-Level** — expansion tier codes per slot (unknown items looked up on EQ Resource); codes link to the item, hover for the name
 - **Unmade Gear** — raid craft mats and T1 containers still sitting in bags
-- **Missing Runes / Spells / Useful Spells** — from MissingSpells output files, including spells that were never purchased; spell names link to EQ Resource; HTML Missing Runes can sort columns (roster, name, class, most missing) and filter by expansion
-- **Rune Inventory** — raid runes on hand
-- **Achievements** — collections, Mercenary/Partisan quests, raid progress, and **Heroic AA** ranks (from achievement output files). Collection **Zone** comes from a `(Zone)` suffix or a `{Zone} Scavenger` grouping; in HTML, click a missing item name to copy it, hover **F** / **R** / **V** on Heroic AA for Fortitude, Resolution, and Vitality, and click a Heroic AA name to open EQ Resource
-- **Type 7/8 Augs** — optional type 7/8 recommendations (on by default); ranked by class weights (**DRU** Spell Damage first, then HWis); only augs that fit type 7/8 holes; equipped Velium Empowered Gem of Freezing is kept as a must-have; if an aug should move to another slot, **Upgrade to** lists the replacement for the hole it leaves; catalog reuses disk cache after the first fetch
-- **Type 5 Augs** — optional display of equipped type 5 augs and Empty holes (on by default); expansion + heroic stats; Vanquisher rewards use short labels (`Vanq ToL`, `Vanq NoS`, etc.) linked to the achievement; sortable HTML columns; no upgrade suggestions; link to the EQ Resource Type 5 list
-- **Type 18/19 Augs** — *(work in progress)* optional per-class suggestions from the Zarax cheat sheet (on by default); pick a character to set class and see **Owned** for that inventory (with gear-slot chip when equipped); **Alternative** shows Owned + slot when equipped, otherwise the craft anvil; top unused Fortifications append to Optional; Enhancement augs under **Filler**; anniversary picks (Jubilation / Enduring Harmony) marked on the item name with non-anniversary alternatives; catalog reuses disk cache after the first fetch; full catalog view still available
-- **Raid BiS** — optional current-expansion raid T1/T2 armor and jewelry vs equipped gear (on by default); Evolvers still get a Best in slot pick but are skipped for coin purchases (magenta gem on hover); gold nameplate and Character filter; enter raid coins to highlight the best vendor upgrade; catalog reuses disk cache after the first fetch
-- **Excel workbook** — dark theme on every sheet (shared headers, status colors, and chrome)
-- **HTML report** — the same data in a browser, searchable and filterable, with collapsible sidebar groups (Gear, Spells, Augs, Quests & Achievements); Character filter chips show each name and class; the title graphic shows character count, generated date, and EQGM version
+- **Raid BiS** — optional current-expansion raid T1/T2 armor and jewelry vs equipped gear (on by default). Evolvers still get a Best in slot pick but are skipped for coin purchases (magenta gem on hover). Gold nameplate and Character filter. Enter raid coins to highlight the best vendor upgrade.
+
+#### Spells *(MissingSpells files; Rune Inventory also uses bags)*
+
+- **Missing Runes** — Minor / Lesser / Median / Greater / Glowing runes still needed, by spell expansion. HTML can sort columns (roster, name, class, most missing) and filter by expansion
+- **Missing Spells** — missing Rk. III spells at 121–130, including spells that were never purchased; names link to EQ Resource
+- **Missing Useful Spells** — Raccoo’s useful list still in the MissingSpells file (all levels)
+- **Rune Inventory** — raid runes on hand in bags, bank, and shared bank
+
+#### Augs *(optional; on by default)*
+
+- **Type 7/8 Augs** — recommendations ranked by class weights (**DRU** Spell Damage first, then HWis); only augs that fit type 7/8 holes; equipped Velium Empowered Gem of Freezing is kept as a must-have; if an aug should move to another slot, **Upgrade to** lists the replacement for the hole it leaves
+- **Type 5 Augs** — equipped type 5 augs and Empty holes; expansion + heroic stats; Vanquisher rewards use short labels (`Vanq ToL`, `Vanq NoS`, etc.) linked to the achievement; sortable HTML columns; no upgrade suggestions; link to the EQ Resource Type 5 list
+- **Type 18/19 Augs** — *(work in progress)* per-class suggestions from the Zarax cheat sheet. Pick a character to set class and see **Owned** (with a gear-slot chip when equipped). **Alternative** shows Owned + slot when equipped, otherwise the craft anvil. Unused Fortifications append to Optional; Enhancement augs under **Filler**. Anniversary picks (Jubilation / Enduring Harmony) marked on the item name with non-anniversary alternatives. Full catalog view still available.
+
+#### Quests & Achievements *(achievement files)*
+
+- **Missing Collections** — incomplete collection items; **Zone** from a `(Zone)` suffix or a `{Zone} Scavenger` grouping; in HTML, click a missing item name to copy it
+- **Quests** — unfinished Mercenary and Partisan zone quest lines
+- **Raid Achievements** — incomplete raid event objectives
+- **Heroic AA** — Fortitude / Resolution / Vitality ranks; hover **F** / **R** / **V**; click a name to open EQ Resource
+- **Achievement Summary** — completed vs incomplete counts per section
 
 For file naming, Alternate Personas, reading each sheet, and troubleshooting, see **[HowToUse.md](HowToUse.md)**.
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="EQ Gear Management (EQGM) — turn EverQuest inventory output files into team Excel and HTML reports for gear, runes, spells, achievements, augs, and Raid BiS.">
+  <meta name="description" content="EQ Gear Management (EQGM) — turn EverQuest inventory output files into team Excel and HTML reports covering Gear, Spells, Augs, and Quests & Achievements.">
   <title>EQGM — EQ Gear Management</title>
   <link rel="icon" type="image/png" href="img/eqgm-icon.png">
   <link rel="apple-touch-icon" href="img/eqgm-icon.png">
@@ -208,10 +208,38 @@
 
     .section-lead {
       margin: 0 auto 28px;
-      max-width: 36em;
+      max-width: 42em;
       text-align: center;
       color: var(--muted);
       font-size: 0.95rem;
+    }
+
+    .report-group {
+      margin-top: 40px;
+    }
+
+    .report-group:first-of-type {
+      margin-top: 0;
+    }
+
+    .report-group-heading {
+      margin: 0 0 18px;
+      text-align: center;
+    }
+
+    .report-group-heading h3 {
+      margin: 0 0 6px;
+      font-family: Cinzel, "Times New Roman", serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--gold);
+    }
+
+    .report-group-heading p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--muted);
     }
 
     .features {
@@ -293,7 +321,8 @@
         0 0 0 1px var(--gold-soft);
     }
 
-    .card h3 {
+    .card h3,
+    .card h4 {
       margin: 0;
       font-size: 1.1rem;
       font-weight: 600;
@@ -519,7 +548,7 @@
       <img class="intro-logo" src="img/eqgm-icon.png" alt="" width="128" height="128">
       <h1>EQ Gear Management</h1>
       <p class="tagline">
-        A Windows program for EverQuest Live that reads team inventory dumps and builds one report you can open in Excel or your browser — gear, tiers, runes, spells, achievements, augs, and Raid BiS.
+        A Windows program for EverQuest Live that reads team inventory dumps and builds one report you can open in Excel or your browser — Gear, Spells, Augs, and Quests &amp; Achievements.
       </p>
       <p class="audience">
         EverQuest Live only (not TLP or progression). Tracking goes back to Laurion’s Song. Windows 10/11 — no Python install needed.
@@ -594,53 +623,107 @@
 
       <section class="section" aria-labelledby="report-heading">
         <h2 id="report-heading" class="section-title">What the report shows</h2>
-        <p class="section-lead">Generate Excel, HTML, or both. The HTML report opens in your browser and is easy to search and filter.</p>
-        <div class="cards">
-          <article class="card">
-            <h3>Team Gear</h3>
-            <p>Equipped items by slot for the whole team. Item names are color-coded by gear tier so outdated pieces stand out at a glance.</p>
-          </article>
-          <article class="card">
-            <h3>Gear T-Level</h3>
-            <p>Same layout as Team Gear, but shows tier codes per slot (for example SOR-R2) instead of item names. Codes link to EQ Resource; hover a cell to see the item name.</p>
-          </article>
-          <article class="card">
-            <h3>Unmade Gear</h3>
-            <p>Raid craft mats and T1 containers still sitting in bags — visible even when that slot is already geared.</p>
-          </article>
-          <article class="card">
-            <h3>Missing Runes &amp; Spells</h3>
-            <p>Who still needs spell runes, which spells are missing (including spells that were never purchased), and which of those are the most useful ones to prioritize. Spell names link to EQ Resource.</p>
-          </article>
-          <article class="card">
-            <h3>Rune Inventory</h3>
-            <p>Raid runes already on hand in bags, bank, or shared bank across the roster.</p>
-          </article>
-          <article class="card">
-            <h3>Collections, Quests &amp; Achievements</h3>
-            <p>Incomplete collections, Mercenary/Partisan quests, raid achievement progress, and Heroic AA ranks (Fortitude / Resolution / Vitality) — with checklists in the HTML report. Hover F / R / V on Heroic AA for those names; click a Heroic AA name to open EQ Resource. Collection zone comes from a (Zone) suffix or a {Zone} Scavenger grouping; click a missing item name to copy it.</p>
-          </article>
-          <article class="card">
-            <h3>Type 7/8 Augs</h3>
-            <p>Suggested type 7/8 augs to wear or farm, filtered to holes that can take them and ranked by class weights (DRU uses Spell Damage first, then HWis). When an aug should move to another slot, Upgrade to lists the replacement for the hole it leaves. Hover Slot recommendations for a reminder that these are suggestions. Need/Have Focus chips link to EQ Resource. Catalog reuses disk cache after the first fetch.</p>
-          </article>
-          <article class="card">
-            <h3>Type 5 Augs</h3>
-            <p>Display of equipped type 5 augs and empty holes, with expansion and heroic stats. Vanquisher raid rewards use short Expansion labels (Vanq ToL, Vanq NoS, Vanq LS, Vanq ToB, Vanq SoR) linked to the achievement. Preference only — no upgrade suggestions.</p>
-          </article>
-          <article class="card">
-            <h3>Type 18/19 Augs <span style="font-weight:500;color:var(--muted);font-size:0.85em">(WIP)</span></h3>
-            <p>Work in progress. Per-class Primary / Optional / Filler suggestions from the Zarax cheat sheet plus the full EQ Resource catalog. Pick a character to set class and see which suggested augs that character owns, including the gear slot when an aug is currently equipped. Alternatives show Owned plus slot when equipped, otherwise a craft anvil. Catalog reuses disk cache after the first fetch. Anniversary augs (Jubilation / Enduring Harmony) are marked on the item name.</p>
-          </article>
-          <article class="card">
-            <h3>Raid BiS</h3>
-            <p>Current-expansion raid T1/T2 armor and jewelry vs what you wear. Enter raid coins to highlight the best vendor upgrade. Evolvers still show a BiS pick but are skipped for coin spending. Catalog reuses disk cache after the first fetch.</p>
-          </article>
-          <article class="card">
-            <h3>HTML Report</h3>
-            <p>The same data in a searchable, filterable browser page with character filter chips that show each name and class, links out to EQ Resource, and a sidebar that groups tabs under Gear, Spells, Augs, and Quests &amp; Achievements.</p>
-          </article>
-        </div>
+        <p class="section-lead">Choose Excel, HTML, or both. Excel uses a dark theme on every sheet. HTML is the same data in a browser — searchable and filterable, with a collapsible sidebar grouped like the sections below. Character filter chips show each name and class. Type 7/8, Type 5, Type 18/19, and Raid BiS catalogs reuse disk cache after the first fetch.</p>
+
+        <section class="report-group" aria-labelledby="report-gear">
+          <div class="report-group-heading">
+            <h3 id="report-gear">Gear</h3>
+            <p>From inventory files</p>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <h4>Team Gear</h4>
+              <p>Equipped items by slot for the whole team. Item names are color-coded by gear tier so outdated pieces stand out at a glance.</p>
+            </article>
+            <article class="card">
+              <h4>Gear T-Level</h4>
+              <p>Same layout as Team Gear, but shows tier codes per slot (for example SOR-R2) instead of item names. Codes link to EQ Resource; hover a cell to see the item name.</p>
+            </article>
+            <article class="card">
+              <h4>Unmade Gear</h4>
+              <p>Raid craft mats and T1 containers still sitting in bags — visible even when that slot is already geared.</p>
+            </article>
+            <article class="card">
+              <h4>Raid BiS</h4>
+              <p>Current-expansion raid T1/T2 armor and jewelry vs what you wear. Enter raid coins to highlight the best vendor upgrade. Evolvers still show a BiS pick but are skipped for coin spending. Gold nameplate and Character filter.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="report-group" aria-labelledby="report-spells">
+          <div class="report-group-heading">
+            <h3 id="report-spells">Spells</h3>
+            <p>From MissingSpells files; Rune Inventory also uses bags</p>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <h4>Missing Runes</h4>
+              <p>How many Minor / Lesser / Median / Greater / Glowing runes each character still needs, grouped by spell expansion. HTML can sort columns (roster, name, class, most missing) and filter by expansion.</p>
+            </article>
+            <article class="card">
+              <h4>Missing Spells</h4>
+              <p>Missing Rk. III spells at 121–130, including spells that were never purchased. Spell names link to EQ Resource.</p>
+            </article>
+            <article class="card">
+              <h4>Missing Useful Spells</h4>
+              <p>Useful spells from Raccoo’s curated list that still appear in each MissingSpells file — all levels, not just 121–130. Names link to EQ Resource.</p>
+            </article>
+            <article class="card">
+              <h4>Rune Inventory</h4>
+              <p>Raid runes already on hand in bags, bank, or shared bank across the roster.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="report-group" aria-labelledby="report-augs">
+          <div class="report-group-heading">
+            <h3 id="report-augs">Augs</h3>
+            <p>Optional; on by default</p>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <h4>Type 7/8 Augs</h4>
+              <p>Suggested type 7/8 augs to wear or farm, filtered to holes that can take them and ranked by class weights (DRU uses Spell Damage first, then HWis). When an aug should move to another slot, Upgrade to lists the replacement for the hole it leaves. Hover Slot recommendations for a reminder that these are suggestions. Need/Have Focus chips link to EQ Resource.</p>
+            </article>
+            <article class="card">
+              <h4>Type 5 Augs</h4>
+              <p>Display of equipped type 5 augs and empty holes, with expansion and heroic stats. Vanquisher raid rewards use short Expansion labels (Vanq ToL, Vanq NoS, Vanq LS, Vanq ToB, Vanq SoR) linked to the achievement. Preference only — no upgrade suggestions. Link to the EQ Resource Type 5 list.</p>
+            </article>
+            <article class="card">
+              <h4>Type 18/19 Augs <span style="font-weight:500;color:var(--muted);font-size:0.85em">(WIP)</span></h4>
+              <p>Work in progress. Per-class Primary / Optional / Filler suggestions from the Zarax cheat sheet plus the full EQ Resource catalog. Pick a character to set class and see which suggested augs that character owns, including the gear slot when an aug is currently equipped. Alternatives show Owned plus slot when equipped, otherwise a craft anvil. Anniversary augs (Jubilation / Enduring Harmony) are marked on the item name.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="report-group" aria-labelledby="report-quests">
+          <div class="report-group-heading">
+            <h3 id="report-quests">Quests &amp; Achievements</h3>
+            <p>From achievement files</p>
+          </div>
+          <div class="cards">
+            <article class="card">
+              <h4>Missing Collections</h4>
+              <p>Incomplete collection items. Zone comes from a (Zone) suffix or a {Zone} Scavenger grouping. In HTML, click a missing item name to copy it.</p>
+            </article>
+            <article class="card">
+              <h4>Quests</h4>
+              <p>Unfinished Mercenary and Partisan zone quest lines, with checklists in the HTML report.</p>
+            </article>
+            <article class="card">
+              <h4>Raid Achievements</h4>
+              <p>Incomplete raid event objectives, with checklists in the HTML report.</p>
+            </article>
+            <article class="card">
+              <h4>Heroic AA</h4>
+              <p>Fortitude / Resolution / Vitality ranks. Hover F / R / V for those names; click a Heroic AA name to open EQ Resource.</p>
+            </article>
+            <article class="card">
+              <h4>Achievement Summary</h4>
+              <p>Completed vs incomplete counts per section.</p>
+            </article>
+          </div>
+        </section>
       </section>
 
       <section class="section" aria-labelledby="howto-heading">
