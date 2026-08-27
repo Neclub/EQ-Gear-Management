@@ -288,6 +288,7 @@ async function initApp() {
     /* defaults already applied */
   }
 
+  void loadTierColorPanel();
   void checkForUpdatesOnStartup();
 }
 
@@ -338,6 +339,7 @@ function bindEvents() {
   $("btnClear").addEventListener("click", clearAll);
   $("btnBrowse").addEventListener("click", browseOutput);
   $("btnGenerate").addEventListener("click", generateReport);
+  $("btnResetTierColors").addEventListener("click", resetTierColorsFromPanel);
 
   $("chipSpells").addEventListener("click", () => {
     if ($("chipSpells").disabled) return;
@@ -1296,9 +1298,9 @@ async function showAbout() {
 
 async function showHelpTiers() {
   const data = await api("tier_legend");
-  const rows = data.rows.map((r) => `
+  const rows = (data.rows || []).map((r) => `
     <div class="legend-row">
-      <div class="legend-swatch" style="background:#${r.color}"></div>
+      <div class="legend-swatch" style="background:#${escapeHtml(String(r.color || ""))}"></div>
       <span>${escapeHtml(r.label)}</span>
     </div>`).join("");
 
@@ -1306,13 +1308,14 @@ async function showHelpTiers() {
     <div class="modal wide">
       <div class="modal-header"><h2>Gear tier colors</h2></div>
       <div class="modal-body">
-        <p style="color:var(--muted);font-size:12px;margin-top:0">Semantic tier buckets. Team Gear and Gear T-Level use the same cell colors.</p>
+        <p style="color:var(--muted);font-size:12px;margin-top:0">Semantic tier buckets. Team Gear and Gear T-Level use the same cell colors.${data.isCustom ? " Showing your custom palette." : ""}</p>
         ${rows}
         <p style="margin-top:12px;font-size:12px;color:var(--muted)">
           Evolver: equipped items whose inventory file includes the final augment row. Tier is resolved first;
           Evolver only when the item has no recognized tier pattern.
         </p>
         <p style="font-size:12px;color:var(--muted)">Unlisted items show as red (???). Team Gear names and Gear T-Level codes link to EQ Resource; hover a T-code for the item name.</p>
+        <p style="margin-top:12px;font-size:12px;color:var(--muted)">Change colors in the Gear tier colors panel on the main screen.</p>
         <p style="margin-top:16px;font-weight:600">Visible vs non-visible slots</p>
         <p style="font-size:12px">Visible: ${data.visibleSlots.join(", ")}</p>
         <p style="font-size:12px">Non-visible: ${data.nonVisibleSlots.join(", ")}</p>
@@ -1320,6 +1323,71 @@ async function showHelpTiers() {
       <div class="modal-footer"><button type="button" class="btn" id="modalClose">Close</button></div>
     </div>`);
   $("modalClose").addEventListener("click", closeModal);
+}
+
+async function loadTierColorPanel() {
+  const grid = $("tierColorGrid");
+  if (!grid) return;
+  let data;
+  try {
+    data = await api("tier_legend");
+  } catch (_) {
+    return;
+  }
+  renderTierColorPanel(data);
+}
+
+function renderTierColorPanel(data) {
+  const grid = $("tierColorGrid");
+  const resetBtn = $("btnResetTierColors");
+  if (!grid) return;
+  const rows = data && data.rows ? data.rows : [];
+  grid.innerHTML = rows.map((r) => {
+    const key = escapeHtml(r.key);
+    const hex = escapeHtml(String(r.color || "").toLowerCase());
+    const label = escapeHtml(r.label || "");
+    return `
+      <div class="tier-color-item">
+        <input type="color" class="legend-swatch-input" data-tier-key="${key}"
+          value="#${hex}" title="Change color for ${label}" aria-label="Color for ${label}">
+        <span class="tier-color-label">${label}</span>
+      </div>`;
+  }).join("");
+  if (resetBtn) resetBtn.disabled = !data.isCustom;
+  grid.querySelectorAll(".legend-swatch-input").forEach((input) => {
+    input.addEventListener("change", async () => {
+      const key = input.getAttribute("data-tier-key");
+      if (!key) return;
+      try {
+        const result = await api("set_tier_color", key, input.value);
+        applyTierColorPanelResult(result);
+      } catch (err) {
+        showToast(err && err.message ? err.message : String(err), true);
+      }
+    });
+  });
+}
+
+function applyTierColorPanelResult(result) {
+  if (!result || !result.rows) return;
+  const grid = $("tierColorGrid");
+  if (grid) {
+    result.rows.forEach((r) => {
+      const input = grid.querySelector(`[data-tier-key="${r.key}"]`);
+      if (input) input.value = `#${String(r.color || "").toLowerCase()}`;
+    });
+  }
+  const resetBtn = $("btnResetTierColors");
+  if (resetBtn) resetBtn.disabled = !result.isCustom;
+}
+
+async function resetTierColorsFromPanel() {
+  try {
+    const result = await api("reset_tier_colors");
+    applyTierColorPanelResult(result);
+  } catch (err) {
+    showToast(err && err.message ? err.message : String(err), true);
+  }
 }
 
 function basename(p) {

@@ -4,7 +4,21 @@ from __future__ import annotations
 
 import pytest
 
+from inventory_parser import character_column_order as _settings_mod
 from inventory_parser.slot2_augs import chest_class, eqresource_gear_tier
+
+
+@pytest.fixture(autouse=True)
+def _isolated_settings(
+    request: pytest.FixtureRequest,
+    tmp_path_factory: pytest.TempPathFactory,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Keep tests off the developer's AppData settings (tier colors, prefs, etc.)."""
+    if request.node.name == "test_settings_path_uses_eqgm_appdata":
+        return
+    settings_file = tmp_path_factory.mktemp("eqgm-settings") / "settings.json"
+    monkeypatch.setattr(_settings_mod, "settings_path", lambda: settings_file)
 
 
 @pytest.fixture(autouse=True)

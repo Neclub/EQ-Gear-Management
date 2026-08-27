@@ -41,7 +41,7 @@ EQ writes those files to the root of your **EverQuest** folder (not the Logs sub
 
 1. Open **EQ Gear Management**.
 2. Click **EQ Folder** and pick the root of your EverQuest folder; select which characters to import.
-3. Drag names in **Team characters** to set column order if you want. Adjust **Export options** on the right if needed. **Browse…** under **Output folder** picks where to save; the file is always named `{Server}_Team Inventory.xlsx` (or `{Character}_…` for a single character).
+3. Drag names in **Team characters** to set column order if you want. Adjust **Export options** on the right if needed. Under **Gear tier colors**, click a swatch to customize Team Gear / Gear T-Level colors — they persist the next time you open the app. **Browse…** under **Output folder** picks where to save; the file is always named `{Server}_Team Inventory.xlsx` (or `{Character}_…` for a single character).
 4. Choose **Excel**, **HTML**, or **Both**, then click **Generate Report**.
 
 <p align="center">

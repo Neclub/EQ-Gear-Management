@@ -20,16 +20,19 @@ from inventory_parser.character_column_order import (
     build_column_roster,
     normalize_output_format,
     paths_for_roster_removal,
+    reset_tier_colors,
     save_character_column_order,
     save_eq_folder,
     save_output_format,
+    save_tier_color,
     saved_character_column_order,
     saved_eq_folder,
     saved_output_format,
+    tier_colors_are_custom,
 )
 from inventory_parser.eq_servers import server_display_name
 from inventory_parser.excel_export import write_team_workbook
-from inventory_parser.excel_theme import tier_bucket_legend_rows
+from inventory_parser.excel_theme import tier_legend_entries
 from inventory_parser.export_bundle import build_export_bundle, release_export_memory
 from inventory_parser.slot2_augs.build import report_progress
 from inventory_parser.slot2_augs.weights import default_class_weights, sanitize_weight_map
@@ -406,13 +409,28 @@ class WebApi:
         return team_inventory_filename(prefix)
 
     def tier_legend(self) -> dict:
-        rows = []
-        for fill, label in tier_bucket_legend_rows():
-            rows.append({"color": fill.fgColor.rgb[-6:], "label": label})
+        rows = tier_legend_entries()
         return {
             "rows": rows,
+            "isCustom": tier_colors_are_custom(),
             "visibleSlots": list(VISIBLE_SLOTS),
             "nonVisibleSlots": list(NON_VISIBLE_SLOTS),
+        }
+
+    def set_tier_color(self, key: str, value: str) -> dict:
+        colors = save_tier_color(key, value)
+        return {
+            "colors": colors,
+            "isCustom": tier_colors_are_custom(colors),
+            "rows": tier_legend_entries(),
+        }
+
+    def reset_tier_colors(self) -> dict:
+        colors = reset_tier_colors()
+        return {
+            "colors": colors,
+            "isCustom": False,
+            "rows": tier_legend_entries(),
         }
 
     def navigate_to_setup(self) -> None:

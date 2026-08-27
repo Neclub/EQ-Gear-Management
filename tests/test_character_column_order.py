@@ -113,6 +113,25 @@ def test_save_and_load_eq_folder(tmp_path, monkeypatch) -> None:
     assert saved_eq_folder() == str(eq_dir.resolve())
 
 
+def test_save_and_reset_tier_colors(tmp_path, monkeypatch) -> None:
+    from inventory_parser import character_column_order as module
+    from inventory_parser.excel_theme import DEFAULT_TIER_BUCKET_COLORS
+
+    settings_file = tmp_path / "settings.json"
+    monkeypatch.setattr(module, "settings_path", lambda: settings_file)
+    assert module.saved_tier_colors() == DEFAULT_TIER_BUCKET_COLORS
+    assert module.tier_colors_are_custom() is False
+    assert module.normalize_tier_color_hex("#a1b2c3") == "A1B2C3"
+    assert module.normalize_tier_color_hex("zz") is None
+    colors = module.save_tier_color("orange", "#abcdef")
+    assert colors["orange"] == "ABCDEF"
+    assert module.tier_colors_are_custom() is True
+    assert module.save_tier_color("orange", "bad")["orange"] == "ABCDEF"
+    assert module.reset_tier_colors() == DEFAULT_TIER_BUCKET_COLORS
+    assert module.tier_colors_are_custom() is False
+    assert "tier_colors" not in module.load_settings()
+
+
 def test_excel_unmade_matches_bundle_character_column_order(tmp_path: Path) -> None:
     from openpyxl import load_workbook
 

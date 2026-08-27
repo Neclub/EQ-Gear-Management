@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import sys
 from dataclasses import dataclass
@@ -16,6 +17,10 @@ from inventory_parser.missing_spells import discover_persona_bindings, persona_k
 from inventory_parser.unmade_gear import UnmadeGearEntry
 
 T = TypeVar("T")
+
+TIER_COLOR_KEYS = ("green", "yellow", "orange", "red", "evolver")
+_TIER_COLOR_KEY_SET = frozenset(TIER_COLOR_KEYS)
+_HEX_COLOR_RE = re.compile(r"^#?([0-9A-Fa-f]{6})$")
 
 
 @dataclass(frozen=True)
@@ -123,6 +128,77 @@ def saved_eq_folder() -> str | None:
     if not path.is_dir():
         return None
     return str(path)
+
+
+def normalize_tier_color_hex(value: object) -> str | None:
+    """Return uppercase RRGGBB, or None when the value is not a valid hex color."""
+    if not isinstance(value, str):
+        return None
+    match = _HEX_COLOR_RE.fullmatch(value.strip())
+    if not match:
+        return None
+    return match.group(1).upper()
+
+
+def default_tier_colors() -> dict[str, str]:
+    from inventory_parser.excel_theme import DEFAULT_TIER_BUCKET_COLORS
+
+    return {key: DEFAULT_TIER_BUCKET_COLORS[key] for key in TIER_COLOR_KEYS}
+
+
+def load_tier_color_overrides() -> dict[str, str]:
+    """Return only valid bucket overrides stored in settings (may be partial)."""
+    raw = load_settings().get("tier_colors")
+    if not isinstance(raw, dict):
+        return {}
+    overrides: dict[str, str] = {}
+    for key, value in raw.items():
+        if key not in _TIER_COLOR_KEY_SET:
+            continue
+        hex_val = normalize_tier_color_hex(value)
+        if hex_val is not None:
+            overrides[key] = hex_val
+    return overrides
+
+
+def saved_tier_colors() -> dict[str, str]:
+    """Resolved five-bucket palette (defaults merged with settings overrides)."""
+    colors = default_tier_colors()
+    colors.update(load_tier_color_overrides())
+    return colors
+
+
+def tier_colors_are_custom(colors: dict[str, str] | None = None) -> bool:
+    current = colors if colors is not None else saved_tier_colors()
+    defaults = default_tier_colors()
+    return any(current.get(key, defaults[key]).upper() != defaults[key].upper() for key in TIER_COLOR_KEYS)
+
+
+def save_tier_color(key: str, value: str) -> dict[str, str]:
+    """Persist one bucket color. Invalid key/hex leaves settings unchanged."""
+    if key not in _TIER_COLOR_KEY_SET:
+        return saved_tier_colors()
+    hex_val = normalize_tier_color_hex(value)
+    if hex_val is None:
+        return saved_tier_colors()
+    colors = saved_tier_colors()
+    colors[key] = hex_val
+    path = settings_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    settings = load_settings()
+    settings["tier_colors"] = colors
+    path.write_text(json.dumps(settings, indent=2) + "\n", encoding="utf-8")
+    return colors
+
+
+def reset_tier_colors() -> dict[str, str]:
+    """Remove custom tier colors so the next load uses built-in defaults."""
+    path = settings_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    settings = load_settings()
+    settings.pop("tier_colors", None)
+    path.write_text(json.dumps(settings, indent=2) + "\n", encoding="utf-8")
+    return default_tier_colors()
 
 
 def order_by_persona_keys(items: list[T], order: list[str], *, key_fn) -> list[T]:

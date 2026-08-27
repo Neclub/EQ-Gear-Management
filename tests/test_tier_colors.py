@@ -99,3 +99,39 @@ def test_html_theme_tier_codes_match_buckets(tmp_path: Path) -> None:
         if cell and "Rebellion" in cell.get("name", "")
     )
     assert charm_cell["tierCode"] == "TOB-R2"
+
+
+def test_custom_tier_colors_apply_to_excel_and_html(tmp_path: Path) -> None:
+    from inventory_parser.character_column_order import save_tier_color
+
+    custom_green = "112233"
+    custom_evolver = "AABBCC"
+    save_tier_color("green", custom_green)
+    save_tier_color("evolver", custom_evolver)
+
+    assert tier_code_fill_color("SOR-R2") == custom_green
+    colors = build_tier_code_colors()
+    assert colors["SOR-R2"] == custom_green
+    assert colors[EVOLVER_GAP_LABEL] == custom_evolver
+
+    paths = [EXAMPLES / "Deflub_bristle-Inventory.txt"]
+    report = build_team_report(paths)
+    xlsx = tmp_path / "custom_tiers.xlsx"
+    write_team_workbook(report, xlsx)
+    ws = load_workbook(xlsx, data_only=False)[GEAR_T_LEVEL_SHEET_NAME]
+    sor_r2_row = next(
+        r for r in range(2, ws.max_row + 1) if ws.cell(r, _FIRST_CHAR_COL).value == "SOR-R2"
+    )
+    assert _rgb_hex(ws.cell(sor_r2_row, _FIRST_CHAR_COL)) == custom_green
+
+    bundle = build_export_bundle(
+        paths, include_spells=False, include_achievements=False, include_slot2=False
+    )
+    html = tmp_path / "custom_tiers.html"
+    write_team_html(bundle, html)
+    payload = extract_report_json(html.read_text(encoding="utf-8"))
+    assert payload["theme"]["tierCodes"]["SOR-R2"] == custom_green
+    assert payload["theme"]["tierCodes"][EVOLVER_GAP_LABEL] == custom_evolver
+    legend = {entry["key"]: entry["color"] for entry in payload["gearLegend"]}
+    assert legend["green"] == custom_green
+    assert legend["evolver"] == custom_evolver

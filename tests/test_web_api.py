@@ -43,8 +43,43 @@ def test_tier_legend_has_rows() -> None:
     api = WebApi()
     data = api.tier_legend()
     assert data["rows"]
+    assert data["isCustom"] is False
+    assert {row["key"] for row in data["rows"]} == {
+        "green",
+        "yellow",
+        "orange",
+        "red",
+        "evolver",
+    }
+    assert all("defaultColor" in row for row in data["rows"])
     assert data["visibleSlots"]
     assert data["nonVisibleSlots"]
+
+
+def test_set_and_reset_tier_colors() -> None:
+    api = WebApi()
+    changed = api.set_tier_color("green", "#112233")
+    assert changed["colors"]["green"] == "112233"
+    assert changed["isCustom"] is True
+    legend = api.tier_legend()
+    assert legend["isCustom"] is True
+    green = next(row for row in legend["rows"] if row["key"] == "green")
+    assert green["color"] == "112233"
+    reset = api.reset_tier_colors()
+    assert reset["isCustom"] is False
+    assert reset["colors"]["green"] == green["defaultColor"]
+    assert api.tier_legend()["isCustom"] is False
+
+
+def test_set_tier_color_rejects_invalid() -> None:
+    api = WebApi()
+    before = api.tier_legend()["rows"][0]["color"]
+    result = api.set_tier_color("green", "not-a-color")
+    assert result["colors"]["green"] == before
+    assert result["isCustom"] is False
+    result = api.set_tier_color("nope", "#112233")
+    assert "nope" not in result["colors"]
+    assert result["isCustom"] is False
 
 
 def test_generate_report_writes_html(tmp_path: Path) -> None:

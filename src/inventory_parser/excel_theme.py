@@ -56,6 +56,14 @@ TIER_COLOR_YELLOW = "4A4528"
 TIER_COLOR_ORANGE = "4A3520"
 TIER_COLOR_RED = "4A2830"
 
+DEFAULT_TIER_BUCKET_COLORS: dict[str, str] = {
+    "green": TIER_COLOR_GREEN,
+    "yellow": TIER_COLOR_YELLOW,
+    "orange": TIER_COLOR_ORANGE,
+    "red": TIER_COLOR_RED,
+    "evolver": GEAR_SET_FILLS["evolver"],
+}
+
 _TIER_BUCKET_FILLS: dict[str, PatternFill] = {
     TIER_COLOR_GREEN: PatternFill("solid", fgColor=TIER_COLOR_GREEN),
     TIER_COLOR_YELLOW: PatternFill("solid", fgColor=TIER_COLOR_YELLOW),
@@ -150,19 +158,43 @@ def spell_tier_fill(tier: str) -> PatternFill:
     return _SPELL_TIER_FILL_CACHE.get(tier) or _SPELL_TIER_FILL_CACHE[_SPELL_TIER_DEFAULT]
 
 
+def resolved_tier_bucket_colors() -> dict[str, str]:
+    """Five semantic bucket hex colors, with optional user overrides from settings."""
+    from inventory_parser.character_column_order import load_tier_color_overrides
+
+    colors = dict(DEFAULT_TIER_BUCKET_COLORS)
+    colors.update(load_tier_color_overrides())
+    return colors
+
+
+def _pattern_fill_for_hex(hex_color: str) -> PatternFill:
+    key = hex_color.upper()
+    fill = _TIER_BUCKET_FILLS.get(key)
+    if fill is None:
+        fill = PatternFill("solid", fgColor=key)
+        _TIER_BUCKET_FILLS[key] = fill
+    return fill
+
+
+def evolver_fill() -> PatternFill:
+    """PatternFill for Evolver cells using the resolved bucket color."""
+    return _pattern_fill_for_hex(resolved_tier_bucket_colors()["evolver"])
+
+
 def tier_code_fill_color(code: str) -> str:
     """Semantic Gear T-Level background color for a tier code."""
+    colors = resolved_tier_bucket_colors()
     if code == "SOR-R2":
-        return TIER_COLOR_GREEN
+        return colors["green"]
     if code in ("SOR-R1", "ANI27"):
-        return TIER_COLOR_YELLOW
+        return colors["yellow"]
     if code.startswith("TOB-"):
-        return TIER_COLOR_ORANGE
-    return TIER_COLOR_RED
+        return colors["orange"]
+    return colors["red"]
 
 
 def tier_code_fill(code: str) -> PatternFill:
-    return _TIER_BUCKET_FILLS[tier_code_fill_color(code)]
+    return _pattern_fill_for_hex(tier_code_fill_color(code))
 
 
 def build_tier_code_colors() -> dict[str, str]:
@@ -171,30 +203,58 @@ def build_tier_code_colors() -> dict[str, str]:
     from inventory_parser.gear_tiers import GEAR_TIERS_NEWEST_FIRST, UNKNOWN_TIER_LABEL
 
     colors = {tier.code: tier_code_fill_color(tier.code) for tier in GEAR_TIERS_NEWEST_FIRST}
-    colors[EVOLVER_GAP_LABEL] = GEAR_SET_FILLS["evolver"]
+    colors[EVOLVER_GAP_LABEL] = resolved_tier_bucket_colors()["evolver"]
     colors[UNKNOWN_TIER_LABEL] = tier_code_fill_color(UNKNOWN_TIER_LABEL)
     return colors
 
 
+_TIER_LEGEND_LABELS: dict[str, str] = {
+    "green": "SOR-R2 (current SoR raid)",
+    "yellow": "SOR-R1, ANI27",
+    "orange": "All TOB tiers",
+    "red": "LS, NoS, SOR group, ???, other",
+    "evolver": "Evolver",
+}
+
+
 def tier_bucket_legend_rows() -> tuple[tuple[PatternFill, str], ...]:
     """Legend swatches for Team Gear / HTML footer (semantic tier buckets)."""
+    colors = resolved_tier_bucket_colors()
     return (
-        (tier_code_fill("SOR-R2"), "Green — SOR-R2 (current SoR raid)"),
-        (tier_code_fill("SOR-R1"), "Yellow — SOR-R1, ANI27"),
-        (tier_code_fill("TOB-R2"), "Orange — all TOB tiers"),
-        (tier_code_fill("LS-R2"), "Red — LS, NoS, SOR group, ???, other"),
-        (EVOLVER_FILL, "Purple — Evolver"),
+        (_pattern_fill_for_hex(colors["green"]), _TIER_LEGEND_LABELS["green"]),
+        (_pattern_fill_for_hex(colors["yellow"]), _TIER_LEGEND_LABELS["yellow"]),
+        (_pattern_fill_for_hex(colors["orange"]), _TIER_LEGEND_LABELS["orange"]),
+        (_pattern_fill_for_hex(colors["red"]), _TIER_LEGEND_LABELS["red"]),
+        (_pattern_fill_for_hex(colors["evolver"]), _TIER_LEGEND_LABELS["evolver"]),
     )
 
 
 def build_gear_legend() -> list[dict[str, str]]:
     """HTML footer legend entries matching tier bucket colors."""
+    colors = resolved_tier_bucket_colors()
     return [
-        {"key": "green", "label": "Green — SOR-R2 (current SoR raid)", "color": TIER_COLOR_GREEN},
-        {"key": "yellow", "label": "Yellow — SOR-R1, ANI27", "color": TIER_COLOR_YELLOW},
-        {"key": "orange", "label": "Orange — all TOB tiers", "color": TIER_COLOR_ORANGE},
-        {"key": "red", "label": "Red — LS, NoS, SOR group, ???, other", "color": TIER_COLOR_RED},
-        {"key": "evolver", "label": "Purple — Evolver", "color": GEAR_SET_FILLS["evolver"]},
+        {"key": key, "label": _TIER_LEGEND_LABELS[key], "color": colors[key]}
+        for key in ("green", "yellow", "orange", "red", "evolver")
+    ]
+
+
+def tier_legend_entries() -> list[dict[str, str | bool]]:
+    """Help-dialog rows: key, live color, default color, label, and isCustom flag."""
+    colors = resolved_tier_bucket_colors()
+    defaults = DEFAULT_TIER_BUCKET_COLORS
+    is_custom = any(
+        colors[key].upper() != defaults[key].upper()
+        for key in ("green", "yellow", "orange", "red", "evolver")
+    )
+    return [
+        {
+            "key": key,
+            "color": colors[key],
+            "defaultColor": defaults[key],
+            "label": _TIER_LEGEND_LABELS[key],
+            "isCustom": is_custom,
+        }
+        for key in ("green", "yellow", "orange", "red", "evolver")
     ]
 
 

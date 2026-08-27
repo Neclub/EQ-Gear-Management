@@ -25,7 +25,6 @@ from inventory_parser.useful_spells import (
     MissingUsefulSpellsReport,
 )
 from inventory_parser.excel_theme import (
-    EVOLVER_FILL,
     FILL_HEADER,
     FILL_ITEM_EMPTY,
     FILL_LABEL,
@@ -45,6 +44,7 @@ from inventory_parser.excel_theme import (
     SHEET_BACKGROUND_COLS,
     SHEET_BACKGROUND_ROWS,
     apply_workbook_dark_mode,
+    evolver_fill,
     spell_block_header_fill,
     spell_tier_fill,
     tier_code_fill,
@@ -285,7 +285,7 @@ def _write_slot_label_cells(ws: Worksheet, row_idx: int, slot: str) -> None:
 
 def _fill_for_tier_code(code: str):
     if code == EVOLVER_GAP_LABEL:
-        return EVOLVER_FILL
+        return evolver_fill()
     if code == UNKNOWN_TIER_LABEL or code:
         return tier_code_fill(code)
     return FILL_ITEM_EMPTY

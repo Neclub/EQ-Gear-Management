@@ -145,8 +145,8 @@ def test_gear_legend_on_a26_a30(tmp_path: Path) -> None:
     wb = load_workbook(out, data_only=False)
     ws = wb["Team gear"]
     assert ws.cell(25, 1).value == "Gear tier colors"
-    assert ws.cell(26, 2).value == "Green — SOR-R2 (current SoR raid)"
-    assert ws.cell(30, 2).value == "Purple — Evolver"
+    assert ws.cell(26, 2).value == "SOR-R2 (current SoR raid)"
+    assert ws.cell(30, 2).value == "Evolver"
 
 
 def test_black_background_to_row_50_column_z(tmp_path: Path) -> None:

@@ -126,6 +126,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
    - **Type 5 Augs** chip — on by default when inventories are loaded; uncheck to skip the Type 5 display sheet. Shows equipped type 5 augs (and Empty holes) with heroic stats; no upgrade suggestions. Uses parent-item socket maps (cached with Type 7/8). Link to the EQ Resource Type 5 list is included in the report.
    - **Type 18/19 Augs** chip — *(work in progress)* on by default when inventories are loaded; uncheck to skip Type 18/19 sheets. Per-class suggestions (Primary / Optional / Filler) from the Zarax cheat sheet, matched to the EQ Resource catalog. Anniversary augs (Jubilation / Enduring Harmony) are marked and always show a non-anniversary **Alternative**; Selenelion is a craft, not anniversary. HTML defaults to Suggestions with a toolbar **Character** select (class comes from the character; **Owned** is that character’s inventory, with a gear-slot chip when the aug is currently equipped). An **Alternative** that is owned and equipped gets Owned plus a location chip; otherwise it gets the craft anvil. Full catalog is still available. Excel: **Type 18-19 Augs** + **Type 18-19 Catalog**. First run needs network; later runs reuse the `%LOCALAPPDATA%\EQGM\` search cache.
    - **Raid BiS** chip — on by default when inventories are loaded; uncheck to skip the Raid BiS sheet and catalog fetch. Compares equipped armor and jewelry to current-expansion raid T1 and T2 (weapons are shown but not scored). MAG/BST/NEC keep a pet-focus ear. HTML cards take raid coin counts to mark the best vendor ore purchase. The first run needs network access to EQ Resource; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache.
+   - **Gear tier colors** — between Export options and Output folder. Click a swatch to change the five Team Gear / Gear T-Level bucket colors (color wheel). Your choices are saved under `%LOCALAPPDATA%\EQGM\` and apply the next time you open the app and when you generate Excel or HTML reports. **Reset to default** restores the built-in palette. **Help → Gear tier colors** shows the same palette (including your custom colors) with more detail.
 
 6. **Output**
    - Default save location: **Downloads\{Server}_Team Inventory.xlsx** (server slug from your inventory, MissingSpells, or `eqlog_*` files — e.g. `Bristlebane_Team Inventory.xlsx` from `*_bristle-Inventory.txt`). A single character uses that character’s name instead.  
@@ -146,8 +147,8 @@ The file uses a **dark theme** on every sheet (black chrome, light text, shared 
 
 - One **column per character**, one **row per equipped slot**  
 - Rows are grouped **visible** gear first, then **non-visible**  
-- **Colors** show tier bucket (green / yellow / orange / red / purple) — same rules as Gear T-Level; see legend on the sheet (rows 26–30) or **Help** → gear tier colors in the app  
-- **Purple** = Evolver (special augment slot, not the “6” in the Slots column)
+- **Colors** show tier bucket — same rules as Gear T-Level; see legend on the sheet (rows 26–30), the **Gear tier colors** panel in the app, or **Help** → gear tier colors  
+- **Evolver** bucket (purple by default) = Evolver (special augment slot, not the “6” in the Slots column)
 
 ### Gear T-Level
 
@@ -165,15 +166,15 @@ See the legend on the Gear T-Level sheet for the full code list. Items whose nam
 
 **Cell colors** (Team Gear and Gear T-Level — same rules):
 
-| Color | Tier codes |
-|-------|------------|
+| Default color | Tier codes |
+|---------------|------------|
 | Green | `SOR-R2` (current SoR raid) |
 | Yellow | `SOR-R1`, `ANI27` |
 | Orange | All `TOB-*` |
 | Red | `LS-*`, `NoS-*`, `SOR-G*`, `???`, and other codes |
 | Purple | `Evolver` |
 
-Colors are muted so tier code text stays easy to read.
+Defaults are muted so tier code text stays easy to read. Change any bucket in the **Gear tier colors** panel; the new colors persist the next time you open the app and are used in new Excel and HTML reports.
 
 The **Secondary** row only appears if someone had a secondary weapon on the gear sheet.
 
@@ -331,7 +332,8 @@ Gear-set and tier colors match the Excel theme. Item names, Gear T-Level codes, 
 - **Status bar** — shows how many inventory, MissingSpells, and achievement files are loaded.  
 - **Up** / **Down** / **Remove** / **Clear** — under Output folder on the right; fix the roster before regenerating.  
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
-- **Help** (top right) — gear tier colors, **Check for Updates** (same GitHub Release check as startup), and **About EQGM** (shows the app version).
+- **Gear tier colors** — customize the five report bucket colors; they persist across launches (saved in AppData). **Reset to default** undoes that.
+- **Help** (top right) — gear tier colors legend (your current palette), **Check for Updates** (same GitHub Release check as startup), and **About EQGM** (shows the app version).
 
 ---
 

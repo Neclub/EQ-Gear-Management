@@ -6,9 +6,15 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.34.11] - 2026-08-26
+
+### Added
+
+- **Custom gear tier colors:** New **Gear tier colors** panel (between Export options and Output folder) lets you click each bucket swatch and pick a color. Choices persist in AppData for the next launch and apply to Excel and HTML reports; **Reset to default** restores the built-in palette. Help → Gear tier colors shows your current palette.
+
 ### Changed
 
-- **Docs:** EQ Folder instructions now point at the EverQuest install root, not the Logs subfolder.
+- **Docs:** EQ Folder instructions now point at the EverQuest install root, not the Logs subfolder. How-to docs cover custom tier colors and that they persist across launches.
 
 ## [1.34.10] - 2026-08-26
 
