@@ -21,6 +21,8 @@ const state = {
 };
 
 const OUTPUT_FORMATS = ["excel", "html", "both"];
+const DEFAULT_WINDOW_WIDTH = 982;
+const DEFAULT_WINDOW_HEIGHT = 765;
 
 const $ = (id) => document.getElementById(id);
 
@@ -95,7 +97,7 @@ function folderPickerNeededSize() {
   const frame = Math.max(0, (window.outerHeight || 0) - (window.innerHeight || 0)) || 72;
   const availH = screen.availHeight || screen.height || 1080;
   return {
-    width: Math.max(860, Math.ceil((modal.scrollWidth || 600) + 64)),
+    width: Math.max(DEFAULT_WINDOW_WIDTH, Math.ceil((modal.scrollWidth || 600) + 64)),
     height: Math.min(availH, Math.ceil(chrome + list.scrollHeight + frame)),
   };
 }
@@ -134,7 +136,7 @@ function setupNeededSize() {
   const frame = Math.max(0, (window.outerHeight || 0) - (window.innerHeight || 0)) || 72;
   const availH = screen.availHeight || screen.height || 1080;
   return {
-    width: Math.max(860, window.outerWidth || 860),
+    width: Math.max(DEFAULT_WINDOW_WIDTH, window.outerWidth || DEFAULT_WINDOW_WIDTH),
     height: Math.min(availH, Math.ceil(inner + frame)),
   };
 }
@@ -148,8 +150,8 @@ function rosterNeededSize() {
   const frame = Math.max(0, (window.outerHeight || 0) - (window.innerHeight || 0)) || 72;
   const availH = screen.availHeight || screen.height || 1080;
   return {
-    width: Math.max(860, window.outerWidth || 860),
-    height: Math.min(availH, Math.ceil((window.innerHeight || 760) + overflow + frame)),
+    width: Math.max(DEFAULT_WINDOW_WIDTH, window.outerWidth || DEFAULT_WINDOW_WIDTH),
+    height: Math.min(availH, Math.ceil((window.innerHeight || DEFAULT_WINDOW_HEIGHT) + overflow + frame)),
   };
 }
 
@@ -157,8 +159,8 @@ function fitSetupWindow() {
   const setup = setupNeededSize();
   const roster = rosterNeededSize();
   const size = {
-    width: Math.max(setup?.width || 0, roster?.width || 0, 860),
-    height: Math.max(setup?.height || 0, roster?.height || 0, 760),
+    width: Math.max(setup?.width || 0, roster?.width || 0, DEFAULT_WINDOW_WIDTH),
+    height: Math.max(setup?.height || 0, roster?.height || 0, DEFAULT_WINDOW_HEIGHT),
   };
   return fitWindowTo(size);
 }

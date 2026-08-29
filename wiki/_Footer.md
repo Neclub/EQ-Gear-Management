@@ -1,0 +1,1 @@
+[Product page](https://neclub.github.io/EQ-Gear-Management/) · [Releases](https://github.com/Neclub/EQ-Gear-Management/releases) · [Changelog](https://neclub.github.io/EQ-Gear-Management/changelog.html) · [Apache License 2.0](https://github.com/Neclub/EQ-Gear-Management/blob/main/LICENSE)

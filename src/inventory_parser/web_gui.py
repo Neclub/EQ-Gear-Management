@@ -7,7 +7,7 @@ import webview
 from inventory_parser import APP_NAME, APP_NAME_SHORT, __version__
 from inventory_parser.package_data import asset_path
 from inventory_parser.web_api import WebApi
-from inventory_parser.web_bridge import setup_url
+from inventory_parser.web_bridge import DEFAULT_WINDOW_HEIGHT, DEFAULT_WINDOW_WIDTH, setup_url
 
 
 def main() -> None:
@@ -16,10 +16,10 @@ def main() -> None:
         f"{APP_NAME} v{__version__}",
         url=setup_url(),
         js_api=api,
-        width=860,
-        height=760,
+        width=DEFAULT_WINDOW_WIDTH,
+        height=DEFAULT_WINDOW_HEIGHT,
         min_size=(640, 480),
-        background_color="#0b0e11",
+        background_color="#07080f",
     )
     api.bind_window(window)
     webview.start(debug=False, icon=str(asset_path("eq-icon.ico")))

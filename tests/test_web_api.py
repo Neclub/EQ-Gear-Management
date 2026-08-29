@@ -344,9 +344,9 @@ def test_fit_window_moves_above_work_area_bottom(monkeypatch) -> None:
     fake = FakeWindow()
     api = WebApi()
     api.bind_window(fake)
-    result = api.fit_window(900, 700)
+    result = api.fit_window(1000, 700)
     assert result["ok"] is True
-    assert fake.sized == (900, 700)
+    assert fake.sized == (1000, 700)
     assert fake.moved == (100, 340)
     assert result["y"] == 340
 

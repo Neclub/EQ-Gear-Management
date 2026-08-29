@@ -82,7 +82,7 @@ Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet.
 - **Heroic AA** — Fortitude / Resolution / Vitality ranks; hover **F** / **R** / **V**; click a name to open EQ Resource
 - **Achievement Summary** — completed vs incomplete counts per section
 
-For file naming, Alternate Personas, reading each sheet, and troubleshooting, see **[HowToUse.md](HowToUse.md)**.
+For file naming, Alternate Personas, reading each sheet, and troubleshooting, see the **[Wiki](https://github.com/Neclub/EQ-Gear-Management/wiki)** (full guide also in [HowToUse.md](HowToUse.md)).
 
 <p align="center">
   <img src="docs/img/eqgm-icon.png" alt="EQGM" width="160" height="160">

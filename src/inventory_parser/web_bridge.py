@@ -8,6 +8,10 @@ from inventory_parser.package_data import asset_path, gui_asset_path, read_data_
 from inventory_parser.html_export import _REPORT_JSON_MARKER, escape_json_for_script
 
 
+DEFAULT_WINDOW_WIDTH = 982
+DEFAULT_WINDOW_HEIGHT = 765
+
+
 def file_url(path) -> str:
     """Return a file:// URL for a local path."""
     return path.resolve().as_uri()

@@ -6,6 +6,17 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.3] - 2026-08-29
+
+### Added
+
+- **Wiki:** Getting Started, Setup Screen, report-type pages, and Troubleshooting.
+
+### Changed
+
+- **Setup GUI:** dark-fantasy theme with gold titles, cyan and lavender section labels, and glowing recessed panels. Header tagline removed. Default window size is 982×765.
+- **Docs:** How-to links on the README and product page now go to the [GitHub wiki](https://github.com/Neclub/EQ-Gear-Management/wiki).
+
 ## [1.35.2] - 2026-08-27
 
 ### Added

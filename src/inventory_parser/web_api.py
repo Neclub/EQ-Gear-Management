@@ -52,7 +52,13 @@ from inventory_parser.output_paths import (
 )
 from inventory_parser.slots import NON_VISIBLE_SLOTS, VISIBLE_SLOTS, SlotFilter
 from inventory_parser.team_report import FolderCharacterChoice, discover_folder_character_choices
-from inventory_parser.web_bridge import eq_logo_data_uri, file_url, setup_url
+from inventory_parser.web_bridge import (
+    DEFAULT_WINDOW_HEIGHT,
+    DEFAULT_WINDOW_WIDTH,
+    eq_logo_data_uri,
+    file_url,
+    setup_url,
+)
 
 PRODUCT_WEBSITE_URL = "https://neclub.github.io/EQ-Gear-Management/"
 
@@ -215,9 +221,9 @@ class WebApi:
             return {"ok": True, "skipped": True}
         hwnd = _native_hwnd(window)
         left, top, right, bottom = _work_area_for_hwnd(hwnd)
-        max_w = max(860, right - left)
+        max_w = max(DEFAULT_WINDOW_WIDTH, right - left)
         max_h = max(640, bottom - top)
-        width = min(max(860, int(min_width or 0)), max_w)
+        width = min(max(DEFAULT_WINDOW_WIDTH, int(min_width or 0)), max_w)
         height = min(max(640, int(min_height or 0)), max_h)
         window.resize(width, height)
         x = int(getattr(window, "x", 0) or 0)
