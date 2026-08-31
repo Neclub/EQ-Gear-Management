@@ -27,7 +27,7 @@ Same layout as Team Gear, but cells show **what tier is equipped** in each slot.
 | `SOR-R1`, `TOB-R2`, `LS-G2`, etc. | Expansion tier code (`SOR`, `TOB`, `LS`, `NoS` + `G` group or `R` raid + tier number) |
 | `???` | Equipped but not recognized after name matching and EQ Resource lookup (e.g. pre-LS expansions) |
 
-See the legend on the Gear T-Level sheet for the full code list. Items whose names are not in the bundled patterns are looked up on EQ Resource; if the page lists an expansion and Raid/Group tier that maps to a known code, that T-code is used instead of `???`.
+See the legend on the Gear T-Level sheet for the full code list. Items whose names are not in the bundled patterns are looked up on EQ Resource; if the page lists an expansion and Raid/Group tier that maps to a known code, that T-code is used instead of `???`. Failed lookups are remembered under `%LOCALAPPDATA%\EQGM\` so Generate Report does not re-query the same unknown items every run — see [[Troubleshooting]] if a later EQ Resource page should have filled in a code.
 
 **Cell colors** (Team Gear and Gear T-Level — same rules):
 
