@@ -6,6 +6,10 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+### Added
+
+- **Docs:** [DEVELOPMENT.md](DEVELOPMENT.md) engineering guide (from-source setup, CLI, AppData caches, Type 18/19, Heroic AA, tests, release pipeline). Troubleshooting notes for stale catalog / failed T-level caches.
+
 ## [1.35.3] - 2026-08-29
 
 ### Added

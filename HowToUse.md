@@ -162,7 +162,7 @@ Same layout as Team Gear, but cells show **what tier is equipped** in each slot.
 | `SOR-R1`, `TOB-R2`, `LS-G2`, etc. | Expansion tier code (`SOR`, `TOB`, `LS`, `NoS` + `G` group or `R` raid + tier number) |
 | `???` | Equipped but not recognized after name matching and EQ Resource lookup (e.g. pre-LS expansions) |
 
-See the legend on the Gear T-Level sheet for the full code list. Items whose names are not in the bundled patterns are looked up on EQ Resource; if the page lists an expansion and Raid/Group tier that maps to a known code, that T-code is used instead of `???`.
+See the legend on the Gear T-Level sheet for the full code list. Items whose names are not in the bundled patterns are looked up on EQ Resource; if the page lists an expansion and Raid/Group tier that maps to a known code, that T-code is used instead of `???`. Failed lookups are remembered under `%LOCALAPPDATA%\EQGM\` so Generate Report does not re-query the same unknown items every run — see Troubleshooting if a later EQ Resource page should have filled in a code.
 
 **Cell colors** (Team Gear and Gear T-Level — same rules):
 
@@ -358,6 +358,8 @@ Gear-set and tier colors match the Excel theme. Item names, Gear T-Level codes, 
 | “Permission denied” / save failed | Close the workbook in Excel and try again. |
 | Wrong characters in columns | Each inventory file should be one character; check filenames. |
 | Type 7/8 Augs sheets missing or empty | Leave the **Type 7/8 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
+| Type 7/8, Type 18/19, or Raid BiS looks outdated after EQ Resource changed | Close EQGM, delete the matching cache JSON under `%LOCALAPPDATA%\EQGM\`, and regenerate. There is no Refresh button. |
+| Gear T-Level still shows `???` after EQ Resource lists the item | Failed lookups are remembered. Delete `%LOCALAPPDATA%\EQGM\eqresource_gear_tier_cache.json` and regenerate. |
 | Type 7/8 note says to move an aug, but **Upgrade to** is blank | Use **1.30.3** or newer and regenerate the report. Older builds marked that donor hole as BiS. |
 | Type 5 Augs sheet missing or empty | Leave the **Type 5 Augs** chip on; sockets and aug stats use the same `%LOCALAPPDATA%\EQGM\` cache as Type 7/8 (first run may need network). |
 | Type 18/19 Augs sheet missing or empty | Leave the **Type 18/19 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |

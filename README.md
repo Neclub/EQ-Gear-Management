@@ -84,6 +84,10 @@ Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet.
 
 For file naming, Alternate Personas, reading each sheet, and troubleshooting, see the **[Wiki](https://github.com/Neclub/EQ-Gear-Management/wiki)** (full guide also in [HowToUse.md](HowToUse.md)).
 
+## Developers
+
+From-source setup, CLI flags, `%LOCALAPPDATA%\EQGM\` caches, Type 18/19 / Heroic AA internals, tests, and the GitHub Release pipeline: **[DEVELOPMENT.md](DEVELOPMENT.md)**. Adding a new EverQuest expansion: **[Expansion Update Plan](Expansion%20Update%20Plan/README.md)**.
+
 <p align="center">
   <img src="docs/img/eqgm-icon.png" alt="EQGM" width="160" height="160">
 </p>
