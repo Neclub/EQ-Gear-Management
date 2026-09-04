@@ -161,15 +161,15 @@ def build_type5_export(
 
     s0, s1 = _PROGRESS_SOCKETS
     if type5_slot_by_parent_id is None:
-        report_progress(on_progress, "Looking up Type 5 sockets…", s0, s1, 0, 1)
+        report_progress(on_progress, "Fetching Type 5 sockets from EQ Resource…", s0, s1, 0, 1)
         type5_slot_by_parent_id = resolve_type5_slots(
             parent_ids,
             overrides=socket_overrides,
             on_progress=_range_item_progress(
-                on_progress, "Looking up Type 5 sockets…", s0, s1
+                on_progress, "Fetching Type 5 sockets from EQ Resource…", s0, s1
             ),
         )
-    report_progress(on_progress, "Looking up Type 5 sockets…", s0, s1, 1, 1)
+    report_progress(on_progress, "Fetching Type 5 sockets from EQ Resource…", s0, s1, 1, 1)
 
     # Drop None values so extract only sees confirmed type 5 holes.
     slot_map: dict[int, int] = {
@@ -193,26 +193,26 @@ def build_type5_export(
         default_profile = profile_for_class(roster[0].class_abbr) or "dex"
 
     st0, st1 = _PROGRESS_STATS
-    report_progress(on_progress, "Loading Type 5 aug stats…", st0, st1, 0, 1)
+    report_progress(on_progress, "Fetching Type 5 stats from EQ Resource…", st0, st1, 0, 1)
     aug_by_id = resolve_eqresource_augs(
         sorted(aug_ids),
         default_profile,
         html_overrides=eqr_aug_html_by_id,
         allow_network=fetch_eqr_augs,
     )
-    report_progress(on_progress, "Loading Type 5 aug stats…", st0, st1, 1, 1)
+    report_progress(on_progress, "Fetching Type 5 stats from EQ Resource…", st0, st1, 1, 1)
 
     e0, e1 = _PROGRESS_EXPANSIONS
-    report_progress(on_progress, "Resolving Type 5 expansions…", e0, e1, 0, 1)
+    report_progress(on_progress, "Fetching expansions from EQ Resource…", e0, e1, 0, 1)
     expansions = resolve_item_expansions(
         sorted(aug_ids),
         html_overrides=eqr_aug_html_by_id,
         allow_network=fetch_expansions,
         on_progress=_range_item_progress(
-            on_progress, "Resolving Type 5 expansions…", e0, e1
+            on_progress, "Fetching expansions from EQ Resource…", e0, e1
         ),
     )
-    report_progress(on_progress, "Resolving Type 5 expansions…", e0, e1, 1, 1)
+    report_progress(on_progress, "Fetching expansions from EQ Resource…", e0, e1, 1, 1)
 
     characters: list[CharacterType5Report] = []
     servers: list[str] = []

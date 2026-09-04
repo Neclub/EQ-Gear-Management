@@ -72,19 +72,19 @@ def build_type18_export(
     """Fetch the Type 18/19 catalog and build per-class suggestions."""
     warnings: list[str] = []
     s0, s1 = _PROGRESS_SEARCH
-    report_progress(on_progress, "Building Type 18/19 aug catalog…", s0, s1, 0, 1)
+    report_progress(on_progress, "Fetching from EQ Resource…", s0, s1, 0, 1)
 
     if catalog is None:
         def _hydrate_progress(done: int, total: int) -> None:
             h0, h1 = _PROGRESS_HYDRATE
             if total <= 0:
                 report_progress(
-                    on_progress, "Loading Type 18/19 item details…", h0, h1, 1, 1
+                    on_progress, "Fetching item details from EQ Resource…", h0, h1, 1, 1
                 )
             else:
                 report_progress(
                     on_progress,
-                    f"Loading Type 18/19 item details… ({done}/{total})",
+                    f"Fetching item details from EQ Resource… ({done}/{total})",
                     h0,
                     h1,
                     done,
@@ -99,12 +99,16 @@ def build_type18_export(
             item_html_by_id=item_html_by_id,
             on_progress=_hydrate_progress if on_progress else None,
         )
-    if catalog.from_cache:
+        h0, h1 = _PROGRESS_HYDRATE
         report_progress(
-            on_progress, "Using cached Type 18/19 aug catalog…", s0, s1, 1, 1
+            on_progress, "Fetching item details from EQ Resource…", h0, h1, 1, 1
+        )
+    elif catalog.from_cache:
+        report_progress(
+            on_progress, "Using cached Type 18/19 catalog…", s0, s1, 1, 1
         )
     else:
-        report_progress(on_progress, "Building Type 18/19 aug catalog…", s0, s1, 1, 1)
+        report_progress(on_progress, "Fetching from EQ Resource…", s0, s1, 1, 1)
 
     if catalog.warning:
         warnings.append(catalog.warning)

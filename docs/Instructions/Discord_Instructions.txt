@@ -24,6 +24,7 @@ You do **not** need to install anything extra. Download the program, double-clic
 
 Get the file named `EQGM-x.y.z.exe`
 -# The numbers change with each version. Works on Windows 10 and 11.
+-# Windows SmartScreen may warn. Download only from that GitHub Releases page, then More info → Run anyway.
 
 ===== MESSAGE 2: FUNCTIONS =====
 # What the report shows
@@ -63,7 +64,7 @@ Shows which type 5 augs people already have equipped (and empty holes). Vanquish
 Per-class suggestions from the Zarax cheat sheet (Primary / Optional / Filler), plus the full catalog. Pick a character to set class and see what they already own (and which gear slot if equipped). Alternatives show Owned + slot when equipped, otherwise a craft anvil. Catalog reuses disk cache after the first fetch. Still being refined.
 
 ### 👑 Raid BiS
-Compares what you are wearing to this expansion’s raid armor and jewelry. Only items that class can wear are recommended. Catalog reuses disk cache after the first fetch (usable classes are stored per item).
+Compares what you are wearing to this expansion’s raid armor and jewelry. Only items that class can wear are recommended. The paperdoll uses real item icons (not class/slot labels). Catalog reuses disk cache after the first fetch (usable classes are stored per item).
 
 Enter raid coins on each character card to highlight the best vendor upgrade. Evolvers still get a Best in slot pick, but that slot is skipped when spending coins.
 
@@ -102,6 +103,7 @@ That’s all you do in-game.
 🔗 https://github.com/Neclub/EQ-Gear-Management/releases
 
 **2.** Double-click the file to open it.
+-# If Windows SmartScreen appears, choose **More info → Run anyway**. That warning is common for this kind of program.
 
 **3.** Click **EQ Folder** and choose the root of your **EverQuest** folder.
 
@@ -126,4 +128,5 @@ Optional: under **Gear tier colors**, click a swatch to change the report colors
 
 **8.** Click **Generate Report**.
 > 📁 Saved in **Downloads** as `{Server}_Team Inventory.xlsx` by default (or `{Character}_Team Inventory.xlsx` if you exported only one). Use **Browse…** under **Output folder** to pick a different folder; the file name stays the default.
+> ⏳ The status line names what is running (`Fetching from EQ Resource…`, cached catalogs, item details, icons).
 > 🌐 If you chose HTML, it should open in your browser automatically.

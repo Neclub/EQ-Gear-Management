@@ -585,7 +585,10 @@ class WebApi:
     def open_html_report(self, html_path: str) -> dict:
         """Open a saved HTML report in the system default browser."""
         path = Path(html_path)
-        if not path.is_file():
+        if path.suffix.lower() not in {".html", ".htm"}:
+            return {"ok": False, "error": "Not an HTML report."}
+        resolved = path.resolve()
+        if not resolved.is_file():
             return {"ok": False, "error": f"HTML file not found: {html_path}"}
-        webbrowser.open(file_url(path))
-        return {"ok": True, "path": str(path)}
+        webbrowser.open(file_url(resolved))
+        return {"ok": True, "path": str(resolved)}

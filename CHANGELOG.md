@@ -6,6 +6,19 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.5] - 2026-09-04
+
+### Fixed
+
+- **Raid BiS paperdoll:** armor rows cached as class/slot stubs (`PAL Chest`) are hydrated for real names, stats, and icons instead of being skipped because they already had a class list. Incomplete stubs are not written into the item cache.
+- **Generate progress:** the status line names the current step and source (`Fetching from EQ Resource…`, `Fetching from raidloot.com…`, `Using cached …`, item details, icons) instead of a generic catalog message while those steps run.
+- **Downloads:** catalog, item, and icon fetches only follow HTTPS to EQ Resource and raidloot; item icons must be PNG. Opening a saved report only accepts `.html` / `.htm` files.
+
+### Changed
+
+- Type 7/8 catalog progress no longer says “raidloot” when the live source is EQ Resource.
+- **Windows exe:** the PyInstaller build embeds an `asInvoker` manifest, skips UPX, and puts the GitHub project URL in the file properties. GitHub Releases can Authenticode-sign when `IP_SIGN_PFX_B64` is set. Unsigned PyInstaller builds can still trip generic antivirus heuristics; use the GitHub Release and allow the file if Windows SmartScreen asks.
+
 ## [1.35.4] - 2026-09-03
 
 ### Fixed

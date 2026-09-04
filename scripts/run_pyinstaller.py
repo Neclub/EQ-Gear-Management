@@ -61,7 +61,8 @@ VSVersionInfo(
         StringStruct('LegalCopyright', 'Copyright © 2026 Lubworks'),
         StringStruct('OriginalFilename', '{orig}'),
         StringStruct('ProductName', 'EQ Gear Management'),
-        StringStruct('ProductVersion', '{version}')])
+        StringStruct('ProductVersion', '{version}'),
+        StringStruct('Comments', 'https://github.com/Neclub/EQ-Gear-Management')])
       ]),
     VarFileInfo([VarStruct('Translation', [1033, 1200])])
   ]
@@ -86,6 +87,7 @@ def main() -> int:
         "--noconfirm",
         "--onefile",
         "--noconsole",
+        "--noupx",
         "--name",
         exe_name,
         "--exclude-module",
@@ -117,6 +119,9 @@ def main() -> int:
         icon_ico = _ROOT / "src" / "inventory_parser" / "assets" / "eq-icon.ico"
         if icon_ico.is_file():
             args.extend(["--icon", str(icon_ico.resolve())])
+        manifest = _ROOT / "src" / "inventory_parser" / "assets" / "eqgm.manifest"
+        if manifest.is_file():
+            args.extend(["--manifest", str(manifest.resolve())])
 
     print(f"Package version: {version}")
     print(f"Output exe: {_ROOT / 'dist' / f'{exe_name}.exe'}")

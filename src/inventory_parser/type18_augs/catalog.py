@@ -6,8 +6,6 @@ import json
 import re
 import time
 import urllib.error
-import urllib.parse
-import urllib.request
 from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
@@ -15,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
+from inventory_parser.http_fetch import http_get_text, http_post_text
 from inventory_parser.slot2_augs.aug_stats import clean_stats
 from inventory_parser.slot2_augs.eqresource_augs import (
     USER_AGENT,
@@ -172,24 +171,11 @@ def parse_item_lore(html: str) -> str | None:
 
 
 def _http_get(url: str, timeout: float = 45.0) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read().decode("utf-8", errors="replace")
+    return http_get_text(url, timeout=timeout, user_agent=USER_AGENT)
 
 
 def _http_post(url: str, payload: dict[str, str], timeout: float = 45.0) -> str:
-    body = urllib.parse.urlencode(payload).encode("utf-8")
-    req = urllib.request.Request(
-        url,
-        data=body,
-        headers={
-            "User-Agent": USER_AGENT,
-            "Content-Type": "application/x-www-form-urlencoded",
-        },
-        method="POST",
-    )
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read().decode("utf-8", "replace")
+    return http_post_text(url, payload, timeout=timeout, user_agent=USER_AGENT)
 
 
 def _load_json(path: Path) -> dict:

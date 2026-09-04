@@ -7,7 +7,7 @@ import re
 import time
 import urllib.error
 import urllib.parse
-import urllib.request
+from collections.abc import Callable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
 from html.parser import HTMLParser
@@ -37,6 +37,7 @@ from inventory_parser.slot2_augs.eqresource_augs import (
     _stats_from_eqr_html,
     parse_eqresource_lore_group,
 )
+from inventory_parser.http_fetch import http_get_text
 from inventory_parser.slot2_augs.paths import appdata_dir
 
 CACHE_FILENAME = "raid_bis_catalog.json"
@@ -48,6 +49,19 @@ RAIDARMOR_URL = "https://sor.eqresource.com/raidarmor.php"
 RAIDGEAR_URL = "https://sor.eqresource.com/raidgear.php"
 RAIDVENDOR_URL = "https://sor.eqresource.com/raidvendorgood.php"
 RAIDLOOT_SEARCH_URL = "https://www.raidloot.com/items"
+
+StatusFn = Callable[[str, int, int], None]
+
+
+def _emit_status(
+    on_status: StatusFn | None,
+    message: str,
+    done: int = 0,
+    total: int = 1,
+) -> None:
+    if on_status is not None:
+        on_status(message, done, total)
+
 
 _ITEM_HREF_RE = re.compile(r"items\.php\?id=(\d+)", re.IGNORECASE)
 _ICON_RE = re.compile(r"itemimages/(\d+)\.(?:png|gif|jpg|webp)", re.IGNORECASE)
@@ -63,6 +77,7 @@ _TIER_HEAD_RE = re.compile(
     r'<a\s+name="tier(\d+)"></a>.*?<font[^>]*>\s*Tier\s+\d+\s+-\s*([^<]+)',
     re.IGNORECASE | re.DOTALL,
 )
+_RAIDARMOR_STUB_NAME_RE = re.compile(r"^[A-Z]{3} \w+$")
 _SKIP_NAME_RE = re.compile(
     r"diminished|riven arcana|emblem of|crate of|armor lining|fractured armor",
     re.IGNORECASE,
@@ -93,9 +108,7 @@ def item_cache_path() -> Path:
 
 
 def _http_get(url: str, timeout: float = 45.0) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read().decode("utf-8", errors="replace")
+    return http_get_text(url, timeout=timeout, user_agent=USER_AGENT)
 
 
 def _load_item_cache() -> dict:
@@ -127,6 +140,23 @@ def _save_json(path: Path, data: dict) -> None:
 
 def should_skip_name(name: str) -> bool:
     return bool(_SKIP_NAME_RE.search(name or ""))
+
+
+def _is_raidarmor_stub_name(name: str) -> bool:
+    return bool(_RAIDARMOR_STUB_NAME_RE.fullmatch((name or "").strip()))
+
+
+def _item_needs_page_hydrate(item: RaidGearCandidate) -> bool:
+    """True when the catalog row is missing class, stats, icon, or a real name."""
+    if item.classes is None:
+        return True
+    if _is_raidarmor_stub_name(item.name) or (item.name or "").startswith("Item "):
+        return True
+    if not item.icon_id:
+        return True
+    if not item.stats:
+        return True
+    return False
 
 
 def parse_raidarmor_html(html: str) -> list[RaidGearCandidate]:
@@ -421,7 +451,7 @@ def parse_item_page(html: str, item_id: int, *, name_hint: str = "") -> RaidGear
 def _better_name(base: RaidGearCandidate, extra: RaidGearCandidate) -> str:
     extra_name = (extra.name or "").strip()
     base_name = (base.name or "").strip()
-    if re.fullmatch(r"[A-Z]{3} \w+", base_name) and extra_name and extra_name != base_name:
+    if _is_raidarmor_stub_name(base_name) and extra_name and extra_name != base_name:
         return extra_name
     return extra_name or base_name
 
@@ -554,6 +584,7 @@ def fetch_catalog(
     item_html_by_id: dict[int, str] | None = None,
     polite_delay_s: float = 0.05,
     hydrate: bool = True,
+    on_status: StatusFn | None = None,
 ) -> RaidBisCatalog:
     """Build the current-expansion raid armor + jewelry catalog."""
     now = datetime.now(timezone.utc).isoformat()
@@ -578,8 +609,10 @@ def fetch_catalog(
         from_cache = True
         urls = list(cached.get("urls") or urls)
         vendor = vendor_catalog_from_dict(cache.get("vendor"))
+        _emit_status(on_status, "Using cached Raid BiS catalog…")
     else:
         try:
+            _emit_status(on_status, "Fetching from EQ Resource…")
             armor_html = html_overrides.get("raidarmor")
             if armor_html is None:
                 if not allow_network:
@@ -650,7 +683,9 @@ def fetch_catalog(
                     f"Live EQ Resource raid catalog failed ({exc}); using cache."
                 )
                 vendor = vendor_catalog_from_dict(cache.get("vendor"))
+                _emit_status(on_status, "Using cached Raid BiS catalog…")
             else:
+                _emit_status(on_status, "Fetching from raidloot.com…")
                 fallback = _raidloot_fallback(
                     allow_network=allow_network and not html_overrides,
                     html_overrides=html_overrides,
@@ -696,8 +731,9 @@ def fetch_catalog(
             list(by_id.values()),
             item_html_by_id=item_html_by_id,
             allow_network=hydrate_network,
-            network_unknown_classes_only=from_cache,
+            skip_hydrated=from_cache,
             polite_delay_s=polite_delay_s,
+            on_status=on_status,
         )
         for item_id, extra in hydrated.items():
             base = by_id.get(item_id)
@@ -772,6 +808,8 @@ def _backfill_item_cache_classes(items: list[RaidGearCandidate]) -> None:
     for item in items:
         if item.item_id <= 0 or item.classes is None:
             continue
+        if _item_needs_page_hydrate(item):
+            continue
         key = str(item.item_id)
         if not _item_cache_classes_stale(item_cache.get(key), item):
             continue
@@ -790,12 +828,43 @@ def _hydrate_items(
     item_html_by_id: dict[int, str],
     allow_network: bool,
     polite_delay_s: float,
-    network_unknown_classes_only: bool = False,
+    skip_hydrated: bool = False,
+    on_status: StatusFn | None = None,
 ) -> dict[int, RaidGearCandidate]:
     item_cache = _load_item_cache()
     out: dict[int, RaidGearCandidate] = {}
     fetched = 0
     cache_dirty = False
+    network_ids: list[int] = []
+    for item in items:
+        if item.item_id <= 0:
+            continue
+        if item.item_id in item_html_by_id:
+            continue
+        key = str(item.item_id)
+        entry = item_cache.get(key)
+        if isinstance(entry, dict) and entry.get("ok"):
+            cached_item = _cached_item_from_entry(entry)
+            if cached_item is not None and (
+                not _item_needs_page_hydrate(cached_item) or not allow_network
+            ):
+                continue
+        if not allow_network:
+            continue
+        if skip_hydrated and not _item_needs_page_hydrate(item):
+            continue
+        network_ids.append(item.item_id)
+    network_total = len(network_ids)
+    if on_status is not None:
+        if network_total:
+            _emit_status(
+                on_status,
+                "Fetching item details from EQ Resource…",
+                0,
+                network_total,
+            )
+        elif items:
+            _emit_status(on_status, "Using cached item details…", 1, 1)
     for item in items:
         key = str(item.item_id)
         html = item_html_by_id.get(item.item_id)
@@ -805,20 +874,26 @@ def _hydrate_items(
         if parsed is None and key in item_cache and item_cache[key].get("ok"):
             cached_item = _cached_item_from_entry(item_cache[key])
             if cached_item is not None and (
-                cached_item.classes is not None or not allow_network
+                not _item_needs_page_hydrate(cached_item) or not allow_network
             ):
                 parsed = cached_item
         if parsed is None and allow_network:
-            if network_unknown_classes_only and item.classes is not None:
+            if skip_hydrated and not _item_needs_page_hydrate(item):
                 continue
             if fetched and polite_delay_s > 0:
                 time.sleep(polite_delay_s)
             try:
                 html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item.item_id))
                 parsed = parse_item_page(html, item.item_id, name_hint=item.name)
-                fetched += 1
             except (urllib.error.URLError, TimeoutError, OSError, ValueError):
                 parsed = None
+            fetched += 1
+            _emit_status(
+                on_status,
+                f"Fetching item details from EQ Resource… ({fetched}/{network_total})",
+                fetched,
+                max(network_total, 1),
+            )
             item_cache[key] = (
                 _item_cache_entry(parsed)
                 if parsed is not None
@@ -849,6 +924,7 @@ def hydrate_item_ids(
     item_html_by_id: dict[int, str] | None = None,
     allow_network: bool = True,
     polite_delay_s: float = 0.05,
+    on_status: StatusFn | None = None,
 ) -> dict[int, RaidGearCandidate]:
     """Fetch/cache EQ Resource pages for equipped items not already in the catalog."""
     stubs = [RaidGearCandidate(item_id=i, name=f"Item {i}") for i in item_ids if i > 0]
@@ -857,6 +933,7 @@ def hydrate_item_ids(
         item_html_by_id=item_html_by_id or {},
         allow_network=allow_network,
         polite_delay_s=polite_delay_s,
+        on_status=on_status,
     )
 
 

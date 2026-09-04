@@ -1,7 +1,7 @@
 # ⚔️ EQ Gear Management (EQGM)
 ### One report. One character or your entire box team. No more guessing.
 
-EverQuest Live can output a snapshot of a character to a text file.
+EverQuest **Live** can output a snapshot of a character to a text file.
 **EQGM** reads those files for everyone on your team and turns them into **one** Excel workbook or web report.
 
 > **Mission:** Stop farming in the dark.
@@ -17,7 +17,9 @@ EverQuest Live can output a snapshot of a character to a text file.
 
 No extra installs. Download it, double-click it, point it at your EverQuest folder.
 **These are suggestions based on the stats your class uses. Use the numbers, then decide whether a change is worth it.**
+-# Windows SmartScreen may warn. Download only from GitHub Releases, then More info → Run anyway.
 
 🌐 **Website:** https://neclub.github.io/EQ-Gear-Management/
 🔗 **Download:** https://github.com/Neclub/EQ-Gear-Management/releases
+:chart_with_downwards_trend: **Example:** https://neclub.github.io/Lub-Inventory/
 -# EverQuest Live only. Not for TLP or progression servers.

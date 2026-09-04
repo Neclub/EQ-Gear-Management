@@ -63,8 +63,8 @@ Current-expansion raid T1 and T2 armor and jewelry vs what each character is wea
 
 **Excel:** a **Raid BiS** sheet with current item, recommended item, tier, vendor cost/item, and stat changes.
 
-**HTML:** an inventory-window paperdoll (green outline = already BiS, gold = upgrade) plus a table of every scored slot. Character names use a gold nameplate with a class badge. Hover **Raid BiS** for scoring notes. A **Character** dropdown filters to one persona (`Name ( CLASS )`). Stat changes list HP, the class’s primary HStat, AC for tanks (WAR/PAL/SHD), Mana except for WAR/ROG/MNK/BER, and Spell Damage for casters.
+**HTML:** an inventory-window paperdoll (green outline = already BiS, gold = upgrade) plus a table of every scored slot. Character names use a gold nameplate with a class badge. Hover **Raid BiS** for scoring notes. A **Character** dropdown filters to one persona (`Name ( CLASS )`). Stat changes list HP, the class’s primary HStat, AC for tanks (WAR/PAL/SHD), Mana except for WAR/ROG/MNK/BER, and Spell Damage for casters. Armor icons use the real item name and EQ Resource icon (not a `PAL Chest` stub).
 
-Needs a network fetch the first time (EQ Resource raid armor/jewelry, raidloot fallback); later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache. That cache stores each item’s usable class list (`Class: All` is stored as every class). After updating to **1.35.4** or newer, regenerate once so the cache picks up class lists. Item icons are cached at generate time. Uncheck the **Raid BiS** chip to skip.
+Needs a network fetch the first time (EQ Resource raid armor/jewelry, raidloot fallback); later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache. That cache stores each item’s usable class list (`Class: All` is stored as every class). After updating to **1.35.5** or newer, regenerate once so class lists stay current and cached armor stubs get real names and icons. Item icons are cached at generate time. Uncheck the **Raid BiS** chip to skip.
 
 See also: [[Setup Screen]], [[HTML Report]].

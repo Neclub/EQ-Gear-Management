@@ -19,6 +19,8 @@ def test_gui_assets_exist() -> None:
 def test_app_icon_assets_exist() -> None:
     assert asset_path("eq-icon.png").is_file()
     assert asset_path("eq-icon.ico").is_file()
+    assert asset_path("eqgm.manifest").is_file()
+    assert "asInvoker" in asset_path("eqgm.manifest").read_text(encoding="utf-8")
 
 
 def test_read_spell_rune_config() -> None:

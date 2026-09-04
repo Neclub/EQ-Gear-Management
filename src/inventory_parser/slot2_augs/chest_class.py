@@ -7,11 +7,11 @@ import os
 import re
 import time
 import urllib.error
-import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterable
 
+from inventory_parser.http_fetch import http_get_text
 from inventory_parser.parser import InventoryData, InventoryItem
 from inventory_parser.slot2_augs.paths import appdata_dir
 from inventory_parser.slot2_augs.profiles import CLASS_TO_PROFILE, ProfileId, profile_for_class
@@ -72,9 +72,7 @@ def cache_path() -> Path:
 
 
 def _http_get(url: str, timeout: float = 30.0) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read().decode("utf-8", errors="replace")
+    return http_get_text(url, timeout=timeout, user_agent=USER_AGENT)
 
 
 def _load_cache() -> dict:

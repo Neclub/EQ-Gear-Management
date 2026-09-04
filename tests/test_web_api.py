@@ -304,6 +304,14 @@ def test_open_html_report_missing_file() -> None:
     assert "not found" in result["error"]
 
 
+def test_open_html_report_rejects_non_html(tmp_path) -> None:
+    exe = tmp_path / "EQGM.exe"
+    exe.write_bytes(b"MZ")
+    result = WebApi().open_html_report(str(exe))
+    assert result["ok"] is False
+    assert "HTML" in result["error"]
+
+
 def test_fit_window_without_window() -> None:
     api = WebApi()
     assert api.fit_window(900, 700) == {"ok": False}

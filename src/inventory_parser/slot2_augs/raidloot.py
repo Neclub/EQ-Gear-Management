@@ -6,7 +6,6 @@ import json
 import os
 import re
 import urllib.error
-import urllib.request
 from dataclasses import dataclass, field, replace
 from datetime import datetime, timezone
 from html.parser import HTMLParser
@@ -30,6 +29,7 @@ from inventory_parser.slot2_augs.profiles import (
     ProfileId,
     profile_info,
 )
+from inventory_parser.http_fetch import http_get_text
 from inventory_parser.slot2_augs.paths import appdata_dir
 from inventory_parser.slots import EAR_REPORT_SLOTS
 
@@ -802,10 +802,7 @@ def parse_raidloot_html(html: str, profile: ProfileId) -> list[AugCandidate]:
 
 
 def _http_get(url: str, timeout: float = 30.0) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        raw = resp.read()
-    return raw.decode("utf-8", errors="replace")
+    return http_get_text(url, timeout=timeout, user_agent=USER_AGENT)
 
 
 def _load_cache() -> dict:

@@ -28,3 +28,12 @@ def test_sign_required_fails_without_config(tmp_path: Path, monkeypatch) -> None
 def test_sign_fails_when_exe_missing(monkeypatch) -> None:
     monkeypatch.setenv("IP_SIGN_PFX", r"C:\missing\cert.pfx")
     assert sign_executable(Path(r"C:\missing\app.exe")) == 1
+
+
+def test_pyinstaller_packaging_avoids_upx_and_identifies_publisher() -> None:
+    script = Path(__file__).resolve().parents[1] / "scripts" / "run_pyinstaller.py"
+    text = script.read_text(encoding="utf-8")
+    assert "--noupx" in text
+    assert "--manifest" in text
+    assert "eqgm.manifest" in text
+    assert "https://github.com/Neclub/EQ-Gear-Management" in text

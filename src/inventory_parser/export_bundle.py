@@ -104,7 +104,7 @@ def build_export_bundle(
         report,
         html_overrides=eqr_gear_tier_html,
         allow_network=bool(fetch_eqr_gear_tiers),
-        on_progress=_item_progress("Looking up gear T-levels…", 0.04, 0.16),
+        on_progress=_item_progress("Fetching gear T-levels from EQ Resource…", 0.04, 0.16),
     )
 
     apply_character_column_order(report, character_column_order)

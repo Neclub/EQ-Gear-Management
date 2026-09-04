@@ -40,23 +40,32 @@ def build_raid_bis_export(
 ) -> RaidBisExport:
     """Fetch the raid catalog and compare each character's equipped gear."""
     warnings: list[str] = []
-    report_progress(on_progress, "Fetching current-expansion raid gear catalog…", 0.0, 0.35, 0, 1)
+    last_catalog_msg = ["Fetching from EQ Resource…"]
+
+    def _catalog_status(message: str, done: int = 0, total: int = 1) -> None:
+        last_catalog_msg[0] = message
+        report_progress(on_progress, message, 0.0, 0.35, done, max(total, 1))
+
     catalog = fetch_catalog(
         allow_network=allow_network,
         html_overrides=html_overrides,
         item_html_by_id=item_html_by_id,
         hydrate=hydrate,
+        on_status=_catalog_status if on_progress else None,
     )
-    report_progress(on_progress, "Fetching current-expansion raid gear catalog…", 0.0, 0.35, 1, 1)
+    report_progress(on_progress, last_catalog_msg[0], 0.0, 0.35, 1, 1)
     if catalog.warning:
         warnings.append(catalog.warning)
 
-    report_progress(on_progress, "Comparing equipped gear to Raid BiS…", 0.35, 0.85, 0, 1)
+    def _equip_status(message: str, done: int = 0, total: int = 1) -> None:
+        report_progress(on_progress, message, 0.35, 0.42, done, max(total, 1))
+
     equipped = resolve_equipped_stats(
         team.characters,
         catalog.items,
         item_html_by_id=item_html_by_id,
         allow_network=allow_network and not html_overrides,
+        on_status=_equip_status if on_progress else None,
     )
     characters: list[CharacterRaidBis] = []
     n = max(len(team.characters), 1)
@@ -69,8 +78,8 @@ def build_raid_bis_export(
         report_progress(
             on_progress,
             f"Comparing equipped gear to Raid BiS… ({i}/{len(team.characters)})",
-            0.35,
-            0.85,
+            0.42,
+            0.82,
             i,
             n,
         )
@@ -88,10 +97,20 @@ def build_raid_bis_export(
                     icon_ids.add(slot.current_icon_id)
         if catalog.vendor and catalog.vendor.currency_icon_id:
             icon_ids.add(catalog.vendor.currency_icon_id)
+
+        last_icon_msg = ["Using cached item icons…"]
+
+        def _icon_status(message: str, done: int = 0, total: int = 1) -> None:
+            last_icon_msg[0] = message
+            report_progress(on_progress, message, 0.82, 0.95, done, max(total, 1))
+
         icon_data_uris = collect_icon_data_uris(
             icon_ids,
             allow_network=allow_network and not html_overrides,
+            on_status=_icon_status if on_progress else None,
         )
+        if icon_ids:
+            report_progress(on_progress, last_icon_msg[0], 0.82, 0.95, 1, 1)
 
     prefix = default_export_prefix_from_report(team)
     return RaidBisExport(

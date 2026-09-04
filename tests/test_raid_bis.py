@@ -1069,6 +1069,7 @@ def test_fetch_catalog_uses_disk_cache_before_network(tmp_path, monkeypatch) -> 
                             "classes": ["WAR"],
                             "slots": ["Chest"],
                             "tier": "SOR-R2",
+                            "icon_id": "5297",
                         }
                     ],
                 }
@@ -1083,6 +1084,61 @@ def test_fetch_catalog_uses_disk_cache_before_network(tmp_path, monkeypatch) -> 
     catalog = fetch_catalog(allow_network=True, hydrate=True)
     assert catalog.from_cache is True
     assert catalog.items[0].classes == frozenset({"WAR"})
+
+
+def test_cached_armor_stub_still_hydrates_name_and_icon(tmp_path, monkeypatch) -> None:
+    import json
+
+    from inventory_parser.raid_bis.catalog import cache_path, fetch_catalog
+
+    monkeypatch.setattr(
+        "inventory_parser.raid_bis.catalog.appdata_dir",
+        lambda: tmp_path,
+    )
+
+    def boom(*_args, **_kwargs):
+        raise AssertionError("item_html_by_id must satisfy armor stub hydration")
+
+    monkeypatch.setattr("inventory_parser.raid_bis.catalog._http_get", boom)
+    cache_path().write_text(
+        json.dumps(
+            {
+                "catalog": {
+                    "fetched_at": "2026-01-01T00:00:00+00:00",
+                    "urls": [],
+                    "items": [
+                        {
+                            "item_id": 175821,
+                            "name": "PAL Chest",
+                            "classes": ["PAL"],
+                            "slots": ["Chest"],
+                            "tier": "T2",
+                        }
+                    ],
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
+    html = """
+    <font size="+1"><b><center>Exarch Breastplate of Resonant Fracture<br><br></center></b></font>
+    Class: Paladin
+    Slot: Chest
+    <img src="itemimages/5297.png">
+    <td>AC:<br>HP:<br></td>
+    <td>1981<br>24275<br></td>
+    Raid - Tier 2
+    """
+    catalog = fetch_catalog(
+        allow_network=True,
+        hydrate=True,
+        item_html_by_id={175821: html},
+    )
+    chest = catalog.items[0]
+    assert chest.name == "Exarch Breastplate of Resonant Fracture"
+    assert chest.icon_id == "5297"
+    assert chest.fits_class("PAL")
+    assert not chest.fits_class("ENC")
 
 
 def test_item_cache_stores_usable_classes(tmp_path, monkeypatch) -> None:

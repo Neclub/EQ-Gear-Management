@@ -15,8 +15,10 @@
 | Type 18/19 Augs sheet missing or empty | Leave the **Type 18/19 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
 | Raid BiS sheet missing or slots look empty | Leave the **Raid BiS** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
 | Raid BiS suggests an item your class cannot wear | Use **1.35.4** or newer and regenerate. Older caches treated jewelry with no class list as wearable by everyone. |
+| Raid BiS paperdoll shows `PAL Chest` (or similar) instead of an icon | Use **1.35.5** or newer and regenerate. Older caches kept armor catalog stubs and skipped hydrating names, stats, and icons. |
 | HTML looks outdated after an update | Regenerate the report. |
 | Warning: “Failed to remove temporary directory …_MEI…” | Harmless packaging cleanup from the single-file `.exe`. Windows (or antivirus) sometimes keeps a handle open after exit, so PyInstaller cannot delete its extract folder. Click **OK** and keep working. You can delete leftover `_MEI*` folders under `%TEMP%` when EQGM is closed. It is unrelated to reading your EverQuest folder. |
+| Windows / SmartScreen / antivirus warns about `EQGM-x.y.z.exe` | Download only from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases). PyInstaller one-file apps often get generic heuristic flags. SmartScreen: **More info → Run anyway**. You can allow the file in Windows Security. |
 
 More help: [[Getting Started]], [[In-Game Output Files]], [[Setup Screen]].
 

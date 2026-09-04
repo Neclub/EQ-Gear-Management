@@ -1074,10 +1074,10 @@ async function generateReport() {
   setGenerating(true);
   $("status").classList.remove("ok");
   $("status").textContent = buildingStatusText();
-  if (state.includeSlot2) showGenProgress(0, "Building Type 7/8 aug catalog and report…");
-  else if (state.includeType5) showGenProgress(0, "Looking up Type 5 sockets…");
-  else if (state.includeType18) showGenProgress(0, "Building Type 18/19 aug catalog…");
-  else if (state.includeRaidBis) showGenProgress(0, "Building Raid BiS catalog and report…");
+  if (state.includeSlot2) showGenProgress(0, "Fetching from EQ Resource…");
+  else if (state.includeType5) showGenProgress(0, "Fetching from EQ Resource…");
+  else if (state.includeType18) showGenProgress(0, "Fetching from EQ Resource…");
+  else if (state.includeRaidBis) showGenProgress(0, "Fetching from EQ Resource…");
 
   const useAdvanced =
     state.includeSlot2 &&

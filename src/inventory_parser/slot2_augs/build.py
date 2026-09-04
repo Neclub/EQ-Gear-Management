@@ -156,6 +156,15 @@ def build_farm_list(
     return entries
 
 
+def _type78_catalog_status_message(cat: CatalogResult) -> str:
+    if cat.from_cache:
+        return "Using cached Type 7/8 catalog…"
+    url = (cat.url or "").casefold()
+    if "raidloot.com" in url:
+        return "Fetching from raidloot.com…"
+    return "Fetching from EQ Resource…"
+
+
 def apply_expansions_to_characters(
     characters: list[CharacterSlot2Report],
     expansions: dict[int, str],
@@ -253,15 +262,15 @@ def build_slot2_export(
 
     s0, s1 = _PROGRESS_SOCKETS
     if type78_slot_by_parent_id is None:
-        report_progress(on_progress, "Resolving item sockets…", s0, s1, 0, 1)
+        report_progress(on_progress, "Fetching sockets from EQ Resource…", s0, s1, 0, 1)
         type78_slot_by_parent_id = resolve_type78_slots(
             parent_ids,
             overrides=socket_overrides,
             on_progress=_range_item_progress(
-                on_progress, "Resolving item sockets…", s0, s1
+                on_progress, "Fetching sockets from EQ Resource…", s0, s1
             ),
         )
-    report_progress(on_progress, "Resolving item sockets…", s0, s1, 1, 1)
+    report_progress(on_progress, "Fetching sockets from EQ Resource…", s0, s1, 1, 1)
 
     char_profiles: list[ProfileId] = []
     for data in inventories:
@@ -301,13 +310,14 @@ def build_slot2_export(
     profiles_needed = list(dict.fromkeys([primary_profile, *char_profiles]))
     n_profiles = len(profiles_needed)
     report_progress(
-        on_progress, "Fetching raidloot catalog…", cat0, cat1, 0, max(n_profiles, 1)
+        on_progress, "Fetching from EQ Resource…", cat0, cat1, 0, max(n_profiles, 1)
     )
     for i, pid in enumerate(profiles_needed, start=1):
         catalog_for(pid)
+        cat = catalogs[pid]
         report_progress(
             on_progress,
-            f"Fetching raidloot catalog… ({i}/{n_profiles})",
+            f"{_type78_catalog_status_message(cat)} ({i}/{n_profiles})",
             cat0,
             cat1,
             i,
@@ -367,17 +377,17 @@ def build_slot2_export(
                 if cmp_.recommended_id and cmp_.recommended_id > 0:
                     rec_ids.append(cmp_.recommended_id)
         e0, e1 = _PROGRESS_EXPANSIONS
-        report_progress(on_progress, "Resolving expansions…", e0, e1, 0, 1)
+        report_progress(on_progress, "Fetching expansions from EQ Resource…", e0, e1, 0, 1)
         expansions = resolve_item_expansions(
             rec_ids,
             html_overrides=eqr_aug_html_by_id,
             allow_network=fetch_expansions,
             on_progress=_range_item_progress(
-                on_progress, "Resolving expansions…", e0, e1
+                on_progress, "Fetching expansions from EQ Resource…", e0, e1
             ),
         )
         characters = apply_expansions_to_characters(characters, expansions)
-        report_progress(on_progress, "Resolving expansions…", e0, e1, 1, 1)
+        report_progress(on_progress, "Fetching expansions from EQ Resource…", e0, e1, 1, 1)
 
         from inventory_parser.slot2_augs.weights import rank_key
 

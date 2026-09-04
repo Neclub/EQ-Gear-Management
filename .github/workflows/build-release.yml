@@ -34,6 +34,27 @@ jobs:
         shell: bash
         run: echo "version=$(python scripts/print_package_version.py)" >> "$GITHUB_OUTPUT"
 
+      - name: Sign executable
+        env:
+          IP_SIGN_PFX_B64: ${{ secrets.IP_SIGN_PFX_B64 }}
+          IP_SIGN_PASSWORD: ${{ secrets.IP_SIGN_PASSWORD }}
+        shell: pwsh
+        run: |
+          if ([string]::IsNullOrWhiteSpace($env:IP_SIGN_PFX_B64)) {
+            Write-Host "Skipping code signing (IP_SIGN_PFX_B64 secret is not set)"
+            exit 0
+          }
+          $pfxPath = Join-Path $env:RUNNER_TEMP "eqgm-codesign.pfx"
+          $b64 = ($env:IP_SIGN_PFX_B64 -replace '\s', '')
+          try {
+            [IO.File]::WriteAllBytes($pfxPath, [Convert]::FromBase64String($b64))
+            $env:IP_SIGN_PFX = $pfxPath
+            python scripts/sign_exe.py --require "dist/EQGM-${{ steps.version.outputs.version }}.exe"
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          } finally {
+            Remove-Item $pfxPath -Force -ErrorAction SilentlyContinue
+          }
+
       - name: Publish to GitHub Releases
         uses: softprops/action-gh-release@v2
         with:

@@ -11,6 +11,9 @@ REM set "IP_SIGN_PFX="
 REM set "IP_SIGN_PASSWORD="
 REM set "IP_SIGN_THUMBPRINT=YOUR_CERT_SHA1_THUMBPRINT"
 
+REM GitHub Releases: add repo secrets IP_SIGN_PFX_B64 (base64 of the .pfx)
+REM and IP_SIGN_PASSWORD. The build workflow signs when those secrets are set.
+
 REM Optional overrides
 REM set "IP_SIGNTOOL=C:\Program Files (x86)\Windows Kits\10\bin\10.0.22621.0\x64\signtool.exe"
 REM set "IP_SIGN_TIMESTAMP_URL=http://timestamp.digicert.com"

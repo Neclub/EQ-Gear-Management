@@ -7,13 +7,13 @@ import os
 import re
 import time
 import urllib.error
-import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterable
 
+from inventory_parser.http_fetch import http_get_text
 from inventory_parser.slot2_augs.paths import appdata_dir
 
 USER_AGENT = "EQ-Augs/0.2 (Slot2 type 7/8 checker; local tool)"
@@ -88,10 +88,7 @@ def parse_eqresource_item_html(html: str) -> list[AugSocket]:
 
 
 def _http_get(url: str, timeout: float = 30.0) -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        raw = resp.read()
-    return raw.decode("utf-8", errors="replace")
+    return http_get_text(url, timeout=timeout, user_agent=USER_AGENT)
 
 
 def _load_cache() -> dict:

@@ -6,7 +6,7 @@ from dataclasses import dataclass, field
 from typing import Literal, Mapping
 
 from inventory_parser.items import EquippedItem
-from inventory_parser.raid_bis.catalog import hydrate_item_ids
+from inventory_parser.raid_bis.catalog import StatusFn, hydrate_item_ids
 from inventory_parser.raid_bis.models import (
     NON_LORE_SLOTS,
     PAPERDOLL_SLOTS,
@@ -580,6 +580,7 @@ def resolve_equipped_stats(
     *,
     item_html_by_id: dict[int, str] | None = None,
     allow_network: bool = True,
+    on_status: StatusFn | None = None,
 ) -> dict[int, RaidGearCandidate]:
     known = {c.item_id for c in catalog if c.item_id > 0}
     needed: list[int] = []
@@ -593,4 +594,5 @@ def resolve_equipped_stats(
         needed,
         item_html_by_id=item_html_by_id,
         allow_network=allow_network,
+        on_status=on_status,
     )
