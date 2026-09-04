@@ -14,6 +14,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 
 from inventory_parser.raid_bis.models import (
+    ALL_CLASS_ABBRS,
     ARMOR_SLOT_HEADERS,
     JEWELRY_TYPE_SLOTS,
     RaidBisCatalog,
@@ -26,7 +27,7 @@ from inventory_parser.raid_bis.vendor import (
     vendor_catalog_to_dict,
 )
 from inventory_parser.slot2_augs.aug_stats import clean_stats, merge_stats
-from inventory_parser.slot2_augs.chest_class import parse_eqresource_item_classes
+from inventory_parser.slot2_augs.chest_class import parse_eqresource_item_class_set
 from inventory_parser.slot2_augs.eqresource_augs import (
     EQRESOURCE_ITEM_URL,
     USER_AGENT,
@@ -40,7 +41,8 @@ from inventory_parser.slot2_augs.paths import appdata_dir
 
 CACHE_FILENAME = "raid_bis_catalog.json"
 ITEM_CACHE_FILENAME = "raid_bis_item_cache.json"
-ITEM_CACHE_VERSION = 6
+ITEM_CACHE_VERSION = 7
+_CLASS_ALL_TOKEN = "ALL"
 _CATALOG_FETCH_WORKERS = 6
 RAIDARMOR_URL = "https://sor.eqresource.com/raidarmor.php"
 RAIDGEAR_URL = "https://sor.eqresource.com/raidgear.php"
@@ -309,6 +311,7 @@ def parse_raidgear_html(
                 item_id=item_id,
                 name=name or f"Item {item_id}",
                 stats=clean_stats(stats),
+                classes=None,
                 slots=slots,
                 tier=tier,
                 icon_id=icon,
@@ -388,7 +391,7 @@ def parse_item_page(html: str, item_id: int, *, name_hint: str = "") -> RaidGear
     if should_skip_name(name):
         return None
     stats = _stats_from_eqr_html(html)
-    classes = frozenset(parse_eqresource_item_classes(html))
+    classes = parse_eqresource_item_class_set(html)
     slot_m = _SLOT_RE.search(html)
     slot_text = slot_m.group(1).strip() if slot_m else ""
     slots = _allowed_from_eqr_slot_text(re.sub(r"\s+", " ", slot_text))
@@ -431,7 +434,7 @@ def merge_hydrated(base: RaidGearCandidate, extra: RaidGearCandidate) -> RaidGea
         item_id=base.item_id,
         name=_better_name(base, extra),
         stats=merge_stats(base.stats, extra.stats),
-        classes=extra.classes or base.classes,
+        classes=extra.classes if extra.classes is not None else base.classes,
         slots=extra.slots or base.slots,
         tier=extra.tier or base.tier,
         lore_group=extra.lore_group or base.lore_group,
@@ -449,12 +452,37 @@ def raidgear_url(slot_type: str, *, tier: str = "4") -> str:
     return f"{RAIDGEAR_URL}?{q}"
 
 
+def _classes_to_stored(classes: frozenset[str] | None) -> list[str] | None:
+    if classes is None:
+        return None
+    if not classes:
+        return sorted(ALL_CLASS_ABBRS)
+    return sorted(classes)
+
+
+def _classes_from_stored(raw: object) -> frozenset[str] | None:
+    if raw is None:
+        return None
+    if not isinstance(raw, list):
+        return None
+    tokens = [str(c).strip().upper() for c in raw if str(c).strip()]
+    if not tokens:
+        # Legacy cache: [] was both unhydrated jewelry and Class: All.
+        # Treat as unknown so restricted items are never assumed wearable.
+        return None
+    if tokens == [_CLASS_ALL_TOKEN] or set(tokens) >= ALL_CLASS_ABBRS:
+        return frozenset()
+    return frozenset(t for t in tokens if t != _CLASS_ALL_TOKEN and t in ALL_CLASS_ABBRS)
+
+
 def _candidate_to_dict(item: RaidGearCandidate) -> dict:
+    stored = _classes_to_stored(item.classes)
     return {
         "item_id": item.item_id,
         "name": item.name,
         "stats": dict(item.stats),
-        "classes": sorted(item.classes),
+        "classes": stored,
+        "class_all": bool(item.classes is not None and not item.classes),
         "slots": sorted(item.slots),
         "tier": item.tier,
         "lore_group": item.lore_group,
@@ -466,11 +494,15 @@ def _candidate_to_dict(item: RaidGearCandidate) -> dict:
 
 
 def _candidate_from_dict(raw: dict) -> RaidGearCandidate:
+    if raw.get("class_all"):
+        classes: frozenset[str] | None = frozenset()
+    else:
+        classes = _classes_from_stored(raw.get("classes"))
     return RaidGearCandidate(
         item_id=int(raw["item_id"]),
         name=str(raw.get("name") or f"Item {raw['item_id']}"),
         stats=clean_stats(raw.get("stats") or {}),
-        classes=frozenset(str(c).upper() for c in (raw.get("classes") or [])),
+        classes=classes,
         slots=frozenset(str(s) for s in (raw.get("slots") or [])),
         tier=str(raw.get("tier") or ""),
         lore_group=raw.get("lore_group"),
@@ -479,6 +511,39 @@ def _candidate_from_dict(raw: dict) -> RaidGearCandidate:
         effect=str(raw.get("effect") or ""),
         source=str(raw.get("source") or "EQ Resource"),
     )
+
+
+def _item_cache_entry(item: RaidGearCandidate, *, fetched_at: str | None = None) -> dict:
+    payload = _candidate_to_dict(item)
+    return {
+        "ok": True,
+        "fetched_at": fetched_at or datetime.now(timezone.utc).isoformat(),
+        "classes": payload["classes"],
+        "class_all": payload["class_all"],
+        "item": payload,
+    }
+
+
+def _cached_item_from_entry(entry: dict) -> RaidGearCandidate | None:
+    raw = entry.get("item")
+    if not isinstance(raw, dict) or not raw.get("item_id"):
+        return None
+    if raw.get("classes") is None and entry.get("classes") is not None:
+        raw = {
+            **raw,
+            "classes": entry.get("classes"),
+            "class_all": entry.get("class_all"),
+        }
+    return _candidate_from_dict(raw)
+
+
+def _item_cache_classes_stale(entry: dict | None, item: RaidGearCandidate) -> bool:
+    if not entry or not entry.get("ok"):
+        return True
+    cached = _cached_item_from_entry(entry)
+    if cached is None:
+        return True
+    return cached.classes != item.classes
 
 
 def fetch_catalog(
@@ -626,11 +691,12 @@ def fetch_catalog(
         by_id.setdefault(item.item_id, item)
 
     if hydrate:
-        hydrate_network = bool(allow_network) and not html_overrides and not from_cache
+        hydrate_network = bool(allow_network) and not html_overrides
         hydrated = _hydrate_items(
             list(by_id.values()),
             item_html_by_id=item_html_by_id,
             allow_network=hydrate_network,
+            network_unknown_classes_only=from_cache,
             polite_delay_s=polite_delay_s,
         )
         for item_id, extra in hydrated.items():
@@ -639,6 +705,18 @@ def fetch_catalog(
                 by_id[item_id] = extra
             else:
                 by_id[item_id] = merge_hydrated(base, extra)
+        if not html_overrides and (allow_network or from_cache):
+            cache["catalog"] = {
+                "fetched_at": cache.get("catalog", {}).get("fetched_at") or now,
+                "urls": urls,
+                "items": [_candidate_to_dict(i) for i in by_id.values()],
+            }
+            if vendor is not None:
+                cache["vendor"] = vendor_catalog_to_dict(vendor)
+                cache["vendor"]["fetched_at"] = now
+            _save_json(cache_path(), cache)
+            if allow_network:
+                _backfill_item_cache_classes(list(by_id.values()))
 
     ready = [i for i in by_id.values() if i.item_id > 0 and not should_skip_name(i.name)]
     if vendor is None:
@@ -687,25 +765,52 @@ def _load_vendor(
     return vendor_catalog_from_dict(cache.get("vendor"))
 
 
+def _backfill_item_cache_classes(items: list[RaidGearCandidate]) -> None:
+    """Persist usable class lists onto per-item cache entries."""
+    item_cache = _load_item_cache()
+    dirty = False
+    for item in items:
+        if item.item_id <= 0 or item.classes is None:
+            continue
+        key = str(item.item_id)
+        if not _item_cache_classes_stale(item_cache.get(key), item):
+            continue
+        prior = item_cache.get(key) if isinstance(item_cache.get(key), dict) else {}
+        item_cache[key] = _item_cache_entry(
+            item, fetched_at=str(prior.get("fetched_at") or "") or None
+        )
+        dirty = True
+    if dirty:
+        _save_item_cache(item_cache)
+
+
 def _hydrate_items(
     items: list[RaidGearCandidate],
     *,
     item_html_by_id: dict[int, str],
     allow_network: bool,
     polite_delay_s: float,
+    network_unknown_classes_only: bool = False,
 ) -> dict[int, RaidGearCandidate]:
     item_cache = _load_item_cache()
     out: dict[int, RaidGearCandidate] = {}
     fetched = 0
+    cache_dirty = False
     for item in items:
         key = str(item.item_id)
         html = item_html_by_id.get(item.item_id)
         parsed: RaidGearCandidate | None = None
         if html is not None:
             parsed = parse_item_page(html, item.item_id, name_hint=item.name)
-        elif key in item_cache and item_cache[key].get("ok"):
-            parsed = _candidate_from_dict(item_cache[key]["item"])
-        elif allow_network:
+        if parsed is None and key in item_cache and item_cache[key].get("ok"):
+            cached_item = _cached_item_from_entry(item_cache[key])
+            if cached_item is not None and (
+                cached_item.classes is not None or not allow_network
+            ):
+                parsed = cached_item
+        if parsed is None and allow_network:
+            if network_unknown_classes_only and item.classes is not None:
+                continue
             if fetched and polite_delay_s > 0:
                 time.sleep(polite_delay_s)
             try:
@@ -714,18 +819,26 @@ def _hydrate_items(
                 fetched += 1
             except (urllib.error.URLError, TimeoutError, OSError, ValueError):
                 parsed = None
-            item_cache[key] = {
-                "ok": parsed is not None,
-                "fetched_at": datetime.now(timezone.utc).isoformat(),
-                "item": _candidate_to_dict(parsed) if parsed else None,
-            }
+            item_cache[key] = (
+                _item_cache_entry(parsed)
+                if parsed is not None
+                else {
+                    "ok": False,
+                    "fetched_at": datetime.now(timezone.utc).isoformat(),
+                    "classes": None,
+                    "class_all": False,
+                    "item": None,
+                }
+            )
+            cache_dirty = True
         if parsed is not None:
             out[item.item_id] = parsed
-    if fetched and allow_network:
-        _save_item_cache(item_cache)
-    elif item_html_by_id and not allow_network:
-        pass
-    elif item_html_by_id:
+            if parsed.classes is not None and _item_cache_classes_stale(
+                item_cache.get(key), parsed
+            ):
+                item_cache[key] = _item_cache_entry(parsed)
+                cache_dirty = True
+    if cache_dirty and allow_network:
         _save_item_cache(item_cache)
     return out
 

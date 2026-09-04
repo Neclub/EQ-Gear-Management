@@ -485,7 +485,10 @@ def compare_character(
         rec_stats = dict(recommended.stats) if recommended else {}
         deltas = stat_deltas(current_stats, rec_stats) if recommended else {}
         pet_focus = bool(
-            recommended and recommended.is_pet_focus_ear() and slot_base(slot) == "Ear"
+            class_abbr in PET_FOCUS_CLASSES
+            and recommended
+            and recommended.is_pet_focus_ear()
+            and slot_base(slot) == "Ear"
         )
 
         waist_rows: list[WaistChoice] = []

@@ -10,6 +10,7 @@ from inventory_parser.slot2_augs.chest_class import (
     detect_class_from_chest,
     equipped_chest_item,
     parse_class_list,
+    parse_eqresource_item_class_set,
     parse_eqresource_item_classes,
     parse_raidloot_item_classes,
     profile_from_class,
@@ -37,6 +38,15 @@ def test_parse_raidloot_chest_rog():
 def test_parse_eqresource_chest_monk():
     html = (FIXTURES / "eqresource_chest_173849_mnk.html").read_text(encoding="utf-8")
     assert parse_eqresource_item_classes(html) == ["MNK"]
+
+
+def test_parse_eqresource_item_class_set_all_vs_restricted():
+    assert parse_eqresource_item_class_set("Class: All<br>") == frozenset()
+    assert parse_eqresource_item_class_set(
+        "Class: Beastlord, Magician, Necromancer<br>"
+    ) == frozenset({"BST", "MAG", "NEC"})
+    assert parse_eqresource_item_class_set("Slot: Ear") is None
+    assert parse_eqresource_item_class_set("") is None
 
 
 def test_detect_class_from_chest_override():

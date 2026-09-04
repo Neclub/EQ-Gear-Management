@@ -6,6 +6,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.4] - 2026-09-03
+
+### Fixed
+
+- **Raid BiS class restrictions:** items are only recommended for classes that can wear them. Jewelry with an unknown class list is no longer treated as Class: All (that previously assigned pet-focus ears and other restricted jewelry to the wrong classes, including Enchanters). Pet-focus ears stay MAG, BST, and NEC only. Catalog and item caches store each item’s usable class list (`Class: All` is stored as every class). Regenerate reports after updating.
+
 ## [1.35.3] - 2026-08-29
 
 ### Added

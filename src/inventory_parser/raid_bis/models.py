@@ -42,6 +42,26 @@ SCORED_SLOTS: tuple[str, ...] = tuple(
 )
 
 PET_FOCUS_CLASSES: frozenset[str] = frozenset({"MAG", "BST", "NEC"})
+ALL_CLASS_ABBRS: frozenset[str] = frozenset(
+    {
+        "WAR",
+        "PAL",
+        "SHD",
+        "MNK",
+        "RNG",
+        "ROG",
+        "BST",
+        "BRD",
+        "BER",
+        "ENC",
+        "WIZ",
+        "MAG",
+        "NEC",
+        "SHM",
+        "CLR",
+        "DRU",
+    }
+)
 
 # Wrist items are not Lore; both slots may wear the same bracer.
 NON_LORE_SLOTS: frozenset[str] = frozenset({"Wrist-1", "Wrist-2"})
@@ -92,7 +112,8 @@ class RaidGearCandidate:
     item_id: int
     name: str
     stats: dict[str, int] = field(default_factory=dict)
-    classes: frozenset[str] = field(default_factory=frozenset)
+    # None = class list unknown (not wearable). Empty frozenset = Class: All.
+    classes: frozenset[str] | None = None
     slots: frozenset[str] = field(default_factory=frozenset)
     tier: str = ""
     lore_group: str | None = None
@@ -109,6 +130,8 @@ class RaidGearCandidate:
     def fits_class(self, class_abbr: str | None) -> bool:
         if not class_abbr:
             return False
+        if self.classes is None:
+            return False
         # Empty class list means ALL (EQ Resource "Class: All").
         if not self.classes:
             return True
@@ -123,6 +146,8 @@ class RaidGearCandidate:
         name_hit = "summoner" in (self.name or "").casefold()
         focus_hit = "enhanced minion" in (self.focus or "").casefold()
         if not (name_hit or focus_hit):
+            return False
+        if self.classes is None:
             return False
         if self.classes and not (self.classes & PET_FOCUS_CLASSES):
             return False

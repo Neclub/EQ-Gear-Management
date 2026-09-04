@@ -63,7 +63,7 @@ Shows which type 5 augs people already have equipped (and empty holes). Vanquish
 Per-class suggestions from the Zarax cheat sheet (Primary / Optional / Filler), plus the full catalog. Pick a character to set class and see what they already own (and which gear slot if equipped). Alternatives show Owned + slot when equipped, otherwise a craft anvil. Catalog reuses disk cache after the first fetch. Still being refined.
 
 ### 👑 Raid BiS
-Compares what you are wearing to this expansion’s raid armor and jewelry. Catalog reuses disk cache after the first fetch.
+Compares what you are wearing to this expansion’s raid armor and jewelry. Only items that class can wear are recommended. Catalog reuses disk cache after the first fetch (usable classes are stored per item).
 
 Enter raid coins on each character card to highlight the best vendor upgrade. Evolvers still get a Best in slot pick, but that slot is skipped when spending coins.
 

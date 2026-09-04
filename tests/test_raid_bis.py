@@ -50,6 +50,8 @@ def test_parse_raidgear_back_table():
     assert cloak.stats.get("ac") == 879
     assert cloak.icon_id == "3684"
     assert "Back" in cloak.slots
+    assert cloak.classes is None
+    assert not cloak.fits_class("ENC")
 
 
 def test_t1_can_beat_t2_on_weights():
@@ -166,6 +168,148 @@ def test_war_is_not_pinned_to_pet_focus():
         if slot in loadout:
             assert loadout[slot].item_id != 175913
             assert not loadout[slot].is_pet_focus_ear()
+
+
+def test_enc_is_not_recommended_pet_focus_ear():
+    focus = _cand(
+        item_id=175913,
+        name="Summoner's Earring of Resonant Fracture",
+        stats={"spell_damage": 400, "hint": 90, "ac": 900, "hp": 20000, "mana": 22000},
+        classes=frozenset({"MAG", "BST", "NEC"}),
+        slots=frozenset({"Ear"}),
+        focus="Enhanced Minion XXXVIII",
+    )
+    unknown = _cand(
+        item_id=175713,
+        name="Flame-Dipped Jasper Ear Spike",
+        stats={"spell_damage": 380, "hint": 88, "ac": 800, "hp": 19000, "mana": 21000},
+        classes=None,
+        slots=frozenset({"Ear"}),
+        focus="Enhanced Minion XXXVII",
+    )
+    caster = _cand(
+        item_id=99,
+        name="Fancy Caster Stud",
+        stats={"spell_damage": 200, "hint": 70, "ac": 500, "hp": 15000, "mana": 16000},
+        classes=frozenset({"MAG", "WIZ", "ENC"}),
+        slots=frozenset({"Ear"}),
+        lore_group="fancy",
+    )
+    loadout = build_ideal_loadout([focus, unknown, caster], class_abbr="ENC")
+    ear_ids = {loadout[s].item_id for s in ("Ear-1", "Ear-2") if s in loadout}
+    assert ear_ids == {99}
+    for slot in ("Ear-1", "Ear-2"):
+        if slot in loadout:
+            assert not loadout[slot].is_pet_focus_ear()
+
+    ch = CharacterGear(
+        character="Maenii",
+        server="bristle",
+        filepath="x",
+        class_abbr="ENC",
+    )
+    report = compare_character(ch, [focus, unknown, caster])
+    recommended = [
+        row.recommended_id
+        for row in report.slots
+        if row.gear_slot.startswith("Ear")
+    ]
+    assert 99 in recommended
+    assert 175913 not in recommended
+    assert 175713 not in recommended
+    for row in report.slots:
+        if row.gear_slot.startswith("Ear"):
+            assert row.pet_focus is False
+            assert "pet focus" not in (row.note or "").casefold()
+
+
+def test_class_all_roundtrips_in_catalog_cache():
+    from inventory_parser.raid_bis.catalog import (
+        _candidate_from_dict,
+        _candidate_to_dict,
+    )
+
+    all_class = _cand(
+        item_id=10,
+        name="Everyone Cloak",
+        stats={"ac": 1},
+        classes=frozenset(),
+        slots=frozenset({"Back"}),
+    )
+    unknown = _cand(
+        item_id=11,
+        name="Mystery Ear",
+        stats={"ac": 1},
+        classes=None,
+        slots=frozenset({"Ear"}),
+    )
+    stored_all = _candidate_to_dict(all_class)
+    stored_unknown = _candidate_to_dict(unknown)
+    stored_pet = _candidate_to_dict(
+        _cand(
+            item_id=175913,
+            name="Summoner's Earring of Resonant Fracture",
+            classes=frozenset({"MAG", "BST", "NEC"}),
+            slots=frozenset({"Ear"}),
+        )
+    )
+    assert stored_all["class_all"] is True
+    assert stored_all["classes"] == sorted(
+        {
+            "WAR",
+            "PAL",
+            "SHD",
+            "MNK",
+            "RNG",
+            "ROG",
+            "BST",
+            "BRD",
+            "BER",
+            "ENC",
+            "WIZ",
+            "MAG",
+            "NEC",
+            "SHM",
+            "CLR",
+            "DRU",
+        }
+    )
+    assert "ENC" in stored_all["classes"]
+    assert stored_unknown["classes"] is None
+    assert stored_unknown["class_all"] is False
+    assert stored_pet["classes"] == ["BST", "MAG", "NEC"]
+    assert stored_pet["class_all"] is False
+    assert _candidate_from_dict(stored_all).fits_class("ENC")
+    assert not _candidate_from_dict(stored_unknown).fits_class("ENC")
+    assert _candidate_from_dict(stored_pet).fits_class("MAG")
+    assert not _candidate_from_dict(stored_pet).fits_class("ENC")
+    legacy_empty = _candidate_from_dict(
+        {"item_id": 12, "name": "Legacy", "classes": [], "slots": ["Ear"]}
+    )
+    assert legacy_empty.classes is None
+    assert not legacy_empty.fits_class("ENC")
+    legacy_all_token = _candidate_from_dict(
+        {"item_id": 13, "name": "Legacy All", "classes": ["ALL"], "slots": ["Back"]}
+    )
+    assert legacy_all_token.fits_class("ENC")
+    assert legacy_all_token.fits_class("WAR")
+
+
+def test_unknown_classes_are_not_treated_as_all():
+    ear = _cand(
+        item_id=1,
+        name="Summoner's Earring of Resonant Fracture",
+        stats={"spell_damage": 400, "hint": 90},
+        classes=None,
+        slots=frozenset({"Ear"}),
+        focus="Enhanced Minion XXXVIII",
+    )
+    assert not ear.fits_class("ENC")
+    assert not ear.fits_class("MAG")
+    assert not ear.is_pet_focus_ear()
+    loadout = build_ideal_loadout([ear], class_abbr="ENC")
+    assert "Ear-1" not in loadout
+    assert "Ear-2" not in loadout
 
 
 def test_lore_uniqueness_for_dual_ears():
@@ -467,6 +611,9 @@ def test_parse_item_page_effect():
     assert "Expanding Mind XXIX" in item.effect
     assert "Expanding Mind" in item.focus
     assert "Waist" in item.slots
+    assert item.classes == frozenset()
+    assert item.fits_class("ENC")
+    assert item.fits_class("WAR")
 
 
 def test_parse_item_page_collects_worn_and_click_effects():
@@ -637,6 +784,8 @@ def test_parse_item_page_pet_focus():
     assert item is not None
     assert item.is_pet_focus_ear()
     assert "MAG" in item.classes
+    assert not item.fits_class("ENC")
+    assert item.fits_class("MAG")
     assert item.stats.get("ac") == 515
     assert item.tier == "T2"
 
@@ -931,4 +1080,59 @@ def test_fetch_catalog_uses_disk_cache_before_network(tmp_path, monkeypatch) -> 
     assert catalog.from_cache is True
     assert catalog.items[0].item_id == 175821
     assert catalog.items[0].name == "Test Chest"
+    catalog = fetch_catalog(allow_network=True, hydrate=True)
+    assert catalog.from_cache is True
+    assert catalog.items[0].classes == frozenset({"WAR"})
+
+
+def test_item_cache_stores_usable_classes(tmp_path, monkeypatch) -> None:
+    from inventory_parser.raid_bis.catalog import _hydrate_items, _load_item_cache
+
+    monkeypatch.setattr(
+        "inventory_parser.raid_bis.catalog.appdata_dir",
+        lambda: tmp_path,
+    )
+    html = """
+    <font size="+1"><b><center>Summoner's Earring of Resonant Fracture<br><br></center></b></font>
+    Class: Beastlord, Magician, Necromancer
+    Slot: Ear
+    Focus: Enhanced Minion XXXVIII
+    Raid - Tier 2
+    """
+    stub = _cand(item_id=175913, name="Summoner's Earring", slots=frozenset({"Ear"}))
+    hydrated = _hydrate_items(
+        [stub],
+        item_html_by_id={175913: html},
+        allow_network=True,
+        polite_delay_s=0,
+    )
+    item = hydrated[175913]
+    assert item.fits_class("MAG")
+    assert not item.fits_class("ENC")
+    cache = _load_item_cache()
+    entry = cache["175913"]
+    assert entry["ok"] is True
+    assert entry["classes"] == ["BST", "MAG", "NEC"]
+    assert entry["class_all"] is False
+    assert entry["item"]["classes"] == ["BST", "MAG", "NEC"]
+
+    all_html = """
+    <font size="+1"><b><center>Defender's Waistguard of Resonant Fracture<br><br></center></b></font>
+    Class: All
+    Slot: Waist
+    Raid - Tier 2
+    """
+    all_stub = _cand(item_id=175935, name="Defender's Waistguard", slots=frozenset({"Waist"}))
+    all_hydrated = _hydrate_items(
+        [all_stub],
+        item_html_by_id={175935: all_html},
+        allow_network=True,
+        polite_delay_s=0,
+    )
+    assert all_hydrated[175935].fits_class("ENC")
+    all_entry = _load_item_cache()["175935"]
+    assert all_entry["class_all"] is True
+    assert "ENC" in all_entry["classes"]
+    assert "WAR" in all_entry["classes"]
+    assert len(all_entry["classes"]) == 16
 

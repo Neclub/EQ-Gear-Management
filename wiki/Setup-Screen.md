@@ -35,7 +35,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
 - **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Generate shows a progress bar while sockets and catalogs are fetched. The first run needs network; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache.
 - **Type 5 Augs** chip — on by default when inventories are loaded; uncheck to skip the Type 5 display sheet. Uses parent-item socket maps (cached with Type 7/8).
 - **Type 18/19 Augs** chip — *(work in progress)* on by default when inventories are loaded; uncheck to skip Type 18/19 sheets. First run needs network; later runs reuse the `%LOCALAPPDATA%\EQGM\` search cache.
-- **Raid BiS** chip — on by default when inventories are loaded; uncheck to skip the Raid BiS sheet and catalog fetch. The first run needs network access to EQ Resource; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache.
+- **Raid BiS** chip — on by default when inventories are loaded; uncheck to skip the Raid BiS sheet and catalog fetch. Only items that class can wear are recommended. The first run needs network access to EQ Resource; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache (usable classes are stored per item). After updating to **1.35.4** or newer, regenerate once so the cache picks up class lists.
 
 Details for each report type: [[Gear]], [[Spells]], [[Augs]], [[Quests and Achievements]].
 

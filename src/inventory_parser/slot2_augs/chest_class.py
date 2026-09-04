@@ -143,6 +143,24 @@ def parse_eqresource_item_classes(html: str) -> list[str]:
     return parse_class_list(m.group(1))
 
 
+def parse_eqresource_item_class_set(html: str) -> frozenset[str] | None:
+    """Class restriction from an EQ Resource item page.
+
+    Returns None when Class: is missing or unparsed, an empty frozenset for
+    Class: All, and the parsed abbreviations otherwise.
+    """
+    m = _EQR_CLASS_RE.search(html or "")
+    if not m:
+        return None
+    cleaned = _html_to_text(m.group(1))
+    if not cleaned:
+        return None
+    if cleaned.casefold() == "all":
+        return frozenset()
+    parsed = parse_class_list(cleaned)
+    return frozenset(parsed) if parsed else None
+
+
 def equipped_chest_item(data: InventoryData) -> InventoryItem | None:
     """Return the equipped Chest parent item, if any."""
     for item in data.items:
