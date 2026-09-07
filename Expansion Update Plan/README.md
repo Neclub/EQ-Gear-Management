@@ -20,4 +20,6 @@ Start **Phase 1** when the expansion is announced (target: **December 2026**). R
 3. Update gear/rune/achievement config files.
 4. Run `py -3 -m pytest` and smoke-test exports.
 
+From-source setup, CLI, caches, and the release pipeline: [DEVELOPMENT.md](../DEVELOPMENT.md).
+
 See the main plan for copy-paste prompts and the master checklist.
