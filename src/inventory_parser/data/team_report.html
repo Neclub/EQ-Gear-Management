@@ -3613,7 +3613,12 @@ function renderType18Suggestions(root, data, url, q, filters) {
     : filters.classAbbr || type18DefaultClass(data);
   const block = suggestions.find((s) => s.classAbbr === classAbbr) || suggestions[0];
   const casterStats = !!block.casterStats;
-  const statHeaders = casterStats ? ["Mana", "Spell Dmg"] : ["AC", "HP"];
+  const dexStats = !!block.dexStats;
+  const statHeaders = casterStats
+    ? ["Mana", "Spell Dmg"]
+    : dexStats
+      ? ["HDEX", "HP"]
+      : ["AC", "HP"];
   const allRows = [
     ...(block.primary || []),
     ...(block.optional || []),
@@ -3710,7 +3715,11 @@ function renderType18Suggestions(root, data, url, q, filters) {
             `<span class="badge equipped" title="Equipped in this gear slot">${slot2Esc(r.equippedLocation)}</span>`;
         }
       }
-      const statA = casterStats ? (Number(sug.mana) || 0) : (Number(sug.ac) || 0);
+      const statA = casterStats
+        ? (Number(sug.mana) || 0)
+        : dexStats
+          ? (Number(sug.hdex) || 0)
+          : (Number(sug.ac) || 0);
       const statB = casterStats ? (Number(sug.spellDamage) || 0) : (Number(sug.hp) || 0);
       tr.innerHTML = [
         `<td class="num">${Number(r.rank) || ""}</td>`,

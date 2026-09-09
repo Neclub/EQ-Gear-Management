@@ -111,6 +111,7 @@ def serialize_type18_section(bundle: Type18Export) -> dict:
                 "classAbbr": block.class_abbr,
                 "className": block.class_name,
                 "casterStats": bool(block.caster_stats),
+                "dexStats": bool(block.dex_stats),
                 "primary": [_row_dict(r) for r in block.primary],
                 "optional": [_row_dict(r) for r in block.optional],
                 "filler": [_row_dict(r) for r in block.filler],

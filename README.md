@@ -61,7 +61,7 @@ Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet.
 - **Team Gear** — equipped items by slot, color-coded by tier
 - **Gear T-Level** — expansion tier codes per slot (unknown items looked up on EQ Resource); codes link to the item, hover for the name
 - **Unmade Gear** — raid craft mats and T1 containers still sitting in bags
-- **Raid BiS** — optional current-expansion raid T1/T2 armor and jewelry vs equipped gear (on by default). Only items that class can wear are recommended. Evolvers still get a Best in slot pick but are skipped for coin purchases (magenta gem on hover). Gold nameplate and Character filter. Enter raid coins to highlight the best vendor upgrade.
+- **Raid BiS** — optional current-expansion raid T1/T2 armor and jewelry vs equipped gear (on by default). Only items that class can wear are recommended. MAG/BST/NEC keep a pet-focus ear ranked by Enhanced Minion level. Evolvers still get a Best in slot pick but are skipped for coin purchases (magenta gem on hover). Gold nameplate and Character filter. Enter raid coins to highlight the best vendor upgrade.
 
 #### Spells *(MissingSpells files; Rune Inventory also uses bags)*
 
@@ -74,7 +74,7 @@ Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet.
 
 - **Type 7/8 Augs** — recommendations ranked by class weights (**DRU** Spell Damage first, then HWis); only augs that fit type 7/8 holes; equipped Velium Empowered Gem of Freezing is kept as a must-have; if an aug should move to another slot, **Upgrade to** lists the replacement for the hole it leaves
 - **Type 5 Augs** — equipped type 5 augs and Empty holes; expansion + heroic stats; Vanquisher rewards use short labels (`Vanq ToL`, `Vanq NoS`, etc.) linked to the achievement; sortable HTML columns; no upgrade suggestions; link to the EQ Resource Type 5 list
-- **Type 18/19 Augs** — *(work in progress)* per-class suggestions from the Zarax cheat sheet. Pick a character to set class and see **Owned** (with a gear-slot chip when equipped). **Alternative** shows Owned + slot when equipped, otherwise the craft anvil. Unused Fortifications append to Optional; Enhancement augs under **Filler**. Anniversary picks (Jubilation / Enduring Harmony) marked on the item name with non-anniversary alternatives. Full catalog view still available.
+- **Type 18/19 Augs** — per-class suggestions from the Zarax cheat sheet. Pick a character to set class and see **Owned** (with a gear-slot chip when equipped). **Alternative** shows Owned + slot when equipped, otherwise the craft anvil. Unused Fortifications append to Optional; Enhancement augs under **Filler**. Anniversary picks (Jubilation / Enduring Harmony) marked on the item name with non-anniversary alternatives. Full catalog view still available.
 
 #### Quests & Achievements *(achievement files)*
 

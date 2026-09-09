@@ -60,8 +60,6 @@ from inventory_parser.web_bridge import (
     setup_url,
 )
 
-PRODUCT_WEBSITE_URL = "https://neclub.github.io/EQ-Gear-Management/"
-
 _HOME_PATH = str(Path.home())
 _HOME_PATH_RE = re.compile(re.escape(_HOME_PATH), re.IGNORECASE) if _HOME_PATH else None
 
@@ -239,6 +237,7 @@ class WebApi:
         try:
             window.move(x, y)
         except Exception:
+            # pywebview may reject move while the window is closing or minimized.
             pass
         return {"ok": True, "width": width, "height": height, "x": x, "y": y}
 
@@ -268,15 +267,15 @@ class WebApi:
         return {
             "version": __version__,
             "logoDataUri": eq_logo_data_uri(),
-            "websiteUrl": PRODUCT_WEBSITE_URL,
         }
 
     def check_for_updates(self) -> dict:
         return fetch_app_updates()
 
-    def open_website(self) -> dict:
-        webbrowser.open(PRODUCT_WEBSITE_URL)
-        return {"ok": True, "url": PRODUCT_WEBSITE_URL}
+    def clear_cache(self) -> dict:
+        from inventory_parser.slot2_augs.paths import clear_disk_caches
+
+        return clear_disk_caches()
 
     def open_update_download(self, url: str) -> dict:
         if not is_allowed_download_url(url):
@@ -453,6 +452,7 @@ class WebApi:
                 f"window.onGenerateProgress && window.onGenerateProgress({json.dumps(payload)})"
             )
         except Exception:
+            # Window may already be closed while generation is still running.
             pass
 
     def generate_report(self, config: dict) -> dict:

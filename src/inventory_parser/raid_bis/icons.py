@@ -95,5 +95,6 @@ def _load_icon_png(icon_id: str, *, allow_network: bool) -> bytes | None:
     try:
         path.write_bytes(data)
     except OSError:
+        # Cache write failed; still return the fetched icon bytes for this run.
         pass
     return data

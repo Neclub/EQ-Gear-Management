@@ -60,16 +60,6 @@ class SpellRuneReport:
     expansion_groups: tuple[MissingRuneExpansionGroup, ...] = ()
     warnings: list[str] = field(default_factory=list)
 
-    @property
-    def counts_by_character(self) -> dict[str, dict[str, dict[str, int]]]:
-        """Backward-compatible alias for :attr:`counts_by_persona`."""
-        return self.counts_by_persona
-
-    @property
-    def characters(self) -> list[str]:
-        """Backward-compatible alias for :attr:`persona_keys`."""
-        return self.persona_keys
-
 
 def _spell_personas(team: TeamGearReport) -> list:
     if team.spell_characters:

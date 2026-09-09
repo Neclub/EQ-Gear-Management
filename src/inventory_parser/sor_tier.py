@@ -6,10 +6,6 @@ from inventory_parser.evolver import EVOLVER_GAP_LABEL
 from inventory_parser.gear_tiers import GEAR_TIER_BY_CODE, UNKNOWN_TIER_LABEL, classify_gear_tier
 from inventory_parser.items import EquippedItem
 
-# Kept for callers/tests that still import legacy marker names.
-MARKER_BELOW_SOR_T2 = "SOR T2<"
-MARKER_BELOW_SOR_T1 = "SOR T1/<"
-
 
 def sor_gap_label(
     item_name: str | None,
@@ -46,16 +42,4 @@ def equipped_tier_label(item: EquippedItem | None) -> str | None:
         item.name,
         is_evolver=item.is_evolver,
         resolved_tier=item.resolved_tier,
-    )
-
-
-def sor_gap_marker(
-    item_name: str | None,
-    *,
-    is_evolver: bool = False,
-    resolved_tier: str | None = None,
-) -> str | None:
-    """Backward-compatible alias for :func:`sor_gap_label`."""
-    return sor_gap_label(
-        item_name, is_evolver=is_evolver, resolved_tier=resolved_tier
     )

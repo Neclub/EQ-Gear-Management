@@ -1144,14 +1144,6 @@ def _move_maps(
     return move_from, moved_to
 
 
-def _priority_move_maps(
-    assigned: dict[str, AugCandidate | None],
-    current_by_slot: dict[str, Slot2Aug],
-) -> tuple[dict[str, str], dict[str, str]]:
-    """Backward-compatible alias for :func:`_move_maps`."""
-    return _move_maps(assigned, current_by_slot)
-
-
 def compare_character(
     data: InventoryData,
     catalog_result: CatalogResult,

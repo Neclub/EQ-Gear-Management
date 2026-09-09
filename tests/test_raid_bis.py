@@ -8,6 +8,7 @@ from inventory_parser.raid_bis.compare import (
     build_ideal_loadout,
     compare_character,
     format_stat_deltas,
+    rank_tuple,
     score_stats,
 )
 from inventory_parser.raid_bis.models import RaidGearCandidate
@@ -125,7 +126,7 @@ def test_mag_pins_pet_focus_ear():
     t1_focus = _cand(
         item_id=175713,
         name="Flame-Dipped Jasper Ear Spike",
-        stats={"spell_damage": 148, "hint": 71, "ac": 505},
+        stats={"spell_damage": 400, "hint": 90, "ac": 900, "hp": 25000, "mana": 26000},
         classes=frozenset({"MAG", "BST", "NEC"}),
         slots=frozenset({"Ear"}),
         tier="T1",
@@ -144,7 +145,77 @@ def test_mag_pins_pet_focus_ear():
     loadout = build_ideal_loadout([focus, t1_focus, fancy], class_abbr="MAG")
     ear_ids = {loadout[s].item_id for s in ("Ear-1", "Ear-2") if s in loadout}
     assert 175913 in ear_ids
-    assert loadout["Ear-1"].is_pet_focus_ear() or loadout["Ear-2"].is_pet_focus_ear()
+    pin = loadout["Ear-1"] if loadout["Ear-1"].is_pet_focus_ear() else loadout["Ear-2"]
+    assert pin.item_id == 175913
+    assert pin.enhanced_minion_level() == 38
+    # Weighted stats prefer the T1 ear; EM rank must still pin T2.
+    assert rank_tuple(t1_focus, "MAG", "Ear-1") < rank_tuple(focus, "MAG", "Ear-1")
+    assert focus.pet_focus_rank_tuple() < t1_focus.pet_focus_rank_tuple()
+
+
+def test_bst_picks_highest_em_over_better_stats():
+    from inventory_parser.raid_bis.models import roman_to_int
+
+    assert roman_to_int("XXXVIII") == 38
+    assert roman_to_int("XXXVII") == 37
+    assert roman_to_int("XL") == 40
+    assert roman_to_int("38") == 38
+
+    low_em = _cand(
+        item_id=10,
+        name="Fat Stats Pet Ear",
+        stats={"spell_damage": 500, "hint": 99, "ac": 999, "hp": 30000, "mana": 30000},
+        classes=frozenset({"MAG", "BST", "NEC"}),
+        slots=frozenset({"Ear"}),
+        tier="T1",
+        focus="Enhanced Minion XXXVII",
+        lore_group="fat-t1",
+    )
+    high_em = _cand(
+        item_id=20,
+        name="Thin Stats Pet Ear",
+        stats={"spell_damage": 100, "hint": 40, "ac": 400, "hp": 10000, "mana": 10000},
+        classes=frozenset({"MAG", "BST", "NEC"}),
+        slots=frozenset({"Ear"}),
+        tier="T2",
+        focus="Enhanced Minion XXXVIII",
+        lore_group="thin-t2",
+    )
+    loadout = build_ideal_loadout([low_em, high_em], class_abbr="BST")
+    pin = next(loadout[s] for s in ("Ear-1", "Ear-2") if s in loadout and loadout[s].is_pet_focus_ear())
+    assert pin.item_id == 20
+    assert pin.enhanced_minion_level() == 38
+
+
+def test_pet_focus_score_gain_uses_em_delta():
+    low = _cand(
+        item_id=10,
+        name="Old Pet Ear",
+        stats={"spell_damage": 500, "hint": 99, "hp": 30000},
+        classes=frozenset({"MAG", "BST", "NEC"}),
+        slots=frozenset({"Ear"}),
+        focus="Enhanced Minion XXXVII",
+    )
+    high = _cand(
+        item_id=20,
+        name="New Pet Ear",
+        stats={"spell_damage": 100, "hint": 40, "hp": 10000},
+        classes=frozenset({"MAG", "BST", "NEC"}),
+        slots=frozenset({"Ear"}),
+        focus="Enhanced Minion XXXVIII",
+    )
+    ch = CharacterGear(
+        character="Maglub",
+        server="test",
+        filepath="x",
+        class_abbr="MAG",
+    )
+    ch.slots["Ear-1"] = EquippedItem(name=low.name, item_id=low.item_id)
+    report = compare_character(ch, [low, high], equipped_stats={10: low})
+    pin = next(s for s in report.slots if s.pet_focus)
+    assert pin.recommended_id == 20
+    assert pin.status == "upgrade"
+    assert pin.score_gain == 1.0
 
 
 def test_war_is_not_pinned_to_pet_focus():

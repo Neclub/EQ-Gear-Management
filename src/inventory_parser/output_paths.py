@@ -137,11 +137,6 @@ def server_slug_from_input_paths(paths: Iterable[Path | str]) -> str | None:
     return None
 
 
-def server_slug_from_inventory_paths(paths: Iterable[Path | str]) -> str | None:
-    """Backward-compatible alias for :func:`server_slug_from_input_paths`."""
-    return server_slug_from_input_paths(paths)
-
-
 def server_slug_from_report(report: TeamGearReport) -> str | None:
     servers = {c.server for c in report.characters if c.server}
     if len(servers) == 1:

@@ -34,6 +34,7 @@ from inventory_parser.type18_augs.html import serialize_type18_section
 from inventory_parser.type18_augs.suggestions import (
     build_class_suggestions,
     hint_aug_type,
+    is_dex_stat_class,
     load_cheat_sheet,
     name_series,
 )
@@ -239,7 +240,39 @@ def test_include_type18_offline_adds_section(tmp_path: Path) -> None:
     suggest = wb[SHEET_NAME]
     assert suggest.cell(1, 1).value == "Character"
     assert suggest.cell(1, 12).value == "Owned"
+    assert suggest.cell(1, 13).value == "AC / Mana / HDEX"
     assert suggest.cell(2, 1).value  # character name on first data row
+
+
+def test_dex_stat_classes_and_serialize_flag():
+    for abbr in ("MNK", "ROG", "BER", "BRD", "BST", "RNG"):
+        assert is_dex_stat_class(abbr) is True
+    assert is_dex_stat_class("WAR") is False
+    assert is_dex_stat_class("WIZ") is False
+    assert is_dex_stat_class("pal") is False
+
+    blocks = build_class_suggestions([], class_abbrs=["ROG", "CLR"])
+    rog = next(b for b in blocks if b.class_abbr == "ROG")
+    clr = next(b for b in blocks if b.class_abbr == "CLR")
+    assert rog.dex_stats is True
+    assert rog.caster_stats is False
+    assert clr.dex_stats is False
+    assert clr.caster_stats is True
+
+    from inventory_parser.type18_augs.build import Type18Export
+
+    data = serialize_type18_section(
+        Type18Export(
+            suggestions=blocks,
+            categories=[],
+            team_class_abbrs=["ROG", "CLR"],
+        )
+    )
+    by_abbr = {b["classAbbr"]: b for b in data["suggestions"]}
+    assert by_abbr["ROG"]["dexStats"] is True
+    assert by_abbr["ROG"]["casterStats"] is False
+    assert by_abbr["CLR"]["dexStats"] is False
+    assert by_abbr["CLR"]["casterStats"] is True
 
 
 def test_cheat_sheet_and_anniversary_alternative():
@@ -352,9 +385,10 @@ def test_cheat_sheet_and_anniversary_alternative():
             stats={"hp": 450, "ac": 45},
         )
     )
-    blocks = build_class_suggestions(entries, class_abbrs=["WAR", "WIZ"])
+    blocks = build_class_suggestions(entries, class_abbrs=["WAR", "WIZ", "MNK"])
     war = next(b for b in blocks if b.class_abbr == "WAR")
     assert war.caster_stats is False
+    assert war.dex_stats is False
     assert all(
         "Defense" not in (r.suggested.category if r.suggested else r.guide_name)
         and "Ventral" not in r.guide_name
@@ -388,6 +422,11 @@ def test_cheat_sheet_and_anniversary_alternative():
 
     wiz = next(b for b in blocks if b.class_abbr == "WIZ")
     assert wiz.caster_stats is True
+    assert wiz.dex_stats is False
+
+    mnk = next(b for b in blocks if b.class_abbr == "MNK")
+    assert mnk.dex_stats is True
+    assert mnk.caster_stats is False
 
     owned_blocks = build_class_suggestions(
         entries,
@@ -428,6 +467,8 @@ def test_type18_html_template_has_filters() -> None:
     assert "type18CraftCopyHtml" in html
     assert "TYPE18_CARD_TIPS" in html
     assert "type18-card-heading" in html
+    assert "dexStats" in html
+    assert '["HDEX", "HP"]' in html
     assert "Spell Dmg" in html
     assert "badge owned" in html
     assert "badge equipped" in html

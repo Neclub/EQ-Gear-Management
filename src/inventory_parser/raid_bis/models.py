@@ -2,9 +2,61 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 
 from inventory_parser.slots import TEAM_GEAR_SLOTS
+
+_ENHANCED_MINION_RE = re.compile(
+    r"enhanced\s+minion\s+([ivxlcdm]+|\d+)\b",
+    re.IGNORECASE,
+)
+_ROMAN_VALUES: dict[str, int] = {
+    "I": 1,
+    "V": 5,
+    "X": 10,
+    "L": 50,
+    "C": 100,
+    "D": 500,
+    "M": 1000,
+}
+
+
+def roman_to_int(token: str) -> int:
+    """Parse a roman numeral (subtractive) or arabic digits; 0 if invalid."""
+    raw = (token or "").strip().upper()
+    if not raw:
+        return 0
+    if raw.isdigit():
+        return int(raw)
+    if not all(ch in _ROMAN_VALUES for ch in raw):
+        return 0
+    total = 0
+    i = 0
+    while i < len(raw):
+        value = _ROMAN_VALUES[raw[i]]
+        if i + 1 < len(raw):
+            nxt = _ROMAN_VALUES[raw[i + 1]]
+            if nxt > value:
+                total += nxt - value
+                i += 2
+                continue
+        total += value
+        i += 1
+    return total
+
+
+def parse_enhanced_minion_level(*texts: str) -> int:
+    """Highest Enhanced Minion rank found in any of the given strings."""
+    best = 0
+    for text in texts:
+        if not text:
+            continue
+        for match in _ENHANCED_MINION_RE.finditer(text):
+            level = roman_to_int(match.group(1))
+            if level > best:
+                best = level
+    return best
 
 # In-game Inventory window order (4 columns, portrait in the center).
 PAPERDOLL_SLOTS: tuple[str, ...] = (
@@ -141,6 +193,7 @@ class RaidGearCandidate:
         return slot_base(gear_slot) in self.slots
 
     def is_pet_focus_ear(self) -> bool:
+        """True for Summoner-named or Enhanced Minion ears restricted to MAG/BST/NEC."""
         if "Ear" not in self.slots:
             return False
         name_hit = "summoner" in (self.name or "").casefold()
@@ -152,6 +205,14 @@ class RaidGearCandidate:
         if self.classes and not (self.classes & PET_FOCUS_CLASSES):
             return False
         return True
+
+    def enhanced_minion_level(self) -> int:
+        """Enhanced Minion rank from focus, effect, or name (0 if none)."""
+        return parse_enhanced_minion_level(self.focus, self.effect, self.name)
+
+    def pet_focus_rank_tuple(self) -> tuple:
+        """Sort key for pet ears: highest EM first, then name. Stats ignored."""
+        return (-self.enhanced_minion_level(), (self.name or "").casefold())
 
 
 @dataclass

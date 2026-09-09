@@ -15,7 +15,7 @@ from inventory_parser.excel_theme import (
 from inventory_parser.items import EQRESOURCE_ITEM_URL
 from inventory_parser.type18_augs.build import Type18Export
 from inventory_parser.type18_augs.categories import HEROIC_STAT_KEYS
-from inventory_parser.type18_augs.suggestions import is_caster_class
+from inventory_parser.type18_augs.suggestions import is_caster_class, is_dex_stat_class
 
 SHEET_NAME = "Type 18-19 Augs"
 CATALOG_SHEET_NAME = "Type 18-19 Catalog"
@@ -33,7 +33,7 @@ _SUGGEST_HEADERS = (
     "Alternative (non-anniv)",
     "Alt type",
     "Owned",
-    "AC / Mana",
+    "AC / Mana / HDEX",
     "HP / Spell Dmg",
     "Mana",
     "Spell Damage",
@@ -87,14 +87,23 @@ def _autosize_columns(ws: Worksheet, *, max_width: float = 48.0) -> None:
         ws.column_dimensions[letter].width = min(max_width, max(6.0, longest + 2.0))
 
 
-def _write_suggest_stats(ws, row_idx: int, stats: dict, *, caster: bool) -> None:
+def _write_suggest_stats(
+    ws, row_idx: int, stats: dict, *, caster: bool, dex: bool = False
+) -> None:
     ac = int(stats.get("ac", 0) or 0)
     hp = int(stats.get("hp", 0) or 0)
     mana = int(stats.get("mana", 0) or 0)
     spell_dmg = int(stats.get("spell_damage", 0) or 0)
-    # Dual-purpose columns: casters see Mana / Spell Damage in the lead pair.
-    ws.cell(row_idx, 13, mana if caster else ac)
-    ws.cell(row_idx, 14, spell_dmg if caster else hp)
+    hdex = int(stats.get("hdex", 0) or 0)
+    # Dual-purpose columns: casters Mana / Spell Damage; dex classes HDEX / HP.
+    if caster:
+        lead_a, lead_b = mana, spell_dmg
+    elif dex:
+        lead_a, lead_b = hdex, hp
+    else:
+        lead_a, lead_b = ac, hp
+    ws.cell(row_idx, 13, lead_a)
+    ws.cell(row_idx, 14, lead_b)
     ws.cell(row_idx, 15, mana)
     ws.cell(row_idx, 16, spell_dmg)
     ws.cell(row_idx, 17, int(stats.get("endurance", 0) or 0))
@@ -164,6 +173,7 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
     ) -> None:
         nonlocal row_idx
         caster = bool(block.caster_stats) or is_caster_class(block.class_abbr)
+        dex = bool(block.dex_stats) or is_dex_stat_class(block.class_abbr)
         for row in (*block.primary, *block.optional, *block.filler):
             sug = row.suggested
             alt = row.alternative
@@ -180,7 +190,7 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
                     name_cell.fill = FILL_ANNIVERSARY
                 ws.cell(row_idx, 8, sug.type_label)
                 ws.cell(row_idx, 9, sug.category)
-                _write_suggest_stats(ws, row_idx, sug.stats, caster=caster)
+                _write_suggest_stats(ws, row_idx, sug.stats, caster=caster, dex=dex)
             else:
                 name_cell = ws.cell(row_idx, 7, row.guide_name)
                 if (
@@ -263,7 +273,8 @@ def _append_suggestions_sheet(wb, bundle: Type18Export) -> None:
     ws.cell(
         note_row,
         1,
-        "AC/Mana and HP/Spell Dmg columns use Mana + Spell Damage for caster classes.",
+        "AC/Mana/HDEX and HP/Spell Dmg columns use Mana + Spell Damage for caster "
+        "classes and HDEX for MNK, ROG, BER, BRD, BST, and RNG.",
     )
 
     ws.row_dimensions[1].height = 20

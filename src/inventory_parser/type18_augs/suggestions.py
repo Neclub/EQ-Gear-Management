@@ -60,6 +60,11 @@ _CASTER_ABBRS: frozenset[str] = frozenset(
     {"CLR", "DRU", "ENC", "MAG", "NEC", "SHM", "WIZ"}
 )
 
+# Melee/hybrid DPS show HDEX instead of AC on suggestion tables.
+_DEX_STAT_ABBRS: frozenset[str] = frozenset(
+    {"MNK", "ROG", "BER", "BRD", "BST", "RNG"}
+)
+
 
 @dataclass(frozen=True)
 class ClassGuide:
@@ -102,6 +107,7 @@ class ClassSuggestions:
     optional: list[SuggestionRow] = field(default_factory=list)
     filler: list[SuggestionRow] = field(default_factory=list)
     caster_stats: bool = False
+    dex_stats: bool = False
 
 
 def is_defense_category(category: str | None) -> bool:
@@ -110,6 +116,10 @@ def is_defense_category(category: str | None) -> bool:
 
 def is_caster_class(class_abbr: str | None) -> bool:
     return (class_abbr or "").strip().upper() in _CASTER_ABBRS
+
+
+def is_dex_stat_class(class_abbr: str | None) -> bool:
+    return (class_abbr or "").strip().upper() in _DEX_STAT_ABBRS
 
 
 def _guide_category(guide_name: str) -> str:
@@ -368,6 +378,7 @@ def build_class_suggestions(
             class_abbr=abbr,
             class_name=guide.name,
             caster_stats=is_caster_class(abbr),
+            dex_stats=is_dex_stat_class(abbr),
         )
 
         primary_names: list[str] = []
@@ -504,6 +515,7 @@ __all__ = [
     "cheat_sheet_source_url",
     "hint_aug_type",
     "is_caster_class",
+    "is_dex_stat_class",
     "is_defense_category",
     "load_cheat_sheet",
     "name_series",

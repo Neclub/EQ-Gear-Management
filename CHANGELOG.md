@@ -6,6 +6,18 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.6] - 2026-09-09
+
+### Added
+
+- **Help → Clear Cache:** confirmation dialog explains that catalog, item, and icon caches under `%LOCALAPPDATA%\EQGM\` are deleted; settings and weight overrides stay. The next Generate Report rebuilds the cache (needs network).
+
+### Changed
+
+- **Help / About:** removed the Website menu item and About Website button (product docs stay in the app wiki).
+- **Raid BiS pet ears:** MAG, BST, and NEC pin the ear with the highest **Enhanced Minion** roman-numeral level (stats are ignored for that slot). Vendor purchase scoring for that ear uses the EM level gain.
+- **Docs:** Type 18/19 Augs are no longer labeled work in progress in How-to, wiki, README, and the product page.
+
 ## [1.35.5] - 2026-09-04
 
 ### Fixed

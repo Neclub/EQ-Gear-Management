@@ -216,6 +216,7 @@ def _choose_pet_focus_ear(
     class_abbr: str,
     equipped: dict[str, EquippedItem],
 ) -> tuple[str | None, RaidGearCandidate | None]:
+    """Highest-EM pet ear; pin on a worn pet-focus ear if any, else Ear-1."""
     ears = [
         c
         for c in catalog
@@ -224,7 +225,7 @@ def _choose_pet_focus_ear(
     ]
     if not ears:
         return None, None
-    ears.sort(key=lambda c: rank_tuple(c, class_abbr, "Ear-1"))
+    ears.sort(key=lambda c: c.pet_focus_rank_tuple())
     best = ears[0]
 
     worn_slots = []
@@ -334,6 +335,7 @@ class SlotComparison:
     current_icon_id: str | None = None
     deltas: dict[str, int] = field(default_factory=dict)
     note: str = ""
+    # MAG/BST/NEC pet-focus ear: ranked by Enhanced Minion level, not stats.
     pet_focus: bool = False
     scored: bool = True
     choices: list[WaistChoice] = field(default_factory=list)
@@ -368,6 +370,20 @@ def _score_gain(
         return 0.0
     weights = resolve_weights(class_abbr, gear_slot)
     return score_stats(recommended_stats, weights) - score_stats(current_stats, weights)
+
+
+def _pet_focus_score_gain(
+    current: RaidGearCandidate | None,
+    recommended: RaidGearCandidate,
+    *,
+    status: SlotStatus,
+) -> float:
+    """EM level delta for the pinned pet ear (stats are ignored for ranking)."""
+    if status == "bis":
+        return 0.0
+    rec_em = recommended.enhanced_minion_level()
+    cur_em = current.enhanced_minion_level() if current is not None else 0
+    return float(rec_em - cur_em)
 
 
 def _vendor_fields(
@@ -476,9 +492,11 @@ def compare_character(
         recommended = loadout.get(slot)
         current_stats: dict[str, int] = {}
         current_icon = None
+        current_known: RaidGearCandidate | None = None
         if current and current.item_id > 0:
             known = by_id.get(current.item_id) or equipped_stats.get(current.item_id)
             if known:
+                current_known = known
                 current_stats = dict(known.stats)
                 current_icon = known.icon_id
 
@@ -531,6 +549,19 @@ def compare_character(
                 "Treaded Boon of Potential, and Crippling Slicer."
             ).strip()
 
+        if pet_focus and recommended is not None:
+            gain = _pet_focus_score_gain(
+                current_known, recommended, status=status
+            )
+        else:
+            gain = _score_gain(
+                current_stats,
+                rec_stats,
+                class_abbr=class_abbr,
+                gear_slot=slot,
+                status=status,
+            )
+
         cost, vendor_name, vendor_id = _vendor_fields(recommended, slot, vendor)
         rows.append(
             SlotComparison(
@@ -548,13 +579,7 @@ def compare_character(
                 pet_focus=pet_focus,
                 scored=True,
                 choices=waist_rows,
-                score_gain=_score_gain(
-                    current_stats,
-                    rec_stats,
-                    class_abbr=class_abbr,
-                    gear_slot=slot,
-                    status=status,
-                ),
+                score_gain=gain,
                 vendor_cost=cost,
                 vendor_item_name=vendor_name,
                 vendor_item_id=vendor_id,

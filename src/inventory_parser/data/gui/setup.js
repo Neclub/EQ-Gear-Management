@@ -319,13 +319,13 @@ function bindEvents() {
     $("helpMenu").classList.add("hidden");
     showHelpTiers();
   });
-  $("helpWebsite").addEventListener("click", () => {
-    $("helpMenu").classList.add("hidden");
-    openWebsite();
-  });
   $("helpUpdates").addEventListener("click", () => {
     $("helpMenu").classList.add("hidden");
     checkForUpdates();
+  });
+  $("helpClearCache").addEventListener("click", () => {
+    $("helpMenu").classList.add("hidden");
+    showClearCacheConfirm();
   });
   $("helpAbout").addEventListener("click", async () => {
     $("helpMenu").classList.add("hidden");
@@ -1261,15 +1261,44 @@ async function checkForUpdates() {
   showUpdateAvailableModal(info);
 }
 
-async function openWebsite() {
-  try {
-    const result = await api("open_website");
-    if (!result || !result.ok) {
-      showToast((result && result.error) || "Could not open the website.", true);
+function showClearCacheConfirm() {
+  showModal(`
+    <div class="modal">
+      <div class="modal-header"><h2>Clear Cache</h2></div>
+      <div class="modal-body">
+        <p>EQGM stores catalog, item, and icon data under <code>%LOCALAPPDATA%\\EQGM\\</code>
+          so Generate Report can skip re-fetching. Clearing it deletes that data.</p>
+        <p style="margin-top:12px">Settings, folder, colors, and weight overrides are kept.</p>
+        <p style="margin-top:12px"><strong>The cache will be rebuilt the next time you generate a report</strong>
+          (needs network).</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="clearCacheCancel">Cancel</button>
+        <button type="button" class="btn btn-primary" id="clearCacheConfirm">Clear Cache</button>
+      </div>
+    </div>`);
+  $("clearCacheCancel").addEventListener("click", closeModal);
+  $("clearCacheConfirm").addEventListener("click", async () => {
+    try {
+      const result = await api("clear_cache");
+      if (!result || !result.ok) {
+        showToast((result && result.error) || "Could not clear the cache.", true);
+        return;
+      }
+      closeModal();
+      const n = Array.isArray(result.deleted) ? result.deleted.length : 0;
+      if (n === 0) {
+        showToast("No cache files to clear.");
+      } else {
+        showToast(`Cleared ${n} cache item${n === 1 ? "" : "s"}. Rebuilds on next Generate Report.`);
+      }
+      if (result.errors && result.errors.length) {
+        showToast(result.errors[0], true);
+      }
+    } catch (err) {
+      showToast(err && err.message ? err.message : String(err), true);
     }
-  } catch (err) {
-    showToast(err && err.message ? err.message : String(err), true);
-  }
+  });
 }
 
 async function showAbout() {
@@ -1290,12 +1319,10 @@ async function showAbout() {
         </p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="aboutWebsite">Website</button>
         <button type="button" class="btn" id="modalClose">Close</button>
       </div>
     </div>`);
   $("modalClose").addEventListener("click", closeModal);
-  $("aboutWebsite").addEventListener("click", () => openWebsite());
 }
 
 async function showHelpTiers() {

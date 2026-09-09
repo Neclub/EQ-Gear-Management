@@ -34,7 +34,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
 - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs
 - **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Generate shows a progress bar; the status line names the step (`Fetching from EQ Resource…`, cached catalog, or raidloot fallback). The first run needs network; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache.
 - **Type 5 Augs** chip — on by default when inventories are loaded; uncheck to skip the Type 5 display sheet. Uses parent-item socket maps (cached with Type 7/8).
-- **Type 18/19 Augs** chip — *(work in progress)* on by default when inventories are loaded; uncheck to skip Type 18/19 sheets. First run needs network; later runs reuse the `%LOCALAPPDATA%\EQGM\` search cache.
+- **Type 18/19 Augs** chip — on by default when inventories are loaded; uncheck to skip Type 18/19 sheets. First run needs network; later runs reuse the `%LOCALAPPDATA%\EQGM\` search cache.
 - **Raid BiS** chip — on by default when inventories are loaded; uncheck to skip the Raid BiS sheet and catalog fetch. Only items that class can wear are recommended. The first run needs network access to EQ Resource; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache (usable classes are stored per item). After updating to **1.35.5** or newer, regenerate once so class lists stay current and armor stubs get real names and icons.
 
 Details for each report type: [[Gear]], [[Spells]], [[Augs]], [[Quests and Achievements]].
@@ -60,4 +60,4 @@ If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, et
 - **Achievement files in AchievementData** — same pattern for `/outputfile achievements` files.
 - **Status bar** — shows how many inventory, MissingSpells, and achievement files are loaded.
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
-- **Help** (top right) — gear tier colors legend, **Check for Updates**, and **About EQGM** (shows the app version).
+- **Help** (top right) — gear tier colors legend, **Check for Updates**, **Clear Cache** (deletes catalog/item/icon caches; next Generate Report rebuilds them), and **About EQGM** (shows the app version).

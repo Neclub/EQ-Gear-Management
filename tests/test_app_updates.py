@@ -149,23 +149,47 @@ def test_open_update_download_opens_github_url() -> None:
     open_browser.assert_called_once_with(url)
 
 
-def test_open_website_opens_product_page() -> None:
-    from inventory_parser.web_api import PRODUCT_WEBSITE_URL
+def test_clear_cache_deletes_cache_files_keeps_settings(tmp_path, monkeypatch) -> None:
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.paths.appdata_dir",
+        lambda: tmp_path,
+    )
+    (tmp_path / "settings.json").write_text('{"output_format":"both"}\n', encoding="utf-8")
+    (tmp_path / "weight_overrides.json").write_text("{}\n", encoding="utf-8")
+    (tmp_path / "raid_bis_catalog.json").write_text("{}\n", encoding="utf-8")
+    (tmp_path / "eqresource_aug_cache.json").write_text("{}\n", encoding="utf-8")
+    icons = tmp_path / "item_icons"
+    icons.mkdir()
+    (icons / "1.png").write_bytes(b"\x89PNG\r\n\x1a\n")
 
-    api = WebApi()
-    with patch("inventory_parser.web_api.webbrowser.open") as open_browser:
-        result = api.open_website()
+    result = WebApi().clear_cache()
     assert result["ok"] is True
-    assert result["url"] == PRODUCT_WEBSITE_URL
-    open_browser.assert_called_once_with(PRODUCT_WEBSITE_URL)
+    assert "raid_bis_catalog.json" in result["deleted"]
+    assert "eqresource_aug_cache.json" in result["deleted"]
+    assert "item_icons" in result["deleted"]
+    assert result["errors"] == []
+    assert (tmp_path / "settings.json").is_file()
+    assert (tmp_path / "weight_overrides.json").is_file()
+    assert not (tmp_path / "raid_bis_catalog.json").exists()
+    assert not (tmp_path / "eqresource_aug_cache.json").exists()
+    assert not icons.exists()
 
 
-def test_get_version_includes_website_url() -> None:
-    from inventory_parser.web_api import PRODUCT_WEBSITE_URL
+def test_clear_cache_ok_when_empty(tmp_path, monkeypatch) -> None:
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.paths.appdata_dir",
+        lambda: tmp_path,
+    )
+    result = WebApi().clear_cache()
+    assert result["ok"] is True
+    assert result["deleted"] == []
+    assert result["errors"] == []
 
+
+def test_get_version_has_version_not_website_url() -> None:
     info = WebApi().get_version()
-    assert info["websiteUrl"] == PRODUCT_WEBSITE_URL
     assert "version" in info
+    assert "websiteUrl" not in info
 
 
 def test_check_for_updates_rejects_foreign_asset_url(monkeypatch) -> None:

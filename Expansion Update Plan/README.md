@@ -7,11 +7,11 @@ Maintainer documentation for adding a new EverQuest expansion to EQ Gear Managem
 | Document | Purpose |
 |----------|---------|
 | [Scrapes-Needed.md](Scrapes-Needed.md) | Concrete list of EQ Resource scrapes (and useful-spells convert) for the next expansion |
-| [December-2026-Expansion-Update.md](December-2026-Expansion-Update.md) | Full phased checklist, EQ Resource link prompts, code touch list, and validation steps |
+| [December-2026-Expansion-Update.md](December-2026-Expansion-Update.md) | Fill-in worksheet for Favors of Fortune (FoF): identity, remaining blanks, code touch list, validation |
 
 ## When to use
 
-Start **Phase 1** when the expansion is announced (target: **December 2026**). Run scrapers and code updates once EQ Resource pages and in-game item names are live. Use [Scrapes-Needed.md](Scrapes-Needed.md) as the launch-day scrape checklist.
+Working identity is **Favors of Fortune** (leaked 2026-09-01; FoF / fof / FOF). Fill remaining Phase 1 blanks in the December plan from beta dumps and live EQ Resource pages. Run scrapers only when vendor/spell pages list real items. Use [Scrapes-Needed.md](Scrapes-Needed.md) as the launch-day scrape checklist.
 
 ## Quick workflow
 
