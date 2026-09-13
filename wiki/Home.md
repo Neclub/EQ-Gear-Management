@@ -13,10 +13,10 @@ Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and rel
 ## Download
 
 1. Open **[Releases](https://github.com/Neclub/EQ-Gear-Management/releases)** on GitHub.
-2. Download **`EQGM-x.y.z.zip`**, unzip it, and run **`EQGM-x.y.z.exe`** inside the folder.
-3. If Windows Defender flagged the old single-file `.exe`, use this zip instead.
+2. Download **`EQGM-x.y.z.exe`** from the latest release.
+3. Double-click to run. No Python install needed.
 
-Windows SmartScreen may still warn on first run. Download only from this GitHub repo’s **Releases**. Choose **More info → Run anyway** if SmartScreen asks. Details: [[Troubleshooting]].
+If Windows Defender flags the downloaded file, right-click it → **Properties** → check **Unblock** → **Apply**, then run it. GitHub downloads get an internet mark that a local `build_exe.bat` copy does not. Download only from this GitHub repo’s **Releases**. SmartScreen: **More info → Run anyway**. Details: [[Troubleshooting]].
 
 Product page: [neclub.github.io/EQ-Gear-Management](https://neclub.github.io/EQ-Gear-Management/) · Changelog: [changelog](https://neclub.github.io/EQ-Gear-Management/changelog.html)
 

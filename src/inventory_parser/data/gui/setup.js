@@ -1210,6 +1210,7 @@ function showUpdateAvailableModal(info) {
         <p style="margin-top:12px">Current version: <strong>${current}</strong></p>
         <p>Newest version: <strong>${latest}</strong></p>
         <p style="margin-top:12px">Would you like to download the latest version?</p>
+        <p style="margin-top:12px">If Windows Defender flags the file after download, right-click it → Properties → check Unblock → Apply, then run it.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="updateNo">No</button>

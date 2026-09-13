@@ -2,12 +2,10 @@
 setlocal EnableExtensions
 cd /d "%~dp0"
 
+set "OUT_EXE="
 echo.
 for /f "delims=" %%V in ('py "%~dp0scripts\print_package_version.py"') do set "IP_VER=%%V"
-set "OUT_DIR=%~dp0dist\EQGM-%IP_VER%"
-set "OUT_DIR_EXE=%OUT_DIR%\EQGM-%IP_VER%.exe"
 set "OUT_EXE=%~dp0dist\EQGM-%IP_VER%.exe"
-set "OUT_ZIP=%~dp0dist\EQGM-%IP_VER%.zip"
 
 echo EQ Gear Management - build executable
 echo Version: %IP_VER%
@@ -31,37 +29,21 @@ if errorlevel 1 (
 )
 
 echo.
-echo Building folder bundle (avoids Windows Defender one-file false positives)...
-py -3 "%~dp0scripts\run_pyinstaller.py" --zip
+echo Building single-file GUI executable (no console window)...
+py -3 "%~dp0scripts\run_pyinstaller.py"
 if errorlevel 1 (
   echo.
-  echo ERROR: PyInstaller onedir failed. See messages above.
-  pause
-  exit /b 1
-)
-
-echo.
-echo Building single-file exe (in-app update checks from older builds)...
-py -3 "%~dp0scripts\run_pyinstaller.py" --onefile
-if errorlevel 1 (
-  echo.
-  echo ERROR: PyInstaller onefile failed. See messages above.
-  pause
-  exit /b 1
-)
-
-if not exist "%OUT_DIR_EXE%" (
-  echo.
-  echo ERROR: Onedir exe was not created:
-  echo   %OUT_DIR_EXE%
+  echo ERROR: PyInstaller failed. See messages above.
   pause
   exit /b 1
 )
 
 if not exist "%OUT_EXE%" (
   echo.
-  echo ERROR: Single-file exe was not created:
+  echo ERROR: Build reported success but exe was not created:
   echo   %OUT_EXE%
+  echo.
+  echo The exe is NOT in build\ — only intermediate files are there.
   pause
   exit /b 1
 )
@@ -73,13 +55,6 @@ if exist "%~dp0codesign.local.bat" (
 )
 
 echo.
-py -3 "%~dp0scripts\sign_exe.py" "%OUT_DIR_EXE%"
-if errorlevel 1 (
-  echo.
-  echo ERROR: Code signing failed.
-  pause
-  exit /b 1
-)
 py -3 "%~dp0scripts\sign_exe.py" "%OUT_EXE%"
 if errorlevel 1 (
   echo.
@@ -87,21 +62,13 @@ if errorlevel 1 (
   pause
   exit /b 1
 )
-py -3 "%~dp0scripts\run_pyinstaller.py" --zip-only
-if errorlevel 1 (
-  echo.
-  echo ERROR: Zipping the folder bundle failed.
-  pause
-  exit /b 1
-)
 
 echo.
 echo Build succeeded.
 echo.
-echo   %OUT_ZIP%  (recommended download)
-echo   %OUT_EXE%  (single-file; Windows Defender may flag this)
+echo   %OUT_EXE%  (version %IP_VER%)
 echo.
 echo Opening dist folder in Explorer...
-explorer /select,"%OUT_ZIP%"
+explorer /select,"%OUT_EXE%"
 endlocal
 exit /b 0

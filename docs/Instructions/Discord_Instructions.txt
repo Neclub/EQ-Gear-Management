@@ -22,9 +22,9 @@ You do **not** need to install anything extra. Download the program, double-clic
 ### Download
 🔗 https://github.com/Neclub/EQ-Gear-Management/releases
 
-Get the file named `EQGM-x.y.z.zip`, unzip it, and run `EQGM-x.y.z.exe` inside the folder.
+Get the file named `EQGM-x.y.z.exe`
 -# The numbers change with each version. Works on Windows 10 and 11.
--# If Windows Defender flagged the old single-file `.exe`, use this zip instead. SmartScreen: More info → Run anyway.
+-# If Defender flags the download: right-click the file → Properties → check Unblock → Apply. SmartScreen: More info → Run anyway.
 
 ===== MESSAGE 2: FUNCTIONS =====
 # What the report shows
@@ -99,11 +99,11 @@ That’s all you do in-game.
 # How to use — Part 2
 ### The program
 
-**1.** Download `EQGM-x.y.z.zip` from:
+**1.** Download `EQGM-x.y.z.exe` from:
 🔗 https://github.com/Neclub/EQ-Gear-Management/releases
 
-**2.** Unzip it and double-click `EQGM-x.y.z.exe` inside the folder.
--# If Windows Defender flagged the old single-file `.exe`, use the zip. If SmartScreen appears, choose **More info → Run anyway**.
+**2.** Double-click the file to open it.
+-# If Defender flags the file: right-click → **Properties** → check **Unblock** → **Apply**. SmartScreen: **More info → Run anyway**.
 
 **3.** Click **EQ Folder** and choose the root of your **EverQuest** folder.
 
