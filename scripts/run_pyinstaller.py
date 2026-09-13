@@ -1,8 +1,10 @@
 """Invoke PyInstaller for the EQ Gear Management GUI (paths with spaces)."""
 from __future__ import annotations
 
+import argparse
 import subprocess
 import sys
+import zipfile
 from pathlib import Path
 
 _SCRIPTS = Path(__file__).resolve().parent
@@ -12,6 +14,8 @@ if str(_SCRIPTS) not in sys.path:
 from package_version import exe_name_for_version, read_package_version
 
 _ROOT = Path(__file__).resolve().parent.parent
+
+
 def _version_to_quad(version: str) -> tuple[int, int, int, int]:
     parts: list[int] = []
     for seg in version.split("."):
@@ -72,20 +76,42 @@ VSVersionInfo(
     )
 
 
-def main() -> int:
-    version = read_package_version(_ROOT)
-    exe_name = exe_name_for_version(version)
-    version_info = _ROOT / "build" / "EQGM_version_info.txt"
-    _write_version_info(version_info, version, exe_name)
+def zip_onedir_bundle(dist_dir: Path, exe_name: str) -> Path:
+    """Zip dist/<name>/ to dist/<name>.zip with the folder as the zip root."""
+    folder = dist_dir / exe_name
+    if not folder.is_dir():
+        raise FileNotFoundError(f"Onedir folder not found: {folder}")
+    zip_path = dist_dir / f"{exe_name}.zip"
+    if zip_path.exists():
+        zip_path.unlink()
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+        for path in sorted(folder.rglob("*")):
+            if not path.is_file():
+                continue
+            arcname = path.relative_to(dist_dir).as_posix()
+            zf.write(path, arcname=arcname)
+    return zip_path
 
-    entry = _ROOT / "scripts" / "pyinstaller_gui.py"
+
+def pyinstaller_command(
+    *,
+    onefile: bool,
+    version: str,
+    exe_name: str,
+    root: Path | None = None,
+    python_exe: str | None = None,
+) -> list[str]:
+    project = root or _ROOT
+    version_info = project / "build" / "EQGM_version_info.txt"
+    _write_version_info(version_info, version, exe_name)
+    entry = project / "scripts" / "pyinstaller_gui.py"
     args = [
-        sys.executable,
+        python_exe or sys.executable,
         "-m",
         "PyInstaller",
         "--clean",
         "--noconfirm",
-        "--onefile",
+        "--onefile" if onefile else "--onedir",
         "--noconsole",
         "--noupx",
         "--name",
@@ -107,26 +133,66 @@ def main() -> int:
         "--hidden-import",
         "inventory_parser.package_data",
         "--distpath",
-        str(_ROOT / "dist"),
+        str(project / "dist"),
         "--workpath",
-        str(_ROOT / "build" / "pyinstaller"),
+        str(project / "build" / "pyinstaller"),
         "--specpath",
-        str(_ROOT / "build"),
+        str(project / "build"),
         str(entry),
     ]
     if sys.platform == "win32":
         args.extend(["--version-file", str(version_info.resolve())])
-        icon_ico = _ROOT / "src" / "inventory_parser" / "assets" / "eq-icon.ico"
+        icon_ico = project / "src" / "inventory_parser" / "assets" / "eq-icon.ico"
         if icon_ico.is_file():
             args.extend(["--icon", str(icon_ico.resolve())])
-        manifest = _ROOT / "src" / "inventory_parser" / "assets" / "eqgm.manifest"
+        manifest = project / "src" / "inventory_parser" / "assets" / "eqgm.manifest"
         if manifest.is_file():
             args.extend(["--manifest", str(manifest.resolve())])
+    return args
 
-    print(f"Package version: {version}")
-    print(f"Output exe: {_ROOT / 'dist' / f'{exe_name}.exe'}")
-    print("Running:", " ".join(args))
-    return subprocess.call(args, cwd=str(_ROOT))
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Build the EQGM Windows executable.")
+    parser.add_argument(
+        "--onefile",
+        action="store_true",
+        help="Pack a single-file exe (Windows Defender often flags this).",
+    )
+    parser.add_argument(
+        "--zip",
+        action="store_true",
+        help="Zip the onedir folder to dist/EQGM-x.y.z.zip (ignored with --onefile).",
+    )
+    parser.add_argument(
+        "--zip-only",
+        action="store_true",
+        help="Zip an existing onedir folder without rebuilding.",
+    )
+    args = parser.parse_args(argv)
+
+    version = read_package_version(_ROOT)
+    exe_name = exe_name_for_version(version)
+    dist = _ROOT / "dist"
+    if args.zip_only:
+        zip_path = zip_onedir_bundle(dist, exe_name)
+        print(f"Zipped onedir: {zip_path}")
+        return 0
+    cmd = pyinstaller_command(onefile=args.onefile, version=version, exe_name=exe_name)
+    dist = _ROOT / "dist"
+    if args.onefile:
+        print(f"Package version: {version}")
+        print(f"Output exe: {dist / f'{exe_name}.exe'}")
+    else:
+        print(f"Package version: {version}")
+        print(f"Output folder: {dist / exe_name}")
+    print("Running:", " ".join(cmd))
+    rc = subprocess.call(cmd, cwd=str(_ROOT))
+    if rc != 0:
+        return rc
+    if args.zip and not args.onefile:
+        zip_path = zip_onedir_bundle(dist, exe_name)
+        print(f"Zipped onedir: {zip_path}")
+    return 0
 
 
 if __name__ == "__main__":

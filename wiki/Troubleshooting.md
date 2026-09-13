@@ -20,7 +20,7 @@
 | Stale or wrong catalog / aug / Raid BiS data after an update | **Help → Clear Cache**, then Generate Report (needs network to rebuild `%LOCALAPPDATA%\EQGM\` caches). |
 | HTML looks outdated after an update | Regenerate the report. |
 | Warning: “Failed to remove temporary directory …_MEI…” | Harmless packaging cleanup from the single-file `.exe`. Windows (or antivirus) sometimes keeps a handle open after exit, so PyInstaller cannot delete its extract folder. Click **OK** and keep working. You can delete leftover `_MEI*` folders under `%TEMP%` when EQGM is closed. It is unrelated to reading your EverQuest folder. |
-| Windows / SmartScreen / antivirus warns about `EQGM-x.y.z.exe` | Download only from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases). PyInstaller one-file apps often get generic heuristic flags. SmartScreen: **More info → Run anyway**. You can allow the file in Windows Security. |
+| Windows Defender / SmartScreen flags `EQGM-x.y.z.exe` | Download **`EQGM-x.y.z.zip`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases), unzip, and run the exe inside. The single-file `.exe` unpacks to `%TEMP%` and often trips heuristics; the zip folder does not. SmartScreen: **More info → Run anyway**. |
 
 More help: [[Getting Started]], [[In-Game Output Files]], [[Setup Screen]].
 

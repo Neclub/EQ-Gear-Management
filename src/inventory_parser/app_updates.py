@@ -23,10 +23,10 @@ _TIMEOUT_SECONDS = 10
 _MAX_BODY_BYTES = 1_048_576
 _MAX_URL_LENGTH = 500
 _VERSION_RE = re.compile(r"^v?(\d+)\.(\d+)\.(\d+)$")
-_EXE_NAME_RE = re.compile(r"^EQGM-\d+\.\d+\.\d+\.exe$")
+_ASSET_NAME_RE = re.compile(r"^EQGM-\d+\.\d+\.\d+\.(exe|zip)$")
 _DOWNLOAD_PATH_RE = re.compile(
     rf"^/{re.escape(GITHUB_OWNER)}/{re.escape(GITHUB_REPO)}"
-    r"/releases/download/(v?(\d+\.\d+\.\d+))/EQGM-(\d+\.\d+\.\d+)\.exe$"
+    r"/releases/download/(v?(\d+\.\d+\.\d+))/EQGM-(\d+\.\d+\.\d+)\.(exe|zip)$"
 )
 
 
@@ -64,7 +64,7 @@ def is_newer(latest: str, current: str) -> bool:
 
 
 def is_allowed_download_url(url: str) -> bool:
-    """True only for this repo's HTTPS GitHub Release EQGM-x.y.z.exe asset."""
+    """True only for this repo's HTTPS GitHub Release EQGM-x.y.z.exe or .zip asset."""
     if not isinstance(url, str) or not url or len(url) > _MAX_URL_LENGTH:
         return False
     if any(ord(ch) < 32 or ch == "\\" for ch in url):
@@ -87,12 +87,18 @@ def is_allowed_download_url(url: str) -> bool:
 
 
 def exe_asset_url(payload: dict) -> str | None:
+    """Prefer the onedir zip; fall back to the single-file exe."""
+    found: dict[str, str] = {}
     for asset in payload.get("assets") or []:
         name = str(asset.get("name") or "")
         url = str(asset.get("browser_download_url") or "").strip()
-        if _EXE_NAME_RE.fullmatch(name) and is_allowed_download_url(url):
-            return url
-    return None
+        if not _ASSET_NAME_RE.fullmatch(name) or not is_allowed_download_url(url):
+            continue
+        if name.endswith(".zip"):
+            found.setdefault("zip", url)
+        elif name.endswith(".exe"):
+            found.setdefault("exe", url)
+    return found.get("zip") or found.get("exe")
 
 
 def _fetch_latest_payload(timeout: float = _TIMEOUT_SECONDS) -> dict:
@@ -160,7 +166,7 @@ def check_for_updates(current: str | None = None) -> dict:
             "current": running,
             "latest": latest,
             "downloadUrl": None,
-            "message": "Latest GitHub release has no EQGM .exe asset.",
+            "message": "Latest GitHub release has no EQGM download asset.",
         }
 
     return {

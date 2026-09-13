@@ -4,7 +4,7 @@ Turn your raid’s EverQuest inventory files into one Excel workbook (and option
 
 Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and related tracking go back as far as **Laurion's Song**.
 
-The app version is shown in the window title and under **Help → About EQGM**. HTML reports also show it on the title graphic next to the generated date (for example `9 characters · generated 2026-08-24 · EQGM v1.34.4`), so a shared file tells you which build produced it. When the app opens, it checks the latest GitHub Release. If a newer version is available, a popup shows the current and newest versions and asks whether to download. **Yes** opens the official GitHub download in your browser; the app does not install or run the file. **Help → Check for Updates** runs the same check on demand. Standalone `.exe` builds include the same version in Windows file properties (right-click the exe → Properties → Details), with company **Lubworks**.
+The app version is shown in the window title and under **Help → About EQGM**. HTML reports also show it on the title graphic next to the generated date (for example `9 characters · generated 2026-08-24 · EQGM v1.34.4`), so a shared file tells you which build produced it. When the app opens, it checks the latest GitHub Release. If a newer version is available, a popup shows the current and newest versions and asks whether to download. **Yes** opens the official GitHub zip (or exe) in your browser; the app does not install or run the file. **Help → Check for Updates** runs the same check on demand. The launcher `.exe` includes the same version in Windows file properties (right-click → Properties → Details), with company **Lubworks**.
 
 ---
 
@@ -105,8 +105,8 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
 1. **In EQ:** on each character, `/outputfile inventory` and (optional) `/outputfile missingspells` and `/outputfile achievements`. For a persona inventory, also run `/outputfile inventory CHR_Server-CLASS-Inventory.txt` (a hotkey per persona is suggested).
 
 2. **Run the app**
-   - Download **`EQGM-x.y.z.exe`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases)
-   - Double-click the `.exe` to open it
+   - Download **`EQGM-x.y.z.zip`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases). Unzip and run **`EQGM-x.y.z.exe`** in that folder.
+   - If Windows Defender flagged the old single-file `.exe`, use the zip.
 
    If a newer GitHub Release exists, a popup shows the current and newest versions and asks whether to download.
 
@@ -368,4 +368,4 @@ Gear-set and tier colors match the Excel theme. Item names, Gear T-Level codes, 
 | Stale or wrong catalog / aug / Raid BiS data after an update | **Help → Clear Cache**, then Generate Report (needs network to rebuild `%LOCALAPPDATA%\EQGM\` caches). |
 | HTML looks outdated after an update | Regenerate the report. |
 | Warning: “Failed to remove temporary directory …\_MEI…” | Harmless packaging cleanup from the single-file `.exe`. Windows (or antivirus) sometimes keeps a handle open after exit, so PyInstaller cannot delete its extract folder. Click **OK** and keep working. You can delete leftover `_MEI*` folders under `%TEMP%` when EQGM is closed. It is unrelated to reading your EverQuest folder. |
-| Windows / SmartScreen / antivirus warns about `EQGM-x.y.z.exe` | The GitHub Release is an unsigned (or newly signed) PyInstaller app, so heuristics often flag it. Download only from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases). In SmartScreen choose **More info → Run anyway**. In Windows Security you can allow the file. VirusTotal “generic Trojan” hits on this kind of exe are usually false positives. |
+| Windows Defender / SmartScreen flags `EQGM-x.y.z.exe` | Download **`EQGM-x.y.z.zip`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases), unzip, and run the exe inside. The single-file `.exe` unpacks to `%TEMP%` and often trips heuristics; the zip folder does not. SmartScreen: **More info → Run anyway**. |

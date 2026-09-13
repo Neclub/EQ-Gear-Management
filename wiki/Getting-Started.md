@@ -17,8 +17,8 @@ EQ writes those files to the root of your **EverQuest** folder (not the Logs sub
 
 ## 2. Run the app
 
-1. Download **`EQGM-x.y.z.exe`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases).
-2. Double-click the `.exe` to open it.
+1. Download **`EQGM-x.y.z.zip`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases). Unzip it and run **`EQGM-x.y.z.exe`** inside the folder.
+2. If Windows Defender quarantined the old single-file `.exe`, use the zip. A single-file `.exe` is still on the release for older in-app update checks.
 
 Windows may show a SmartScreen or antivirus warning. Download only from the GitHub **Releases** page above, then **More info → Run anyway** if asked. Details: [[Troubleshooting]].
 
