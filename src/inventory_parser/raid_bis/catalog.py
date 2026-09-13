@@ -42,7 +42,7 @@ from inventory_parser.slot2_augs.paths import appdata_dir
 
 CACHE_FILENAME = "raid_bis_catalog.json"
 ITEM_CACHE_FILENAME = "raid_bis_item_cache.json"
-ITEM_CACHE_VERSION = 7
+ITEM_CACHE_VERSION = 8
 _CLASS_ALL_TOKEN = "ALL"
 _CATALOG_FETCH_WORKERS = 6
 RAIDARMOR_URL = "https://sor.eqresource.com/raidarmor.php"
@@ -78,6 +78,8 @@ _TIER_HEAD_RE = re.compile(
     re.IGNORECASE | re.DOTALL,
 )
 _RAIDARMOR_STUB_NAME_RE = re.compile(r"^[A-Z]{3} \w+$")
+# Catalog-only: do not recommend crates, linings, emblems, or vendor junk.
+# Equipped items still hydrate (Power Source names include "Riven Arcana").
 _SKIP_NAME_RE = re.compile(
     r"diminished|riven arcana|emblem of|crate of|armor lining|fractured armor",
     re.IGNORECASE,
@@ -139,6 +141,10 @@ def _save_json(path: Path, data: dict) -> None:
 
 
 def should_skip_name(name: str) -> bool:
+    """True when a catalog row should not be recommended as Raid BiS.
+
+    Not used when hydrating an item the character is already wearing.
+    """
     return bool(_SKIP_NAME_RE.search(name or ""))
 
 
@@ -418,8 +424,6 @@ def parse_item_page(html: str, item_id: int, *, name_hint: str = "") -> RaidGear
         return None
     name_m = _NAME_RE.search(html)
     name = (name_m.group(1).strip() if name_m else "") or (name_hint or f"Item {item_id}")
-    if should_skip_name(name):
-        return None
     stats = _stats_from_eqr_html(html)
     classes = parse_eqresource_item_class_set(html)
     slot_m = _SLOT_RE.search(html)
@@ -543,15 +547,37 @@ def _candidate_from_dict(raw: dict) -> RaidGearCandidate:
     )
 
 
-def _item_cache_entry(item: RaidGearCandidate, *, fetched_at: str | None = None) -> dict:
+def _entry_has_inspect(entry: dict | None) -> bool:
+    if not isinstance(entry, dict):
+        return False
+    raw = entry.get("inspect")
+    return isinstance(raw, dict) and bool(str(raw.get("name") or "").strip())
+
+
+def _item_cache_entry(
+    item: RaidGearCandidate,
+    *,
+    inspect: object | None = None,
+    inspect_raw: dict | None = None,
+    fetched_at: str | None = None,
+) -> dict:
     payload = _candidate_to_dict(item)
-    return {
+    entry = {
         "ok": True,
         "fetched_at": fetched_at or datetime.now(timezone.utc).isoformat(),
         "classes": payload["classes"],
         "class_all": payload["class_all"],
         "item": payload,
     }
+    if inspect is not None:
+        from inventory_parser.item_inspect import inspect_to_dict
+
+        stored = inspect_to_dict(inspect)
+        stored["itemId"] = item.item_id
+        entry["inspect"] = stored
+    elif isinstance(inspect_raw, dict) and inspect_raw.get("name"):
+        entry["inspect"] = dict(inspect_raw)
+    return entry
 
 
 def _cached_item_from_entry(entry: dict) -> RaidGearCandidate | None:
@@ -814,8 +840,11 @@ def _backfill_item_cache_classes(items: list[RaidGearCandidate]) -> None:
         if not _item_cache_classes_stale(item_cache.get(key), item):
             continue
         prior = item_cache.get(key) if isinstance(item_cache.get(key), dict) else {}
+        prior_inspect = prior.get("inspect") if isinstance(prior.get("inspect"), dict) else None
         item_cache[key] = _item_cache_entry(
-            item, fetched_at=str(prior.get("fetched_at") or "") or None
+            item,
+            inspect_raw=prior_inspect,
+            fetched_at=str(prior.get("fetched_at") or "") or None,
         )
         dirty = True
     if dirty:
@@ -848,7 +877,8 @@ def _hydrate_items(
             if cached_item is not None and (
                 not _item_needs_page_hydrate(cached_item) or not allow_network
             ):
-                continue
+                if _entry_has_inspect(entry) or not allow_network:
+                    continue
         if not allow_network:
             continue
         if skip_hydrated and not _item_needs_page_hydrate(item):
@@ -869,14 +899,19 @@ def _hydrate_items(
         key = str(item.item_id)
         html = item_html_by_id.get(item.item_id)
         parsed: RaidGearCandidate | None = None
+        inspect = None
         if html is not None:
+            from inventory_parser.item_inspect import parse_item_inspect
+
             parsed = parse_item_page(html, item.item_id, name_hint=item.name)
+            inspect = parse_item_inspect(html, item.item_id, name_hint=item.name)
         if parsed is None and key in item_cache and item_cache[key].get("ok"):
             cached_item = _cached_item_from_entry(item_cache[key])
             if cached_item is not None and (
                 not _item_needs_page_hydrate(cached_item) or not allow_network
             ):
-                parsed = cached_item
+                if _entry_has_inspect(item_cache[key]) or not allow_network:
+                    parsed = cached_item
         if parsed is None and allow_network:
             if skip_hydrated and not _item_needs_page_hydrate(item):
                 continue
@@ -884,9 +919,13 @@ def _hydrate_items(
                 time.sleep(polite_delay_s)
             try:
                 html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item.item_id))
+                from inventory_parser.item_inspect import parse_item_inspect
+
                 parsed = parse_item_page(html, item.item_id, name_hint=item.name)
+                inspect = parse_item_inspect(html, item.item_id, name_hint=item.name)
             except (urllib.error.URLError, TimeoutError, OSError, ValueError):
                 parsed = None
+                inspect = None
             fetched += 1
             _emit_status(
                 on_status,
@@ -895,7 +934,7 @@ def _hydrate_items(
                 max(network_total, 1),
             )
             item_cache[key] = (
-                _item_cache_entry(parsed)
+                _item_cache_entry(parsed, inspect=inspect)
                 if parsed is not None
                 else {
                     "ok": False,
@@ -906,12 +945,25 @@ def _hydrate_items(
                 }
             )
             cache_dirty = True
+        elif parsed is not None and inspect is not None:
+            prior = item_cache.get(key) if isinstance(item_cache.get(key), dict) else {}
+            item_cache[key] = _item_cache_entry(
+                parsed,
+                inspect=inspect,
+                fetched_at=str(prior.get("fetched_at") or "") or None,
+            )
+            cache_dirty = True
         if parsed is not None:
             out[item.item_id] = parsed
             if parsed.classes is not None and _item_cache_classes_stale(
                 item_cache.get(key), parsed
             ):
-                item_cache[key] = _item_cache_entry(parsed)
+                prior = item_cache.get(key) if isinstance(item_cache.get(key), dict) else {}
+                item_cache[key] = _item_cache_entry(
+                    parsed,
+                    inspect=inspect,
+                    inspect_raw=prior.get("inspect") if inspect is None else None,
+                )
                 cache_dirty = True
     if cache_dirty and allow_network:
         _save_item_cache(item_cache)

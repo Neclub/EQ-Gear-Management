@@ -8,8 +8,9 @@
 | Achievement tabs empty | Confirm achievement file names match `Name_server-Achievements.txt` and character/server match inventory files. |
 | Include chips are grayed out | No inventory files in the roster yet. |
 | “Permission denied” / save failed | Close the workbook in Excel and try again. |
+| Generate Report error dialog | Read the message (it stays until **OK**). Common causes: Excel has the file open, no inventory files, or a network/catalog fetch failed. Details of the last run are in `%LOCALAPPDATA%\EQGM\last_report.log`. |
 | Wrong characters in columns | Each inventory file should be one character; check filenames. |
-| Type 7/8 Augs sheets missing or empty | Leave the **Type 7/8 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
+| Type 7/8 Augs sheets missing or empty | Leave the **Type 7/8 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). Use **1.35.7** or newer if the catalog was empty — older searches mixed `augslot` with `augtype` and returned no rows. |
 | Type 7/8 note says to move an aug, but **Upgrade to** is blank | Use **1.30.3** or newer and regenerate the report. Older builds marked that donor hole as BiS. |
 | Type 5 Augs sheet missing or empty | Leave the **Type 5 Augs** chip on; sockets and aug stats use the same `%LOCALAPPDATA%\EQGM\` cache as Type 7/8 (first run may need network). |
 | Type 18/19 Augs sheet missing or empty | Leave the **Type 18/19 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |

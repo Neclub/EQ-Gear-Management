@@ -2,7 +2,7 @@ import urllib.error
 
 import pytest
 
-from inventory_parser.http_fetch import http_get_text, http_post_text, is_png
+from inventory_parser.http_fetch import http_get_text, http_post_text, is_jpeg, is_png
 
 
 def test_http_get_rejects_non_https() -> None:
@@ -34,6 +34,12 @@ def test_is_png_accepts_small_png_header() -> None:
     assert not is_png(b"<html>not a png</html>")
     assert not is_png(b"\x89PNG\r\n\x1a\n" + b"\x00" * 300_000)
     assert not is_png(b"")
+
+
+def test_is_jpeg_accepts_small_jpeg_header() -> None:
+    assert is_jpeg(b"\xff\xd8\xff" + b"\x00" * 32)
+    assert not is_jpeg(b"\x89PNG\r\n\x1a\n" + b"\x00" * 32)
+    assert not is_jpeg(b"")
 
 
 def test_load_icon_png_rejects_non_png_cache(tmp_path, monkeypatch) -> None:

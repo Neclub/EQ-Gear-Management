@@ -179,7 +179,9 @@ def eqresource_search_payload(profile: ProfileId, *, augtype: str) -> dict[str, 
         "slot": "",
         "level": "",
         "type": "augs",
-        "augslot": augtype,
+        # Fits Aug Slot is ``augtype``; ``augslot`` is "Item Has Aug Slot Type".
+        # Setting both to 7/8 returns zero rows (same trap as Type 19).
+        "augslot": "",
         "augtype": augtype,
         "searched": "true",
         "Submit": "Submit",

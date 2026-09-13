@@ -133,7 +133,7 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
    - Use **Browse…** to pick another folder. The file name is always the default above; it updates if you change which server/characters are loaded.  
    - **Excel** / **HTML** / **Both** chips next to **Generate Report** — choose workbook only, HTML only, or both (default **Both**). The choice is remembered for next time.
 
-7. Click **Generate Report** — the status line shows what is running (`Fetching from EQ Resource…`, cached catalogs, item details, icons). When HTML is included, the saved `.html` file opens in your default browser. The setup screen stays open.
+7. Click **Generate Report** — the status line shows what is running (`Fetching from EQ Resource…`, cached catalogs, item details, icons). When HTML is included, the saved `.html` file opens in your default browser. The setup screen stays open. If export fails, an error dialog stays on screen until you click **OK**. Each run overwrites `%LOCALAPPDATA%\EQGM\last_report.log` with status, files, options, warnings, and errors.
 
 If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, etc.
 
@@ -141,7 +141,7 @@ If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, et
 
 ## Reading the workbook
 
-The file uses a **dark theme** on every sheet (black chrome, light text, shared header and status colors). Item names and Gear T-Level codes link to [EQ Resource](https://items.eqresource.com/) when the inventory file includes item IDs; hover a T-code to see the item name. Missing Spells and Missing Useful Spells names link to [EQ Resource spells](https://spells.eqresource.com).
+The file uses a **dark theme** on every sheet (black chrome, light text, shared header and status colors). Item names and Gear T-Level codes link to [EQ Resource](https://items.eqresource.com/) when the inventory file includes item IDs. In the HTML report, hover a Team Gear name or T-code for an EQ Resource–style inspect card; Excel still shows the item name on T-code hover. Missing Spells and Missing Useful Spells names link to [EQ Resource spells](https://spells.eqresource.com).
 
 ### Team Gear
 
@@ -265,7 +265,7 @@ Ranks of **Hero's Fortitude**, **Hero's Resolution**, and **Hero's Vitality** fr
 
 ### Type 7/8 Augs *(if enabled)*
 
-Type 7/8 (usually inventory Slot2) recommendations vs an EQ Resource catalog (raidloot fallback). Only augs that **fit type 7/8 holes** are recommended (type 5 and similar are excluded). Artisan's Prize is treated as owned when it appears in the inventory file. If **Velium Empowered Gem of Freezing** is equipped, it is kept and assigned to the legal slot with the best weighted trade-off against other BiS augs. Scoring uses class weights: tanks AC then HDex; melee HDex; priests (CLR, SHM) HWis; INT casters Spell Damage. **DRU** ranks Spell Damage first (weight 9) with HWis as a secondary (weight 1). Override for one character under **Advanced weights**. Excel adds **Stat Summary**, **Augs**, **Need to Farm**, **Ranked Augs**, and **Aug Legend**. HTML adds a **Type 7/8 Augs** section with the same cards. Needs a network fetch the first time; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache instead of re-querying EQ Resource. Uncheck the chip to skip this entirely.
+Type 7/8 (usually inventory Slot2) recommendations vs an EQ Resource catalog (raidloot fallback). Only augs that **fit type 7/8 holes** are recommended (type 5 and similar are excluded). Artisan's Prize is treated as owned when it appears in the inventory file. If **Velium Empowered Gem of Freezing** is equipped, it is kept and assigned to the legal slot with the best weighted trade-off against other BiS augs. Scoring uses class weights: tanks AC then HDex; melee HDex; priests (CLR, SHM) HWis; INT casters Spell Damage. **DRU** ranks Spell Damage first (weight 9) with HWis as a secondary (weight 1). Override for one character under **Advanced weights**. Excel adds **Stat Summary**, **Augs**, **Need to Farm**, **Ranked Augs**, and **Aug Legend**. HTML adds a **Type 7/8 Augs** section with the same cards. Needs a network fetch the first time; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache instead of re-querying EQ Resource. Catalog search uses Fits Aug Slot (`augtype`) only. Uncheck the chip to skip this entirely.
 
 **Slot recommendations** compare **Current** to **Upgrade to**. Hover the **?** for a reminder that these are suggestions — some classes already sit at a stat cap. **BiS** leaves Upgrade to blank — that hole already has the suggested aug. If a note says to move an aug to another slot (Charm, Range, Feet, and similar priority holes can claim a piece sitting elsewhere), Upgrade to lists what should replace it in the hole being vacated. The destination row shows a **Move from** badge.
 
@@ -329,7 +329,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook), grouped
 | **Column headers** | Table | Click to sort |
 | **Missing Item** | Missing Collections | Hover the header for a copy reminder; click an item name to copy it |
 
-Gear-set and tier colors match the Excel theme. Item names, Gear T-Level codes, and Missing Spells / Missing Useful Spells names link to EQ Resource; hover a T-code for the item name.
+Gear-set and tier colors match the Excel theme. Item names, Gear T-Level codes, and Missing Spells / Missing Useful Spells names link to EQ Resource. Hover a Team Gear name or T-code for an EQ Resource–style inspect card.
 
 ---
 
@@ -342,7 +342,7 @@ Gear-set and tier colors match the Excel theme. Item names, Gear T-Level codes, 
 - **Up** / **Down** / **Remove** / **Clear** — under Output folder on the right; fix the roster before regenerating.  
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
 - **Gear tier colors** — customize the five report bucket colors; they persist across launches (saved in AppData). **Reset to default** undoes that.
-- **Help** (top right) — gear tier colors legend (your current palette), **Check for Updates** (same GitHub Release check as startup), **Clear Cache** (deletes catalog/item/icon caches under `%LOCALAPPDATA%\EQGM\`; next Generate Report rebuilds them), and **About EQGM** (shows the app version).
+- **Help** (top right) — gear tier colors legend (your current palette), **Check for Updates** (same GitHub Release check as startup), **Clear Cache** (deletes catalog/item/icon caches under `%LOCALAPPDATA%\EQGM\`; next Generate Report rebuilds them; `last_report.log` is kept), and **About EQGM** (shows the app version; **Website** opens the product page).
 
 ---
 
@@ -356,8 +356,9 @@ Gear-set and tier colors match the Excel theme. Item names, Gear T-Level codes, 
 | Achievement tabs empty | Confirm achievement file names match `Name_server-Achievements.txt` and character/server match inventory files. |
 | Include chips are grayed out | No inventory files in the roster yet. |
 | “Permission denied” / save failed | Close the workbook in Excel and try again. |
+| Generate Report error dialog | Read the message (it stays until **OK**). Common causes: Excel has the file open, no inventory files, or a network/catalog fetch failed. Details of the last run are in `%LOCALAPPDATA%\EQGM\last_report.log`. |
 | Wrong characters in columns | Each inventory file should be one character; check filenames. |
-| Type 7/8 Augs sheets missing or empty | Leave the **Type 7/8 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |
+| Type 7/8 Augs sheets missing or empty | Leave the **Type 7/8 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). Use **1.35.7** or newer if the catalog was empty — older searches mixed `augslot` with `augtype` and returned no rows. |
 | Type 7/8 note says to move an aug, but **Upgrade to** is blank | Use **1.30.3** or newer and regenerate the report. Older builds marked that donor hole as BiS. |
 | Type 5 Augs sheet missing or empty | Leave the **Type 5 Augs** chip on; sockets and aug stats use the same `%LOCALAPPDATA%\EQGM\` cache as Type 7/8 (first run may need network). |
 | Type 18/19 Augs sheet missing or empty | Leave the **Type 18/19 Augs** chip on; the first run needs network access to EQ Resource (later runs use `%LOCALAPPDATA%\EQGM\` cache). |

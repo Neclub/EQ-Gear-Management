@@ -2,9 +2,12 @@ from __future__ import annotations
 
 import argparse
 import sys
+import time
+import traceback
 from pathlib import Path
 
 from inventory_parser import APP_NAME_SHORT, __version__
+from inventory_parser.generate_log import write_last_report_log
 from inventory_parser.team_report import (
     discover_input_files,
 )
@@ -29,43 +32,85 @@ def generate_workbook(
     include_anniversary: bool = False,
     also_html: bool = False,
     character_column_order: list[str] | None = None,
+    **bundle_kwargs,
 ) -> tuple[Path, list[str], Path | None]:
     """Parse inventories and write the team inventory Excel file."""
-    bundle = build_export_bundle(
-        input_paths,
-        slot_filter=slot_filter,
-        include_spells=include_spells,
-        include_achievements=include_achievements,
-        include_slot2=include_slot2,
-        include_type5=include_type5,
-        include_type18=include_type18,
-        include_raid_bis=include_raid_bis,
-        include_anniversary=include_anniversary,
-        character_column_order=character_column_order,
-    )
-    warnings = list(bundle.warnings)
+    started = time.perf_counter()
+    config = {
+        "paths": [str(path) for path in input_paths],
+        "outputPath": str(output_path),
+        "slotFilter": slot_filter,
+        "includeSpells": include_spells,
+        "includeAchievements": include_achievements,
+        "includeSlot2": include_slot2,
+        "includeType5": include_type5,
+        "includeType18": include_type18,
+        "includeRaidBis": include_raid_bis,
+        "includeAnniversary": include_anniversary,
+        "outputFormat": "both" if also_html else "excel",
+        "characterColumnOrder": list(character_column_order or []),
+    }
+    result: dict | None = None
+    traceback_text: str | None = None
     try:
-        saved = write_team_workbook(
-            bundle.team,
-            output_path,
-            slot_filter=bundle.slot_filter,
-            spell_report=bundle.spell_report,
-            missing_useful_report=bundle.missing_useful_report,
-            rune_inventory_report=bundle.rune_inventory_report,
-            achievement_report=bundle.achievement_report,
-            unmade_entries=bundle.unmade_entries,
-            slot2=bundle.slot2,
-            type5=bundle.type5,
-            type18=bundle.type18,
-            raid_bis=bundle.raid_bis,
+        bundle = build_export_bundle(
+            input_paths,
+            slot_filter=slot_filter,
+            include_spells=include_spells,
+            include_achievements=include_achievements,
+            include_slot2=include_slot2,
+            include_type5=include_type5,
+            include_type18=include_type18,
+            include_raid_bis=include_raid_bis,
+            include_anniversary=include_anniversary,
+            character_column_order=character_column_order,
+            include_item_cards=also_html,
+            **bundle_kwargs,
         )
-        html_saved = None
-        if also_html:
-            html_saved = write_team_html(bundle, html_path_for_workbook(saved))
-        return saved, warnings, html_saved
+        warnings = list(bundle.warnings)
+        try:
+            saved = write_team_workbook(
+                bundle.team,
+                output_path,
+                slot_filter=bundle.slot_filter,
+                spell_report=bundle.spell_report,
+                missing_useful_report=bundle.missing_useful_report,
+                rune_inventory_report=bundle.rune_inventory_report,
+                achievement_report=bundle.achievement_report,
+                unmade_entries=bundle.unmade_entries,
+                slot2=bundle.slot2,
+                type5=bundle.type5,
+                type18=bundle.type18,
+                raid_bis=bundle.raid_bis,
+            )
+            html_saved = None
+            if also_html:
+                html_saved = write_team_html(bundle, html_path_for_workbook(saved))
+            result = {
+                "ok": True,
+                "xlsx": str(saved),
+                "html": str(html_saved) if html_saved is not None else None,
+                "warnings": warnings,
+                "characterCount": len(bundle.team.characters),
+            }
+            return saved, warnings, html_saved
+        finally:
+            del bundle
+            release_export_memory()
+    except Exception:
+        traceback_text = traceback.format_exc()
+        raise
     finally:
-        del bundle
-        release_export_memory()
+        elapsed = round(time.perf_counter() - started, 1)
+        if result is not None:
+            result = {**result, "elapsedSeconds": elapsed}
+        write_last_report_log(
+            source="cli",
+            config=config,
+            result=result,
+            traceback_text=traceback_text,
+            elapsed_seconds=elapsed,
+        )
 
 
 def main(argv: list[str] | None = None) -> int:

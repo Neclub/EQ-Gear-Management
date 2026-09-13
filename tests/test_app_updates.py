@@ -158,6 +158,7 @@ def test_clear_cache_deletes_cache_files_keeps_settings(tmp_path, monkeypatch) -
     (tmp_path / "weight_overrides.json").write_text("{}\n", encoding="utf-8")
     (tmp_path / "raid_bis_catalog.json").write_text("{}\n", encoding="utf-8")
     (tmp_path / "eqresource_aug_cache.json").write_text("{}\n", encoding="utf-8")
+    (tmp_path / "last_report.log").write_text("keep me\n", encoding="utf-8")
     icons = tmp_path / "item_icons"
     icons.mkdir()
     (icons / "1.png").write_bytes(b"\x89PNG\r\n\x1a\n")
@@ -170,6 +171,7 @@ def test_clear_cache_deletes_cache_files_keeps_settings(tmp_path, monkeypatch) -
     assert result["errors"] == []
     assert (tmp_path / "settings.json").is_file()
     assert (tmp_path / "weight_overrides.json").is_file()
+    assert (tmp_path / "last_report.log").read_text(encoding="utf-8") == "keep me\n"
     assert not (tmp_path / "raid_bis_catalog.json").exists()
     assert not (tmp_path / "eqresource_aug_cache.json").exists()
     assert not icons.exists()
@@ -186,10 +188,23 @@ def test_clear_cache_ok_when_empty(tmp_path, monkeypatch) -> None:
     assert result["errors"] == []
 
 
-def test_get_version_has_version_not_website_url() -> None:
+def test_open_website_opens_product_page() -> None:
+    from inventory_parser.web_api import PRODUCT_WEBSITE_URL
+
+    api = WebApi()
+    with patch("inventory_parser.web_api.webbrowser.open") as open_browser:
+        result = api.open_website()
+    assert result["ok"] is True
+    assert result["url"] == PRODUCT_WEBSITE_URL
+    open_browser.assert_called_once_with(PRODUCT_WEBSITE_URL)
+
+
+def test_get_version_includes_website_url() -> None:
+    from inventory_parser.web_api import PRODUCT_WEBSITE_URL
+
     info = WebApi().get_version()
+    assert info["websiteUrl"] == PRODUCT_WEBSITE_URL
     assert "version" in info
-    assert "websiteUrl" not in info
 
 
 def test_check_for_updates_rejects_foreign_asset_url(monkeypatch) -> None:
@@ -234,3 +249,13 @@ def test_gui_prompts_update_on_startup() -> None:
     assert "Current version:" in text
     assert "Newest version:" in text
     assert "Would you like to download the latest version?" in text
+
+
+def test_gui_generate_error_uses_persistent_dialog() -> None:
+    from inventory_parser.package_data import read_gui_text
+
+    text = read_gui_text("setup.js")
+    assert "function showErrorDialog" in text
+    assert 'showErrorDialog(msg, "Export failed")' in text
+    assert "showToast(msg.replace" in text
+    assert "showToast(msg, true)" not in text

@@ -1,6 +1,6 @@
 # Gear
 
-Excel uses a **dark theme** on every sheet. Item names and Gear T-Level codes link to [EQ Resource](https://items.eqresource.com/) when the inventory file includes item IDs; hover a T-code to see the item name.
+Excel uses a **dark theme** on every sheet. Item names and Gear T-Level codes link to [EQ Resource](https://items.eqresource.com/) when the inventory file includes item IDs. In the **HTML** report, hover a Team Gear name or Gear T-Level code for an EQ Resource–style inspect card; Excel still shows the item name on T-code hover.
 
 Sections below come from **inventory files**.
 
@@ -12,12 +12,13 @@ Sections below come from **inventory files**.
 - Rows are grouped **visible** gear first, then **non-visible**
 - **Colors** show tier bucket — same rules as Gear T-Level; see legend on the sheet (rows 26–30), the **Gear tier colors** panel in the app, or **Help** → gear tier colors
 - **Evolver** bucket (purple by default) = Evolver (special augment slot, not the “6” in the Slots column)
+- **HTML:** hover an item name for an EQ Resource–style inspect card
 
 ---
 
 ## Gear T-Level
 
-Same layout as Team Gear, but cells show **what tier is equipped** in each slot. Tier codes link to [EQ Resource](https://items.eqresource.com/) when the inventory includes item IDs; hover a cell to see the item name.
+Same layout as Team Gear, but cells show **what tier is equipped** in each slot. Tier codes link to [EQ Resource](https://items.eqresource.com/) when the inventory includes item IDs. In HTML, hover a code for the inspect card (same as Team Gear); in Excel, hover a cell to see the item name.
 
 | Cell value | Meaning |
 |------------|---------|

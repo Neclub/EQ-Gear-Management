@@ -6,6 +6,7 @@ import json
 import re
 import threading
 import time
+import traceback
 import webbrowser
 from pathlib import Path
 
@@ -34,6 +35,7 @@ from inventory_parser.eq_servers import server_display_name
 from inventory_parser.excel_export import write_team_workbook
 from inventory_parser.excel_theme import tier_legend_entries
 from inventory_parser.export_bundle import build_export_bundle, release_export_memory
+from inventory_parser.generate_log import write_last_report_log
 from inventory_parser.slot2_augs.build import report_progress
 from inventory_parser.slot2_augs.weights import default_class_weights, sanitize_weight_map
 from inventory_parser.html_export import write_team_html
@@ -59,6 +61,8 @@ from inventory_parser.web_bridge import (
     file_url,
     setup_url,
 )
+
+PRODUCT_WEBSITE_URL = "https://neclub.github.io/EQ-Gear-Management/"
 
 _HOME_PATH = str(Path.home())
 _HOME_PATH_RE = re.compile(re.escape(_HOME_PATH), re.IGNORECASE) if _HOME_PATH else None
@@ -267,6 +271,7 @@ class WebApi:
         return {
             "version": __version__,
             "logoDataUri": eq_logo_data_uri(),
+            "websiteUrl": PRODUCT_WEBSITE_URL,
         }
 
     def check_for_updates(self) -> dict:
@@ -276,6 +281,10 @@ class WebApi:
         from inventory_parser.slot2_augs.paths import clear_disk_caches
 
         return clear_disk_caches()
+
+    def open_website(self) -> dict:
+        webbrowser.open(PRODUCT_WEBSITE_URL)
+        return {"ok": True, "url": PRODUCT_WEBSITE_URL}
 
     def open_update_download(self, url: str) -> dict:
         if not is_allowed_download_url(url):
@@ -476,6 +485,25 @@ class WebApi:
         return {"ok": True, "started": True}
 
     def _generate_report_sync(self, config: dict) -> dict:
+        started = time.perf_counter()
+        result: dict | None = None
+        traceback_text: str | None = None
+        try:
+            result = self._generate_report_impl(config)
+            return result
+        except Exception:
+            traceback_text = traceback.format_exc()
+            raise
+        finally:
+            write_last_report_log(
+                source="gui",
+                config=config if isinstance(config, dict) else {},
+                result=result,
+                traceback_text=traceback_text,
+                elapsed_seconds=round(time.perf_counter() - started, 1),
+            )
+
+    def _generate_report_impl(self, config: dict) -> dict:
         paths = [Path(p) for p in config.get("paths", [])]
         output = config.get("outputPath", "").strip()
         inv_paths, _, _ = split_input_paths(paths)
@@ -533,6 +561,7 @@ class WebApi:
                 session_weights=session_weights,
                 on_progress=on_progress,
                 character_column_order=column_order,
+                include_item_cards=write_html,
             )
         except ValueError as exc:
             return _gui_error_payload(exc)

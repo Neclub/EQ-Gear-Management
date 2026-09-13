@@ -21,6 +21,7 @@ ALLOWED_HOSTS = frozenset(
 _MAX_HTML_BYTES = 5_000_000
 MAX_ICON_BYTES = 256_000
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
+JPEG_MAGIC = b"\xff\xd8\xff"
 
 
 class _AllowedHostRedirectHandler(urllib.request.HTTPRedirectHandler):
@@ -99,6 +100,10 @@ def http_post_text(
 
 def is_png(data: bytes, *, max_bytes: int = MAX_ICON_BYTES) -> bool:
     return bool(data) and data.startswith(PNG_MAGIC) and len(data) <= max_bytes
+
+
+def is_jpeg(data: bytes, *, max_bytes: int = MAX_ICON_BYTES) -> bool:
+    return bool(data) and data.startswith(JPEG_MAGIC) and len(data) <= max_bytes
 
 
 def _http_bytes(

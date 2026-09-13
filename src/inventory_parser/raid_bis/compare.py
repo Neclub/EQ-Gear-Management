@@ -358,6 +358,79 @@ class CharacterRaidBis:
     slots_changed: int = 0
 
 
+def _normalize_icon_id(raw: str | int | None) -> str | None:
+    if raw is None:
+        return None
+    icon_id = str(raw).strip()
+    return icon_id or None
+
+
+def paperdoll_display_name(slot: SlotComparison) -> str | None:
+    """Item name the paper doll shows for this slot (empty cells return None)."""
+    name = (
+        slot.current_name
+        if slot.status in ("bis", "weapon")
+        else (slot.recommended_name or slot.current_name)
+    )
+    name = (name or "").strip()
+    return name or None
+
+
+def paperdoll_icon_id(slot: SlotComparison) -> str | None:
+    """Icon id the paper doll uses for this slot."""
+    raw = (
+        slot.current_icon_id
+        if slot.status in ("bis", "weapon")
+        else (slot.recommended_icon_id or slot.current_icon_id)
+    )
+    return _normalize_icon_id(raw)
+
+
+def collect_paperdoll_icon_ids(characters: list[CharacterRaidBis]) -> set[str]:
+    """Icon ids needed to render paper-doll cells, including waist choices."""
+    ids: set[str] = set()
+    for ch in characters:
+        for slot in ch.slots:
+            for raw in (slot.recommended_icon_id, slot.current_icon_id):
+                icon_id = _normalize_icon_id(raw)
+                if icon_id:
+                    ids.add(icon_id)
+            for choice in slot.choices:
+                icon_id = _normalize_icon_id(choice.icon_id)
+                if icon_id:
+                    ids.add(icon_id)
+    return ids
+
+
+def missing_paperdoll_icons(
+    characters: list[CharacterRaidBis],
+    icon_data_uris: Mapping[str, str] | None = None,
+    *,
+    require_embedded: bool = True,
+) -> list[str]:
+    """Occupied paper-doll cells that would render without an icon image."""
+    embedded = icon_data_uris or {}
+    missing: list[str] = []
+    for ch in characters:
+        label = (ch.display_name or ch.character or "character").strip()
+        by_slot = {s.gear_slot: s for s in ch.slots}
+        for slot_name in PAPERDOLL_SLOTS:
+            slot = by_slot.get(slot_name)
+            if slot is None:
+                continue
+            name = paperdoll_display_name(slot)
+            if not name:
+                continue
+            icon_id = paperdoll_icon_id(slot)
+            if not icon_id:
+                missing.append(f"{label} {slot_name}: {name} has no icon id")
+            elif require_embedded and icon_id not in embedded:
+                missing.append(
+                    f"{label} {slot_name}: icon {icon_id} not embedded"
+                )
+    return missing
+
+
 def _score_gain(
     current_stats: Mapping[str, int] | None,
     recommended_stats: Mapping[str, int] | None,

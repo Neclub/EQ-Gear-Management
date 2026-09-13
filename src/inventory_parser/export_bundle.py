@@ -23,6 +23,7 @@ from inventory_parser.useful_spells import (
     build_missing_useful_spells_report,
 )
 from inventory_parser.raid_bis.build import RaidBisExport, build_raid_bis_export
+from inventory_parser.item_inspect import ItemInspectExport, build_item_inspect_export
 from inventory_parser.slot2_augs.build import Slot2Export, build_slot2_export, report_progress
 from inventory_parser.slot2_augs.chest_class import apply_resolved_classes_to_team
 from inventory_parser.slot2_augs.eqresource_gear_tier import apply_resolved_gear_tiers_to_team
@@ -44,6 +45,7 @@ class ExportBundle:
     type5: Type5Export | None = None
     type18: Type18Export | None = None
     raid_bis: RaidBisExport | None = None
+    item_inspect: ItemInspectExport | None = None
 
 
 def release_export_memory() -> None:
@@ -61,6 +63,7 @@ def build_export_bundle(
     include_type5: bool = False,
     include_type18: bool = False,
     include_raid_bis: bool = False,
+    include_item_cards: bool = False,
     include_anniversary: bool = False,
     session_weights: dict[str, float] | None = None,
     on_progress: Callable[[dict], None] | None = None,
@@ -150,6 +153,9 @@ def build_export_bundle(
     raid_bis_allow_network = slot2_kwargs.pop("raid_bis_allow_network", True)
     raid_bis_hydrate = slot2_kwargs.pop("raid_bis_hydrate", True)
     raid_bis_embed_icons = slot2_kwargs.pop("raid_bis_embed_icons", True)
+    item_inspect_html = slot2_kwargs.pop("item_inspect_html_by_id", None)
+    item_inspect_allow_network = slot2_kwargs.pop("item_inspect_allow_network", None)
+    item_inspect_embed_icons = slot2_kwargs.pop("item_inspect_embed_icons", True)
 
     type5_socket_overrides = slot2_kwargs.pop("type5_socket_overrides", None)
     type5_slot_by_parent_id = slot2_kwargs.pop("type5_slot_by_parent_id", None)
@@ -250,6 +256,23 @@ def build_export_bundle(
         )
         warnings.extend(raid_bis.warnings)
 
+    item_inspect = None
+    if include_item_cards:
+        merged_item_html: dict[int, str] = {}
+        if isinstance(raid_bis_item_html, dict):
+            merged_item_html.update(raid_bis_item_html)
+        if isinstance(item_inspect_html, dict):
+            merged_item_html.update(item_inspect_html)
+        allow_cards_network = raid_bis_allow_network if item_inspect_allow_network is None else bool(item_inspect_allow_network)
+        item_inspect = build_item_inspect_export(
+            report,
+            raid_bis_icons=raid_bis.icon_data_uris if raid_bis is not None else None,
+            item_html_by_id=merged_item_html or None,
+            allow_network=allow_cards_network,
+            on_progress=on_progress,
+            embed_icons=bool(item_inspect_embed_icons),
+        )
+
     return ExportBundle(
         team=report,
         spell_report=spell_report,
@@ -263,4 +286,5 @@ def build_export_bundle(
         type5=type5,
         type18=type18,
         raid_bis=raid_bis,
+        item_inspect=item_inspect,
     )

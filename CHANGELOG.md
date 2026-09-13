@@ -6,6 +6,23 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.7] - 2026-09-13
+
+### Added
+
+- **Help → About:** Website button opens the GitHub Pages product site.
+- **HTML Team Gear / Gear T-Level:** hover an item name or T-code to show an EQ Resource–style inspect card (icon, flags, stats, augs, effects). Cards are stored once per unique item in the report.
+- **Generate Report log:** `%LOCALAPPDATA%\EQGM\last_report.log` is overwritten with the latest run (status, files, options, warnings, and errors). Clear Cache does not delete it.
+
+### Fixed
+
+- **Type 7/8 Augs:** EQ Resource catalog search used ``augslot`` together with ``augtype`` (7 then 8), which returns no rows. Fits Aug Slot is ``augtype`` only; the raidloot fallback warning no longer fires on a working parse.
+
+### Changed
+
+- Inspect cards omit the Power Source slot (Raid BiS paperdoll still shows it).
+- **Generate Report:** export failures open a dialog that stays until you click OK (successful runs still use the brief toast).
+
 ## [1.35.6] - 2026-09-09
 
 ### Added

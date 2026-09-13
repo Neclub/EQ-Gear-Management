@@ -803,6 +803,16 @@ select:focus, .text-input:focus {
   flex-shrink: 0;
 }
 
+.error-dialog-message {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--text);
+}
+
 .picker-filter {
   margin-bottom: 12px;
 }

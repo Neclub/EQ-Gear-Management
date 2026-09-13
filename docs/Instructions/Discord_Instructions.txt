@@ -40,7 +40,7 @@ A grid of everyone on the team. Each row is a gear slot. Item names are color-co
 > 🟣 **Purple** — Evolver
 
 ### 📊 Gear T-Level
-Same layout, but shows the tier name instead of the item name (for example `SOR-R2`). Codes link to EQ Resource; hover a cell to see the item name.
+Same layout, but shows the tier name instead of the item name (for example `SOR-R2`). Codes link to EQ Resource. In the web report, hover a name or T-code for an inspect card; in Excel, hover a cell to see the item name.
 
 ### ⚒️ Unmade Gear
 Craft materials and T1 containers still sitting in bags — listed so you know they are there, even if that slot is already geared.

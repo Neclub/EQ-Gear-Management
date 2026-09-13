@@ -9,7 +9,9 @@ from inventory_parser.output_paths import default_export_prefix_from_report
 from inventory_parser.raid_bis.catalog import fetch_catalog
 from inventory_parser.raid_bis.compare import (
     CharacterRaidBis,
+    collect_paperdoll_icon_ids,
     compare_character,
+    missing_paperdoll_icons,
     resolve_equipped_stats,
 )
 from inventory_parser.raid_bis.models import RaidBisCatalog
@@ -88,15 +90,9 @@ def build_raid_bis_export(
     if embed_icons:
         from inventory_parser.raid_bis.icons import collect_icon_data_uris
 
-        icon_ids = set()
-        for ch in characters:
-            for slot in ch.slots:
-                if slot.recommended_icon_id:
-                    icon_ids.add(slot.recommended_icon_id)
-                if slot.current_icon_id:
-                    icon_ids.add(slot.current_icon_id)
+        icon_ids = collect_paperdoll_icon_ids(characters)
         if catalog.vendor and catalog.vendor.currency_icon_id:
-            icon_ids.add(catalog.vendor.currency_icon_id)
+            icon_ids.add(str(catalog.vendor.currency_icon_id).strip())
 
         last_icon_msg = ["Using cached item icons…"]
 
@@ -111,6 +107,11 @@ def build_raid_bis_export(
         )
         if icon_ids:
             report_progress(on_progress, last_icon_msg[0], 0.82, 0.95, 1, 1)
+        warnings.extend(
+            missing_paperdoll_icons(
+                characters, icon_data_uris, require_embedded=True
+            )
+        )
 
     prefix = default_export_prefix_from_report(team)
     return RaidBisExport(

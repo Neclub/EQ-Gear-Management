@@ -20,6 +20,7 @@
   --accent-soft: rgba(59, 111, 212, 0.15);
   --gold: #c9a84c;
   --gold-soft: rgba(201, 168, 76, 0.25);
+  --heroic: #c4b5fd;
   --empty: #181c24;
   --sidebar-w: 240px;
   --row-alt: #191e28;
@@ -1481,6 +1482,124 @@ th.copy-col-head {
 .s-secondary { grid-column: 2; grid-row: 8; }
 .s-range { grid-column: 3; grid-row: 8; }
 .s-ammo { grid-column: 4; grid-row: 8; }
+.item-inspect {
+  position: fixed;
+  z-index: 90;
+  width: min(520px, calc(100vw - 16px));
+  max-height: calc(100vh - 16px);
+  overflow: auto;
+  padding: 10px 12px 12px;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow:
+    0 12px 28px rgba(0, 0, 0, 0.45),
+    0 0 0 1px var(--gold-soft),
+    0 0 18px var(--gold-soft);
+  font: 12px/1.4 "Segoe UI", system-ui, sans-serif;
+  pointer-events: none;
+}
+.item-inspect-head {
+  display: grid;
+  grid-template-columns: 1fr 88px;
+  gap: 8px;
+  align-items: start;
+  margin-bottom: 8px;
+}
+.item-inspect-name {
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  padding: 4px 4px 0;
+  letter-spacing: 0.01em;
+  line-height: 1.25;
+  color: var(--text);
+}
+.item-inspect-expac { text-align: center; }
+.item-inspect-expac img {
+  width: 72px;
+  height: auto;
+  max-height: 40px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 4px;
+}
+.item-inspect-tier {
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 700;
+}
+.item-inspect-identity {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 10px;
+  align-items: start;
+  margin-bottom: 8px;
+}
+.item-inspect-icon {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--empty);
+}
+.item-inspect-icon-empty {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--empty);
+}
+.item-inspect-flags { color: var(--muted); }
+.item-inspect-line { margin-top: 1px; }
+.item-inspect-k { color: var(--gold); }
+.item-inspect-aug {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+  color: var(--text);
+}
+.item-inspect-aug-well {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--input);
+  box-shadow: inset 0 0 0 1px var(--gold-soft);
+}
+.item-inspect-stats {
+  display: grid;
+  gap: 8px 20px;
+  margin-top: 8px;
+}
+.item-inspect-col {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 8px;
+  row-gap: 1px;
+  align-content: start;
+}
+.item-inspect-col .lab {
+  color: var(--gold);
+  white-space: nowrap;
+}
+.item-inspect-col .val {
+  color: var(--text);
+  font-weight: 650;
+  white-space: nowrap;
+}
+.item-inspect-heroic { color: var(--heroic); font-weight: 700; }
+.item-inspect-spells { margin-top: 8px; line-height: 1.45; }
+.item-inspect-lore {
+  margin-top: 8px;
+  color: var(--muted);
+  font-style: italic;
+}
 @media (max-width: 900px) {
   #app { flex-direction: column; }
   #sidebar {
@@ -1667,6 +1786,7 @@ const state = {
   raidBisWaist: {},
   raidBisCoins: {},
   copyBalloonTimer: 0,
+  inspectCardTimer: 0,
 };
 function uniqueExpansionLabels(values) {
   const seen = new Set();
@@ -2288,6 +2408,151 @@ function updateTierLegend() {
   footer.appendChild(row);
 }
 
+function itemInspectCard(itemId) {
+  return (REPORT.itemCards || {})[String(itemId)] || null;
+}
+
+function itemInspectIconUri(iconId) {
+  if (!iconId) return "";
+  const key = String(iconId);
+  const extra = (REPORT.itemCardIcons || {})[key];
+  if (extra) return extra;
+  for (const section of REPORT.sections || []) {
+    if (section.type === "raid_bis") {
+      const uri = (section.data && section.data.iconDataUris || {})[key];
+      if (uri) return uri;
+    }
+  }
+  return "";
+}
+
+function itemInspectExpacUri(code) {
+  if (!code) return "";
+  return (REPORT.itemCardExpansions || {})[String(code)] || "";
+}
+
+function hideItemInspectCard() {
+  if (state.inspectCardTimer) {
+    clearTimeout(state.inspectCardTimer);
+    state.inspectCardTimer = 0;
+  }
+  const node = document.getElementById("itemInspectCard");
+  if (node) node.remove();
+}
+
+function inspectValueHtml(raw) {
+  const text = String(raw || "");
+  const parts = text.split(/\s+\+\s+/);
+  if (parts.length === 2 && /^\d+$/.test(parts[0]) && /^\d+$/.test(parts[1])) {
+    return `${escHtml(parts[0])} <span class="item-inspect-heroic">+ ${escHtml(parts[1])}</span>`;
+  }
+  return escHtml(text);
+}
+
+function inspectStatColHtml(block) {
+  const labels = block.labels || [];
+  if (!labels.length) return "";
+  const values = block.values || [];
+  let html = `<div class="item-inspect-col">`;
+  labels.forEach((lab, i) => {
+    const name = String(lab || "").replace(/:$/, "") + ":";
+    html += `<span class="lab">${escHtml(name)}</span><span class="val">${inspectValueHtml(values[i] || "")}</span>`;
+  });
+  html += "</div>";
+  return html;
+}
+
+function inspectStatsRowHtml(cols) {
+  const parts = (cols || []).filter(Boolean);
+  if (!parts.length) return "";
+  return `<div class="item-inspect-stats" style="grid-template-columns:repeat(${parts.length}, minmax(0, 1fr))">${parts.join("")}</div>`;
+}
+
+function inspectAugHtml(label) {
+  return `<div class="item-inspect-aug"><span class="item-inspect-aug-well"></span><span>${escHtml(label)}</span></div>`;
+}
+
+function inspectMetaHtml(card) {
+  const rows = [
+    ["Size", card.size],
+    ["Weight", card.weight],
+    ["Tribute", card.tribute],
+    ["Req Lvl", card.reqLevel],
+  ].filter((row) => row[1]);
+  if (!rows.length) return "";
+  return inspectStatColHtml({
+    labels: rows.map((row) => row[0]),
+    values: rows.map((row) => row[1]),
+  });
+}
+
+function showItemInspectCard(anchor, itemId) {
+  hideItemInspectCard();
+  const card = itemInspectCard(itemId);
+  if (!anchor || !card) return;
+  state.inspectCardTimer = setTimeout(() => {
+    state.inspectCardTimer = 0;
+    hideItemInspectCard();
+    const balloon = el("div", "item-inspect");
+    balloon.id = "itemInspectCard";
+    const iconUri = itemInspectIconUri(card.iconId);
+    const expacUri = itemInspectExpacUri(card.expansionCode);
+    const blocks = card.statBlocks || [];
+    const vitals = blocks[0] && String(blocks[0].labels[0] || "").toUpperCase() === "AC" ? blocks[0] : null;
+    const rest = vitals ? blocks.slice(1) : blocks;
+    let html = `<div class="item-inspect-head"><div class="item-inspect-name">${escHtml(card.name)}</div><div class="item-inspect-expac">`;
+    if (expacUri) html += `<img alt="" src="${escHtml(expacUri)}">`;
+    if (card.tier) html += `<div class="item-inspect-tier">${escHtml(card.tier)}</div>`;
+    html += `</div></div><div class="item-inspect-identity">`;
+    html += iconUri
+      ? `<img class="item-inspect-icon" alt="" src="${escHtml(iconUri)}">`
+      : `<span class="item-inspect-icon-empty"></span>`;
+    html += `<div>`;
+    if ((card.flags || []).length) html += `<div class="item-inspect-flags">${escHtml(card.flags.join(", "))}</div>`;
+    if (card.classes) html += `<div class="item-inspect-line"><span class="item-inspect-k">Class:</span> ${escHtml(card.classes)}</div>`;
+    if (card.races) html += `<div class="item-inspect-line"><span class="item-inspect-k">Race:</span> ${escHtml(card.races)}</div>`;
+    if (card.slot) html += `<div class="item-inspect-line"><span class="item-inspect-k">Slot:</span> ${escHtml(card.slot)}</div>`;
+    html += `</div></div>`;
+    (card.augSlotsTop || []).forEach((aug) => {
+      if (String(aug).toLowerCase().includes("power source")) return;
+      html += inspectAugHtml(aug);
+    });
+    html += inspectStatsRowHtml([inspectMetaHtml(card), vitals ? inspectStatColHtml(vitals) : ""]);
+    html += inspectStatsRowHtml(rest.map((block) => inspectStatColHtml(block)));
+    if (card.effect || card.focus) {
+      html += `<div class="item-inspect-spells">`;
+      if (card.effect) html += `<div><span class="item-inspect-k">Effect:</span> ${escHtml(card.effect)}</div>`;
+      if (card.focus) html += `<div><span class="item-inspect-k">Focus:</span> ${escHtml(card.focus)}</div>`;
+      html += `</div>`;
+    }
+    (card.augSlotsBottom || []).forEach((aug) => {
+      if (String(aug).toLowerCase().includes("power source")) return;
+      html += inspectAugHtml(aug);
+    });
+    if (card.lore) html += `<div class="item-inspect-lore">Item Lore: ${escHtml(card.lore)}</div>`;
+    balloon.innerHTML = html;
+    document.body.appendChild(balloon);
+    const rect = anchor.getBoundingClientRect();
+    const width = balloon.offsetWidth;
+    const height = balloon.offsetHeight;
+    let left = rect.left + rect.width / 2 - width / 2;
+    left = Math.max(8, Math.min(left, window.innerWidth - width - 8));
+    let top = rect.top - height - 8;
+    if (top < 8) top = Math.min(rect.bottom + 8, window.innerHeight - height - 8);
+    balloon.style.left = left + "px";
+    balloon.style.top = Math.max(8, top) + "px";
+  }, 200);
+}
+
+function bindItemInspectCard(node, itemId) {
+  const id = Number(itemId) || 0;
+  if (!node || id <= 0 || !itemInspectCard(id)) return;
+  node.addEventListener("mouseenter", () => showItemInspectCard(node, id));
+  node.addEventListener("mouseleave", hideItemInspectCard);
+  node.addEventListener("focus", () => showItemInspectCard(node, id));
+  node.addEventListener("blur", hideItemInspectCard);
+}
+
 function updateGearMatrixContent(content, section, tierMode) {
   const data = section.data;
   const q = (state.searches[section.id] || "").trim().toLowerCase();
@@ -2341,11 +2606,13 @@ function updateGearMatrixContent(content, section, tierMode) {
           a.target = "_blank";
           a.rel = "noopener";
           a.textContent = label;
-          if (cell.name) a.title = cell.name;
+          if (cell.name && !itemInspectCard(cell.itemId)) a.title = cell.name;
           td.appendChild(a);
+          bindItemInspectCard(a, cell.itemId);
         } else {
           td.textContent = label;
-          if (cell.name) td.title = cell.name;
+          if (cell.name && !itemInspectCard(cell.itemId)) td.title = cell.name;
+          bindItemInspectCard(td, cell.itemId);
         }
         const style = gearStyle(cell);
         if (style) td.setAttribute("style", style);
@@ -2357,8 +2624,10 @@ function updateGearMatrixContent(content, section, tierMode) {
           a.rel = "noopener";
           a.textContent = cell.name;
           td.appendChild(a);
+          bindItemInspectCard(a, cell.itemId);
         } else {
           td.textContent = cell.name;
+          bindItemInspectCard(td, cell.itemId);
         }
         const style = gearStyle(cell);
         if (style) td.setAttribute("style", style);
@@ -4498,6 +4767,9 @@ function updateRaidBisContent(panel, section) {
       const iconId = slot.status === "bis" || slot.status === "weapon"
         ? slot.currentIconId
         : (slot.recommendedIconId || slot.currentIconId);
+      if (showName && !(iconId && icons[iconId])) {
+        console.warn("Paper doll missing icon", slotName, showName, iconId || "");
+      }
       const recBit = slot.recommendedName && slot.recommendedName !== slot.currentName
         ? ` → ${slot.recommendedName}`
         : "";
@@ -4596,6 +4868,7 @@ function updatePanelContent(panel, section) {
 }
 
 function refreshContent() {
+  hideItemInspectCard();
   const section = activeSection();
   const panel = document.getElementById("panel-" + state.activeTab);
   if (section && panel) updatePanelContent(panel, section);

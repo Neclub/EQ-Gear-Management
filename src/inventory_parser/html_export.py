@@ -760,6 +760,12 @@ def serialize_report(bundle: ExportBundle) -> dict:
         "expansionOrder": _expansion_filter_order(),
         "navGroups": HTML_NAV_GROUPS,
         "sections": sections,
+        "itemCards": (bundle.item_inspect.cards if bundle.item_inspect else {}) or {},
+        "itemCardIcons": (bundle.item_inspect.icon_data_uris if bundle.item_inspect else {}) or {},
+        "itemCardExpansions": (
+            bundle.item_inspect.expansion_data_uris if bundle.item_inspect else {}
+        )
+        or {},
     }
 
 

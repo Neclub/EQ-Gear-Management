@@ -28,7 +28,7 @@ If a newer GitHub Release exists, a popup shows the current and newest versions 
 
 1. Click **EQ Folder** and pick the root of your EverQuest folder; select which characters to import.
 2. Drag names in **Team characters** to set column order if you want. Adjust **Export options** on the right if needed. Under **Gear tier colors**, click a swatch to customize Team Gear / Gear T-Level colors — they persist the next time you open the app. **Browse…** under **Output folder** picks where to save; the file is always named `{Server}_Team Inventory.xlsx` (or `{Character}_…` for a single character).
-3. Choose **Excel**, **HTML**, or **Both**, then click **Generate Report**.
+3. Choose **Excel**, **HTML**, or **Both**, then click **Generate Report**. If export fails, an error dialog stays until **OK**; details of the last run are in `%LOCALAPPDATA%\EQGM\last_report.log`.
 
 <p align="center">
   <img src="https://neclub.github.io/EQ-Gear-Management/img/eqgm-setup.png" alt="EQ Gear Management setup screen" width="720">

@@ -49,7 +49,7 @@ Between Export options and Output folder. Click a swatch to change the five Team
 - Use **Browse…** to pick another folder. The file name is always the default above; it updates if you change which server/characters are loaded.
 - **Excel** / **HTML** / **Both** chips next to **Generate Report** — choose workbook only, HTML only, or both (default **Both**). The choice is remembered for next time.
 
-Click **Generate Report** — when HTML is included, the saved `.html` file opens in your default browser. The setup screen stays open.
+Click **Generate Report** — when HTML is included, the saved `.html` file opens in your default browser. The setup screen stays open. If export fails, an error dialog stays on screen until you click **OK**. Each run overwrites `%LOCALAPPDATA%\EQGM\last_report.log` with status, files, options, warnings, and errors.
 
 If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, etc.
 
@@ -60,4 +60,4 @@ If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, et
 - **Achievement files in AchievementData** — same pattern for `/outputfile achievements` files.
 - **Status bar** — shows how many inventory, MissingSpells, and achievement files are loaded.
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
-- **Help** (top right) — gear tier colors legend, **Check for Updates**, **Clear Cache** (deletes catalog/item/icon caches; next Generate Report rebuilds them), and **About EQGM** (shows the app version).
+- **Help** (top right) — gear tier colors legend, **Check for Updates**, **Clear Cache** (deletes catalog/item/icon caches; next Generate Report rebuilds them; `last_report.log` is kept), and **About EQGM** (shows the app version; **Website** opens the product page).

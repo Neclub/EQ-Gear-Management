@@ -35,7 +35,8 @@ def test_eqresource_search_payload_int_spell_damage():
     payload = eqresource_search_payload("int", augtype="7")
     assert payload["type"] == "augs"
     assert payload["augtype"] == "7"
-    assert payload["augslot"] == "7"
+    # Fits Aug Slot is augtype; setting augslot=7 with it yields zero rows.
+    assert payload["augslot"] == ""
     assert payload["augmentation"] == "1"
     assert payload["attrib1"] == "spelldamage"
     assert payload["attrib1range"] == "greater"

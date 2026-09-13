@@ -43,6 +43,33 @@ function showToast(message, isError = false) {
   showToast._timer = setTimeout(() => el.classList.add("hidden"), ms);
 }
 
+function errorText(err) {
+  if (err == null) return "";
+  if (typeof err === "string") return err.trim();
+  if (err && err.message) return String(err.message).trim();
+  return String(err).trim();
+}
+
+function showErrorDialog(message, title = "Error") {
+  const text = errorText(message);
+  if (!text) return;
+  showModal(`
+    <div class="modal">
+      <div class="modal-header"><h2>${escapeHtml(title)}</h2></div>
+      <div class="modal-body">
+        <p class="error-dialog-message">${escapeHtml(text)}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="modalClose">OK</button>
+      </div>
+    </div>`);
+  const closeBtn = $("modalClose");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeModal);
+    closeBtn.focus();
+  }
+}
+
 function showModal(html) {
   $("modalRoot").innerHTML = `<div class="modal-backdrop" id="modalBackdrop">${html}</div>`;
   const backdrop = $("modalBackdrop");
@@ -1107,8 +1134,9 @@ async function generateReport() {
   } catch (err) {
     setGenerating(false);
     hideGenProgress();
-    showToast(String(err), true);
+    resetUI();
     $("status").textContent = "Export failed.";
+    showErrorDialog(err, "Export failed");
   }
 }
 
@@ -1124,7 +1152,7 @@ window.onGenerateComplete = async function (result) {
   if (!result.ok) {
     $("status").textContent = "Export failed.";
     const msg = result.error || "Export failed.";
-    showToast(msg, true);
+    showErrorDialog(msg, "Export failed");
     return;
   }
   $("status").classList.add("ok");
@@ -1153,7 +1181,8 @@ window.onGenerateComplete = async function (result) {
     try {
       await api("open_html_report", result.html);
     } catch (err) {
-      showToast(`Report saved but browser failed to open: ${err}`, true);
+      const detail = errorText(err) || String(err);
+      showErrorDialog(`Report saved but browser failed to open: ${detail}`, "Could not open report");
     }
   }
 };
@@ -1268,7 +1297,7 @@ function showClearCacheConfirm() {
       <div class="modal-body">
         <p>EQGM stores catalog, item, and icon data under <code>%LOCALAPPDATA%\\EQGM\\</code>
           so Generate Report can skip re-fetching. Clearing it deletes that data.</p>
-        <p style="margin-top:12px">Settings, folder, colors, and weight overrides are kept.</p>
+        <p style="margin-top:12px">Settings, folder, colors, weight overrides, and last_report.log are kept.</p>
         <p style="margin-top:12px"><strong>The cache will be rebuilt the next time you generate a report</strong>
           (needs network).</p>
       </div>
@@ -1301,6 +1330,17 @@ function showClearCacheConfirm() {
   });
 }
 
+async function openWebsite() {
+  try {
+    const result = await api("open_website");
+    if (!result || !result.ok) {
+      showToast((result && result.error) || "Could not open the website.", true);
+    }
+  } catch (err) {
+    showToast(err && err.message ? err.message : String(err), true);
+  }
+}
+
 async function showAbout() {
   const info = await api("get_version");
   const version = escapeHtml(info.version || "");
@@ -1319,10 +1359,12 @@ async function showAbout() {
         </p>
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="aboutWebsite">Website</button>
         <button type="button" class="btn" id="modalClose">Close</button>
       </div>
     </div>`);
   $("modalClose").addEventListener("click", closeModal);
+  $("aboutWebsite").addEventListener("click", () => openWebsite());
 }
 
 async function showHelpTiers() {
@@ -1343,7 +1385,7 @@ async function showHelpTiers() {
           Evolver: equipped items whose inventory file includes the final augment row. Tier is resolved first;
           Evolver only when the item has no recognized tier pattern.
         </p>
-        <p style="font-size:12px;color:var(--muted)">Unlisted items show as red (???). Team Gear names and Gear T-Level codes link to EQ Resource; hover a T-code for the item name.</p>
+        <p style="font-size:12px;color:var(--muted)">Unlisted items show as red (???). Team Gear names and Gear T-Level codes link to EQ Resource; hover a name or T-code for an inspect card.</p>
         <p style="margin-top:12px;font-size:12px;color:var(--muted)">Change colors in the Gear tier colors panel on the main screen.</p>
         <p style="margin-top:16px;font-weight:600">Visible vs non-visible slots</p>
         <p style="font-size:12px">Visible: ${data.visibleSlots.join(", ")}</p>

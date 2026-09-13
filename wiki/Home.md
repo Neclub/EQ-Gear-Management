@@ -20,7 +20,7 @@ Windows SmartScreen or antivirus may warn because the exe is a PyInstaller build
 
 Product page: [neclub.github.io/EQ-Gear-Management](https://neclub.github.io/EQ-Gear-Management/) · Changelog: [changelog](https://neclub.github.io/EQ-Gear-Management/changelog.html)
 
-Installed copies check GitHub Releases when they open. If a newer version is available, a popup shows the current and newest versions and asks whether to download. You can also use **Help → Check for Updates**. The app version appears in the window title and under **Help → About EQGM**.
+Installed copies check GitHub Releases when they open. If a newer version is available, a popup shows the current and newest versions and asks whether to download. You can also use **Help → Check for Updates**. The app version appears in the window title and under **Help → About EQGM**; **Website** there opens the product page.
 
 ---
 

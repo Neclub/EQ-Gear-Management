@@ -6,8 +6,10 @@ from inventory_parser.items import EquippedItem
 from inventory_parser.raid_bis.catalog import parse_raidarmor_html, parse_raidgear_html, parse_item_page
 from inventory_parser.raid_bis.compare import (
     build_ideal_loadout,
+    collect_paperdoll_icon_ids,
     compare_character,
     format_stat_deltas,
+    missing_paperdoll_icons,
     rank_tuple,
     score_stats,
 )
@@ -568,6 +570,7 @@ def test_paperdoll_follows_inventory_window():
                 icon_id="10",
             ),
             99: _cand(item_id=99, name="Glowing Orb", icon_id="50"),
+            88: _cand(item_id=88, name="Arrow", icon_id="20"),
         },
     )
     order = [s.gear_slot for s in report.slots]
@@ -584,6 +587,114 @@ def test_paperdoll_follows_inventory_window():
     assert chest.deltas["ac"] == 60
     assert chest.deltas["hdex"] == 6
     assert report.total_deltas["ac"] == 60
+    assert missing_paperdoll_icons(
+        [report], {"10": "data:x", "50": "data:y", "20": "data:z"}
+    ) == []
+    assert any(
+        "Power Source" in msg and "50" in msg
+        for msg in missing_paperdoll_icons([report], {})
+    )
+    no_power_icon = compare_character(
+        ch, catalog, equipped_stats={1: _cand(item_id=1, name="Old Chest", icon_id="10")}
+    )
+    assert any(
+        "Power Source" in msg and "no icon id" in msg
+        for msg in missing_paperdoll_icons(
+            [no_power_icon], require_embedded=False
+        )
+    )
+
+
+def test_hydrate_power_source_icon_from_item_page():
+    from inventory_parser.raid_bis.catalog import hydrate_item_ids, should_skip_name
+
+    html = """
+    <font size="+1"><b><center>Riven Arcana Slayer Source<br><br></center></b></font>
+    Class: All
+    Slot: Power Source
+    <img src="itemimages/1234.png">
+    """
+    assert should_skip_name("Riven Arcana Slayer Source")
+    item = parse_item_page(html, 175189)
+    assert item is not None
+    assert item.icon_id == "1234"
+    assert "Power Source" in item.slots
+    hydrated = hydrate_item_ids(
+        [175189], item_html_by_id={175189: html}, allow_network=False
+    )
+    assert hydrated[175189].icon_id == "1234"
+    ch = CharacterGear(
+        character="Warlub",
+        server="test",
+        filepath="x",
+        class_abbr="WAR",
+    )
+    ch.slots["Power Source"] = EquippedItem(
+        name="Riven Arcana Slayer Source", item_id=175189
+    )
+    report = compare_character(ch, [], equipped_stats=hydrated)
+    power = next(s for s in report.slots if s.gear_slot == "Power Source")
+    assert power.current_icon_id == "1234"
+    assert collect_paperdoll_icon_ids([report]) == {"1234"}
+    assert missing_paperdoll_icons([report], {"1234": "data:image/png;base64,xx"}) == []
+
+
+def test_collect_paperdoll_icon_ids_includes_waist_choices():
+    from inventory_parser.raid_bis.compare import CharacterRaidBis, SlotComparison, WaistChoice
+
+    ch = CharacterRaidBis(
+        character="Warlub",
+        server="test",
+        class_abbr="WAR",
+        display_name="Warlub ( WAR )",
+        persona_key="warlub|test|WAR",
+        slots=[
+            SlotComparison(
+                gear_slot="Waist",
+                status="upgrade",
+                current_name="Old Belt",
+                current_icon_id="1",
+                recommended_name="New Belt",
+                recommended_icon_id="2",
+                choices=[
+                    WaistChoice(
+                        effect_label="Overdrive Punch",
+                        item_id=3,
+                        name="Choice Belt",
+                        icon_id="9",
+                    )
+                ],
+            )
+        ],
+    )
+    assert collect_paperdoll_icon_ids([ch]) == {"1", "2", "9"}
+
+
+def test_build_raid_bis_export_warns_when_power_source_icon_missing():
+    from inventory_parser.raid_bis.build import build_raid_bis_export
+    from inventory_parser.team_report import TeamGearReport
+
+    ch = CharacterGear(
+        character="Warlub",
+        server="test",
+        filepath="x",
+        class_abbr="WAR",
+    )
+    ch.slots["Power Source"] = EquippedItem(name="Glowing Orb", item_id=99)
+    export = build_raid_bis_export(
+        TeamGearReport(characters=[ch]),
+        allow_network=False,
+        html_overrides={
+            "raidarmor": ARMOR_HTML.read_text(encoding="utf-8"),
+            "raidgear:back": GEAR_HTML.read_text(encoding="utf-8"),
+            "raidvendor": VENDOR_HTML.read_text(encoding="utf-8"),
+        },
+        hydrate=False,
+        embed_icons=True,
+    )
+    assert any(
+        "Power Source" in msg and "no icon id" in msg for msg in export.warnings
+    )
 
 
 def test_html_section_present(tmp_path: Path):
@@ -622,6 +733,7 @@ def test_html_section_present(tmp_path: Path):
     assert "Green: already BiS" in html
     assert "Gold: upgrade" in html
     assert "s-powersource" in html
+    assert "Paper doll missing icon" in html
     assert "s-fingers1 { grid-column: 2; grid-row: 7; }" in html
     assert "section.type === \"raid_bis\" && (section.data.characters || []).length" in html
     assert "state.chars.raid_bis" in html

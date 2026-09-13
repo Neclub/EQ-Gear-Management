@@ -305,6 +305,8 @@ def test_cli_also_html_flag(tmp_path: Path) -> None:
         include_slot2=False,
         include_raid_bis=False,
         also_html=True,
+        item_inspect_allow_network=False,
+        item_inspect_embed_icons=False,
     )
     assert saved == xlsx
     assert html_saved == html_path_for_workbook(xlsx)
@@ -423,3 +425,46 @@ def test_html_not_purchased_spell_chip(tmp_path: Path) -> None:
         "text": "Word of Wellbeing Rk. III",
         "url": "https://spells.eqresource.com/spells.php?id=71171",
     }
+
+
+def test_html_item_cards_are_shared_lookup(tmp_path: Path) -> None:
+    inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
+    fixture = (
+        Path(__file__).resolve().parent / "fixtures" / "eqresource_item_inspect_175821.html"
+    ).read_text(encoding="utf-8")
+    bundle = build_export_bundle(
+        [inv],
+        include_spells=False,
+        include_achievements=False,
+        include_slot2=False,
+        include_raid_bis=False,
+        include_item_cards=True,
+        item_inspect_html_by_id={173818: fixture},
+        item_inspect_allow_network=False,
+        item_inspect_embed_icons=False,
+        fetch_chest_class=False,
+        fetch_eqr_gear_tiers=False,
+    )
+    out = tmp_path / "cards.html"
+    write_team_html(bundle, out)
+    text = out.read_text(encoding="utf-8")
+    report = extract_report_json(text)
+    cards = report["itemCards"]
+    assert "173818" in cards
+    card = cards["173818"]
+    assert card["name"] == "Exarch Breastplate of Resonant Fracture"
+    assert card["reqLevel"] == "130"
+    assert any(block["labels"][0] == "AC" for block in card["statBlocks"])
+    assert any(block["labels"][0] == "Magic" for block in card["statBlocks"])
+    gear = next(s for s in report["sections"] if s["id"] == "team_gear")
+    for row in gear["data"]["rows"]:
+        for cell in row["cells"]:
+            if cell:
+                assert "statBlocks" not in cell
+    assert "item-inspect" in text
+    assert "item-inspect-col" in text
+    assert "item-inspect-heroic" in text
+    assert "function inspectStatColHtml" in text
+    assert "var(--panel)" in text
+    assert "var(--gold)" in text
+    assert "var(--heroic)" in text
