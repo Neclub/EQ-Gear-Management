@@ -15,12 +15,10 @@ Built for **EverQuest Live** only (not TLP or progression). Gear, runes, and rel
 Product page: **[neclub.github.io/EQ-Gear-Management](https://neclub.github.io/EQ-Gear-Management/)** · Changelog: **[neclub.github.io/EQ-Gear-Management/changelog.html](https://neclub.github.io/EQ-Gear-Management/changelog.html)**
 
 1. Open **[Releases](https://github.com/Neclub/EQ-Gear-Management/releases)** on GitHub.
-2. Download **`EQGM-x.y.z.exe`** from the latest release.
-3. Double-click to run. No Python install needed.
+2. Download **`EQGM-install-x.y.z.exe`** from the latest release.
+3. Run the installer (Windows may ask for administrator permission). It installs to **Program Files**, adds a Start Menu shortcut, and can optionally create a Desktop icon. No Python install needed.
 
-Windows SmartScreen or antivirus may warn because the exe is a PyInstaller build. That is a common false positive — download only from this GitHub repo’s **Releases**. Choose **More info → Run anyway** if SmartScreen asks.
-
-Installed copies check GitHub Releases when they open. If a newer version is available, a popup shows the current and newest versions and asks whether to download. You can also use **Help → Check for Updates**.
+Installed copies check GitHub Releases when they open. If a newer version is available, a popup asks whether to install it. **Yes** downloads the installer, launches it (Windows may ask for administrator permission), and closes EQGM so the upgrade can finish. You can also use **Help → Check for Updates**. Settings stay under `%LOCALAPPDATA%\EQGM\` across installs.
 
 ---
 
@@ -84,7 +82,7 @@ Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet.
 - **Heroic AA** — Fortitude / Resolution / Vitality ranks; hover **F** / **R** / **V**; click a name to open EQ Resource
 - **Achievement Summary** — completed vs incomplete counts per section
 
-For file naming, Alternate Personas, reading each sheet, and troubleshooting, see the **[Wiki](https://github.com/Neclub/EQ-Gear-Management/wiki)** (full guide also in [HowToUse.md](HowToUse.md)).
+For file naming, Alternate Personas, reading each sheet, and troubleshooting, see the **[Wiki](https://github.com/Neclub/EQ-Gear-Management/wiki)**.
 
 <p align="center">
   <img src="docs/img/eqgm-icon.png" alt="EQGM" width="160" height="160">

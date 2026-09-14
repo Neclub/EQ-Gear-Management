@@ -64,10 +64,7 @@ body {
   border-bottom: 1px solid var(--border);
   margin-bottom: 12px;
   color: inherit;
-  text-decoration: none;
-  cursor: pointer;
 }
-.sidebar-brand:hover span { color: var(--link); }
 .sidebar-brand img { width: 40px; height: 40px; object-fit: contain; flex-shrink: 0; }
 .sidebar-brand span { font-weight: 600; font-size: 14px; line-height: 1.3; }
 #navList { display: flex; flex-direction: column; gap: 10px; padding: 0 8px; }
@@ -276,19 +273,6 @@ body {
   white-space: nowrap;
   border: 0;
 }
-.in-app-bar { width: 100%; flex-basis: 100%; }
-.in-app-bar.hidden { display: none; }
-.btn-ghost {
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: var(--input);
-  color: var(--link);
-  font: inherit;
-  font-size: 12px;
-  cursor: pointer;
-}
-.btn-ghost:hover { background: var(--panel-hover); color: var(--text); }
 #pageHeader h1 {
   margin: 0;
   line-height: 0;
@@ -1706,10 +1690,10 @@ th.copy-col-head {
 </svg>
 <div id="app">
   <aside id="sidebar">
-    <a class="sidebar-brand" href="index.html" title="Back to Lub Inventory">
+    <div class="sidebar-brand">
       <img id="logo" alt="EQGM" width="40" height="40">
       <span>Team Inventory Report</span>
-    </a>
+    </div>
     <nav id="navList"></nav>
     <div class="char-filter-section">
       <div class="char-filter-label">CHARACTER FILTER</div>
@@ -1718,9 +1702,6 @@ th.copy-col-head {
   </aside>
   <div id="main">
     <header id="pageHeader">
-      <div id="inAppBar" class="in-app-bar hidden">
-        <button type="button" class="btn-ghost" id="backToSetup">← New report</button>
-      </div>
       <div class="page-header-row">
         <h1 id="reportTitle"></h1>
         <div class="meta" id="reportMeta"></div>
@@ -5214,23 +5195,8 @@ function init() {
   updateTierLegend();
 }
 
-function showInAppChrome() {
-  const bar = document.getElementById("inAppBar");
-  if (bar) bar.classList.remove("hidden");
-  const btn = document.getElementById("backToSetup");
-  if (btn && !btn.dataset.bound) {
-    btn.dataset.bound = "1";
-    btn.addEventListener("click", () => {
-      if (window.pywebview && pywebview.api.navigate_to_setup) {
-        pywebview.api.navigate_to_setup();
-      }
-    });
-  }
-}
-
 if (REPORT) {
   init();
-  if (window.pywebview) showInAppChrome();
 }
 </script>
 </body>

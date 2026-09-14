@@ -2,13 +2,26 @@
 
 All notable changes to EQ Gear Management (EQGM) are documented here. Version numbers follow [Semantic Versioning](https://semver.org/).
 
-**To release a new version:** say **Publish new build**. The agent bumps `__version__`, updates the changelog and docs, commits and pushes that to GitHub (and the wiki if needed), **then** runs `publish_release.bat` to build the exe locally and create the GitHub Release. Pushing `main` does not build the exe.
+**To release a new version:** say **Publish new build**. The agent bumps `__version__`, updates the changelog and docs, commits and pushes that to GitHub (and the wiki if needed), **then** runs `publish_release.bat` to build the installer locally and create the GitHub Release. Pushing `main` does not build the installer.
 
 ## [Unreleased]
 
+## [1.35.11] - 2026-09-14
+
+### Added
+
+- **Windows installer:** GitHub Releases ship **`EQGM-install-x.y.z.exe`** (Nuitka standalone + Inno Setup). Default install is `C:\Program Files\EQ Gear Management\` with a Start Menu shortcut and an optional Desktop icon. Settings and caches stay under `%LOCALAPPDATA%\EQGM\`.
+- **In-app updates:** **Help → Check for Updates** (and the startup check) can install a newer release. Choosing **Yes** downloads the installer to `%LOCALAPPDATA%\EQGM\updates\`, launches it, and closes EQGM so the upgrade can replace Program Files in place. Windows may ask for administrator permission.
+
 ### Changed
 
-- GitHub Releases are published from a local `publish_release.bat` build. Pushing `main` no longer builds the Windows exe on Actions.
+- GitHub Releases are published from a local `publish_release.bat` build. Pushing `main` no longer builds the Windows package on Actions.
+
+### Removed
+
+- Portable single-file **`EQGM-x.y.z.exe`** as the release download; use the installer instead.
+- Unused in-app HTML report viewer leftovers (reports already open in the browser), duplicate root `assets/eq-icon.png`, and unused helper functions.
+- **HowToUse.md** as a second full user guide. It now points at the [GitHub wiki](https://github.com/Neclub/EQ-Gear-Management/wiki).
 
 ## [1.35.10] - 2026-09-13
 

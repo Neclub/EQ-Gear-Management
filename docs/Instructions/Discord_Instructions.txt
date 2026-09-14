@@ -17,14 +17,15 @@ EverQuest can save a snapshot of a character as a text file. EQGM reads those fi
 > 🏆 Who is missing collections, quests, or raid achievements?
 > 🗺️ What should people farm next?
 
-You do **not** need to install anything extra. Download the program, double-click it, and follow the How to Use posts.
+You do **not** need Python. Download the installer, run it, and follow the How to Use posts.
 
 ### Download
 🔗 https://github.com/Neclub/EQ-Gear-Management/releases
+📖 **Guide:** https://github.com/Neclub/EQ-Gear-Management/wiki
 
-Get the file named `EQGM-x.y.z.exe`
+Get the file named `EQGM-install-x.y.z.exe`
 -# The numbers change with each version. Works on Windows 10 and 11.
--# Windows SmartScreen may warn. Download only from that GitHub Releases page, then More info → Run anyway.
+-# Windows may ask for administrator permission (installs to Program Files).
 
 ===== MESSAGE 2: FUNCTIONS =====
 # What the report shows
@@ -99,11 +100,11 @@ That’s all you do in-game.
 # How to use — Part 2
 ### The program
 
-**1.** Download `EQGM-x.y.z.exe` from:
+**1.** Download `EQGM-install-x.y.z.exe` from:
 🔗 https://github.com/Neclub/EQ-Gear-Management/releases
 
-**2.** Double-click the file to open it.
--# If Windows SmartScreen appears, choose **More info → Run anyway**. That warning is common for this kind of program.
+**2.** Run the installer (Windows may ask for administrator permission), then open **EQ Gear Management** from the Start Menu.
+-# Later, if EQGM says an update is available, choose **Yes** to download and run the new installer. EQGM closes so the upgrade can finish.
 
 **3.** Click **EQ Folder** and choose the root of your **EverQuest** folder.
 

@@ -15,14 +15,13 @@ On each character, run in EverQuest chat:
 
 EQ writes those files to the root of your **EverQuest** folder (not the Logs subfolder). Details: [[In-Game Output Files]].
 
-## 2. Run the app
+## 2. Install and run the app
 
-1. Download **`EQGM-x.y.z.exe`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases).
-2. Double-click the `.exe` to open it.
+1. Download **`EQGM-install-x.y.z.exe`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases).
+2. Run the installer. Windows may ask for administrator permission. Default install location is `C:\Program Files\EQ Gear Management\`. Choose a Desktop icon if you want one.
+3. Open **EQ Gear Management** from the Start Menu (or Desktop shortcut).
 
-Windows may show a SmartScreen or antivirus warning. Download only from the GitHub **Releases** page above, then **More info → Run anyway** if asked. Details: [[Troubleshooting]].
-
-If a newer GitHub Release exists, a popup shows the current and newest versions and asks whether to download. **Yes** opens the official GitHub download in your browser; the app does not install or run the file.
+If a newer GitHub Release exists, a popup asks whether to install it. **Yes** downloads the installer, launches it (Windows may ask for administrator permission), and closes EQGM so the upgrade can replace Program Files in place. Settings under `%LOCALAPPDATA%\EQGM\` are kept across upgrades. Uninstall from Windows Apps & features removes Program Files and shortcuts only.
 
 ## 3. Generate the report
 

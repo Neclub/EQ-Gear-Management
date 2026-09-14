@@ -16,7 +16,6 @@ from inventory_parser.output_paths import (
 
 EXAMPLES = Path(__file__).resolve().parents[1] / "Examples"
 SPELL_DATA = EXAMPLES / "SpellData"
-EQLOG = Path(__file__).resolve().parents[2] / "Example" / "Roots" / "eqlog_Neclub_bristle.txt"
 
 
 def test_server_display_name_bristle() -> None:

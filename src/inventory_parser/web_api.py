@@ -15,7 +15,7 @@ import webview
 from inventory_parser import __version__
 from inventory_parser.achievement_files import collect_achievement_paths
 from inventory_parser.app_updates import check_for_updates as fetch_app_updates
-from inventory_parser.app_updates import is_allowed_download_url
+from inventory_parser.app_updates import download_and_launch_installer
 from inventory_parser.character_column_order import (
     ColumnRosterEntry,
     build_column_roster,
@@ -49,17 +49,14 @@ from inventory_parser.output_paths import (
     default_export_prefix_from_input_paths,
     html_path_for_workbook,
     output_directory_from_current,
-    team_inventory_filename,
     team_inventory_path,
 )
 from inventory_parser.slots import NON_VISIBLE_SLOTS, VISIBLE_SLOTS, SlotFilter
 from inventory_parser.team_report import FolderCharacterChoice, discover_folder_character_choices
 from inventory_parser.web_bridge import (
-    DEFAULT_WINDOW_HEIGHT,
     DEFAULT_WINDOW_WIDTH,
     eq_logo_data_uri,
     file_url,
-    setup_url,
 )
 
 PRODUCT_WEBSITE_URL = "https://neclub.github.io/EQ-Gear-Management/"
@@ -286,11 +283,22 @@ class WebApi:
         webbrowser.open(PRODUCT_WEBSITE_URL)
         return {"ok": True, "url": PRODUCT_WEBSITE_URL}
 
+    def apply_update(self, url: str) -> dict:
+        """Download the GitHub installer, launch it, then close EQGM on success."""
+        result = download_and_launch_installer(url)
+        if not result.get("ok"):
+            return result
+        window = self._window
+        if window is not None:
+            try:
+                window.destroy()
+            except Exception:
+                pass
+        return result
+
     def open_update_download(self, url: str) -> dict:
-        if not is_allowed_download_url(url):
-            return {"ok": False, "error": "Unexpected download URL."}
-        webbrowser.open(url)
-        return {"ok": True}
+        """Deprecated alias kept for older GUI bundles; prefer apply_update."""
+        return self.apply_update(url)
 
     def get_gui_prefs(self) -> dict:
         return {
@@ -418,10 +426,6 @@ class WebApi:
             apply_default_export_filename(current, prefix, default_dir=_downloads_dir())
         )
 
-    def default_output_filename(self, paths: list[str]) -> str:
-        prefix = default_export_prefix_from_input_paths([Path(p) for p in paths])
-        return team_inventory_filename(prefix)
-
     def tier_legend(self) -> dict:
         rows = tier_legend_entries()
         return {
@@ -446,11 +450,6 @@ class WebApi:
             "isCustom": False,
             "rows": tier_legend_entries(),
         }
-
-    def navigate_to_setup(self) -> None:
-        window = self._window
-        if window is not None:
-            window.load_url(setup_url())
 
     def _notify_progress(self, payload: dict) -> None:
         window = self._window

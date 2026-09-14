@@ -15,9 +15,9 @@ EverQuest **Live** can output a snapshot of a character to a text file.
 > 💎 Which augs to wear, move, or farm
 > 👑 What Raid BiS looks like *this* expansion
 
-No extra installs. Download it, double-click it, point it at your EverQuest folder.
+No Python needed. Download the installer, run it, point it at your EverQuest folder.
 **These are suggestions based on the stats your class uses. Use the numbers, then decide whether a change is worth it.**
--# Windows SmartScreen may warn. Download only from GitHub Releases, then More info → Run anyway.
+-# Windows may ask for administrator permission on install.
 
 🌐 **Website:** https://neclub.github.io/EQ-Gear-Management/
 🔗 **Download:** https://github.com/Neclub/EQ-Gear-Management/releases

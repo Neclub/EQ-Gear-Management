@@ -1,4 +1,4 @@
-"""Sign a Windows executable with Authenticode (optional post-PyInstaller step)."""
+"""Sign a Windows executable with Authenticode (optional post-build step)."""
 
 from __future__ import annotations
 

@@ -18,7 +18,7 @@ jobs:
           fi
           version="$(gh api "repos/${{ github.repository }}/releases/latest" --jq .tag_name | sed 's/^v//')"
           repo="${{ github.repository }}"
-          payload=$(printf '{"content":"**EQ Gear Management %s** released (notify test).\\nRelease: https://github.com/%s/releases/tag/v%s\\nDownload: https://github.com/%s/releases/latest/download/EQGM-%s.exe"}' \
+          payload=$(printf '{"content":"**EQ Gear Management %s** released (notify test).\\nRelease: https://github.com/%s/releases/tag/v%s\\nDownload: https://github.com/%s/releases/latest/download/EQGM-install-%s.exe"}' \
             "$version" "$repo" "$version" "$repo" "$version")
           curl -fsS -H "Content-Type: application/json" -d "$payload" "$DISCORD_WEBHOOK_URL"
           echo "Discord notify succeeded."

@@ -1,4 +1,4 @@
-"""Load bundled JSON data in development and PyInstaller builds."""
+"""Load bundled JSON data in development, PyInstaller, and Nuitka builds."""
 
 from __future__ import annotations
 
@@ -7,7 +7,12 @@ from pathlib import Path
 
 
 def data_dir() -> Path:
-    """Directory containing package JSON files."""
+    """Directory containing package JSON files.
+
+    PyInstaller one-file sets sys._MEIPASS. Nuitka standalone keeps package
+    data next to the module, so Path(__file__) is enough when
+    --include-package-data=inventory_parser is used.
+    """
     if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
         return Path(sys._MEIPASS) / "inventory_parser" / "data"
     return Path(__file__).resolve().parent / "data"

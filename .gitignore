@@ -19,5 +19,8 @@ desktop.ini
 # Local coding dumps only — never publish
 Examples/
 
+# Local source art; published site icon is docs/img/eqgm-icon.png
+docs/img/EQGM_icon.png
+
 # Local scrape cache for Heroic AA EQ Resource id lookup
 scripts/_eqr_achievement_index.json

@@ -1,4 +1,4 @@
-"""Console script for PyInstaller — launches the pywebview HTML GUI."""
+"""Frozen GUI entry — launches the pywebview HTML GUI (Nuitka / packaging)."""
 from __future__ import annotations
 
 from inventory_parser.web_gui import main

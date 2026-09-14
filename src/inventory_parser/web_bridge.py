@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import base64
 
-from inventory_parser.package_data import asset_path, gui_asset_path, read_data_text
-from inventory_parser.html_export import _REPORT_JSON_MARKER, escape_json_for_script
+from inventory_parser.package_data import asset_path, gui_asset_path
 
 
 DEFAULT_WINDOW_WIDTH = 982
@@ -19,18 +18,6 @@ def file_url(path) -> str:
 
 def setup_url() -> str:
     return file_url(gui_asset_path("setup.html"))
-
-
-def report_viewer_html(payload_json: str | None = None) -> str:
-    """Return report HTML for in-app viewing (marker replaced with null or payload)."""
-    template = read_data_text("team_report.html")
-    if _REPORT_JSON_MARKER not in template:
-        raise ValueError("HTML template is missing the report JSON marker.")
-    if payload_json is None:
-        replacement = "null"
-    else:
-        replacement = escape_json_for_script(payload_json)
-    return template.replace(_REPORT_JSON_MARKER, replacement, 1)
 
 
 def eq_logo_data_uri() -> str:

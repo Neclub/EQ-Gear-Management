@@ -83,10 +83,6 @@ def apply_default_export_filename(
     return team_inventory_path(output_directory_from_current(current, default=default_dir), prefix)
 
 
-def team_inventory_html_path(directory: Path, prefix: str | None = None) -> Path:
-    return directory / team_inventory_html_filename(prefix)
-
-
 def html_path_for_workbook(workbook_path: Path | str) -> Path:
     """Sibling HTML path for an Excel export (spaces in stem become underscores)."""
     path = Path(workbook_path)

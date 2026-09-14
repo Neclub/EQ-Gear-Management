@@ -146,13 +146,6 @@ def load_heroic_aa_catalog() -> HeroicAACatalog:
     return _parse_catalog(json.loads(read_data_text(_CATALOG_NAME)))
 
 
-def eqresource_achievement_url(achievement_id: int | None) -> str | None:
-    """Direct EQ Resource achievement page, or ``None`` when the id is unknown."""
-    if achievement_id is None or achievement_id <= 0:
-        return None
-    return EQRESOURCE_ACHIEVEMENT_URL.format(achievement_id=achievement_id)
-
-
 def lookup_heroic_aa_entry(name: str) -> HeroicAACatalogEntry | None:
     """Match a catalog entry by canonical name or alias."""
     key = normalize_heroic_name(name)

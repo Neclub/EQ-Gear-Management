@@ -122,7 +122,6 @@ def test_range_bow_detected_by_slots_and_name() -> None:
         range_has_bow_slots,
         range_name_looks_like_bow,
         type78_dump_slot_for_parent,
-        type78_dump_slot_for_range,
     )
 
     assert range_has_bow_slots({1, 2, 3, 4})
@@ -134,8 +133,6 @@ def test_range_bow_detected_by_slots_and_name() -> None:
     assert is_range_bow(slot_numbers={1, 2, 3, 4}, item_name="Short Bow of Rebellion")
     assert not is_range_bow(slot_numbers={1, 2, 3}, item_name="Short Bow of Rebellion")
     assert not is_range_bow(slot_numbers={1, 2, 3, 4}, item_name="Favor of the Chosen")
-    assert type78_dump_slot_for_range(is_bow=True) == 4
-    assert type78_dump_slot_for_range(is_bow=False) == 2
     assert type78_dump_slot_for_parent("Range", range_is_bow=True) == 4
     assert type78_dump_slot_for_parent("Range", range_is_bow=False) == 2
 

@@ -1209,7 +1209,7 @@ function showUpdateAvailableModal(info) {
         <p>A newer version of EQGM is available.</p>
         <p style="margin-top:12px">Current version: <strong>${current}</strong></p>
         <p>Newest version: <strong>${latest}</strong></p>
-        <p style="margin-top:12px">Would you like to download the latest version?</p>
+        <p style="margin-top:12px">Would you like to install it? EQGM will download the installer, close, and upgrade. Windows may ask for administrator permission.</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="updateNo">No</button>
@@ -1218,15 +1218,22 @@ function showUpdateAvailableModal(info) {
     </div>`);
   $("updateNo").addEventListener("click", closeModal);
   $("updateYes").addEventListener("click", async () => {
+    showModal(`
+      <div class="modal">
+        <div class="modal-header"><h2>Downloading update</h2></div>
+        <div class="modal-body"><p>Downloading the installer…</p></div>
+      </div>`);
     try {
-      const result = await api("open_update_download", info.downloadUrl);
+      const result = await api("apply_update", info.downloadUrl);
       if (!result || !result.ok) {
-        showToast((result && result.error) || "Could not open the download.", true);
+        showToast((result && result.error) || "Could not install the update.", true);
+        showUpdateAvailableModal(info);
         return;
       }
-      closeModal();
+      // Window should close after the installer launches.
     } catch (err) {
       showToast(err && err.message ? err.message : String(err), true);
+      showUpdateAvailableModal(info);
     }
   });
 }

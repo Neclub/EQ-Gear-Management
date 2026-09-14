@@ -60,4 +60,4 @@ If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, et
 - **Achievement files in AchievementData** — same pattern for `/outputfile achievements` files.
 - **Status bar** — shows how many inventory, MissingSpells, and achievement files are loaded.
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
-- **Help** (top right) — gear tier colors legend, **Check for Updates**, **Clear Cache** (deletes catalog/item/icon caches; next Generate Report rebuilds them; `last_report.log` is kept), and **About EQGM** (shows the app version; **Website** opens the product page).
+- **Help** (top right) — gear tier colors legend, **Check for Updates** (downloads and runs the installer when you choose Yes; EQGM closes so the upgrade can finish), **Clear Cache** (deletes catalog/item/icon caches; next Generate Report rebuilds them; `last_report.log` is kept), and **About EQGM** (shows the app version; **Website** opens the product page).

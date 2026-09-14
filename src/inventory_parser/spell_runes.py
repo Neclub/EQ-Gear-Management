@@ -106,8 +106,3 @@ def rune_tier_for_level(level: int, config: SpellRuneConfig | None = None) -> st
     if offset < 0 or offset >= len(cfg.tiers):
         return None
     return cfg.tiers[offset]
-
-
-def level_band_label(level: int, config: SpellRuneConfig | None = None) -> str | None:
-    block = block_for_level(level, config)
-    return block.label if block is not None else None

@@ -166,12 +166,6 @@ def parse_inventory_file(filepath: str | Path) -> InventoryData | None:
     )
 
 
-def collect_item_names(data: InventoryData) -> list[str]:
-    """Unique item names from an inventory dump, sorted alphabetically."""
-    names = {item.name for item in data.items}
-    return sorted(names, key=str.casefold)
-
-
 def extract_equipped_items(
     data: InventoryData,
 ) -> tuple[dict[str, InventoryItem], set[str]]:
@@ -271,11 +265,6 @@ def is_range_bow(
 ) -> bool:
     """True when Range is a bow: dump lists Slot1–4 and the item name contains bow."""
     return range_has_bow_slots(slot_numbers) and range_name_looks_like_bow(item_name)
-
-
-def type78_dump_slot_for_range(*, is_bow: bool) -> int:
-    """Which ``Range-SlotN`` holds the type 7/8 aug."""
-    return 4 if is_bow else 2
 
 
 def type78_dump_slot_for_parent(

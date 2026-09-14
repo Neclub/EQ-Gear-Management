@@ -1,14 +1,18 @@
-"""Check GitHub Releases for a newer EQGM executable."""
+"""Check GitHub Releases and download/launch a newer EQGM installer."""
 
 from __future__ import annotations
 
 import json
+import os
 import re
+import subprocess
 import urllib.error
 import urllib.request
+from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 from inventory_parser import __version__
+from inventory_parser.slot2_augs.paths import appdata_dir
 
 GITHUB_OWNER = "Neclub"
 GITHUB_REPO = "EQ-Gear-Management"
@@ -20,13 +24,22 @@ GITHUB_API_LATEST = (
 DOWNLOAD_URL_PREFIX = f"https://{GITHUB_DOWNLOAD_HOST}/{GITHUB_OWNER}/{GITHUB_REPO}/"
 USER_AGENT = "EQGM (update check; local tool)"
 _TIMEOUT_SECONDS = 10
+_DOWNLOAD_TIMEOUT_SECONDS = 120
 _MAX_BODY_BYTES = 1_048_576
+_MAX_INSTALLER_BYTES = 200 * 1024 * 1024
 _MAX_URL_LENGTH = 500
 _VERSION_RE = re.compile(r"^v?(\d+)\.(\d+)\.(\d+)$")
-_EXE_NAME_RE = re.compile(r"^EQGM-\d+\.\d+\.\d+\.exe$")
+_EXE_NAME_RE = re.compile(r"^EQGM-install-\d+\.\d+\.\d+\.exe$")
 _DOWNLOAD_PATH_RE = re.compile(
     rf"^/{re.escape(GITHUB_OWNER)}/{re.escape(GITHUB_REPO)}"
-    r"/releases/download/(v?(\d+\.\d+\.\d+))/EQGM-(\d+\.\d+\.\d+)\.exe$"
+    r"/releases/download/(v?(\d+\.\d+\.\d+))/EQGM-install-(\d+\.\d+\.\d+)\.exe$"
+)
+_ALLOWED_DOWNLOAD_REDIRECT_HOSTS = frozenset(
+    {
+        GITHUB_DOWNLOAD_HOST,
+        "objects.githubusercontent.com",
+        "release-assets.githubusercontent.com",
+    }
 )
 
 
@@ -37,6 +50,21 @@ class _SameHostHttpsRedirectHandler(urllib.request.HTTPRedirectHandler):
         parsed = urlparse(newurl)
         if parsed.scheme != "https" or parsed.hostname != GITHUB_API_HOST:
             raise urllib.error.URLError("Refusing redirect away from GitHub API.")
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+class _InstallerDownloadRedirectHandler(urllib.request.HTTPRedirectHandler):
+    """Follow HTTPS redirects only to GitHub download / release CDN hosts."""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        parsed = urlparse(newurl)
+        host = (parsed.hostname or "").lower()
+        if parsed.scheme != "https" or host not in _ALLOWED_DOWNLOAD_REDIRECT_HOSTS:
+            raise urllib.error.URLError(
+                f"Refusing installer download redirect to {parsed.hostname!r}."
+            )
+        if parsed.username or parsed.password:
+            raise urllib.error.URLError("Refusing installer download redirect with credentials.")
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
@@ -64,7 +92,7 @@ def is_newer(latest: str, current: str) -> bool:
 
 
 def is_allowed_download_url(url: str) -> bool:
-    """True only for this repo's HTTPS GitHub Release EQGM-x.y.z.exe asset."""
+    """True only for this repo's HTTPS GitHub Release EQGM-install-x.y.z.exe asset."""
     if not isinstance(url, str) or not url or len(url) > _MAX_URL_LENGTH:
         return False
     if any(ord(ch) < 32 or ch == "\\" for ch in url):
@@ -86,6 +114,15 @@ def is_allowed_download_url(url: str) -> bool:
     return match.group(2) == match.group(3)
 
 
+def installer_filename_from_url(url: str) -> str | None:
+    if not is_allowed_download_url(url):
+        return None
+    name = Path(unquote(urlparse(url).path)).name
+    if not _EXE_NAME_RE.fullmatch(name):
+        return None
+    return name
+
+
 def exe_asset_url(payload: dict) -> str | None:
     for asset in payload.get("assets") or []:
         name = str(asset.get("name") or "")
@@ -93,6 +130,12 @@ def exe_asset_url(payload: dict) -> str | None:
         if _EXE_NAME_RE.fullmatch(name) and is_allowed_download_url(url):
             return url
     return None
+
+
+def updates_dir() -> Path:
+    path = appdata_dir() / "updates"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 def _fetch_latest_payload(timeout: float = _TIMEOUT_SECONDS) -> dict:
@@ -160,7 +203,7 @@ def check_for_updates(current: str | None = None) -> dict:
             "current": running,
             "latest": latest,
             "downloadUrl": None,
-            "message": "Latest GitHub release has no EQGM .exe asset.",
+            "message": "Latest GitHub release has no EQGM installer asset.",
         }
 
     return {
@@ -174,3 +217,94 @@ def check_for_updates(current: str | None = None) -> dict:
             f"Current version is {running}."
         ),
     }
+
+
+def _launch_installer(path: Path) -> None:
+    if os.name == "nt":
+        os.startfile(str(path))  # noqa: S606 — intentional: launch signed Inno setup
+    else:
+        subprocess.Popen([str(path)], shell=False, cwd=str(path.parent))  # noqa: S603
+
+
+def download_and_launch_installer(url: str) -> dict:
+    """Download an allowlisted installer to AppData and launch it."""
+    filename = installer_filename_from_url(url)
+    if not filename:
+        return {"ok": False, "error": "Unexpected download URL."}
+
+    dest = updates_dir() / filename
+    partial = dest.with_suffix(dest.suffix + ".partial")
+    if partial.exists():
+        try:
+            partial.unlink()
+        except OSError:
+            pass
+
+    req = urllib.request.Request(
+        url,
+        headers={
+            "User-Agent": USER_AGENT,
+            "Accept": "application/octet-stream",
+        },
+    )
+    opener = urllib.request.build_opener(_InstallerDownloadRedirectHandler)
+    try:
+        with opener.open(req, timeout=_DOWNLOAD_TIMEOUT_SECONDS) as resp:
+            final = urlparse(resp.geturl())
+            host = (final.hostname or "").lower()
+            if final.scheme != "https" or host not in _ALLOWED_DOWNLOAD_REDIRECT_HOSTS:
+                return {"ok": False, "error": "Unexpected download host."}
+            length_hdr = resp.headers.get("Content-Length")
+            if length_hdr is not None:
+                try:
+                    if int(length_hdr) > _MAX_INSTALLER_BYTES:
+                        return {"ok": False, "error": "Installer download is too large."}
+                except ValueError:
+                    pass
+
+            first = resp.read(2)
+            if first != b"MZ":
+                return {"ok": False, "error": "Downloaded file is not a Windows installer."}
+
+            written = len(first)
+            with partial.open("wb") as out:
+                out.write(first)
+                while True:
+                    chunk = resp.read(1024 * 256)
+                    if not chunk:
+                        break
+                    written += len(chunk)
+                    if written > _MAX_INSTALLER_BYTES:
+                        out.close()
+                        try:
+                            partial.unlink()
+                        except OSError:
+                            pass
+                        return {"ok": False, "error": "Installer download is too large."}
+                    out.write(chunk)
+    except (urllib.error.URLError, TimeoutError, OSError, ValueError) as exc:
+        try:
+            if partial.exists():
+                partial.unlink()
+        except OSError:
+            pass
+        return {"ok": False, "error": f"Could not download the installer. ({exc})"}
+
+    try:
+        if dest.exists():
+            dest.unlink()
+        partial.replace(dest)
+    except OSError as exc:
+        try:
+            if partial.exists():
+                partial.unlink()
+        except OSError:
+            pass
+        return {"ok": False, "error": f"Could not save the installer. ({exc})"}
+
+    try:
+        _launch_installer(dest)
+    except OSError as exc:
+        return {"ok": False, "error": f"Could not start the installer. ({exc})"}
+
+    return {"ok": True, "path": str(dest)}
