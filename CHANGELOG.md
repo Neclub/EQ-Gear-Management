@@ -2,7 +2,7 @@
 
 All notable changes to EQ Gear Management (EQGM) are documented here. Version numbers follow [Semantic Versioning](https://semver.org/).
 
-**To release a new version:** edit `__version__` in `src/inventory_parser/__init__.py`, add an entry below, commit, then run `publish_release.bat` (or say **publish new build**). That builds the exe on this machine and creates the GitHub Release. Pushing `main` does not build the exe.
+**To release a new version:** say **Publish new build**. The agent bumps `__version__`, updates the changelog and docs, commits and pushes that to GitHub (and the wiki if needed), **then** runs `publish_release.bat` to build the exe locally and create the GitHub Release. Pushing `main` does not build the exe.
 
 ## [Unreleased]
 

@@ -3,7 +3,8 @@ setlocal EnableExtensions
 cd /d "%~dp0"
 
 REM Publish a locally built EQGM-x.y.z.exe as a GitHub Release.
-REM Say "publish new build" in chat, or run this script after bumping __version__.
+REM Chat "Publish new build" first updates version + docs and pushes to GitHub,
+REM then runs this script. Do not build the exe before that source is on origin.
 REM Pushing main no longer builds the exe on GitHub Actions.
 
 where gh >nul 2>&1
