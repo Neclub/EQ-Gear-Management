@@ -24,7 +24,7 @@ You do **not** need to install anything extra. Download the program, double-clic
 
 Get the file named `EQGM-x.y.z.exe`
 -# The numbers change with each version. Works on Windows 10 and 11.
--# If Defender flags the download: right-click the file → Properties → check Unblock → Apply. SmartScreen: More info → Run anyway.
+-# Windows SmartScreen may warn. Download only from that GitHub Releases page, then More info → Run anyway.
 
 ===== MESSAGE 2: FUNCTIONS =====
 # What the report shows
@@ -103,7 +103,7 @@ That’s all you do in-game.
 🔗 https://github.com/Neclub/EQ-Gear-Management/releases
 
 **2.** Double-click the file to open it.
--# If Defender flags the file: right-click → **Properties** → check **Unblock** → **Apply**. SmartScreen: **More info → Run anyway**.
+-# If Windows SmartScreen appears, choose **More info → Run anyway**. That warning is common for this kind of program.
 
 **3.** Click **EQ Folder** and choose the root of your **EverQuest** folder.
 

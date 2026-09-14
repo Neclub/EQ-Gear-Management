@@ -20,7 +20,7 @@ EQ writes those files to the root of your **EverQuest** folder (not the Logs sub
 1. Download **`EQGM-x.y.z.exe`** from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases).
 2. Double-click the `.exe` to open it.
 
-If Windows Defender flags the downloaded file, right-click it → **Properties** → check **Unblock** → **Apply**, then run it. GitHub downloads get an internet mark that a local build does not. SmartScreen: **More info → Run anyway**. Details: [[Troubleshooting]].
+Windows may show a SmartScreen or antivirus warning. Download only from the GitHub **Releases** page above, then **More info → Run anyway** if asked. Details: [[Troubleshooting]].
 
 If a newer GitHub Release exists, a popup shows the current and newest versions and asks whether to download. **Yes** opens the official GitHub download in your browser; the app does not install or run the file.
 

@@ -249,7 +249,6 @@ def test_gui_prompts_update_on_startup() -> None:
     assert "Current version:" in text
     assert "Newest version:" in text
     assert "Would you like to download the latest version?" in text
-    assert "check Unblock" in text
 
 
 def test_gui_generate_error_uses_persistent_dialog() -> None:

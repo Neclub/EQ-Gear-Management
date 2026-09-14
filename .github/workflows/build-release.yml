@@ -19,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.14"
 
       - name: Install dependencies
         run: |
@@ -60,10 +60,6 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.version }}
           name: EQ Gear Management ${{ steps.version.outputs.version }}
-          body: |
-            Download `EQGM-${{ steps.version.outputs.version }}.exe`.
-
-            If Windows Defender flags it after download: right-click the exe → Properties → check **Unblock** → Apply, then run it. GitHub downloads are marked as coming from the internet; a copy built with `build_exe.bat` is not. SmartScreen: More info → Run anyway.
           files: dist/EQGM-${{ steps.version.outputs.version }}.exe
           generate_release_notes: true
           make_latest: true

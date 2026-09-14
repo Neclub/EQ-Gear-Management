@@ -6,18 +6,11 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
-## [1.35.9] - 2026-09-13
+## [1.35.10] - 2026-09-13
 
 ### Changed
 
-- **Windows download:** GitHub Releases ship `EQGM-x.y.z.exe` again (the 1.35.8 zip layout is reverted so 1.35.6 Check for Updates still gets an exe).
-- **Defender on GitHub downloads:** a local `build_exe.bat` copy is fine; a browser download of the same kind of file is marked as coming from the internet. Right-click the exe → **Properties** → check **Unblock** → **Apply**, then run it. SmartScreen: **More info → Run anyway**.
-
-## [1.35.8] - 2026-09-13
-
-### Changed
-
-- **Windows download:** GitHub Releases now include `EQGM-x.y.z.zip` (folder bundle). Extract and run `EQGM-x.y.z.exe` inside. That layout does not unpack to `%TEMP%`, which is what Windows Defender often flags on the single-file `.exe`. The one-file exe is still attached so older in-app update checks keep working. Help → Check for Updates prefers the zip. Reverted in **1.35.9**.
+- GitHub release builds use Python 3.14.
 
 ## [1.35.7] - 2026-09-13
 
@@ -59,7 +52,7 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 ### Changed
 
 - Type 7/8 catalog progress no longer says “raidloot” when the live source is EQ Resource.
-- **Windows exe:** the PyInstaller build embeds an `asInvoker` manifest, skips UPX, and puts the GitHub project URL in the file properties. GitHub Releases can Authenticode-sign when `IP_SIGN_PFX_B64` is set. Unsigned PyInstaller builds can still trip generic antivirus heuristics; use the GitHub Release and allow the file if Windows SmartScreen asks.
+- **Windows exe:** the PyInstaller build embeds an `asInvoker` manifest, skips UPX, and puts the GitHub project URL in the file properties. GitHub Releases can Authenticode-sign when `IP_SIGN_PFX_B64` is set.
 
 ## [1.35.4] - 2026-09-03
 

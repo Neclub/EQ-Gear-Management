@@ -18,7 +18,7 @@ Product page: **[neclub.github.io/EQ-Gear-Management](https://neclub.github.io/E
 2. Download **`EQGM-x.y.z.exe`** from the latest release.
 3. Double-click to run. No Python install needed.
 
-If Windows Defender flags the downloaded file, right-click it → **Properties** → check **Unblock** → **Apply**, then run it. GitHub downloads get an internet mark that a local `build_exe.bat` copy does not. Download only from this GitHub repo’s **Releases**. SmartScreen: **More info → Run anyway**.
+Windows SmartScreen or antivirus may warn because the exe is a PyInstaller build. That is a common false positive — download only from this GitHub repo’s **Releases**. Choose **More info → Run anyway** if SmartScreen asks.
 
 Installed copies check GitHub Releases when they open. If a newer version is available, a popup shows the current and newest versions and asks whether to download. You can also use **Help → Check for Updates**.
 
