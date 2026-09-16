@@ -2,9 +2,18 @@
 
 All notable changes to EQ Gear Management (EQGM) are documented here. Version numbers follow [Semantic Versioning](https://semver.org/).
 
-**To release a new version:** say **Publish new build**. The agent bumps `__version__`, updates the changelog and docs, commits and pushes that to GitHub (and the wiki if needed), **then** runs `publish_release.bat` to build the installer locally and create the GitHub Release. Pushing `main` does not build the installer.
 
 ## [Unreleased]
+
+## [1.35.12] - 2026-09-16
+
+### Added
+
+- **Missing Ores** (Excel + HTML, Gear section): character × ore matrix of raid-vendor ores still needed from **Raid BiS** upgrades (same idea as Missing Runes). Evolver slots show the purple crystal and are excluded from counts and Total. Appears when the Raid BiS chip is on. Bag stock is not subtracted (see Unmade Gear).
+
+### Changed
+
+- HTML sidebar: each open starts with **Gear** expanded on **Team Gear**; Spells, Augs, and Quests & Achievements start collapsed (previous group open/closed state is no longer restored).
 
 ## [1.35.11] - 2026-09-14
 

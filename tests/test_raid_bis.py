@@ -5,6 +5,7 @@ from inventory_parser.html_export import extract_report_json, write_team_html
 from inventory_parser.items import EquippedItem
 from inventory_parser.raid_bis.catalog import parse_raidarmor_html, parse_raidgear_html, parse_item_page
 from inventory_parser.raid_bis.compare import (
+    CharacterRaidBis,
     build_ideal_loadout,
     collect_paperdoll_icon_ids,
     compare_character,
@@ -1374,4 +1375,386 @@ def test_item_cache_stores_usable_classes(tmp_path, monkeypatch) -> None:
     assert "ENC" in all_entry["classes"]
     assert "WAR" in all_entry["classes"]
     assert len(all_entry["classes"]) == 16
+
+
+def _ore_needs_bundle(
+    characters: list[CharacterRaidBis],
+    vendor,
+):
+    from inventory_parser.raid_bis.build import RaidBisExport
+    from inventory_parser.raid_bis.models import RaidBisCatalog
+
+    return RaidBisExport(
+        catalog=RaidBisCatalog(items=[], vendor=vendor),
+        characters=characters,
+    )
+
+
+def test_ore_needs_t2_upgrade_counts_lining():
+    from inventory_parser.raid_bis.ore_needs import build_ore_needs_matrix
+    from inventory_parser.raid_bis.vendor import parse_raidvendor_html
+
+    vendor = parse_raidvendor_html(VENDOR_HTML.read_text(encoding="utf-8"))
+    t2 = _cand(
+        item_id=2,
+        name="BiS Chest of Resonant Fracture",
+        stats={"ac": 100, "hdex": 10, "hp": 2000},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Chest"}),
+        tier="T2",
+    )
+    ch = CharacterGear(
+        character="Warlub",
+        server="test",
+        filepath="x",
+        class_abbr="WAR",
+    )
+    ch.slots["Chest"] = EquippedItem(name="Old Chest", item_id=1)
+    report = compare_character(
+        ch,
+        [t2],
+        equipped_stats={
+            1: _cand(
+                item_id=1,
+                name="Old Chest",
+                stats={"ac": 40, "hdex": 4, "hp": 500},
+                slots=frozenset({"Chest"}),
+            ),
+        },
+        vendor=vendor,
+    )
+    matrix = build_ore_needs_matrix(_ore_needs_bundle([report], vendor))
+    by_name = {row.name: row for row in matrix.rows}
+    assert "Fractured Chest Armor Lining" in by_name
+    assert by_name["Fractured Chest Armor Lining"].counts == [1]
+    assert by_name["Fractured Chest Armor Lining"].evolvers == [False]
+    assert matrix.totals == [1]
+
+
+def test_ore_needs_already_bis_is_zero():
+    from inventory_parser.raid_bis.ore_needs import build_ore_needs_matrix
+    from inventory_parser.raid_bis.vendor import parse_raidvendor_html
+
+    vendor = parse_raidvendor_html(VENDOR_HTML.read_text(encoding="utf-8"))
+    t2 = _cand(
+        item_id=2,
+        name="BiS Chest of Resonant Fracture",
+        stats={"ac": 100, "hdex": 10, "hp": 2000},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Chest"}),
+        tier="T2",
+    )
+    ch = CharacterGear(
+        character="Warlub",
+        server="test",
+        filepath="x",
+        class_abbr="WAR",
+    )
+    ch.slots["Chest"] = EquippedItem(name="BiS Chest of Resonant Fracture", item_id=2)
+    report = compare_character(ch, [t2], vendor=vendor)
+    matrix = build_ore_needs_matrix(_ore_needs_bundle([report], vendor))
+    by_name = {row.name: row for row in matrix.rows}
+    assert by_name["Fractured Chest Armor Lining"].counts == [0]
+    assert matrix.totals == [0]
+
+
+def test_ore_needs_evolver_marks_not_counts():
+    from inventory_parser.raid_bis.ore_needs import build_ore_needs_matrix
+    from inventory_parser.raid_bis.vendor import parse_raidvendor_html
+
+    vendor = parse_raidvendor_html(VENDOR_HTML.read_text(encoding="utf-8"))
+    t2 = _cand(
+        item_id=2,
+        name="BiS Chest of Resonant Fracture",
+        stats={"ac": 100, "hdex": 10, "hp": 2000},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Chest"}),
+        tier="T2",
+    )
+    ch = CharacterGear(
+        character="Warlub",
+        server="test",
+        filepath="x",
+        class_abbr="WAR",
+    )
+    ch.slots["Chest"] = EquippedItem(name="Evolver Chest", item_id=1, is_evolver=True)
+    report = compare_character(
+        ch,
+        [t2],
+        equipped_stats={
+            1: _cand(
+                item_id=1,
+                name="Evolver Chest",
+                stats={"ac": 40, "hdex": 4, "hp": 500},
+                slots=frozenset({"Chest"}),
+            ),
+        },
+        vendor=vendor,
+    )
+    matrix = build_ore_needs_matrix(_ore_needs_bundle([report], vendor))
+    chest = next(r for r in matrix.rows if r.name == "Fractured Chest Armor Lining")
+    assert chest.counts == [0]
+    assert chest.evolvers == [True]
+    assert matrix.totals == [0]
+
+
+def test_ore_needs_total_excludes_evolver_slots_with_other_upgrades():
+    """Evolver slots must not add to Total even when other slots need ores."""
+    from inventory_parser.raid_bis.ore_needs import build_ore_needs_matrix
+    from inventory_parser.raid_bis.vendor import parse_raidvendor_html
+
+    vendor = parse_raidvendor_html(VENDOR_HTML.read_text(encoding="utf-8"))
+    chest = _cand(
+        item_id=2,
+        name="BiS Chest of Resonant Fracture",
+        stats={"ac": 100, "hdex": 10, "hp": 2000},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Chest"}),
+        tier="T2",
+    )
+    ear = _cand(
+        item_id=3,
+        name="BiS Earring of Resonant Fracture",
+        stats={"ac": 50, "hdex": 5, "hp": 800},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Ear"}),
+        tier="T2",
+    )
+    ch = CharacterGear(
+        character="Warlub",
+        server="test",
+        filepath="x",
+        class_abbr="WAR",
+    )
+    ch.slots["Chest"] = EquippedItem(name="Old Chest", item_id=1)
+    ch.slots["Ear-1"] = EquippedItem(name="Evolver Ear", item_id=4, is_evolver=True)
+    report = compare_character(
+        ch,
+        [chest, ear],
+        equipped_stats={
+            1: _cand(
+                item_id=1,
+                name="Old Chest",
+                stats={"ac": 40, "hdex": 4, "hp": 500},
+                slots=frozenset({"Chest"}),
+            ),
+            4: _cand(
+                item_id=4,
+                name="Evolver Ear",
+                stats={"ac": 20, "hdex": 2, "hp": 200},
+                slots=frozenset({"Ear"}),
+            ),
+        },
+        vendor=vendor,
+    )
+    matrix = build_ore_needs_matrix(_ore_needs_bundle([report], vendor))
+    by_name = {row.name: row for row in matrix.rows}
+    assert by_name["Fractured Chest Armor Lining"].counts == [1]
+    assert by_name["Fractured Chest Armor Lining"].evolvers == [False]
+    assert by_name["Fractured Earring Clasp"].counts == [0]
+    assert by_name["Fractured Earring Clasp"].evolvers == [True]
+    # Total is chest only — evolver ear must not add 1
+    assert matrix.totals == [1]
+
+
+def test_ore_needs_paired_wrists_one_evolver_counts_one_in_total():
+    from inventory_parser.raid_bis.ore_needs import build_ore_needs_matrix
+    from inventory_parser.raid_bis.vendor import parse_raidvendor_html
+
+    vendor = parse_raidvendor_html(VENDOR_HTML.read_text(encoding="utf-8"))
+    wrist = _cand(
+        item_id=10,
+        name="BiS Bracer of Resonant Fracture",
+        stats={"ac": 80, "hdex": 8, "hp": 1000},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Wrist"}),
+        tier="T2",
+    )
+    ch = CharacterGear(
+        character="Warlub",
+        server="test",
+        filepath="x",
+        class_abbr="WAR",
+    )
+    ch.slots["Wrist-1"] = EquippedItem(name="Old Wrist", item_id=1)
+    ch.slots["Wrist-2"] = EquippedItem(name="Evolver Wrist", item_id=2, is_evolver=True)
+    report = compare_character(
+        ch,
+        [wrist],
+        equipped_stats={
+            1: _cand(
+                item_id=1,
+                name="Old Wrist",
+                stats={"ac": 20, "hdex": 2, "hp": 200},
+                slots=frozenset({"Wrist"}),
+            ),
+            2: _cand(
+                item_id=2,
+                name="Evolver Wrist",
+                stats={"ac": 20, "hdex": 2, "hp": 200},
+                slots=frozenset({"Wrist"}),
+            ),
+        },
+        vendor=vendor,
+    )
+    matrix = build_ore_needs_matrix(_ore_needs_bundle([report], vendor))
+    lining = next(r for r in matrix.rows if r.name == "Fractured Wrist Armor Lining")
+    assert lining.counts == [1]
+    assert lining.evolvers == [True]
+    assert matrix.totals == [1]
+
+
+def test_ore_needs_paired_wrists_count_two():
+    from inventory_parser.raid_bis.ore_needs import build_ore_needs_matrix
+    from inventory_parser.raid_bis.vendor import parse_raidvendor_html
+
+    vendor = parse_raidvendor_html(VENDOR_HTML.read_text(encoding="utf-8"))
+    wrist = _cand(
+        item_id=10,
+        name="BiS Bracer of Resonant Fracture",
+        stats={"ac": 80, "hdex": 8, "hp": 1000},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Wrist"}),
+        tier="T2",
+    )
+    ch = CharacterGear(
+        character="Warlub",
+        server="test",
+        filepath="x",
+        class_abbr="WAR",
+    )
+    ch.slots["Wrist-1"] = EquippedItem(name="Old Wrist A", item_id=1)
+    ch.slots["Wrist-2"] = EquippedItem(name="Old Wrist B", item_id=2)
+    report = compare_character(
+        ch,
+        [wrist],
+        equipped_stats={
+            1: _cand(
+                item_id=1,
+                name="Old Wrist A",
+                stats={"ac": 20, "hdex": 2, "hp": 200},
+                slots=frozenset({"Wrist"}),
+            ),
+            2: _cand(
+                item_id=2,
+                name="Old Wrist B",
+                stats={"ac": 20, "hdex": 2, "hp": 200},
+                slots=frozenset({"Wrist"}),
+            ),
+        },
+        vendor=vendor,
+    )
+    matrix = build_ore_needs_matrix(_ore_needs_bundle([report], vendor))
+    by_name = {row.name: row for row in matrix.rows}
+    assert by_name["Fractured Wrist Armor Lining"].counts == [2]
+
+
+def test_ore_needs_t1_cloak_not_an_ore_row_count():
+    from inventory_parser.raid_bis.ore_needs import build_ore_needs_matrix
+    from inventory_parser.raid_bis.vendor import parse_raidvendor_html
+
+    vendor = parse_raidvendor_html(VENDOR_HTML.read_text(encoding="utf-8"))
+    cloak = _cand(
+        item_id=175726,
+        name="Ice Veined Fire Cloak",
+        stats={"ac": 879, "hp": 5000},
+        classes=frozenset({"WAR"}),
+        slots=frozenset({"Back"}),
+        tier="T1",
+    )
+    ch = CharacterGear(
+        character="Warlub",
+        server="test",
+        filepath="x",
+        class_abbr="WAR",
+    )
+    ch.slots["Back"] = EquippedItem(name="Old Cloak", item_id=1)
+    report = compare_character(
+        ch,
+        [cloak],
+        equipped_stats={
+            1: _cand(
+                item_id=1,
+                name="Old Cloak",
+                stats={"ac": 100, "hp": 500},
+                slots=frozenset({"Back"}),
+            ),
+        },
+        vendor=vendor,
+    )
+    matrix = build_ore_needs_matrix(_ore_needs_bundle([report], vendor))
+    names = {row.name for row in matrix.rows}
+    assert "Ice Veined Fire Cloak" not in names
+    assert all(sum(row.counts) == 0 for row in matrix.rows)
+    assert matrix.totals == [0]
+
+
+def test_missing_ores_html_section(tmp_path: Path):
+    inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
+    bundle = build_export_bundle(
+        [inv],
+        include_spells=False,
+        include_achievements=False,
+        include_slot2=False,
+        include_raid_bis=True,
+        raid_bis_html_overrides={
+            "raidarmor": ARMOR_HTML.read_text(encoding="utf-8"),
+            "raidgear:back": GEAR_HTML.read_text(encoding="utf-8"),
+            "raidvendor": VENDOR_HTML.read_text(encoding="utf-8"),
+        },
+        raid_bis_allow_network=False,
+        raid_bis_hydrate=False,
+        raid_bis_embed_icons=False,
+    )
+    out = tmp_path / "ores.html"
+    write_team_html(bundle, out)
+    report = extract_report_json(out.read_text(encoding="utf-8"))
+    ids = [s["id"] for s in report["sections"]]
+    assert "missing_ores" in ids
+    assert ids.index("missing_ores") == ids.index("raid_bis") + 1
+    section = next(s for s in report["sections"] if s["id"] == "missing_ores")
+    assert section["title"] == "Missing Ores"
+    assert section["type"] == "missing_ores"
+    assert section["data"]["characters"]
+    assert section["data"]["blocks"]
+    ore_names = [r["tier"] for r in section["data"]["blocks"][0]["rows"] if not r.get("isTotal")]
+    assert "Fractured Chest Armor Lining" in ore_names
+    html = out.read_text(encoding="utf-8")
+    assert "updateMissingOresContent" in html
+    assert "missing_ores: \"icon-anvil\"" in html
+    assert "Search ores" in html
+
+
+def test_missing_ores_excel_sheet(tmp_path: Path):
+    from openpyxl import load_workbook
+
+    from inventory_parser.excel_export import write_team_workbook
+    from inventory_parser.raid_bis.excel import MISSING_ORES_SHEET_NAME
+
+    inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
+    bundle = build_export_bundle(
+        [inv],
+        include_spells=False,
+        include_achievements=False,
+        include_slot2=False,
+        include_raid_bis=True,
+        raid_bis_html_overrides={
+            "raidarmor": ARMOR_HTML.read_text(encoding="utf-8"),
+            "raidgear:back": GEAR_HTML.read_text(encoding="utf-8"),
+            "raidvendor": VENDOR_HTML.read_text(encoding="utf-8"),
+        },
+        raid_bis_allow_network=False,
+        raid_bis_hydrate=False,
+        raid_bis_embed_icons=False,
+    )
+    out = tmp_path / "ores.xlsx"
+    write_team_workbook(bundle.team, out, raid_bis=bundle.raid_bis)
+    wb = load_workbook(out, data_only=True)
+    assert "Raid BiS" in wb.sheetnames
+    assert MISSING_ORES_SHEET_NAME in wb.sheetnames
+    assert wb.sheetnames.index(MISSING_ORES_SHEET_NAME) == wb.sheetnames.index("Raid BiS") + 1
+    ws = wb[MISSING_ORES_SHEET_NAME]
+    assert ws["A1"].value == MISSING_ORES_SHEET_NAME
+    names = [ws.cell(r, 1).value for r in range(1, ws.max_row + 1)]
+    assert "Fractured Chest Armor Lining" in names
 

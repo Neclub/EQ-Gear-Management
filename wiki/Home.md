@@ -29,7 +29,7 @@ Installed copies check GitHub Releases when they open. If a newer version is ava
 | [[Getting Started]] | Requirements, download, EQ Folder, generate Excel / HTML / Both |
 | [[In-Game Output Files]] | `/outputfile` commands, naming, personas, SpellData / AchievementData |
 | [[Setup Screen]] | Roster, export chips, gear tier colors, output folder |
-| [[Gear]] | Team Gear, Gear T-Level, Unmade Gear, Raid BiS |
+| [[Gear]] | Team Gear, Gear T-Level, Unmade Gear, Raid BiS, Missing Ores |
 | [[Spells]] | Missing Runes, Missing Spells, Useful Spells, Rune Inventory |
 | [[Augs]] | Type 7/8, Type 5, Type 18/19 |
 | [[Quests and Achievements]] | Collections, Quests, Raid Achievements, Heroic AA, Summary |

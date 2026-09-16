@@ -66,6 +66,9 @@ def test_write_team_html_structure(tmp_path: Path) -> None:
         assert f'id="{symbol_id}"' in text
     assert "nav-group-toggle" in text
     assert "function groupedNavEntries" in text
+    assert "function navGroupStartsExpanded" in text
+    assert "group.items.some(({ idx }) => idx === 0)" in text
+    assert "eqgm-html-nav-groups" not in text
 
     report = extract_report_json(text)
     assert report["meta"]["version"]
@@ -105,6 +108,7 @@ def test_html_nav_groups(tmp_path: Path) -> None:
         "team_gear",
         "gear_t_level",
         "raid_bis",
+        "missing_ores",
         "unmade_gear",
     ]
     assert groups["spells"]["title"] == "Spells"

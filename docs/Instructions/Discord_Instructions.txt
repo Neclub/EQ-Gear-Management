@@ -71,6 +71,9 @@ Enter raid coins on each character card to highlight the best vendor upgrade. Ev
 
 -# Current raid gear only. Hover **Raid BiS** in the web report for the scoring notes.
 
+### 🪨 Missing Ores
+How many raid-vendor ores (linings, clasps, cloths, etc.) each character still needs for Raid BiS upgrades — same character-column matrix as Missing Runes. Evolver slots show the purple crystal and are excluded from counts and Total. Bag stock is not subtracted (see Unmade Gear). Shown when Raid BiS is on.
+
 Clicking an item, spell, or Heroic AA achievement name opens **EQ Resource** for more info.
 
 ===== MESSAGE 3: HOW TO USE (IN EVERQUEST) =====

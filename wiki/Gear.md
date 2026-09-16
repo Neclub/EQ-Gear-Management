@@ -68,4 +68,20 @@ Current-expansion raid T1 and T2 armor and jewelry vs what each character is wea
 
 Needs a network fetch the first time (EQ Resource raid armor/jewelry, raidloot fallback); later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache. That cache stores each item’s usable class list (`Class: All` is stored as every class). After updating to **1.35.5** or newer, regenerate once so class lists stay current and cached armor stubs get real names and icons. Item icons are cached at generate time. Uncheck the **Raid BiS** chip to skip.
 
+---
+
+## Missing Ores
+
+*(shown when Raid BiS is on)*
+
+Character × ore matrix of current-expansion **raid vendor ores** (Fractured linings, clasps, fasteners, polishing cloths, etc.) still needed for **Raid BiS** upgrades — same layout idea as Missing Runes. Each upgrade or empty scored slot whose BiS maps to a vendor ore adds 1 to that ore’s count. Paired slots (wrists, ears, fingers) share one ore row and can count up to 2. Already-BiS slots and T1 finished vendor items / Diminished containers are omitted.
+
+**Evolver** slots do not add to the ore count or the **Total**. They show the same pulsing magenta crystal as Raid BiS (Excel uses the purple Evolver fill and the word `Evolver`). Mixed cells can show a count plus the gem when one paired slot is an Evolver and the other still needs the ore.
+
+Bag stock is **not** subtracted — ores and mats already in General bags stay on **Unmade Gear**. A **Total** row sums ore needs only (Evolver slots excluded).
+
+**HTML:** search by ore name; **Sort** reorders character columns (roster, name, class, most missing). Ore names link to EQ Resource.
+
+**Excel:** **Missing Ores** sheet immediately after Raid BiS.
+
 See also: [[Setup Screen]], [[HTML Report]].

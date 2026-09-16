@@ -14,6 +14,7 @@ EverQuest **Live** can output a snapshot of a character to a text file.
 > 🏆 Who is missing collections, quests, or raid achievements
 > 💎 Which augs to wear, move, or farm
 > 👑 What Raid BiS looks like *this* expansion
+> 🪨 Which raid ores you still need for those upgrades
 
 No Python needed. Download the installer, run it, point it at your EverQuest folder.
 **These are suggestions based on the stats your class uses. Use the numbers, then decide whether a change is worth it.**

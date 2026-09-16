@@ -60,6 +60,7 @@ Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet.
 - **Gear T-Level** — expansion tier codes per slot (unknown items looked up on EQ Resource); codes link to the item. In HTML, hover a T-code for an inspect card; Excel shows the item name on hover
 - **Unmade Gear** — raid craft mats and T1 containers still sitting in bags
 - **Raid BiS** — optional current-expansion raid T1/T2 armor and jewelry vs equipped gear (on by default). Only items that class can wear are recommended. MAG/BST/NEC keep a pet-focus ear ranked by Enhanced Minion level. Evolvers still get a Best in slot pick but are skipped for coin purchases (magenta gem on hover). Gold nameplate and Character filter. Enter raid coins to highlight the best vendor upgrade.
+- **Missing Ores** — how many raid-vendor ores (linings, clasps, cloths, etc.) each character still needs for Raid BiS upgrades. Same character-column matrix as Missing Runes; Evolver slots show the purple crystal and are excluded from counts and Total. Bag stock is not subtracted (see Unmade Gear). Shown when Raid BiS is on.
 
 #### Spells *(MissingSpells files; Rune Inventory also uses bags)*
 

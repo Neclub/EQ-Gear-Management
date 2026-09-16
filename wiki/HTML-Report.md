@@ -8,7 +8,7 @@ HTML reports show the EQGM version on the title graphic next to the generated da
 
 ## Layout
 
-- **Left sidebar** — EQGM crest, collapsible section groups (**Gear**, **Spells**, **Augs**, **Quests & Achievements**), gold-rail section buttons, Lucide-style icons, then **Character filter** chips (directly under the nav, not at the bottom of the window). Groups start collapsed; click a group heading to expand or collapse its tabs. The browser remembers which groups you leave open.
+- **Left sidebar** — EQGM crest, collapsible section groups (**Gear**, **Spells**, **Augs**, **Quests & Achievements**), gold-rail section buttons, Lucide-style icons, then **Character filter** chips (directly under the nav, not at the bottom of the window). Each open starts with **Gear** expanded on **Team Gear**; the other groups start collapsed. Click a group heading to expand or collapse its tabs.
 - **Main area** — rounded title nameplate (e.g. `Bristlebane Team Inventory`, character count, generation date, and EQGM version), toolbar, and the active section’s table
 - **Footer** — gear-tier color legend when viewing **Team Gear**
 
@@ -18,7 +18,7 @@ HTML reports show the EQGM version on the title graphic next to the generated da
 
 Same sections as Excel (omitted when empty, same rules as the workbook), grouped in the sidebar:
 
-- **Gear** — Team Gear, Gear T-Level, Raid BiS, Unmade Gear → [[Gear]]
+- **Gear** — Team Gear, Gear T-Level, Raid BiS, Missing Ores, Unmade Gear → [[Gear]]
 - **Spells** — Missing Spells, Missing Useful Spells, Missing Runes, Rune Inventory → [[Spells]]
 - **Augs** — Type 7/8 Augs, Type 5 Augs, Type 18/19 Augs (each when that chip is on) → [[Augs]]
 - **Quests & Achievements** — Missing Collections, Quests, Raid Achievements, Heroic AA, Achievement Summary → [[Quests and Achievements]]
@@ -38,7 +38,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook), grouped
 | **Zone** | Toolbar (Quests) | Filter Mercenary/Partisan rows to one zone (options follow the current Expansion filter) |
 | **Event** | Toolbar (Raid Achievements) | Filter raid cards to one event (e.g. Echo of Hate). Options follow the current Expansion filter |
 | **Achievements** | Toolbar (Heroic AA) | All / Completed / Incomplete |
-| **Sort** | Toolbar (Missing Runes) | Reorder character columns: roster order, name, class, or most missing (uses the Expansion filter when one is selected) |
+| **Sort** | Toolbar (Missing Runes, Missing Ores) | Reorder character columns: roster order, name, class, or most missing (uses the Expansion filter when one is selected on Missing Runes) |
 | **Column headers** | Table | Click to sort |
 | **Missing Item** | Missing Collections | Hover the header for a copy reminder; click an item name to copy it |
 
