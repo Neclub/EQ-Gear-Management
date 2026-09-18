@@ -36,6 +36,30 @@ Expansions show release year and rows are sorted **newest to oldest**. In HTML, 
 
 ---
 
+## Hunters
+
+Incomplete **zone hunter** lines from each expansion’s **Hunter** or **Hunts** section. Fully complete zones are omitted. If a zone is still in progress, every NPC target is listed so you can see what is left.
+
+**Excel columns:** Character · Expansion · Hunter · Zone · Target · Status (`Done` / `Missing`)
+
+**HTML:** each zone is a card headed by the **Hunter of** line (e.g. `Hunter of Arcstone, Shattered Isles`). Child rows are the NPC names. Incomplete kills show an empty box; finished kills show **X**.
+
+Rank metas (Novice / Adept / Veteran / Expert / Master) and region grouping parents (e.g. `Hunter of Faydwer`) are omitted — only zone kill lists appear.
+
+Expansions show release year and rows are sorted **newest to oldest**. In HTML, **Character**, **Expansion**, and **Zone** dropdowns narrow the list (expansion defaults to the current expansion; Zone options follow the selected expansion).
+
+---
+
+## Slayer
+
+**Megadeath** progress from **Slayer: General** in each character’s achievement dump. The three required metas are listed: A Force of Nature, Highly Decorated, and Progressive. Skill / Special / Conquest kill-count lines are not listed. Fully complete Megadeath still appears so finished characters stay visible.
+
+**Excel columns:** Character · Achievement · Objective · Status (`Done` / `Missing`)
+
+**HTML:** one card per character headed by **Megadeath**. Incomplete steps show an empty box; finished steps show **X**. **Character** dropdown narrows the list (no expansion filter).
+
+---
+
 ## Heroic AA
 
 Ranks of **Hero's Fortitude**, **Hero's Resolution**, and **Hero's Vitality** from completing the wiki list of Hero's Special AAs. Each `/outputfile achievements` dump is compared to that list (in-game names, with wiki aliases). Incomplete entries stay listed so you can see what is left. Not every achievement awards all three ranks — HTML only shows F / R / V chips for ranks that achievement grants (lit when Completed, muted when still Incomplete); Excel leaves Fortitude / Resolution / Vitality blank when that rank is not awarded. Achievement names link to [EQ Resource](https://achievements.eqresource.com/) when the catalog includes an id.

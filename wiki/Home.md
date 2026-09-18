@@ -32,7 +32,7 @@ Installed copies check GitHub Releases when they open. If a newer version is ava
 | [[Gear]] | Team Gear, Gear T-Level, Unmade Gear, Raid BiS, Missing Ores |
 | [[Spells]] | Missing Runes, Missing Spells, Useful Spells, Rune Inventory |
 | [[Augs]] | Type 7/8, Type 5, Type 18/19 |
-| [[Quests and Achievements]] | Collections, Quests, Raid Achievements, Heroic AA, Summary |
+| [[Quests and Achievements]] | Collections, Quests, Raid Achievements, Hunters, Slayer, Heroic AA, Summary |
 | [[HTML Report]] | Sidebar groups, character chips, filters |
 | [[Troubleshooting]] | Common problems and fixes |
 

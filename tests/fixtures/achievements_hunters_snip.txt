@@ -1,0 +1,32 @@
+EverQuest: Hunter
+I	Hunter of Faydwer
+I		Hunter of Crushbone
+I		Hunter of The Lesser Faydark
+I	Hunter of Crushbone
+C		orc warlord
+I		orc taskmaster
+I	Hunter of The Lesser Faydark
+C		a black wolf
+C		an orc scout
+Gates of Discord: Hunts
+I	Novice Hunter of Gates of Discord
+I		Hunter of Natimbi, the Broken Shores
+I		Hunter of Qinimi, Court of Nihilia
+I	Hunter of Natimbi, the Broken Shores
+C		a fierce cragwalker
+I		Duara Yuenki
+I	Hunter of Qinimi, Court of Nihilia
+C		Pixtt Kerxek Vket
+C		Pixtt Krakt Ticov
+Shattering of Ro: Hunts
+C	Novice Shattering of Ro Hunter
+C		Hunter of Scarred Grove
+C	Hunter of Scarred Grove
+C		Ashbark
+C		Grimclaw
+I	Adept Shattering of Ro Hunter
+I		Hunter of Arcstone, Shattered Isles
+I	Hunter of Arcstone, Shattered Isles
+C		Fire Maw
+I		Broj the Devourer
+I		Orvain the Mooncaller

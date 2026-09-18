@@ -11,7 +11,7 @@ EverQuest **Live** can output a snapshot of a character to a text file.
 > 🛡️ Who is wearing what — color-coded by how current it is
 > 📉 Whose slots are still last expansion
 > 📜 Who still needs spell runes
-> 🏆 Who is missing collections, quests, or raid achievements
+> 🏆 Who is missing collections, quests, raid achievements, hunters, or Megadeath
 > 💎 Which augs to wear, move, or farm
 > 👑 What Raid BiS looks like *this* expansion
 > 🪨 Which raid ores you still need for those upgrades

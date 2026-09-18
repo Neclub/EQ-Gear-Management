@@ -5,6 +5,13 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.13] - 2026-09-17
+
+### Added
+
+- **Slayer** (Excel + HTML, Quests & Achievements): Megadeath checklist from **Slayer: General** (A Force of Nature, Highly Decorated, Progressive). Completed Megadeath still appears so finished characters stay visible. HTML uses the same card layout as Raid Achievements with a **Character** filter (no expansion/event filters).
+- **Hunters** (Excel + HTML, Quests & Achievements): incomplete zone hunter kill lists from each expansion’s **Hunter** / **Hunts** section. Fully complete zones are omitted; partial zones keep Done and Missing NPCs. HTML uses the same card layout as Raid Achievements with **Character**, **Expansion**, and **Zone** filters. Rank metas (Novice/Adept/Veteran/…) and region grouping parents are skipped.
+
 ## [1.35.12] - 2026-09-16
 
 ### Added

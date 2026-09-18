@@ -80,6 +80,8 @@ Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet.
 - **Missing Collections** — incomplete collection items; **Zone** from a `(Zone)` suffix or a `{Zone} Scavenger` grouping; in HTML, click a missing item name to copy it
 - **Quests** — unfinished Mercenary and Partisan zone quest lines
 - **Raid Achievements** — incomplete raid event objectives
+- **Hunters** — incomplete zone hunter kill lists
+- **Slayer** — Megadeath checklist (A Force of Nature, Highly Decorated, Progressive); completed Megadeath still listed
 - **Heroic AA** — Fortitude / Resolution / Vitality ranks; hover **F** / **R** / **V**; click a name to open EQ Resource
 - **Achievement Summary** — completed vs incomplete counts per section
 

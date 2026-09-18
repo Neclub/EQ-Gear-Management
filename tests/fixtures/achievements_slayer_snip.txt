@@ -1,0 +1,24 @@
+Slayer: General
+I	Megadeath
+C		Complete the achievement "A Force of Nature"
+I		Complete the achievement "Highly Decorated"
+I		Complete the achievement "Progressive"
+C	A Force of Nature
+C		Complete the achievement "Doesn't Play Well With Others"
+I	Highly Decorated
+C		Complete the achievement "I'm a People Person!"
+I		Complete the achievement "What Keeps Mankind Alive?"
+I	Progressive
+C		Complete the achievement "Oh the Humanity!"
+I		Complete the achievement "Barbarous"
+Slayer: Conquest
+C	Doesn't Play Well With Others
+C		The playable races.
+I	Don't Bug Me
+I		Beetles, Cliknars, Corathus Beasts.
+Slayer: Special
+I	I'm a People Person!
+I		Humans
+Slayer: Skill
+C	Oh the Humanity!
+C		Humans

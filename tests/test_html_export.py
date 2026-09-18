@@ -7,7 +7,12 @@ from inventory_parser.achievement_parser import EVERQUEST_BASE_LABEL, expansion_
 from inventory_parser.achievement_report import build_achievement_report
 from inventory_parser.cli import generate_workbook
 from inventory_parser.export_bundle import build_export_bundle
-from inventory_parser.excel_export import MISSING_SPELLS_SHEET_NAME, MISSING_USEFUL_SPELLS_SHEET_NAME
+from inventory_parser.excel_export import (
+    MISSING_SPELLS_SHEET_NAME,
+    MISSING_USEFUL_SPELLS_SHEET_NAME,
+    HUNTERS_SHEET_NAME,
+    SLAYER_SHEET_NAME,
+)
 from inventory_parser.html_export import extract_report_json, write_team_html
 from inventory_parser.output_paths import html_path_for_workbook
 
@@ -15,6 +20,17 @@ EXAMPLES = Path(__file__).resolve().parents[1] / "Examples"
 SPELL_DATA = EXAMPLES / "SpellData"
 ACHIEVEMENTS = EXAMPLES / "Achievements"
 SHAMLUB_ACH = ACHIEVEMENTS / "Shamlub_xegony-Achievements.txt"
+HUNTERS_FIXTURE = (
+    Path(__file__).resolve().parent / "fixtures" / "achievements_hunters_snip.txt"
+)
+SLAYER_FIXTURE = (
+    Path(__file__).resolve().parent / "fixtures" / "achievements_slayer_snip.txt"
+)
+SLAYER_COMPLETE_FIXTURE = (
+    Path(__file__).resolve().parent
+    / "fixtures"
+    / "achievements_slayer_complete_snip.txt"
+)
 
 
 def test_html_path_for_workbook() -> None:
@@ -125,6 +141,8 @@ def test_html_nav_groups(tmp_path: Path) -> None:
         "missing_collections",
         "quests",
         "raid_achievements",
+        "hunters",
+        "slayer",
         "heroic_aas",
         "achievement_summary",
     ]
@@ -255,6 +273,87 @@ def test_html_achievement_expansion_labels(tmp_path: Path) -> None:
     assert 'F: labelOf("fortitude", "Hero\'s Fortitude")' in text
     assert 'R: labelOf("resolution", "Hero\'s Resolution")' in text
     assert 'V: labelOf("vitality", "Hero\'s Vitality")' in text
+
+
+def test_html_hunters_section(tmp_path: Path) -> None:
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    bundle = build_export_bundle([inv], include_spells=False, include_achievements=False, include_slot2=False)
+    ach_report = build_achievement_report(
+        bundle.team,
+        achievement_paths={"shamlub_bristle": HUNTERS_FIXTURE},
+    )
+    assert ach_report is not None
+    bundle = replace(bundle, achievement_report=ach_report)
+    out = tmp_path / "crew.html"
+    write_team_html(bundle, out)
+    text = out.read_text(encoding="utf-8")
+    report = extract_report_json(text)
+    hunters = next(s for s in report["sections"] if s["id"] == "hunters")
+    assert hunters["title"] == HUNTERS_SHEET_NAME
+    data = hunters["data"]
+    assert data["columns"] == ["Character", "Expansion", "Hunter", "Zone", "Target", "Status"]
+    assert data["characterColumn"] == 0
+    assert data["expansionColumn"] == 1
+    assert data["zoneColumn"] == 3
+    assert data["group"]["descriptionKind"] == "hunters"
+    assert data["group"]["zoneColumn"] == 3
+    assert any(
+        row[2] == "Hunter of Arcstone, Shattered Isles"
+        and row[3] == "Arcstone, Shattered Isles"
+        and row[4] == "Broj the Devourer"
+        and row[5] == "Missing"
+        for row in data["rows"]
+    )
+    assert not any(row[3] == "Scarred Grove" for row in data["rows"])
+    assert "Search hunters…" in text
+    assert "following hunts in" in text
+
+
+def test_html_slayer_section(tmp_path: Path) -> None:
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    bundle = build_export_bundle(
+        [inv], include_spells=False, include_achievements=False, include_slot2=False
+    )
+    ach_report = build_achievement_report(
+        bundle.team,
+        achievement_paths={"shamlub_bristle": SLAYER_FIXTURE},
+    )
+    assert ach_report is not None
+    bundle = replace(bundle, achievement_report=ach_report)
+    out = tmp_path / "crew.html"
+    write_team_html(bundle, out)
+    text = out.read_text(encoding="utf-8")
+    report = extract_report_json(text)
+    slayer = next(s for s in report["sections"] if s["id"] == "slayer")
+    assert slayer["title"] == SLAYER_SHEET_NAME
+    data = slayer["data"]
+    assert data["columns"] == ["Character", "Achievement", "Objective", "Status"]
+    assert data["characterColumn"] == 0
+    assert data.get("expansionColumn") is None
+    assert data["group"]["descriptionKind"] == "slayer"
+    assert data["group"]["titleColumn"] == 1
+    assert data["group"]["itemColumn"] == 2
+    assert any(
+        row[1] == "Megadeath"
+        and row[2] == "Highly Decorated"
+        and row[3] == "Missing"
+        for row in data["rows"]
+    )
+    assert "Search slayer…" in text
+    assert "following slayer achievements" in text
+    assert "slayer" in report["navGroups"][3]["sectionIds"]
+
+    complete_report = build_achievement_report(
+        bundle.team,
+        achievement_paths={"shamlub_bristle": SLAYER_COMPLETE_FIXTURE},
+    )
+    assert complete_report is not None
+    bundle = replace(bundle, achievement_report=complete_report)
+    write_team_html(bundle, out)
+    report = extract_report_json(out.read_text(encoding="utf-8"))
+    slayer = next(s for s in report["sections"] if s["id"] == "slayer")
+    assert len(slayer["data"]["rows"]) == 3
+    assert all(row[3] == "Done" for row in slayer["data"]["rows"])
 
 
 def test_html_unmade_gear_omitted_when_empty(tmp_path: Path) -> None:

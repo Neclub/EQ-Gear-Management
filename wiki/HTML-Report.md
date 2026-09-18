@@ -21,7 +21,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook), grouped
 - **Gear** — Team Gear, Gear T-Level, Raid BiS, Missing Ores, Unmade Gear → [[Gear]]
 - **Spells** — Missing Spells, Missing Useful Spells, Missing Runes, Rune Inventory → [[Spells]]
 - **Augs** — Type 7/8 Augs, Type 5 Augs, Type 18/19 Augs (each when that chip is on) → [[Augs]]
-- **Quests & Achievements** — Missing Collections, Quests, Raid Achievements, Heroic AA, Achievement Summary → [[Quests and Achievements]]
+- **Quests & Achievements** — Missing Collections, Quests, Raid Achievements, Hunters, Slayer, Heroic AA, Achievement Summary → [[Quests and Achievements]]
 
 ---
 
@@ -32,10 +32,10 @@ Same sections as Excel (omitted when empty, same rules as the workbook), grouped
 | **Character filter** (chips) | Sidebar | Multi-select filter for gear columns and table rows. Toggle any combination of characters/personas; **All** clears the filter. Chips sit in a two-column grid and show the character name and class when known. Unselected chips dim only while a filter is active |
 | **Search** | Toolbar | Filters the active section (keeps keyboard focus while typing) |
 | **Visible slots** | Toolbar (gear tabs) | All / Visible / Non-visible — replaces the old Visibility column in HTML |
-| **Character** dropdown | Toolbar (table tabs, Type 7/8 Augs, Type 5 Augs, and Raid BiS) | Filter Missing Spells, Missing Useful Spells, Raid Achievements, Missing Collections, Quests, etc. to one character; on **Type 5 Augs** / **Type 7/8 Augs** / **Raid BiS**, filter to one persona |
+| **Character** dropdown | Toolbar (table tabs, Type 7/8 Augs, Type 5 Augs, and Raid BiS) | Filter Missing Spells, Missing Useful Spells, Raid Achievements, Hunters, Slayer, Missing Collections, Quests, etc. to one character; on **Type 5 Augs** / **Type 7/8 Augs** / **Raid BiS**, filter to one persona |
 | **Rune type** | Toolbar (Missing Spells) | All / Minor / Lesser / Median / Greater / Glowing |
 | **Expansion** dropdown | Toolbar (table tabs) | Filter **Missing Spells**, **Missing Useful Spells**, and achievement tables by expansion (full name plus year; defaults to the **current expansion** on first open for achievements); on **Missing Runes** and **Rune Inventory**, filter to one expansion / rune family |
-| **Zone** | Toolbar (Quests) | Filter Mercenary/Partisan rows to one zone (options follow the current Expansion filter) |
+| **Zone** | Toolbar (Quests, Hunters) | Filter Mercenary/Partisan rows or hunter cards to one zone (options follow the current Expansion filter) |
 | **Event** | Toolbar (Raid Achievements) | Filter raid cards to one event (e.g. Echo of Hate). Options follow the current Expansion filter |
 | **Achievements** | Toolbar (Heroic AA) | All / Completed / Incomplete |
 | **Sort** | Toolbar (Missing Runes, Missing Ores) | Reorder character columns: roster order, name, class, or most missing (uses the Expansion filter when one is selected on Missing Runes) |

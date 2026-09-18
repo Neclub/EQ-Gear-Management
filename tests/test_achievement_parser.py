@@ -11,9 +11,13 @@ from inventory_parser.achievement_parser import (
     EVERQUEST_BASE_LABEL,
     clean_quest_name,
     clean_raid_objective,
+    clean_slayer_objective,
     format_expansion_label,
+    hunter_header_name,
     is_ignored_missing_collection,
+    is_megadeath_parent,
     parse_achievements_file,
+    parse_hunter_parent,
     parse_quest_parent,
     parse_raid_parent,
     raid_header_name,
@@ -27,6 +31,8 @@ from inventory_parser.excel_export import (
     MISSING_COLLECTIONS_SHEET_NAME,
     QUESTS_SHEET_NAME,
     RAID_ACHIEVEMENTS_SHEET_NAME,
+    HUNTERS_SHEET_NAME,
+    SLAYER_SHEET_NAME,
     HEROIC_AA_SHEET_NAME,
     write_team_workbook,
 )
@@ -35,6 +41,17 @@ from inventory_parser.missing_spells import split_input_paths
 EXAMPLES = Path(__file__).resolve().parents[1] / "Examples"
 ACHIEVEMENTS = EXAMPLES / "Achievements"
 SHAMLUB_ACH = ACHIEVEMENTS / "Shamlub_xegony-Achievements.txt"
+HUNTERS_FIXTURE = (
+    Path(__file__).resolve().parent / "fixtures" / "achievements_hunters_snip.txt"
+)
+SLAYER_FIXTURE = (
+    Path(__file__).resolve().parent / "fixtures" / "achievements_slayer_snip.txt"
+)
+SLAYER_COMPLETE_FIXTURE = (
+    Path(__file__).resolve().parent
+    / "fixtures"
+    / "achievements_slayer_complete_snip.txt"
+)
 
 
 def test_is_achievements_file() -> None:
@@ -586,3 +603,197 @@ def test_quest_report_omits_complete_lines_and_keeps_partial() -> None:
         for row in quests
     )
     assert not any(row.zone == "Hodstock Hills" for row in quests)
+
+
+def test_parse_hunter_parent_and_header() -> None:
+    assert parse_hunter_parent("Hunter of Arcstone, Shattered Isles") == (
+        "Arcstone, Shattered Isles"
+    )
+    assert parse_hunter_parent("Hunter of Crushbone") == "Crushbone"
+    assert parse_hunter_parent("Novice Hunter of Gates of Discord") is None
+    assert parse_hunter_parent("Adept Hunter of Gates of Discord") is None
+    assert parse_hunter_parent("Novice Shattering of Ro Hunter") is None
+    assert parse_hunter_parent("Master Hunter of the Rain of Fear") is None
+    assert hunter_header_name("Scarred Grove") == "Hunter of Scarred Grove"
+
+
+def test_parse_hunter_fixture_skips_rank_and_region_metas() -> None:
+    parsed = parse_achievements_file(HUNTERS_FIXTURE)
+    hunters = parsed.missing_hunter_achievements
+    zones = {(item.section, item.zone) for item in hunters}
+    assert ("EverQuest", "Crushbone") in zones
+    assert ("EverQuest", "Faydwer") not in zones
+    assert ("Gates of Discord", "Natimbi, the Broken Shores") in zones
+    assert ("Shattering of Ro", "Arcstone, Shattered Isles") in zones
+    assert ("Shattering of Ro", "Scarred Grove") in zones
+
+    crushbone = [item for item in hunters if item.zone == "Crushbone"]
+    assert {item.target: item.complete for item in crushbone} == {
+        "orc warlord": True,
+        "orc taskmaster": False,
+    }
+    assert all(item.hunter == "Hunter of Crushbone" for item in crushbone)
+
+    assert not any(
+        item.target.startswith("Hunter of ") for item in hunters
+    )
+    assert not any(
+        "Novice" in item.hunter or "Adept" in item.hunter for item in hunters
+    )
+
+
+def test_hunter_report_omits_complete_zones_and_keeps_partial(tmp_path: Path) -> None:
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    report = build_team_report([inv])
+    ach_report = build_achievement_report(
+        report,
+        achievement_paths={"shamlub_bristle": HUNTERS_FIXTURE},
+    )
+    assert ach_report is not None
+    hunters = ach_report.hunters
+    assert hunters
+
+    zones = {row.zone for row in hunters}
+    assert "Scarred Grove" not in zones
+    assert "The Lesser Faydark" not in zones
+    assert "Qinimi, Court of Nihilia" not in zones
+    assert "Crushbone" in zones
+    assert "Natimbi, the Broken Shores" in zones
+    assert "Arcstone, Shattered Isles" in zones
+
+    arcstone = [row for row in hunters if row.zone == "Arcstone, Shattered Isles"]
+    statuses = {row.target: row.status for row in arcstone}
+    assert statuses["Fire Maw"] == "Done"
+    assert statuses["Broj the Devourer"] == "Missing"
+    assert statuses["Orvain the Mooncaller"] == "Missing"
+    assert all(row.hunter == "Hunter of Arcstone, Shattered Isles" for row in arcstone)
+
+    expansions = [format_expansion_label(row.expansion) for row in hunters]
+    assert expansions.index("Shattering of Ro (2025)") < expansions.index(
+        "Gates of Discord (2004)"
+    )
+    assert expansions.index("Gates of Discord (2004)") < expansions.index(EVERQUEST_BASE_LABEL)
+
+
+def test_hunters_sheet_in_workbook(tmp_path: Path) -> None:
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    report = build_team_report([inv])
+    ach_report = build_achievement_report(
+        report,
+        achievement_paths={"shamlub_bristle": HUNTERS_FIXTURE},
+    )
+    assert ach_report is not None
+    out = tmp_path / "hunters.xlsx"
+    write_team_workbook(report, out, achievement_report=ach_report)
+
+    from openpyxl import load_workbook
+
+    wb = load_workbook(out, data_only=True)
+    assert HUNTERS_SHEET_NAME in wb.sheetnames
+    hunters_ws = wb[HUNTERS_SHEET_NAME]
+    assert [hunters_ws.cell(1, col).value for col in range(1, 7)] == [
+        "Character",
+        "Expansion",
+        "Hunter",
+        "Zone",
+        "Target",
+        "Status",
+    ]
+    assert hunters_ws.auto_filter.ref is not None
+    assert any(
+        hunters_ws.cell(row, 4).value == "Arcstone, Shattered Isles"
+        and hunters_ws.cell(row, 5).value == "Broj the Devourer"
+        and hunters_ws.cell(row, 6).value == "Missing"
+        for row in range(2, hunters_ws.max_row + 1)
+    )
+
+
+def test_clean_slayer_objective_and_megadeath_parent() -> None:
+    assert (
+        clean_slayer_objective('Complete the achievement "A Force of Nature"')
+        == "A Force of Nature"
+    )
+    assert (
+        clean_slayer_objective('(Optional) Complete the achievement "Terror from the Stars"')
+        == "Terror from the Stars"
+    )
+    assert clean_slayer_objective("Progressive") == "Progressive"
+    assert is_megadeath_parent("Megadeath")
+    assert is_megadeath_parent("megadeath")
+    assert not is_megadeath_parent("A Force of Nature")
+
+
+def test_parse_slayer_fixture_only_megadeath_children() -> None:
+    parsed = parse_achievements_file(SLAYER_FIXTURE)
+    slayers = parsed.missing_slayer_achievements
+    assert {item.slayer for item in slayers} == {"Megadeath"}
+    assert {item.objective: item.complete for item in slayers} == {
+        "A Force of Nature": True,
+        "Highly Decorated": False,
+        "Progressive": False,
+    }
+    assert not any(
+        item.objective in {"Doesn't Play Well With Others", "Oh the Humanity!", "Humans"}
+        for item in slayers
+    )
+
+
+def test_slayer_report_keeps_complete_and_partial() -> None:
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    report = build_team_report([inv])
+    partial = build_achievement_report(
+        report,
+        achievement_paths={"shamlub_bristle": SLAYER_FIXTURE},
+    )
+    assert partial is not None
+    statuses = {row.objective: row.status for row in partial.slayer}
+    assert statuses == {
+        "A Force of Nature": "Done",
+        "Highly Decorated": "Missing",
+        "Progressive": "Missing",
+    }
+    assert all(row.achievement == "Megadeath" for row in partial.slayer)
+
+    complete = build_achievement_report(
+        report,
+        achievement_paths={"shamlub_bristle": SLAYER_COMPLETE_FIXTURE},
+    )
+    assert complete is not None
+    assert len(complete.slayer) == 3
+    assert all(row.status == "Done" for row in complete.slayer)
+    assert {row.objective for row in complete.slayer} == {
+        "A Force of Nature",
+        "Highly Decorated",
+        "Progressive",
+    }
+
+
+def test_slayer_sheet_in_workbook(tmp_path: Path) -> None:
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    report = build_team_report([inv])
+    ach_report = build_achievement_report(
+        report,
+        achievement_paths={"shamlub_bristle": SLAYER_FIXTURE},
+    )
+    assert ach_report is not None
+    out = tmp_path / "slayer.xlsx"
+    write_team_workbook(report, out, achievement_report=ach_report)
+
+    from openpyxl import load_workbook
+
+    wb = load_workbook(out, data_only=True)
+    assert SLAYER_SHEET_NAME in wb.sheetnames
+    slayer_ws = wb[SLAYER_SHEET_NAME]
+    assert [slayer_ws.cell(1, col).value for col in range(1, 5)] == [
+        "Character",
+        "Achievement",
+        "Objective",
+        "Status",
+    ]
+    assert slayer_ws.auto_filter.ref is not None
+    assert any(
+        slayer_ws.cell(row, 2).value == "Megadeath"
+        and slayer_ws.cell(row, 3).value == "Highly Decorated"
+        and slayer_ws.cell(row, 4).value == "Missing"
+        for row in range(2, slayer_ws.max_row + 1)
+    )

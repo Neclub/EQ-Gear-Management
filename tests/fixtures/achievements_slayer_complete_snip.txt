@@ -1,0 +1,11 @@
+Slayer: General
+C	Megadeath
+C		Complete the achievement "A Force of Nature"
+C		Complete the achievement "Highly Decorated"
+C		Complete the achievement "Progressive"
+C	A Force of Nature
+C		Complete the achievement "Doesn't Play Well With Others"
+C	Highly Decorated
+C		Complete the achievement "I'm a People Person!"
+C	Progressive
+C		Complete the achievement "Oh the Humanity!"
