@@ -1,0 +1,55 @@
+Tradeskill: Quests
+I	The Artisan's Wares
+Tradeskill: Baking
+C	Baking (50)
+C		Reach 50 skill in Baking
+C	Baking (100)
+C		Reach 100 skill in Baking
+C	Baking (150)
+C		Reach 150 skill in Baking
+I	Baking (200)
+I		Reach 200 skill in Baking
+I	Baking (250)
+I		Reach 250 skill in Baking
+Tradeskill: Blacksmithing
+C	Smithing (50)
+C		Reach 50 skill in Smithing
+C	Smithing (100)
+C		Reach 100 skill in Smithing
+I	Smithing (150)
+I		Reach 150 skill in Smithing
+Tradeskill: Brewing
+I	Brewing (50)
+I		Reach 50 skill in Brewing
+Tradeskill: Fishing
+C	Fishing (50)
+C		Reach 50 skill in Fishing
+Tradeskill: Fletching
+C	Fletching (50)
+C		Reach 50 skill in Fletching
+Tradeskill: Jewelcrafting
+C	Jewelcrafting (50)
+C		Reach 50 skill in Jewelcrafting
+Tradeskill: Pottery
+C	Pottery (50)
+C		Reach 50 skill in Pottery
+Tradeskill: Tailoring
+C	Tailoring (50)
+C		Reach 50 skill in Tailoring
+Tradeskill: Special
+C	Research (50)
+C		Reach 50 skill in Research
+C	Research (100)
+C		Reach 100 skill in Research
+I	Research (150)
+I		Reach 150 skill in Research
+C	Alchemy (50)
+C		Reach 50 skill in Alchemy
+I	Alchemy (100)
+I		Reach 100 skill in Alchemy
+C	Tinkering (50)
+C		Reach 50 skill in Tinkering
+C	Tinkering (100)
+C		Reach 100 skill in Tinkering
+I	Tinkering (150)
+I		Reach 150 skill in Tinkering

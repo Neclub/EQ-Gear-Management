@@ -60,6 +60,20 @@ Expansions show release year and rows are sorted **newest to oldest**. In HTML, 
 
 ---
 
+## Tradeskills
+
+Skill levels inferred from completed **`Skill (N)`** achievements under **Tradeskill** in each character’s dump (e.g. `Baking (150)`, `Smithing (100)`). The value shown is the highest completed milestone — not the live skill window — so a character at 175 baking still shows **150**.
+
+**Always listed:** Baking · Blacksmithing (dump name `Smithing`) · Brewing · Fishing · Fletching · Jewelcrafting · Pottery · Tailoring · Research (Research lives under **Tradeskill: Special** but every class can have it).
+
+**Special** (only if that skill appears in the dump): Alchemy · Tinkering · Poisonmaking. Omitted entirely when the character has no achievements for that skill.
+
+**Excel columns:** Character · Baking · Blacksmithing · Brewing · Fishing · Fletching · Jewelcrafting · Pottery · Tailoring · Research · Alchemy · Tinkering · Poisonmaking. Special cells are blank when that skill is not in the dump; otherwise the numeric level (including `0`).
+
+**HTML:** one card per character with skill name and level. A **Special** subhead appears only when that character has special skills. An **Achievements** chip next to the anvil reminds you the numbers are from completed achievements, not live skill (hover for the full tip). **Character** dropdown and search narrow the list (no expansion filter).
+
+---
+
 ## Heroic AA
 
 Ranks of **Hero's Fortitude**, **Hero's Resolution**, and **Hero's Vitality** from completing the wiki list of Hero's Special AAs. Each `/outputfile achievements` dump is compared to that list (in-game names, with wiki aliases). Incomplete entries stay listed so you can see what is left. Not every achievement awards all three ranks — HTML only shows F / R / V chips for ranks that achievement grants (lit when Completed, muted when still Incomplete); Excel leaves Fortitude / Resolution / Vitality blank when that rank is not awarded. Achievement names link to [EQ Resource](https://achievements.eqresource.com/) when the catalog includes an id.

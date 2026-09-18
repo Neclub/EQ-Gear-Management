@@ -12,6 +12,7 @@ from inventory_parser.excel_export import (
     MISSING_USEFUL_SPELLS_SHEET_NAME,
     HUNTERS_SHEET_NAME,
     SLAYER_SHEET_NAME,
+    TRADESKILLS_SHEET_NAME,
 )
 from inventory_parser.html_export import extract_report_json, write_team_html
 from inventory_parser.output_paths import html_path_for_workbook
@@ -30,6 +31,9 @@ SLAYER_COMPLETE_FIXTURE = (
     Path(__file__).resolve().parent
     / "fixtures"
     / "achievements_slayer_complete_snip.txt"
+)
+TRADESKILLS_FIXTURE = (
+    Path(__file__).resolve().parent / "fixtures" / "achievements_tradeskills_snip.txt"
 )
 
 
@@ -143,6 +147,7 @@ def test_html_nav_groups(tmp_path: Path) -> None:
         "raid_achievements",
         "hunters",
         "slayer",
+        "tradeskills",
         "heroic_aas",
         "achievement_summary",
     ]
@@ -354,6 +359,42 @@ def test_html_slayer_section(tmp_path: Path) -> None:
     slayer = next(s for s in report["sections"] if s["id"] == "slayer")
     assert len(slayer["data"]["rows"]) == 3
     assert all(row[3] == "Done" for row in slayer["data"]["rows"])
+
+
+def test_html_tradeskills_section(tmp_path: Path) -> None:
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    bundle = build_export_bundle(
+        [inv], include_spells=False, include_achievements=False, include_slot2=False
+    )
+    ach_report = build_achievement_report(
+        bundle.team,
+        achievement_paths={"shamlub_bristle": TRADESKILLS_FIXTURE},
+    )
+    assert ach_report is not None
+    bundle = replace(bundle, achievement_report=ach_report)
+    out = tmp_path / "crew.html"
+    write_team_html(bundle, out)
+    text = out.read_text(encoding="utf-8")
+    report = extract_report_json(text)
+    section = next(s for s in report["sections"] if s["id"] == "tradeskills")
+    assert section["title"] == TRADESKILLS_SHEET_NAME
+    assert section["type"] == "tradeskills"
+    data = section["data"]
+    assert data["characterColumn"] == 0
+    assert len(data["cards"]) == 1
+    card = data["cards"][0]
+    assert card["character"] == "Shamlub"
+    by_name = {skill["name"]: skill for skill in card["skills"]}
+    assert by_name["Baking"]["level"] == 150
+    assert by_name["Blacksmithing"]["level"] == 100
+    assert by_name["Brewing"]["level"] == 0
+    assert by_name["Alchemy"]["group"] == "special"
+    assert "Poisonmaking" not in by_name
+    assert "Search tradeskills…" in text
+    assert "updateTradeskillsContent" in text
+    assert "tradeskill-ach-chip" in text
+    assert "These levels are from completed achievements, not your live skill." in text
+    assert "tradeskills" in report["navGroups"][3]["sectionIds"]
 
 
 def test_html_unmade_gear_omitted_when_empty(tmp_path: Path) -> None:

@@ -5,6 +5,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.14] - 2026-09-18
+
+### Added
+
+- **Tradeskills** (Excel + HTML, Quests & Achievements): one card/row per character with skill levels inferred from completed `Skill (N)` achievements. Core skills always listed (Baking, Blacksmithing, Brewing, Fishing, Fletching, Jewelcrafting, Pottery, Tailoring, Research); Alchemy / Tinkering / Poisonmaking appear only when that skill is in the dump. Levels are the highest completed milestone (not live skill). HTML cards show an **Achievements** chip next to the anvil; hover it for a reminder that the numbers are from achievements, not live skill.
+
 ## [1.35.13] - 2026-09-17
 
 ### Added

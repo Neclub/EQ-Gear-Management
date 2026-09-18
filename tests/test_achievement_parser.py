@@ -33,6 +33,7 @@ from inventory_parser.excel_export import (
     RAID_ACHIEVEMENTS_SHEET_NAME,
     HUNTERS_SHEET_NAME,
     SLAYER_SHEET_NAME,
+    TRADESKILLS_SHEET_NAME,
     HEROIC_AA_SHEET_NAME,
     write_team_workbook,
 )
@@ -51,6 +52,9 @@ SLAYER_COMPLETE_FIXTURE = (
     Path(__file__).resolve().parent
     / "fixtures"
     / "achievements_slayer_complete_snip.txt"
+)
+TRADESKILLS_FIXTURE = (
+    Path(__file__).resolve().parent / "fixtures" / "achievements_tradeskills_snip.txt"
 )
 
 
@@ -797,3 +801,81 @@ def test_slayer_sheet_in_workbook(tmp_path: Path) -> None:
         and slayer_ws.cell(row, 4).value == "Missing"
         for row in range(2, slayer_ws.max_row + 1)
     )
+
+
+def test_tradeskill_report_levels_and_specials() -> None:
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    report = build_team_report([inv])
+    ach_report = build_achievement_report(
+        report,
+        achievement_paths={"shamlub_bristle": TRADESKILLS_FIXTURE},
+    )
+    assert ach_report is not None
+    assert len(ach_report.tradeskills) == 1
+    card = ach_report.tradeskills[0]
+    assert card.character == "Shamlub"
+    by_name = {skill.name: skill for skill in card.skills}
+    assert by_name["Baking"].level == 150
+    assert by_name["Blacksmithing"].level == 100
+    assert by_name["Brewing"].level == 0
+    assert by_name["Research"].level == 100
+    assert by_name["Alchemy"].level == 50
+    assert by_name["Tinkering"].level == 100
+    assert "Poisonmaking" not in by_name
+    assert [skill.name for skill in card.skills if skill.group == "core"] == [
+        "Baking",
+        "Blacksmithing",
+        "Brewing",
+        "Fishing",
+        "Fletching",
+        "Jewelcrafting",
+        "Pottery",
+        "Tailoring",
+        "Research",
+    ]
+    assert [skill.name for skill in card.skills if skill.group == "special"] == [
+        "Alchemy",
+        "Tinkering",
+    ]
+
+
+def test_tradeskills_sheet_in_workbook(tmp_path: Path) -> None:
+    inv = EXAMPLES / "Shamlub_bristle-Inventory.txt"
+    report = build_team_report([inv])
+    ach_report = build_achievement_report(
+        report,
+        achievement_paths={"shamlub_bristle": TRADESKILLS_FIXTURE},
+    )
+    assert ach_report is not None
+    out = tmp_path / "tradeskills.xlsx"
+    write_team_workbook(report, out, achievement_report=ach_report)
+
+    from openpyxl import load_workbook
+
+    wb = load_workbook(out, data_only=True)
+    assert TRADESKILLS_SHEET_NAME in wb.sheetnames
+    ws = wb[TRADESKILLS_SHEET_NAME]
+    headers = [ws.cell(1, col).value for col in range(1, 14)]
+    assert headers == [
+        "Character",
+        "Baking",
+        "Blacksmithing",
+        "Brewing",
+        "Fishing",
+        "Fletching",
+        "Jewelcrafting",
+        "Pottery",
+        "Tailoring",
+        "Research",
+        "Alchemy",
+        "Tinkering",
+        "Poisonmaking",
+    ]
+    assert ws.cell(2, 1).value == "Shamlub"
+    assert ws.cell(2, 2).value == 150  # Baking
+    assert ws.cell(2, 3).value == 100  # Blacksmithing
+    assert ws.cell(2, 4).value == 0  # Brewing
+    assert ws.cell(2, 11).value == 50  # Alchemy
+    assert ws.cell(2, 12).value == 100  # Tinkering
+    assert ws.cell(2, 13).value is None  # Poisonmaking absent
+    assert ws.auto_filter.ref is not None

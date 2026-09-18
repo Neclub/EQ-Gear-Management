@@ -82,6 +82,7 @@ Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet.
 - **Raid Achievements** — incomplete raid event objectives
 - **Hunters** — incomplete zone hunter kill lists
 - **Slayer** — Megadeath checklist (A Force of Nature, Highly Decorated, Progressive); completed Megadeath still listed
+- **Tradeskills** — skill levels from completed `Skill (N)` achievements; one card/row per character; Alchemy / Tinkering / Poisonmaking only when present; HTML **Achievements** chip notes levels are not live skill
 - **Heroic AA** — Fortitude / Resolution / Vitality ranks; hover **F** / **R** / **V**; click a name to open EQ Resource
 - **Achievement Summary** — completed vs incomplete counts per section
 
