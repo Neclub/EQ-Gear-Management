@@ -6,8 +6,13 @@ from dataclasses import dataclass, field
 
 from inventory_parser.raid_bis.build import RaidBisExport
 from inventory_parser.raid_bis.compare import CharacterRaidBis, SlotComparison
-from inventory_parser.raid_bis.models import RaidVendorCatalog, RaidVendorItem
-from inventory_parser.raid_bis.vendor import is_ore_name, list_slot_ores, ore_for_slot
+from inventory_parser.raid_bis.models import RaidVendorCatalog, RaidVendorItem, slot_base
+from inventory_parser.raid_bis.vendor import (
+    is_ore_name,
+    is_t2_item,
+    list_slot_ores,
+    ore_for_slot,
+)
 
 
 @dataclass
@@ -42,10 +47,23 @@ def _vendor_ore_for_slot(
     return ore_for_slot(vendor, slot.gear_slot) if vendor else None
 
 
+def _waist_already_has_ore_belt(slot: SlotComparison) -> bool:
+    """True when Waist already wears a T2 ore belt (personal choice; ore is spent)."""
+    if slot_base(slot.gear_slot) != "Waist":
+        return False
+    if slot.current_id is None or slot.current_id <= 0:
+        return False
+    if any(c.item_id == slot.current_id for c in slot.choices):
+        return True
+    return is_t2_item(name=slot.current_name)
+
+
 def _slot_needs_ore_count(slot: SlotComparison) -> bool:
     if not slot.scored or slot.status in ("bis", "weapon", "unknown"):
         return False
     if slot.current_is_evolver:
+        return False
+    if _waist_already_has_ore_belt(slot):
         return False
     if slot.status not in ("upgrade", "empty"):
         return False

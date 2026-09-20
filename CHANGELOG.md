@@ -5,6 +5,24 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.15] - 2026-09-20
+
+### Added
+
+- **Help → View last report log…:** opens `%LOCALAPPDATA%\EQGM\last_report.log` in the default text editor (written after each Generate Report).
+- **Prebuilt catalog cache:** Generate Report seeds `%LOCALAPPDATA%\EQGM\` from the shared [EQGM-Web `cache/`](https://github.com/Neclub/EQGM-Web/tree/main/cache) on GitHub (catalogs and item icons) so first runs and post-Clear-Cache runs skip most EQ Resource / raidloot fetches. Existing local entries are kept when newer; true misses still fetch live.
+
+### Changed
+
+- **Type 7/8 Augs:** Shield Only Secondary augs from raidloot (`Aug_Shield`) use `%LOCALAPPDATA%\EQGM\raidloot_cache.json` on later generates instead of fetching every run. **Help → Clear Cache** still rebuilds them.
+- **Generate Report log:** `%LOCALAPPDATA%\EQGM\last_report.log` now lists what came from disk cache vs EQ Resource/raidloot (counts and live URLs) and records fetch problems from the last run, in addition to status, files, options, warnings, and errors.
+- **Help → Clear Cache:** next Generate Report re-seeds from the GitHub prebuilt cache when possible, then only fetches true misses.
+
+### Fixed
+
+- **Missing Ores:** Waist no longer counts the belt-buckle ore when the character already wears a T2 ore belt (any of the three effect belts). Raid BiS still shows other belts as a personal-choice upgrade; the ore itself is already spent.
+- **Character column order:** saved roster order still applies when chest-class resolve adds a class suffix to a persona key (e.g. `Stablub_bristle` → `Stablub_bristle_ROG`).
+
 ## [1.35.14] - 2026-09-18
 
 ### Added

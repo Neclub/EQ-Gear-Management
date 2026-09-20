@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 
 from inventory_parser.gear_tiers import GEAR_TIER_BY_CODE, classify_gear_tier
+from inventory_parser.generate_log import record_cache
 from inventory_parser.slot2_augs.eqresource_augs import (
     EQRESOURCE_ITEM_URL,
     _EXPAC_IMG_RE,
@@ -164,6 +165,7 @@ def resolve_item_gear_tiers(
             continue
         key = str(item_id)
         if not force_refresh and key in cache:
+            record_cache("Gear T-levels")
             code = _tier_from_cache_entry(cache[key])
             if code:
                 result[item_id] = code

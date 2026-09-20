@@ -12,6 +12,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from typing import Iterable
 
+from inventory_parser.generate_log import record_cache
 from inventory_parser.slot2_augs.aug_stats import (
     ATTR_BASE,
     ATTR_HEROIC,
@@ -964,7 +965,8 @@ def fetch_catalog(
     """
     Fetch the type 7/8 catalog: EQ Resource advanced search first, raidloot fallback.
 
-    Also merges Shield Only Secondary augs from the raidloot Aug_Shield list.
+    Also merges Shield Only Secondary augs from the raidloot Aug_Shield list
+    (disk cache first; live fetch when missing or ``force_refresh``).
 
     ``html_override`` / ``shield_html_override`` are for tests — skip network
     and parse raidloot HTML directly.
@@ -1012,60 +1014,85 @@ def fetch_catalog(
         warning = f"EQ Resource catalog failed ({exc}); trying raidloot."
 
     if not eqr_ok:
-        try:
-            html = _http_get(info.url)
-            augs = parse_raidloot_html(html, profile)
-            usable = [a for a in augs if a.item_id != ARTISANS_PRIZE_ID]
-            if len(usable) < 3:
-                raise ValueError(
-                    f"Parsed only {len(usable)} usable augs from raidloot HTML "
-                    f"(need a working detail-block parse)"
-                )
-            cache[profile] = {
-                "fetched_at": now,
-                "url": info.url,
-                "augs": [_candidate_to_dict(a) for a in augs],
-            }
-            _save_cache(cache)
-            catalog_url = info.url
-        except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
-            cached = cache.get(profile)
-            if cached and cached.get("augs"):
-                augs = [_candidate_from_dict(d, profile) for d in cached["augs"]]
-                from_cache = True
-                fetched_at = cached.get("fetched_at", "")
-                raid_warn = f"Live raidloot fetch failed ({exc}); using cached catalog."
-                warning = f"{warning} {raid_warn}" if warning else raid_warn
-            else:
-                augs = [_prize_aug(profile)]
-                raid_warn = f"Live raidloot fetch failed ({exc}); no cache available."
-                warning = f"{warning} {raid_warn}" if warning else raid_warn
+        cached = cache.get(profile) if not force_refresh else None
+        if cached and cached.get("augs"):
+            augs = [_candidate_from_dict(d, profile) for d in cached["augs"]]
+            from_cache = True
+            record_cache("Type 7/8 catalog", f"{profile} (raidloot)")
+            fetched_at = cached.get("fetched_at", "") or now
+            catalog_url = cached.get("url") or info.url
+        else:
+            try:
+                html = _http_get(info.url)
+                augs = parse_raidloot_html(html, profile)
+                usable = [a for a in augs if a.item_id != ARTISANS_PRIZE_ID]
+                if len(usable) < 3:
+                    raise ValueError(
+                        f"Parsed only {len(usable)} usable augs from raidloot HTML "
+                        f"(need a working detail-block parse)"
+                    )
+                cache[profile] = {
+                    "fetched_at": now,
+                    "url": info.url,
+                    "augs": [_candidate_to_dict(a) for a in augs],
+                }
+                _save_cache(cache)
+                catalog_url = info.url
+            except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
+                cached = cache.get(profile) if not force_refresh else None
+                if cached and cached.get("augs"):
+                    augs = [_candidate_from_dict(d, profile) for d in cached["augs"]]
+                    from_cache = True
+                    record_cache("Type 7/8 catalog", f"{profile} (raidloot)")
+                    fetched_at = cached.get("fetched_at", "")
+                    raid_warn = f"Live raidloot fetch failed ({exc}); using cached catalog."
+                    warning = f"{warning} {raid_warn}" if warning else raid_warn
+                else:
+                    augs = [_prize_aug(profile)]
+                    raid_warn = f"Live raidloot fetch failed ({exc}); no cache available."
+                    warning = f"{warning} {raid_warn}" if warning else raid_warn
 
     # Merge Shield Only Secondary augs (separate raidloot list).
+    # Cache-first like EQ Resource search: skip network when disk has augs.
     shield_augs: list[AugCandidate] = []
-    try:
-        shield_html = _http_get(SHIELD_AUG_URL)
-        shield_augs = parse_shield_html(shield_html, profile)
-        if shield_augs:
+    cached_shield = cache.get("shield") if not force_refresh else None
+    if cached_shield and cached_shield.get("augs"):
+        shield_augs = _retag_profile(
+            [_candidate_from_dict(d, profile) for d in cached_shield["augs"]],
+            profile,
+        )
+        record_cache("Type 7/8 catalog", "shield")
+    else:
+        try:
+            shield_html = _http_get(SHIELD_AUG_URL)
+            shield_augs = parse_shield_html(shield_html, profile)
+            if not shield_augs:
+                raise ValueError(
+                    "Parsed no Shield Only augs from raidloot Aug_Shield HTML"
+                )
             cache["shield"] = {
                 "fetched_at": now,
                 "url": SHIELD_AUG_URL,
                 "augs": [_candidate_to_dict(a) for a in shield_augs],
             }
             _save_cache(cache)
-    except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
-        cached_shield = cache.get("shield")
-        if cached_shield and cached_shield.get("augs"):
-            shield_augs = _retag_profile(
-                [_candidate_from_dict(d, profile) for d in cached_shield["augs"]],
-                profile,
+        except (urllib.error.URLError, TimeoutError, ValueError, OSError) as exc:
+            cached_shield = (
+                _load_cache().get("shield") if not force_refresh else None
             )
-            from_cache = True
-            shield_warn = f"Live shield-aug fetch failed ({exc}); using cached shield augs."
-            warning = f"{warning} {shield_warn}" if warning else shield_warn
-        else:
-            shield_warn = f"Live shield-aug fetch failed ({exc}); no shield cache."
-            warning = f"{warning} {shield_warn}" if warning else shield_warn
+            if cached_shield and cached_shield.get("augs"):
+                shield_augs = _retag_profile(
+                    [_candidate_from_dict(d, profile) for d in cached_shield["augs"]],
+                    profile,
+                )
+                record_cache("Type 7/8 catalog", "shield")
+                shield_warn = (
+                    f"Live shield-aug fetch failed ({exc}); using cached shield augs."
+                )
+                warning = f"{warning} {shield_warn}" if warning else shield_warn
+            else:
+                shield_warn = f"Live shield-aug fetch failed ({exc}); no shield cache."
+                warning = f"{warning} {shield_warn}" if warning else shield_warn
 
     if shield_augs:
         augs = merge_shield_augs(augs, shield_augs)

@@ -354,6 +354,17 @@ function bindEvents() {
     $("helpMenu").classList.add("hidden");
     showClearCacheConfirm();
   });
+  $("helpViewLog").addEventListener("click", async () => {
+    $("helpMenu").classList.add("hidden");
+    try {
+      const result = await api("open_last_report_log");
+      if (!result || !result.ok) {
+        showToast((result && result.error) || "Could not open last_report.log.", true);
+      }
+    } catch (err) {
+      showToast(String(err.message || err), true);
+    }
+  });
   $("helpAbout").addEventListener("click", async () => {
     $("helpMenu").classList.add("hidden");
     showAbout();
@@ -1305,7 +1316,8 @@ function showClearCacheConfirm() {
         <p>EQGM stores catalog, item, and icon data under <code>%LOCALAPPDATA%\\EQGM\\</code>
           so Generate Report can skip re-fetching. Clearing it deletes that data.</p>
         <p style="margin-top:12px">Settings, folder, colors, weight overrides, and last_report.log are kept.</p>
-        <p style="margin-top:12px"><strong>The cache will be rebuilt the next time you generate a report</strong>
+        <p style="margin-top:12px"><strong>The next Generate Report</strong> re-seeds catalogs from the
+          shared GitHub cache when possible, then only fetches true misses from EQ Resource / raidloot
           (needs network).</p>
       </div>
       <div class="modal-footer">

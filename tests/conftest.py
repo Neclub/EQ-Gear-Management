@@ -71,3 +71,15 @@ def _no_live_eqr_gear_tier(monkeypatch: pytest.MonkeyPatch) -> None:
         return None
 
     monkeypatch.setattr(eqresource_gear_tier, "fetch_item_gear_tier", _fetch)
+
+
+@pytest.fixture(autouse=True)
+def _no_live_prebuilt_cache(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Keep unit tests offline: never hit GitHub for the EQGM-Web cache zip."""
+    from inventory_parser.prebuilt_cache import SeedResult
+    import inventory_parser.prebuilt_cache as prebuilt_cache
+
+    def _seed(*_args, **_kwargs):
+        return SeedResult(ok=True, skipped=True, reason="tests")
+
+    monkeypatch.setattr(prebuilt_cache, "seed_prebuilt_cache", _seed)

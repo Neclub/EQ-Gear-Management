@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 from urllib.parse import unquote_plus
 
+from inventory_parser.generate_log import record_cache
 from inventory_parser.slot2_augs.aug_stats import (
     ATTR_BASE,
     ATTR_HEROIC,
@@ -233,6 +234,7 @@ def fetch_item_expansion(
     cache = _load_expansion_cache()
     key = str(item_id)
     if not force_refresh and key in cache:
+        record_cache("Item expansions")
         name = cache[key].get("expansion")
         return str(name) if name else None
 
@@ -285,6 +287,7 @@ def resolve_item_expansions(
         if override is not None:
             name = parse_expansion_from_eqr_html(override)
         elif not force_refresh and str(item_id) in cache:
+            record_cache("Item expansions")
             raw = cache[str(item_id)].get("expansion")
             name = str(raw) if raw else None
         elif allow_network:
@@ -564,6 +567,7 @@ def fetch_eqresource_aug(
             cache[key], profile, item_id, name_hint=name_hint
         )
         if cached is not None:
+            record_cache("Type 7/8 aug pages")
             return cached
 
     try:
@@ -642,6 +646,8 @@ def resolve_eqresource_augs(
                     item_id,
                     name_hint=name_hints.get(item_id),
                 )
+                if aug is not None:
+                    record_cache("Type 7/8 aug pages")
             if aug is None and allow_network:
                 if fetched_live > 0 and polite_delay_s > 0:
                     time.sleep(polite_delay_s)

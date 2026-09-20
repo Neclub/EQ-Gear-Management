@@ -55,10 +55,16 @@ def test_build_export_bundle_honors_character_column_order() -> None:
     base = build_team_report(inventory_paths, spell_paths=spell_paths or None)
     custom_order = [character.persona_key for character in reversed(base.characters)]
     bundle = build_export_bundle(paths, character_column_order=custom_order, include_slot2=False)
-    assert [character.persona_key for character in bundle.team.characters] == custom_order
+    # Chest-class resolve may add a class suffix (Stablub_bristle → …_ROG); order still applies.
+    natural = build_export_bundle(paths, include_slot2=False)
+    natural_keys = [character.persona_key for character in natural.team.characters]
+    assert [character.persona_key for character in bundle.team.characters] == list(
+        reversed(natural_keys)
+    )
     if bundle.spell_report is not None:
         spell_keys = bundle.spell_report.persona_keys
-        assert spell_keys == [key for key in custom_order if key in spell_keys]
+        expected_spell = [key for key in reversed(natural_keys) if key in set(spell_keys)]
+        assert spell_keys == expected_spell
 
 
 def test_paths_for_roster_removal_drops_only_unused_files() -> None:

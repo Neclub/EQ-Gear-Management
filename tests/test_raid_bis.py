@@ -1689,6 +1689,144 @@ def test_ore_needs_t1_cloak_not_an_ore_row_count():
     assert matrix.totals == [0]
 
 
+def _vendor_with_belt_buckle():
+    from inventory_parser.raid_bis.models import RaidVendorCatalog, RaidVendorItem
+    from inventory_parser.raid_bis.vendor import parse_raidvendor_html
+
+    base = parse_raidvendor_html(VENDOR_HTML.read_text(encoding="utf-8"))
+    return RaidVendorCatalog(
+        currency_name=base.currency_name,
+        currency_id=base.currency_id,
+        currency_icon_id=base.currency_icon_id,
+        items=list(base.items)
+        + [
+            RaidVendorItem(
+                item_id=170810,
+                name="Fractured Belt Buckle",
+                cost=40,
+                is_ore=True,
+            )
+        ],
+        url=base.url,
+    )
+
+
+def _waist_effect_belts():
+    acrobat = _cand(
+        item_id=175937,
+        name="Acrobat's Belt of Resonant Fracture",
+        stats={"ac": 729, "hp": 21000, "hdex": 47, "hagi": 47},
+        classes=frozenset(),
+        slots=frozenset({"Waist"}),
+        tier="T2",
+        effect="Overdrive Punch",
+    )
+    mystic = _cand(
+        item_id=175936,
+        name="Mystic's Sash of Resonant Fracture",
+        stats={"ac": 729, "hp": 21000, "hint": 47, "hwis": 47, "spell_damage": 148},
+        classes=frozenset(),
+        slots=frozenset({"Waist"}),
+        tier="T2",
+        focus="Treaded Boon of Potential",
+    )
+    defender = _cand(
+        item_id=175935,
+        name="Defender's Waistguard of Resonant Fracture",
+        stats={"ac": 729, "hp": 21000, "hstr": 47, "hint": 47, "spell_damage": 166},
+        classes=frozenset(),
+        slots=frozenset({"Waist"}),
+        tier="T2",
+        effect="Crippling Slicer",
+    )
+    return acrobat, mystic, defender
+
+
+def test_ore_needs_non_default_t2_belt_skips_buckle():
+    """Wearing any T2 ore belt spends the buckle; other effect belts are personal choice."""
+    from inventory_parser.raid_bis.ore_needs import build_ore_needs_matrix
+
+    vendor = _vendor_with_belt_buckle()
+    acrobat, mystic, defender = _waist_effect_belts()
+    # WIZ default is Crippling Slicer (defender); equip Overdrive Punch instead.
+    ch = CharacterGear(
+        character="Testmage",
+        server="test",
+        filepath="x",
+        class_abbr="WIZ",
+    )
+    ch.slots["Waist"] = EquippedItem(name=acrobat.name, item_id=acrobat.item_id)
+    report = compare_character(
+        ch, [acrobat, mystic, defender], vendor=vendor
+    )
+    waist = next(s for s in report.slots if s.gear_slot == "Waist")
+    assert waist.status == "upgrade"
+    assert waist.recommended_id == defender.item_id
+    assert any(c.item_id == acrobat.item_id for c in waist.choices)
+
+    matrix = build_ore_needs_matrix(_ore_needs_bundle([report], vendor))
+    by_name = {row.name: row for row in matrix.rows}
+    assert "Fractured Belt Buckle" in by_name
+    assert by_name["Fractured Belt Buckle"].counts == [0]
+    assert matrix.totals == [0]
+
+
+def test_ore_needs_empty_waist_counts_buckle():
+    from inventory_parser.raid_bis.ore_needs import build_ore_needs_matrix
+
+    vendor = _vendor_with_belt_buckle()
+    acrobat, mystic, defender = _waist_effect_belts()
+    ch = CharacterGear(
+        character="Testmage",
+        server="test",
+        filepath="x",
+        class_abbr="WIZ",
+    )
+    report = compare_character(ch, [acrobat, mystic, defender], vendor=vendor)
+    waist = next(s for s in report.slots if s.gear_slot == "Waist")
+    assert waist.status == "empty"
+
+    matrix = build_ore_needs_matrix(_ore_needs_bundle([report], vendor))
+    by_name = {row.name: row for row in matrix.rows}
+    assert by_name["Fractured Belt Buckle"].counts == [1]
+    assert matrix.totals == [1]
+
+
+def test_ore_needs_t1_belt_still_counts_buckle():
+    from inventory_parser.raid_bis.ore_needs import build_ore_needs_matrix
+
+    vendor = _vendor_with_belt_buckle()
+    acrobat, mystic, defender = _waist_effect_belts()
+    ch = CharacterGear(
+        character="Testmage",
+        server="test",
+        filepath="x",
+        class_abbr="WIZ",
+    )
+    ch.slots["Waist"] = EquippedItem(name="Old Belt of Shattered Dominion", item_id=1)
+    report = compare_character(
+        ch,
+        [acrobat, mystic, defender],
+        equipped_stats={
+            1: _cand(
+                item_id=1,
+                name="Old Belt of Shattered Dominion",
+                stats={"ac": 500, "hp": 15000, "hint": 20},
+                slots=frozenset({"Waist"}),
+                tier="T1",
+            ),
+        },
+        vendor=vendor,
+    )
+    waist = next(s for s in report.slots if s.gear_slot == "Waist")
+    assert waist.status == "upgrade"
+
+    matrix = build_ore_needs_matrix(_ore_needs_bundle([report], vendor))
+    by_name = {row.name: row for row in matrix.rows}
+    assert by_name["Fractured Belt Buckle"].counts == [1]
+    assert matrix.totals == [1]
+
+
 def test_missing_ores_html_section(tmp_path: Path):
     inv = EXAMPLES / "Deflub_bristle-Inventory.txt"
     bundle = build_export_bundle(

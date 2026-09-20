@@ -303,10 +303,15 @@ def test_clear_cache_deletes_cache_files_keeps_settings(tmp_path, monkeypatch) -
         "inventory_parser.slot2_augs.paths.appdata_dir",
         lambda: tmp_path,
     )
+    monkeypatch.setattr(
+        "inventory_parser.prebuilt_cache.appdata_dir",
+        lambda: tmp_path,
+    )
     (tmp_path / "settings.json").write_text('{"output_format":"both"}\n', encoding="utf-8")
     (tmp_path / "weight_overrides.json").write_text("{}\n", encoding="utf-8")
     (tmp_path / "raid_bis_catalog.json").write_text("{}\n", encoding="utf-8")
     (tmp_path / "eqresource_aug_cache.json").write_text("{}\n", encoding="utf-8")
+    (tmp_path / "prebuilt_cache_meta.json").write_text('{"sha":"x"}\n', encoding="utf-8")
     (tmp_path / "last_report.log").write_text("keep me\n", encoding="utf-8")
     icons = tmp_path / "item_icons"
     icons.mkdir()
@@ -317,18 +322,24 @@ def test_clear_cache_deletes_cache_files_keeps_settings(tmp_path, monkeypatch) -
     assert "raid_bis_catalog.json" in result["deleted"]
     assert "eqresource_aug_cache.json" in result["deleted"]
     assert "item_icons" in result["deleted"]
+    assert "prebuilt_cache_meta.json" in result["deleted"]
     assert result["errors"] == []
     assert (tmp_path / "settings.json").is_file()
     assert (tmp_path / "weight_overrides.json").is_file()
     assert (tmp_path / "last_report.log").read_text(encoding="utf-8") == "keep me\n"
     assert not (tmp_path / "raid_bis_catalog.json").exists()
     assert not (tmp_path / "eqresource_aug_cache.json").exists()
+    assert not (tmp_path / "prebuilt_cache_meta.json").exists()
     assert not icons.exists()
 
 
 def test_clear_cache_ok_when_empty(tmp_path, monkeypatch) -> None:
     monkeypatch.setattr(
         "inventory_parser.slot2_augs.paths.appdata_dir",
+        lambda: tmp_path,
+    )
+    monkeypatch.setattr(
+        "inventory_parser.prebuilt_cache.appdata_dir",
         lambda: tmp_path,
     )
     result = WebApi().clear_cache()
@@ -346,6 +357,30 @@ def test_open_website_opens_product_page() -> None:
     assert result["ok"] is True
     assert result["url"] == PRODUCT_WEBSITE_URL
     open_browser.assert_called_once_with(PRODUCT_WEBSITE_URL)
+
+
+def test_open_last_report_log_missing(tmp_path, monkeypatch) -> None:
+    monkeypatch.setattr(
+        "inventory_parser.web_api.last_report_log_path",
+        lambda: tmp_path / "last_report.log",
+    )
+    result = WebApi().open_last_report_log()
+    assert result["ok"] is False
+    assert "No last_report.log yet" in result["error"]
+
+
+def test_open_last_report_log_opens_existing(tmp_path, monkeypatch) -> None:
+    log = tmp_path / "last_report.log"
+    log.write_text("ok\n", encoding="utf-8")
+    monkeypatch.setattr(
+        "inventory_parser.web_api.last_report_log_path",
+        lambda: log,
+    )
+    with patch("inventory_parser.web_api.os.startfile") as startfile:
+        result = WebApi().open_last_report_log()
+    assert result["ok"] is True
+    assert result["path"] == str(log)
+    startfile.assert_called_once_with(str(log))
 
 
 def test_get_version_includes_website_url() -> None:

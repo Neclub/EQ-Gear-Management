@@ -171,10 +171,15 @@ def parse_raidvendor_html(html: str, *, url: str = "") -> RaidVendorCatalog:
     )
 
 
-def _is_t2(item: RaidGearCandidate) -> bool:
-    if (item.tier or "").strip().upper() == "T2":
+def is_t2_item(*, name: str | None = None, tier: str | None = None) -> bool:
+    """True for current-expansion T2 raid gear (tier flag or Resonant Fracture name)."""
+    if (tier or "").strip().upper() == "T2":
         return True
-    return "resonant fracture" in (item.name or "").casefold()
+    return "resonant fracture" in (name or "").casefold()
+
+
+def _is_t2(item: RaidGearCandidate) -> bool:
+    return is_t2_item(name=item.name, tier=item.tier)
 
 
 def _is_t1(item: RaidGearCandidate) -> bool:

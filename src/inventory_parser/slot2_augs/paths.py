@@ -54,6 +54,12 @@ def clear_disk_caches() -> dict:
         except OSError as exc:
             errors.append(f"{ICON_CACHE_DIRNAME}: {exc}")
 
+    # Force the next Generate Report to re-seed from EQGM-Web.
+    from inventory_parser.prebuilt_cache import META_FILENAME, delete_prebuilt_meta
+
+    if delete_prebuilt_meta():
+        deleted.append(META_FILENAME)
+
     return {
         "ok": len(errors) == 0,
         "deleted": deleted,

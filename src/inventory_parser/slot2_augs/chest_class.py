@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterable
 
+from inventory_parser.generate_log import record_cache
 from inventory_parser.http_fetch import http_get_text
 from inventory_parser.parser import InventoryData, InventoryItem
 from inventory_parser.slot2_augs.paths import appdata_dir
@@ -197,6 +198,7 @@ def fetch_item_classes(
     cache = _load_cache()
     key = str(item_id)
     if not force_refresh and key in cache and "classes" in cache[key]:
+        record_cache("Character classes")
         raw = cache[key].get("classes") or []
         return [str(c).upper() for c in raw if str(c).upper() in CLASS_TO_PROFILE]
 

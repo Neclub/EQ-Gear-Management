@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
+from inventory_parser.generate_log import record_cache
 from inventory_parser.http_fetch import http_get_text, http_post_text
 from inventory_parser.slot2_augs.aug_stats import clean_stats
 from inventory_parser.slot2_augs.eqresource_augs import (
@@ -432,6 +433,7 @@ def resolve_item_meta(
             and key in cache
             and _item_meta_cache_usable(cache[key])
         ):
+            record_cache("Type 18/19 item meta")
             result[item_id] = meta_from_cache_entry(cache[key])
             if on_progress is not None:
                 on_progress(i, total)
@@ -550,6 +552,7 @@ def fetch_type18_catalog(
             r.item_id: r for r in (_row_from_dict(d) for d in cached_rows)
         }
         from_cache = True
+        record_cache("Type 18/19 catalog")
     else:
         try:
             if type18_html_by_page is not None or allow_network:
@@ -578,6 +581,7 @@ def fetch_type18_catalog(
                     r.item_id: r for r in (_row_from_dict(d) for d in fallback_rows)
                 }
                 from_cache = True
+                record_cache("Type 18/19 catalog")
                 warnings.append(
                     "Live Type 18/19 search returned no augs; using cached catalog."
                 )

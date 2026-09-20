@@ -77,6 +77,15 @@ def build_export_bundle(
             "No inventory files were provided. Add *-Inventory.txt files."
         )
 
+    skip_prebuilt = bool(slot2_kwargs.pop("skip_prebuilt_cache", False))
+    if not skip_prebuilt:
+        from inventory_parser.prebuilt_cache import seed_prebuilt_cache
+
+        def _seed_status(message: str) -> None:
+            report_progress(on_progress, message, 0.0, 0.02, 1, 1)
+
+        seed_prebuilt_cache(on_status=_seed_status if on_progress else None)
+
     report = build_team_report(inventory_paths, spell_paths=spell_file_paths)
     if not report.characters:
         raise ValueError("No inventory files were parsed successfully.")

@@ -32,10 +32,10 @@ The main window grows (within the Windows work area, above the taskbar) so Expor
 
 - **Spells** chip — checked automatically when matching spell files are found; uncheck to skip spell tabs
 - **Achievements** chip — checked automatically when matching achievement files are found; uncheck to skip achievement tabs
-- **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Generate shows a progress bar; the status line names the step (`Fetching from EQ Resource…`, cached catalog, or raidloot fallback). The first run needs network; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache.
+- **Type 7/8 Augs** chip — on by default when inventories are loaded; uncheck to skip type 7/8 aug sheets (no catalog fetch). When on, optional **Include Anniversary augs** appears, plus **Advanced weights** for a single-character roster. Generate shows a progress bar; the status line names the step (`Downloading catalog cache from GitHub…`, `Fetching from EQ Resource…`, cached catalog, or raidloot fallback). First generate (and after Clear Cache) seeds catalogs from the shared GitHub cache; later runs reuse `%LOCALAPPDATA%\EQGM\`.
 - **Type 5 Augs** chip — on by default when inventories are loaded; uncheck to skip the Type 5 display sheet. Uses parent-item socket maps (cached with Type 7/8).
-- **Type 18/19 Augs** chip — on by default when inventories are loaded; uncheck to skip Type 18/19 sheets. First run needs network; later runs reuse the `%LOCALAPPDATA%\EQGM\` search cache.
-- **Raid BiS** chip — on by default when inventories are loaded; uncheck to skip the Raid BiS sheet and catalog fetch. Only items that class can wear are recommended. The first run needs network access to EQ Resource; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache (usable classes are stored per item). After updating to **1.35.5** or newer, regenerate once so class lists stay current and armor stubs get real names and icons.
+- **Type 18/19 Augs** chip — on by default when inventories are loaded; uncheck to skip Type 18/19 sheets. First generate seeds from GitHub; later runs reuse the `%LOCALAPPDATA%\EQGM\` search cache.
+- **Raid BiS** chip — on by default when inventories are loaded; uncheck to skip the Raid BiS sheet and catalog fetch. Only items that class can wear are recommended. First generate seeds from GitHub; later runs reuse the `%LOCALAPPDATA%\EQGM\` catalog cache (usable classes are stored per item). After updating to **1.35.5** or newer, regenerate once so class lists stay current and armor stubs get real names and icons.
 
 Details for each report type: [[Gear]], [[Spells]], [[Augs]], [[Quests and Achievements]].
 
@@ -49,7 +49,7 @@ Between Export options and Output folder. Click a swatch to change the five Team
 - Use **Browse…** to pick another folder. The file name is always the default above; it updates if you change which server/characters are loaded.
 - **Excel** / **HTML** / **Both** chips next to **Generate Report** — choose workbook only, HTML only, or both (default **Both**). The choice is remembered for next time.
 
-Click **Generate Report** — when HTML is included, the saved `.html` file opens in your default browser. The setup screen stays open. If export fails, an error dialog stays on screen until you click **OK**. Each run overwrites `%LOCALAPPDATA%\EQGM\last_report.log` with status, files, options, warnings, and errors.
+Click **Generate Report** — when HTML is included, the saved `.html` file opens in your default browser. The setup screen stays open. If export fails, an error dialog stays on screen until you click **OK**. Each run overwrites `%LOCALAPPDATA%\EQGM\last_report.log` with status, files, options, cache vs website fetches, warnings, fetch problems, and errors.
 
 If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, etc.
 
@@ -60,4 +60,4 @@ If Excel already has the file open, the app saves as `Team Inventory_1.xlsx`, et
 - **Achievement files in AchievementData** — same pattern for `/outputfile achievements` files.
 - **Status bar** — shows how many inventory, MissingSpells, and achievement files are loaded.
 - **Warnings** — if a character has inventory but no spell file, you’ll get a message after export; the workbook still builds.
-- **Help** (top right) — gear tier colors legend, **Check for Updates** (downloads and runs the installer when you choose Yes; EQGM closes so the upgrade can finish), **Clear Cache** (deletes catalog/item/icon caches; next Generate Report rebuilds them; `last_report.log` is kept), and **About EQGM** (shows the app version; **Website** opens the product page).
+- **Help** (top right) — gear tier colors legend, **Check for Updates** (downloads and runs the installer when you choose Yes; EQGM closes so the upgrade can finish), **Clear Cache** (deletes catalog/item/icon caches and the prebuilt-cache marker; next Generate Report re-seeds from GitHub then fetches only true misses; `last_report.log` is kept), **View last report log…** (opens `%LOCALAPPDATA%\EQGM\last_report.log` in your default editor), and **About EQGM** (shows the app version; **Website** opens the product page).

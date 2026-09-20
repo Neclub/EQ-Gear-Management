@@ -37,6 +37,7 @@ from inventory_parser.slot2_augs.eqresource_augs import (
     _stats_from_eqr_html,
     parse_eqresource_lore_group,
 )
+from inventory_parser.generate_log import record_cache
 from inventory_parser.http_fetch import http_get_text
 from inventory_parser.slot2_augs.paths import appdata_dir
 
@@ -633,6 +634,7 @@ def fetch_catalog(
     ):
         items = [_candidate_from_dict(d) for d in cached_items]
         from_cache = True
+        record_cache("Raid BiS catalog")
         urls = list(cached.get("urls") or urls)
         vendor = vendor_catalog_from_dict(cache.get("vendor"))
         _emit_status(on_status, "Using cached Raid BiS catalog…")
@@ -705,6 +707,7 @@ def fetch_catalog(
             if cached and cached.get("items"):
                 items = [_candidate_from_dict(d) for d in cached["items"]]
                 from_cache = True
+                record_cache("Raid BiS catalog")
                 warning = (
                     f"Live EQ Resource raid catalog failed ({exc}); using cache."
                 )
@@ -912,6 +915,7 @@ def _hydrate_items(
             ):
                 if _entry_has_inspect(item_cache[key]) or not allow_network:
                     parsed = cached_item
+                    record_cache("Item details")
         if parsed is None and allow_network:
             if skip_hydrated and not _item_needs_page_hydrate(item):
                 continue

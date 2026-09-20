@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from html.parser import HTMLParser
 from pathlib import Path
 
+from inventory_parser.generate_log import record_cache
 from inventory_parser.http_fetch import http_post_text
 from inventory_parser.slot2_augs.aug_stats import clean_stats, legacy_from_stats, merge_stats
 from inventory_parser.slot2_augs.eqresource_augs import USER_AGENT, resolve_eqresource_augs
@@ -297,6 +298,7 @@ def fetch_eqresource_catalog(
     if cached_rows:
         rows = cached_rows
         from_cache = True
+        record_cache("Type 7/8 catalog", profile)
     else:
         try:
             html7 = fetch_eqresource_search_html(
@@ -335,6 +337,7 @@ def fetch_eqresource_catalog(
             if fallback_rows:
                 rows = fallback_rows
                 from_cache = True
+                record_cache("Type 7/8 catalog", profile)
                 warning = f"Live EQ Resource search failed ({exc}); using cached search."
             else:
                 raise

@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterable
 
+from inventory_parser.generate_log import record_cache
 from inventory_parser.http_fetch import http_get_text
 from inventory_parser.slot2_augs.paths import appdata_dir
 
@@ -163,6 +164,7 @@ def fetch_item_sockets(
         )
 
     if not force_refresh and key in cache and cache[key].get("sockets") is not None:
+        record_cache("Item sockets")
         return _map_from_cache_entry(item_id, cache[key])
 
     sockets = []
@@ -232,6 +234,7 @@ def _resolve_socket_maps(
         key = str(item_id)
         if not force_refresh and key in cache and cache[key].get("sockets") is not None:
             result[item_id] = _map_from_cache_entry(item_id, cache[key])
+            record_cache("Item sockets")
             done += 1
             if on_progress is not None:
                 on_progress(done, total)

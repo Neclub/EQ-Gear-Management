@@ -116,16 +116,24 @@ def _http_bytes(
     data: bytes | None,
     content_type: str | None,
 ) -> bytes:
+    from inventory_parser.generate_log import record_problem, record_website
+
     _require_allowed_url(url, allowed_hosts=allowed_hosts)
     headers = {"User-Agent": user_agent}
     if content_type:
         headers["Content-Type"] = content_type
     req = urllib.request.Request(url, data=data, headers=headers)
     opener = urllib.request.build_opener(_AllowedHostRedirectHandler)
-    with opener.open(req, timeout=timeout) as resp:
-        final = resp.geturl()
-        _require_allowed_url(final, allowed_hosts=allowed_hosts)
-        raw = resp.read(max_bytes + 1)
-    if len(raw) > max_bytes:
-        raise urllib.error.URLError("Response too large.")
+    try:
+        with opener.open(req, timeout=timeout) as resp:
+            final = resp.geturl()
+            _require_allowed_url(final, allowed_hosts=allowed_hosts)
+            raw = resp.read(max_bytes + 1)
+        if len(raw) > max_bytes:
+            raise urllib.error.URLError("Response too large.")
+    except Exception as exc:
+        reason = getattr(exc, "reason", None) or getattr(exc, "msg", None) or str(exc)
+        record_problem(f"{url}: {reason}")
+        raise
+    record_website(url)
     return raw

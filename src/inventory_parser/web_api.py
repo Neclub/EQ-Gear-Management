@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import sys
 import threading
 import time
 import traceback
@@ -35,7 +37,11 @@ from inventory_parser.eq_servers import server_display_name
 from inventory_parser.excel_export import write_team_workbook
 from inventory_parser.excel_theme import tier_legend_entries
 from inventory_parser.export_bundle import build_export_bundle, release_export_memory
-from inventory_parser.generate_log import write_last_report_log
+from inventory_parser.generate_log import (
+    fetch_recording,
+    last_report_log_path,
+    write_last_report_log,
+)
 from inventory_parser.slot2_augs.build import report_progress
 from inventory_parser.slot2_augs.weights import default_class_weights, sanitize_weight_map
 from inventory_parser.html_export import write_team_html
@@ -279,6 +285,26 @@ class WebApi:
 
         return clear_disk_caches()
 
+    def open_last_report_log(self) -> dict:
+        """Open last_report.log in the system default text editor."""
+        path = last_report_log_path()
+        if not path.is_file():
+            return {
+                "ok": False,
+                "error": (
+                    "No last_report.log yet. Generate a report first; "
+                    "the log is written under %LOCALAPPDATA%\\EQGM\\."
+                ),
+            }
+        try:
+            if sys.platform == "win32":
+                os.startfile(str(path))  # noqa: S606 — open log in default viewer
+            else:
+                webbrowser.open(file_url(path.resolve()))
+        except OSError as exc:
+            return {"ok": False, "error": f"Could not open log: {exc}"}
+        return {"ok": True, "path": str(path)}
+
     def open_website(self) -> dict:
         webbrowser.open(PRODUCT_WEBSITE_URL)
         return {"ok": True, "url": PRODUCT_WEBSITE_URL}
@@ -487,20 +513,22 @@ class WebApi:
         started = time.perf_counter()
         result: dict | None = None
         traceback_text: str | None = None
-        try:
-            result = self._generate_report_impl(config)
-            return result
-        except Exception:
-            traceback_text = traceback.format_exc()
-            raise
-        finally:
-            write_last_report_log(
-                source="gui",
-                config=config if isinstance(config, dict) else {},
-                result=result,
-                traceback_text=traceback_text,
-                elapsed_seconds=round(time.perf_counter() - started, 1),
-            )
+        with fetch_recording() as recorder:
+            try:
+                result = self._generate_report_impl(config)
+                return result
+            except Exception:
+                traceback_text = traceback.format_exc()
+                raise
+            finally:
+                write_last_report_log(
+                    source="gui",
+                    config=config if isinstance(config, dict) else {},
+                    result=result,
+                    traceback_text=traceback_text,
+                    elapsed_seconds=round(time.perf_counter() - started, 1),
+                    fetch_snapshot=recorder.snapshot(),
+                )
 
     def _generate_report_impl(self, config: dict) -> dict:
         paths = [Path(p) for p in config.get("paths", [])]

@@ -202,15 +202,36 @@ def reset_tier_colors() -> dict[str, str]:
 
 
 def order_by_persona_keys(items: list[T], order: list[str], *, key_fn) -> list[T]:
-    """Return items sorted by saved order, then default order for unknown keys."""
+    """Return items sorted by saved order, then default order for unknown keys.
+
+    When a saved key lacks a class suffix (or vice versa) after chest-class
+    resolution, match the unique character_server stem so column order still
+    applies (e.g. ``Stablub_bristle`` → ``Stablub_bristle_ROG``).
+    """
     by_key = {key_fn(item): item for item in items}
+
+    def _resolve(saved: str) -> T | None:
+        item = by_key.get(saved)
+        if item is not None:
+            return item
+        prefixed = [key for key in by_key if key.startswith(saved + "_")]
+        if len(prefixed) == 1:
+            return by_key[prefixed[0]]
+        stripped = [key for key in by_key if saved.startswith(key + "_")]
+        if len(stripped) == 1:
+            return by_key[stripped[0]]
+        return None
+
     ordered: list[T] = []
     seen: set[str] = set()
     for key in order:
-        item = by_key.get(key)
-        if item is not None and key not in seen:
+        item = _resolve(key)
+        if item is None:
+            continue
+        item_key = key_fn(item)
+        if item_key not in seen:
             ordered.append(item)
-            seen.add(key)
+            seen.add(item_key)
     for item in items:
         key = key_fn(item)
         if key not in seen:

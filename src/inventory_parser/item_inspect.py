@@ -7,6 +7,7 @@ from collections.abc import Callable, Iterable
 from dataclasses import dataclass, field
 from html import unescape
 
+from inventory_parser.generate_log import record_cache, record_problem
 from inventory_parser.raid_bis.icons import collect_icon_data_uris
 from inventory_parser.slot2_augs.eqresource_augs import (
     USER_AGENT,
@@ -435,6 +436,9 @@ def build_item_inspect_export(
         if parsed is not None:
             overrides[iid] = parsed
             cached[iid] = parsed
+    for iid in ids:
+        if iid in cached and iid not in overrides:
+            record_cache("Item details")
     still_missing = [iid for iid in ids if iid not in cached]
     if still_missing:
         from inventory_parser.raid_bis.catalog import hydrate_item_ids
@@ -560,14 +564,17 @@ def _load_expansion_image(code: str, *, allow_network: bool) -> tuple[bytes | No
         except OSError:
             data = b""
         if name == "jpg" and is_jpeg(data):
+            record_cache("Expansion images")
             return data, mime
         if name == "png" and is_png(data):
+            record_cache("Expansion images")
             return data, mime
     if not allow_network:
         return None, ""
+    url = EXPAC_IMAGE_URL.format(code=code)
     try:
         data = http_get_bytes(
-            EXPAC_IMAGE_URL.format(code=code),
+            url,
             timeout=20,
             user_agent=USER_AGENT,
             max_bytes=MAX_ICON_BYTES,
@@ -581,6 +588,7 @@ def _load_expansion_image(code: str, *, allow_network: bool) -> tuple[bytes | No
         mime = "image/png"
         ext = "png"
     else:
+        record_problem(f"Expansion image {url}: response was not jpeg/png")
         return None, ""
     try:
         (cache_dir / f"expac-{code}.{ext}").write_bytes(data)

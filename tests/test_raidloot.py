@@ -2,11 +2,15 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from inventory_parser.slot2_augs.raidloot import (
     AugCandidate,
+    CatalogResult,
     augs_for_slot,
+    _candidate_to_dict,
+    fetch_catalog,
     merge_shield_augs,
     parse_raidloot_html,
     parse_raidloot_lore_group,
@@ -14,10 +18,75 @@ from inventory_parser.slot2_augs.raidloot import (
     parse_slot_restrictions,
     unique_by_lore_group,
 )
-from inventory_parser.slot2_augs.profiles import ARTISANS_PRIZE_ID
+from inventory_parser.slot2_augs.profiles import ARTISANS_PRIZE_ID, SHIELD_AUG_URL
 
 FIXTURE = Path(__file__).resolve().parent / "fixtures" / "raidloot_dex_sample.html"
 SHIELD_FIXTURE = Path(__file__).resolve().parent / "fixtures" / "raidloot_shield_snip.html"
+
+
+def _stub_eqr_catalog(profile: str = "dex") -> CatalogResult:
+    """Minimal EQ Resource-shaped catalog so fetch_catalog skips raidloot main list."""
+    from inventory_parser.slot2_augs.profiles import ProfileId
+
+    pid: ProfileId = profile  # type: ignore[assignment]
+    augs = [
+        AugCandidate(
+            item_id=ARTISANS_PRIZE_ID,
+            name="Artisan's Prize",
+            profile=pid,
+            focus_heroic=150,
+            ear_only=True,
+        ),
+        AugCandidate(
+            item_id=100001,
+            name="Stub Gem A",
+            profile=pid,
+            focus_heroic=50,
+            ac=100,
+            hp=1000,
+            aug_types=frozenset({7, 8}),
+        ),
+        AugCandidate(
+            item_id=100002,
+            name="Stub Gem B",
+            profile=pid,
+            focus_heroic=40,
+            ac=90,
+            hp=900,
+            aug_types=frozenset({7, 8}),
+        ),
+        AugCandidate(
+            item_id=100003,
+            name="Stub Gem C",
+            profile=pid,
+            focus_heroic=30,
+            ac=80,
+            hp=800,
+            aug_types=frozenset({7, 8}),
+        ),
+    ]
+    return CatalogResult(
+        profile=pid,
+        augs=augs,
+        fetched_at="2026-01-01T00:00:00+00:00",
+        from_cache=True,
+        url="https://items.eqresource.com/dosearch.php",
+    )
+
+
+def _write_shield_cache(cache_file: Path, shields: list[AugCandidate]) -> None:
+    cache_file.write_text(
+        json.dumps(
+            {
+                "shield": {
+                    "fetched_at": "2026-01-01T00:00:00+00:00",
+                    "url": SHIELD_AUG_URL,
+                    "augs": [_candidate_to_dict(a) for a in shields],
+                }
+            }
+        ),
+        encoding="utf-8",
+    )
 
 
 def test_parse_all_except_charm_range():
@@ -247,3 +316,99 @@ def test_unique_by_lore_group_keeps_first():
     )
     kept = unique_by_lore_group([mystic, defender, acrobat])
     assert [a.item_id for a in kept] == [175573, 175572]
+
+
+def test_fetch_catalog_uses_shield_disk_cache_before_network(tmp_path, monkeypatch):
+    from inventory_parser.slot2_augs.raidloot import cache_path
+
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.raidloot.appdata_dir",
+        lambda: tmp_path,
+    )
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.eqresource_search.fetch_eqresource_catalog",
+        lambda profile, **_kwargs: _stub_eqr_catalog(profile),
+    )
+
+    def boom(*_args, **_kwargs):
+        raise AssertionError("warm shield cache must not hit raidloot")
+
+    monkeypatch.setattr("inventory_parser.slot2_augs.raidloot._http_get", boom)
+
+    shields = parse_shield_html(SHIELD_FIXTURE.read_text(encoding="utf-8"), "dex")
+    _write_shield_cache(cache_path(), shields)
+
+    cat = fetch_catalog("dex")
+    assert any(a.item_id == 175179 and a.shield_only for a in cat.augs)
+    # Main catalog came from EQ Resource stub (from_cache); shield hit is log-only.
+    assert cat.from_cache is True
+
+
+def test_fetch_catalog_force_refresh_fetches_shield(tmp_path, monkeypatch):
+    from inventory_parser.slot2_augs.raidloot import cache_path
+
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.raidloot.appdata_dir",
+        lambda: tmp_path,
+    )
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.eqresource_search.fetch_eqresource_catalog",
+        lambda profile, **_kwargs: _stub_eqr_catalog(profile),
+    )
+
+    hits: list[str] = []
+
+    def fake_get(url: str, timeout: float = 30.0) -> str:
+        hits.append(url)
+        assert "Aug_Shield" in url or "augslot" in url
+        return SHIELD_FIXTURE.read_text(encoding="utf-8")
+
+    monkeypatch.setattr("inventory_parser.slot2_augs.raidloot._http_get", fake_get)
+
+    shields = parse_shield_html(SHIELD_FIXTURE.read_text(encoding="utf-8"), "dex")
+    _write_shield_cache(cache_path(), shields)
+
+    cat = fetch_catalog("dex", force_refresh=True)
+    assert hits
+    assert any(a.item_id == 175179 and a.shield_only for a in cat.augs)
+
+
+def test_fetch_catalog_shield_live_failure_uses_disk_fallback(tmp_path, monkeypatch):
+    """Cold in-memory load + live failure still picks up shield augs from disk."""
+    from inventory_parser.slot2_augs import raidloot as rl
+
+    monkeypatch.setattr(rl, "appdata_dir", lambda: tmp_path)
+    monkeypatch.setattr(
+        "inventory_parser.slot2_augs.eqresource_search.fetch_eqresource_catalog",
+        lambda profile, **_kwargs: _stub_eqr_catalog(profile),
+    )
+
+    shields = parse_shield_html(SHIELD_FIXTURE.read_text(encoding="utf-8"), "dex")
+    disk = {
+        "shield": {
+            "fetched_at": "2026-01-01T00:00:00+00:00",
+            "url": SHIELD_AUG_URL,
+            "augs": [_candidate_to_dict(a) for a in shields],
+        }
+    }
+    rl.cache_path().write_text(json.dumps(disk), encoding="utf-8")
+
+    loads = {"n": 0}
+    real_load = rl._load_cache
+
+    def load_once_cold():
+        loads["n"] += 1
+        if loads["n"] == 1:
+            return {}
+        return real_load()
+
+    monkeypatch.setattr(rl, "_load_cache", load_once_cold)
+
+    def boom(*_args, **_kwargs):
+        raise OSError("network down")
+
+    monkeypatch.setattr(rl, "_http_get", boom)
+
+    cat = fetch_catalog("dex")
+    assert any(a.item_id == 175179 and a.shield_only for a in cat.augs)
+    assert cat.warning and "using cached shield" in cat.warning.casefold()
