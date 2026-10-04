@@ -11,13 +11,10 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterable
 
+from inventory_parser.eqresource_item_page import get_eqresource_item_html
 from inventory_parser.gear_tiers import GEAR_TIER_BY_CODE, classify_gear_tier
 from inventory_parser.generate_log import record_cache
-from inventory_parser.slot2_augs.eqresource_augs import (
-    EQRESOURCE_ITEM_URL,
-    _EXPAC_IMG_RE,
-    _http_get,
-)
+from inventory_parser.slot2_augs.eqresource_augs import _EXPAC_IMG_RE
 from inventory_parser.slot2_augs.paths import appdata_dir
 
 CACHE_FILENAME = "eqresource_gear_tier_cache.json"
@@ -103,8 +100,8 @@ def fetch_item_gear_tier(
 
     tier: str | None = None
     try:
-        html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item_id))
-        tier = parse_gear_tier_from_eqr_html(html)
+        html = get_eqresource_item_html(item_id, allow_network=allow_network)
+        tier = parse_gear_tier_from_eqr_html(html or "")
     except (urllib.error.URLError, TimeoutError, OSError, ValueError):
         tier = None
 
@@ -126,8 +123,8 @@ def _tier_from_cache_entry(entry: dict) -> str | None:
 
 def _fetch_live_gear_tier(item_id: int) -> str | None:
     try:
-        html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item_id))
-        return parse_gear_tier_from_eqr_html(html)
+        html = get_eqresource_item_html(item_id)
+        return parse_gear_tier_from_eqr_html(html or "")
     except (urllib.error.URLError, TimeoutError, OSError, ValueError):
         return None
 

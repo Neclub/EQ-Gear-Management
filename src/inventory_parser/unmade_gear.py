@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
-from inventory_parser.team_report import CharacterGear, TeamGearReport, format_character_display_name
+from inventory_parser.team_report import CharacterGear, TeamGearReport
 from inventory_parser.gear_tiers import (
     UNKNOWN_TIER_LABEL,
     _is_tradeskill_item,
@@ -200,16 +200,32 @@ def _display_slot_for_material(
     return target_slot, equipped_label or ""
 
 
+def _persona_inventory_key(char: CharacterGear) -> tuple[str, str]:
+    """Character and server. Class is ignored because personas share bags."""
+    return (char.character.casefold(), (char.server or "").casefold())
+
+
 def build_unmade_gear_report(report: TeamGearReport) -> list[UnmadeGearEntry]:
-    """Scan General bags and list every recognized unmade mat/container."""
+    """Scan General bags and list every recognized unmade mat/container.
+
+    Personas (same character and server, different class) share bags, so only
+    the first roster entry is scanned. Each bag slot in that inventory is kept,
+    including two of the same mat.
+    """
     entries: list[UnmadeGearEntry] = []
+    seen: set[tuple[str, str]] = set()
 
     for char in report.characters:
+        key = _persona_inventory_key(char)
+        if key in seen:
+            continue
+        seen.add(key)
+
         data = char.inventory_data or parse_inventory_file(char.filepath)
         if data is None:
             continue
 
-        display_name = format_character_display_name(char.character, char.class_abbr)
+        display_name = char.character
 
         for item in data.items:
             if not is_bag_location(item.location):

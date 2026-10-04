@@ -95,7 +95,7 @@ def test_cached_miss_skips_network(tmp_path, monkeypatch) -> None:
         raise AssertionError("cached gear-tier lookups must not hit EQ Resource")
 
     monkeypatch.setattr(
-        "inventory_parser.slot2_augs.eqresource_gear_tier._http_get", boom
+        "inventory_parser.eqresource_item_page.http_get_text", boom
     )
     monkeypatch.setattr(
         "inventory_parser.slot2_augs.eqresource_gear_tier._fetch_live_gear_tier",

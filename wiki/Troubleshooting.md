@@ -17,7 +17,7 @@
 | Raid BiS sheet missing or slots look empty | Leave the **Raid BiS** chip on; first generate seeds from GitHub, later runs reuse `%LOCALAPPDATA%\EQGM\`. |
 | Raid BiS suggests an item your class cannot wear | Use **1.35.4** or newer and regenerate. Older caches treated jewelry with no class list as wearable by everyone. |
 | Raid BiS paperdoll shows `PAL Chest` (or similar) instead of an icon | Use **1.35.5** or newer and regenerate. Older caches kept armor catalog stubs and skipped hydrating names, stats, and icons. |
-| Stale or wrong catalog / aug / Raid BiS data after an update | **Help → Clear Cache**, then Generate Report (re-seeds from GitHub, then fetches true misses into `%LOCALAPPDATA%\EQGM\`). |
+| Stale or wrong catalog / aug / Raid BiS / item-page data after an update | **Help → Clear Cache**, then Generate Report (re-seeds from GitHub, then fetches true misses into `%LOCALAPPDATA%\EQGM\`, including saved item pages). |
 | HTML looks outdated after an update | Regenerate the report. |
 | Installer or update asks for administrator permission | Expected — the app installs under Program Files. Allow UAC, finish the wizard, then open EQ Gear Management from the Start Menu if it does not relaunch. |
 | Update download fails | Check network access to GitHub. **Help → Check for Updates** again, or download `EQGM-install-x.y.z.exe` from [Releases](https://github.com/Neclub/EQ-Gear-Management/releases) and run it manually. |

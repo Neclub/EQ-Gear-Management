@@ -273,12 +273,21 @@ def vendor_offer_for_item(
     return None
 
 
+def _buy_order(candidates: list[PurchaseCandidate]) -> list[PurchaseCandidate]:
+    """Higher score gain per coin, then higher gain, then lower cost."""
+    return sorted(
+        candidates,
+        key=lambda c: (-c.score_gain / c.cost, -c.score_gain, c.cost),
+    )
+
+
 def best_purchases(
     candidates: list[PurchaseCandidate],
     coins: int,
 ) -> list[PurchaseCandidate]:
     """0-1 knapsack: max score gain, then more items, then lower total cost.
 
+    The returned list is buy order (see ``_buy_order``).
     Keep in sync with ``raidBisBestPurchases`` in team_report.html.
     """
     try:
@@ -331,7 +340,8 @@ def best_purchases(
             best_count = count
             best_cost = cost
             best_mask = mask
-    return [affordable[i] for i in range(n) if best_mask & (1 << i)]
+    chosen = [affordable[i] for i in range(n) if best_mask & (1 << i)]
+    return _buy_order(chosen)
 
 
 def vendor_catalog_to_dict(vendor: RaidVendorCatalog | None) -> dict | None:

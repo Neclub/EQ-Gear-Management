@@ -301,14 +301,13 @@ def reorder_unmade_entries(
 ) -> list[UnmadeGearEntry]:
     if not order:
         return entries
-    rank_by_display = {
-        character.display_name: index
-        for index, character in enumerate(team.characters)
-    }
+    rank_by_character: dict[str, int] = {}
+    for index, character in enumerate(team.characters):
+        rank_by_character.setdefault(character.character.casefold(), index)
     return sorted(
         entries,
         key=lambda row: (
-            rank_by_display.get(row.display_name, len(rank_by_display)),
+            rank_by_character.get(row.character.casefold(), len(team.characters)),
             row.expansion.casefold(),
             row.material.casefold(),
             row.item_name.casefold(),

@@ -4769,6 +4769,27 @@ function raidBisPurchaseCandidates(slots) {
   }));
 }
 
+function raidBisOrdinal(n) {
+  const mod100 = n % 100;
+  if (mod100 >= 11 && mod100 <= 13) return `${n}th`;
+  switch (n % 10) {
+    case 1: return `${n}st`;
+    case 2: return `${n}nd`;
+    case 3: return `${n}rd`;
+    default: return `${n}th`;
+  }
+}
+
+function raidBisBuyOrder(a, b) {
+  // Higher score gain per coin, then higher gain, then lower cost.
+  // Keep in sync with inventory_parser.raid_bis.vendor._buy_order.
+  const perA = a.scoreGain / a.cost;
+  const perB = b.scoreGain / b.cost;
+  if (Math.abs(perB - perA) > 1e-9) return perB - perA;
+  if (Math.abs(b.scoreGain - a.scoreGain) > 1e-9) return b.scoreGain - a.scoreGain;
+  return a.cost - b.cost;
+}
+
 function raidBisBestPurchases(items, coins) {
   // Keep in sync with inventory_parser.raid_bis.vendor.best_purchases.
   const budget = Math.max(0, Math.floor(Number(coins) || 0));
@@ -4813,16 +4834,24 @@ function raidBisBestPurchases(items, coins) {
   for (let i = 0; i < n; i++) {
     if (bestMask & (1 << i)) out.push(aff[i]);
   }
+  out.sort(raidBisBuyOrder);
   return out;
 }
 
 function raidBisApplyPurchases(card, slots, coins, currencyName) {
   const picks = raidBisBestPurchases(raidBisPurchaseCandidates(slots), coins);
-  const picked = new Set(picks.map((p) => p.gearSlot));
+  const rankBySlot = new Map(picks.map((p, i) => [p.gearSlot, i + 1]));
   card.querySelectorAll("tr[data-gear-slot]").forEach((tr) => {
     const bubble = tr.querySelector("[data-best-purchase]");
     if (!bubble) return;
-    bubble.hidden = !picked.has(tr.getAttribute("data-gear-slot"));
+    const rank = rankBySlot.get(tr.getAttribute("data-gear-slot"));
+    if (!rank) {
+      bubble.hidden = true;
+      bubble.textContent = "Best Purchase";
+      return;
+    }
+    bubble.hidden = false;
+    bubble.textContent = picks.length === 1 ? "Best Purchase" : raidBisOrdinal(rank);
   });
   const summary = card.querySelector("[data-raid-bis-buy-summary]");
   if (!summary) return;
@@ -4832,10 +4861,12 @@ function raidBisApplyPurchases(card, slots, coins, currencyName) {
     return;
   }
   const total = picks.reduce((sum, p) => sum + p.cost, 0);
-  const names = picks.map((p) => p.gearSlot).join(", ");
-  summary.textContent = picks.length === 1
-    ? `Best purchase: ${names} (${total} ${curr})`
-    : `Best purchases: ${names} (${total} ${curr})`;
+  if (picks.length === 1) {
+    summary.textContent = `Best purchase: ${picks[0].gearSlot} (${total} ${curr})`;
+    return;
+  }
+  const order = picks.map((p, i) => `${i + 1} ${p.gearSlot}`).join(" · ");
+  summary.textContent = `${order} · ${total} ${curr}`;
 }
 
 const RAID_BIS_CLASS_THEMES = {

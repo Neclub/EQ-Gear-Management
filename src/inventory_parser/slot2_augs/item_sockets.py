@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterable
 
+from inventory_parser.eqresource_item_page import get_eqresource_item_html
 from inventory_parser.generate_log import record_cache
 from inventory_parser.http_fetch import http_get_text
 from inventory_parser.slot2_augs.paths import appdata_dir
@@ -22,7 +23,6 @@ CACHE_FILENAME = "item_sockets_cache.json"
 _HTTP_WORKERS = 6
 
 RAIDLOOT_ITEM_URL = "https://www.raidloot.com/items?name={item_id}"
-EQRESOURCE_ITEM_URL = "https://items.eqresource.com/items.php?id={item_id}"
 
 _TYPE78 = frozenset({7, 8})
 
@@ -179,7 +179,7 @@ def fetch_item_sockets(
 
     if not sockets:
         try:
-            eqr_html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item_id))
+            eqr_html = get_eqresource_item_html(item_id) or ""
             sockets = parse_eqresource_item_html(eqr_html)
             if sockets:
                 source = "eqresource"

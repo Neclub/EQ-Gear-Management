@@ -5,6 +5,17 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.16] - 2026-10-04
+
+### Added
+
+- **EQ Resource item pages:** the first lookup of an item id (odd Range gear, old augments, inspect cards, and other item pages) is saved under `%LOCALAPPDATA%\EQGM\item_pages\`. Later Generate Report runs reuse that file instead of downloading it again. **Help → Clear Cache** deletes these pages.
+
+### Changed
+
+- **Raid BiS:** when coins cover more than one vendor upgrade, those rows show **1st**, **2nd**, **3rd** (best stats per coin first) and the coin box lists that buy order. A single affordable upgrade still says **Best Purchase**.
+- **Unmade Gear:** personas that share a character name are listed once, without a class, from one inventory. Duplicate mats in that inventory, such as two bracers, are still shown.
+
 ## [1.35.15] - 2026-09-20
 
 ### Added

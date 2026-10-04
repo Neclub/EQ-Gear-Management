@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Iterable
 
+from inventory_parser.eqresource_item_page import get_eqresource_item_html
 from inventory_parser.generate_log import record_cache
 from inventory_parser.http_fetch import http_get_text, http_post_text
 from inventory_parser.slot2_augs.aug_stats import clean_stats
@@ -44,7 +45,6 @@ TYPE18_SEARCH_URL = (
     "https://items.eqresource.com/itemsearch.php?searchid=255223&page={page}"
 )
 TYPE18_CATALOG_URL = "https://items.eqresource.com/itemsearch.php?searchid=255223"
-EQRESOURCE_ITEM_URL = "https://items.eqresource.com/items.php?id={item_id}"
 # Fits Aug Slot is ``augtype`` on EQ Resource; ``augslot`` is a different field.
 # Setting both to 19 returns zero rows.
 TYPE19_CATALOG_URL = (
@@ -454,7 +454,9 @@ def resolve_item_meta(
         if polite_delay_s > 0:
             time.sleep(polite_delay_s)
         try:
-            html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item_id))
+            html = get_eqresource_item_html(item_id)
+            if not html:
+                raise ValueError(f"No EQ Resource page for item {item_id}")
             meta = _parse_item_meta(html)
             entry = {
                 "ok": True,

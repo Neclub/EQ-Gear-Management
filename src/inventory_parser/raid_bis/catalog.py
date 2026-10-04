@@ -29,13 +29,16 @@ from inventory_parser.raid_bis.vendor import (
 from inventory_parser.slot2_augs.aug_stats import clean_stats, merge_stats
 from inventory_parser.slot2_augs.chest_class import parse_eqresource_item_class_set
 from inventory_parser.slot2_augs.eqresource_augs import (
-    EQRESOURCE_ITEM_URL,
     USER_AGENT,
     _NAME_RE,
     _SLOT_RE,
     _allowed_from_eqr_slot_text,
     _stats_from_eqr_html,
     parse_eqresource_lore_group,
+)
+from inventory_parser.eqresource_item_page import (
+    cached_item_page_html,
+    get_eqresource_item_html,
 )
 from inventory_parser.generate_log import record_cache
 from inventory_parser.http_fetch import http_get_text
@@ -882,6 +885,8 @@ def _hydrate_items(
             ):
                 if _entry_has_inspect(entry) or not allow_network:
                     continue
+        if cached_item_page_html(item.item_id) is not None:
+            continue
         if not allow_network:
             continue
         if skip_hydrated and not _item_needs_page_hydrate(item):
@@ -916,17 +921,27 @@ def _hydrate_items(
                 if _entry_has_inspect(item_cache[key]) or not allow_network:
                     parsed = cached_item
                     record_cache("Item details")
-        if parsed is None and allow_network:
+        page_was_cached = False
+        if parsed is None:
+            page_html = cached_item_page_html(item.item_id)
+            if page_html is not None:
+                page_was_cached = True
+                record_cache("Item pages")
+                from inventory_parser.item_inspect import parse_item_inspect
+
+                parsed = parse_item_page(page_html, item.item_id, name_hint=item.name)
+                inspect = parse_item_inspect(page_html, item.item_id, name_hint=item.name)
+        if parsed is None and allow_network and not page_was_cached:
             if skip_hydrated and not _item_needs_page_hydrate(item):
                 continue
             if fetched and polite_delay_s > 0:
                 time.sleep(polite_delay_s)
             try:
-                html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item.item_id))
+                html = get_eqresource_item_html(item.item_id)
                 from inventory_parser.item_inspect import parse_item_inspect
 
-                parsed = parse_item_page(html, item.item_id, name_hint=item.name)
-                inspect = parse_item_inspect(html, item.item_id, name_hint=item.name)
+                parsed = parse_item_page(html or "", item.item_id, name_hint=item.name)
+                inspect = parse_item_inspect(html or "", item.item_id, name_hint=item.name)
             except (urllib.error.URLError, TimeoutError, OSError, ValueError):
                 parsed = None
                 inspect = None

@@ -30,6 +30,7 @@ CACHE_CATEGORY_ORDER: tuple[str, ...] = (
     "Type 18/19 item meta",
     "Raid BiS catalog",
     "Item details",
+    "Item pages",
     "Item icons",
     "Expansion images",
 )

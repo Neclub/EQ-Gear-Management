@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Callable, Iterable
 from urllib.parse import unquote_plus
 
+from inventory_parser.eqresource_item_page import get_eqresource_item_html
 from inventory_parser.generate_log import record_cache
 from inventory_parser.slot2_augs.aug_stats import (
     ATTR_BASE,
@@ -243,8 +244,8 @@ def fetch_item_expansion(
 
     expansion: str | None = None
     try:
-        html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item_id))
-        expansion = parse_expansion_from_eqr_html(html)
+        html = get_eqresource_item_html(item_id, allow_network=allow_network)
+        expansion = parse_expansion_from_eqr_html(html or "")
     except (urllib.error.URLError, TimeoutError, OSError, ValueError):
         expansion = None
 
@@ -571,9 +572,13 @@ def fetch_eqresource_aug(
             return cached
 
     try:
-        html = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item_id))
-        aug = parse_eqresource_aug_html(
-            html, profile, item_id=item_id, name_hint=name_hint
+        html = get_eqresource_item_html(item_id)
+        aug = (
+            parse_eqresource_aug_html(
+                html, profile, item_id=item_id, name_hint=name_hint
+            )
+            if html
+            else None
         )
     except (urllib.error.URLError, TimeoutError, OSError, ValueError):
         aug = None

@@ -52,14 +52,14 @@ Output: `{Server}_Team Inventory.xlsx` (and `{Server}_Team_Inventory.html` if HT
 
 ### What you get
 
-Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet. HTML is the same data in a browser — searchable and filterable, with a collapsible sidebar grouped like the sections below. Character filter chips show each name and class; the title graphic shows character count, generated date, and EQGM version. Type 7/8, Type 5, Type 18/19, and Raid BiS catalogs seed from the shared GitHub prebuilt cache on first generate (and after Clear Cache), then reuse `%LOCALAPPDATA%\EQGM\` afterward.
+Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet. HTML is the same data in a browser — searchable and filterable, with a collapsible sidebar grouped like the sections below. Character filter chips show each name and class; the title graphic shows character count, generated date, and EQGM version. Type 7/8, Type 5, Type 18/19, and Raid BiS catalogs seed from the shared GitHub prebuilt cache on first generate (and after Clear Cache), then reuse `%LOCALAPPDATA%\EQGM\` afterward. EQ Resource item pages are saved after the first lookup and reused until Clear Cache.
 
 #### Gear *(inventory files)*
 
 - **Team Gear** — equipped items by slot, color-coded by tier. In HTML, hover an item name for an inspect card
 - **Gear T-Level** — expansion tier codes per slot (unknown items looked up on EQ Resource); codes link to the item. In HTML, hover a T-code for an inspect card; Excel shows the item name on hover
-- **Unmade Gear** — raid craft mats and T1 containers still sitting in bags
-- **Raid BiS** — optional current-expansion raid T1/T2 armor and jewelry vs equipped gear (on by default). Only items that class can wear are recommended. MAG/BST/NEC keep a pet-focus ear ranked by Enhanced Minion level. Evolvers still get a Best in slot pick but are skipped for coin purchases (magenta gem on hover). Gold nameplate and Character filter. Enter raid coins to highlight the best vendor upgrade.
+- **Unmade Gear** — raid craft mats and T1 containers still sitting in bags. Personas that share a name are listed once, without a class; two of the same mat in that inventory stay as separate rows
+- **Raid BiS** — optional current-expansion raid T1/T2 armor and jewelry vs equipped gear (on by default). Only items that class can wear are recommended. MAG/BST/NEC keep a pet-focus ear ranked by Enhanced Minion level. Evolvers still get a Best in slot pick but are skipped for coin purchases (magenta gem on hover). Gold nameplate and Character filter. Enter raid coins to highlight the best vendor upgrade; when coins cover more than one, rows show **1st**, **2nd**, **3rd** (best stats per coin first)
 - **Missing Ores** — how many raid-vendor ores (linings, clasps, cloths, etc.) each character still needs for Raid BiS upgrades. Same character-column matrix as Missing Runes; Evolver slots show the purple crystal and are excluded from counts and Total. Waist ore is omitted when a T2 ore belt is already equipped. Bag stock is not subtracted (see Unmade Gear). Shown when Raid BiS is on.
 
 #### Spells *(MissingSpells files; Rune Inventory also uses bags)*

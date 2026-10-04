@@ -199,6 +199,31 @@ def test_deflub_lists_fractured_string_serving() -> None:
     assert "Fractured String Serving" in names
 
 
+def test_personas_share_one_inventory_and_keep_duplicate_mats(tmp_path: Path) -> None:
+    header = "Location\tName\tID\tCount\tSlots\n"
+    bracer = "Obscured Wrist Armor of the Bound"
+    pal = tmp_path / "Bracelub_bristle-PAL-Inventory.txt"
+    shd = tmp_path / "Bracelub_bristle-SHD-Inventory.txt"
+    pal.write_text(
+        header
+        + f"General 1-Slot1\t{bracer}\t1\t1\t0\n"
+        + f"General 2-Slot4\t{bracer}\t1\t1\t0\n",
+        encoding="utf-8",
+    )
+    shd.write_text(
+        header
+        + f"General 9-Slot1\t{bracer}\t1\t1\t0\n"
+        + "General 9-Slot2\tObscured Head Armor of the Bound\t2\t1\t0\n",
+        encoding="utf-8",
+    )
+    report = build_team_report([pal, shd])
+    entries = build_unmade_gear_report(report)
+    assert [row.display_name for row in entries] == ["Bracelub", "Bracelub"]
+    assert [row.item_name for row in entries] == [bracer, bracer]
+    assert [row.bag_location for row in entries] == ["General 1-Slot1", "General 2-Slot4"]
+    assert all("Head" not in row.item_name for row in entries)
+
+
 def test_excel_export_includes_unmade_gear_tab(tmp_path: Path) -> None:
     paths = [
         EXAMPLES / "Songlub_bristle-Inventory.txt",

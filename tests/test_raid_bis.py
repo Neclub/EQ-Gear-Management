@@ -749,6 +749,8 @@ def test_html_section_present(tmp_path: Path):
     assert "raid-bis-coins-field" in html
     assert "raidBisApplyWaistChoice" in html
     assert "raidBisBestPurchases" in html
+    assert "raidBisOrdinal" in html
+    assert "raidBisBuyOrder" in html
     assert "Best Purchase" in html
     assert "raid-bis-coin" in html
     assert "icon-coins" in html
@@ -1137,10 +1139,9 @@ def test_best_purchases_picks_highest_gain_then_multi_buy():
     ear = PurchaseCandidate("Ear-1", 408, 90.0, name="T1 Ear")
     items = [chest, wrist, ear]
     assert [p.gear_slot for p in best_purchases(items, 800)] == ["Chest"]
-    multi = {p.gear_slot for p in best_purchases(items, 1200)}
-    assert multi == {"Chest", "Ear-1"}
-    leftover = {p.gear_slot for p in best_purchases(items, 880)}
-    assert leftover == {"Ear-1", "Wrist-1"}
+    # Ear 90/408, Chest 100/786, Wrist 40/471 — buy order is gain per coin.
+    assert [p.gear_slot for p in best_purchases(items, 1200)] == ["Ear-1", "Chest"]
+    assert [p.gear_slot for p in best_purchases(items, 880)] == ["Ear-1", "Wrist-1"]
     assert best_purchases(items, 400) == []
     assert best_purchases(items, 0) == []
 

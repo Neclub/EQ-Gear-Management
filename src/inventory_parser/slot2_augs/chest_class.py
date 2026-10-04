@@ -11,6 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Iterable
 
+from inventory_parser.eqresource_item_page import get_eqresource_item_html
 from inventory_parser.generate_log import record_cache
 from inventory_parser.http_fetch import http_get_text
 from inventory_parser.parser import InventoryData, InventoryItem
@@ -20,7 +21,6 @@ from inventory_parser.slot2_augs.profiles import CLASS_TO_PROFILE, ProfileId, pr
 USER_AGENT = "EQ-Augs/0.2 (Slot2 type 7/8 checker; local tool)"
 CACHE_FILENAME = "item_class_cache.json"
 RAIDLOOT_ITEM_URL = "https://www.raidloot.com/items?name={item_id}"
-EQRESOURCE_ITEM_URL = "https://items.eqresource.com/items.php?id={item_id}"
 
 # Full names and abbreviations → canonical EQ class abbr.
 _CLASS_ALIASES: dict[str, str] = {
@@ -211,7 +211,7 @@ def fetch_item_classes(
 
     if not classes:
         try:
-            eqr = _http_get(EQRESOURCE_ITEM_URL.format(item_id=item_id))
+            eqr = get_eqresource_item_html(item_id) or ""
             classes = parse_eqresource_item_classes(eqr)
         except (urllib.error.URLError, TimeoutError, OSError, ValueError):
             classes = []

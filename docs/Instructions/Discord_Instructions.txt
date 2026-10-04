@@ -44,7 +44,7 @@ A grid of everyone on the team. Each row is a gear slot. Item names are color-co
 Same layout, but shows the tier name instead of the item name (for example `SOR-R2`). Codes link to EQ Resource. In the web report, hover a name or T-code for an inspect card; in Excel, hover a cell to see the item name.
 
 ### ⚒️ Unmade Gear
-Craft materials and T1 containers still sitting in bags — listed so you know they are there, even if that slot is already geared.
+Craft materials and T1 containers still sitting in bags — listed so you know they are there, even if that slot is already geared. Personas that share a name are listed once, without a class. Two of the same mat in that inventory stay as separate rows.
 
 ### 📘 Missing Runes / Spells / Useful Spells
 Who still needs spell runes, which spells they are missing (including spells that were never purchased), and which of those spells are the most useful ones. Spell names link to EQ Resource.
@@ -67,7 +67,7 @@ Per-class suggestions from the Zarax cheat sheet (Primary / Optional / Filler), 
 ### 👑 Raid BiS
 Compares what you are wearing to this expansion’s raid armor and jewelry. Only items that class can wear are recommended. MAG/BST/NEC keep a pet-focus ear ranked by Enhanced Minion level. The paperdoll uses real item icons (not class/slot labels). Catalog reuses disk cache after the first fetch (usable classes are stored per item).
 
-Enter raid coins on each character card to highlight the best vendor upgrade. Evolvers still get a Best in slot pick, but that slot is skipped when spending coins.
+Enter raid coins on each character card to highlight the best vendor upgrade. When coins cover more than one, those rows show **1st**, **2nd**, **3rd** (best stats per coin first). Evolvers still get a Best in slot pick, but that slot is skipped when spending coins. Item pages looked up on EQ Resource are saved after the first fetch and reused until **Help → Clear Cache**.
 
 -# Current raid gear only. Hover **Raid BiS** in the web report for the scoring notes.
 

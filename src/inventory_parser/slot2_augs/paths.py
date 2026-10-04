@@ -22,6 +22,7 @@ CACHE_FILENAMES: tuple[str, ...] = (
     "raid_bis_item_cache.json",
 )
 ICON_CACHE_DIRNAME = "item_icons"
+ITEM_PAGE_DIRNAME = "item_pages"
 
 
 def appdata_dir() -> Path:
@@ -53,6 +54,14 @@ def clear_disk_caches() -> dict:
             deleted.append(ICON_CACHE_DIRNAME)
         except OSError as exc:
             errors.append(f"{ICON_CACHE_DIRNAME}: {exc}")
+
+    pages = root / ITEM_PAGE_DIRNAME
+    if pages.exists():
+        try:
+            shutil.rmtree(pages)
+            deleted.append(ITEM_PAGE_DIRNAME)
+        except OSError as exc:
+            errors.append(f"{ITEM_PAGE_DIRNAME}: {exc}")
 
     # Force the next Generate Report to re-seed from EQGM-Web.
     from inventory_parser.prebuilt_cache import META_FILENAME, delete_prebuilt_meta

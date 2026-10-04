@@ -48,7 +48,7 @@ The **Secondary** row only appears if someone had a secondary weapon on the gear
 
 ## Unmade Gear
 
-Craft materials and T1 containers sitting in **General** bags (SoR / ToB). Every recognized unmade raid item is listed so you can see it is still in inventory; Equipped Tier is shown for context and does not hide rows. Rows follow the same character order as Team Gear.
+Craft materials and T1 containers sitting in **General** bags (SoR / ToB). Every recognized unmade raid item is listed so you can see it is still in inventory; Equipped Tier is shown for context and does not hide rows. Two of the same mat in one inventory stay as separate rows. Personas (same character name, different class) share bags, so that character is listed once, without a class, from the first persona’s inventory. Rows follow the same character order as Team Gear.
 
 ---
 
@@ -60,7 +60,7 @@ Current-expansion raid T1 and T2 armor and jewelry vs what each character is wea
 
 **Waist belts** are a personal choice. The HTML report’s **Best in slot** column shows a dropdown of the three best-statted raid belts — one each for **Overdrive Punch**, **Treaded Boon of Potential**, and **Crippling Slicer**. The default selection is the highest class-weighted of those three; picking another belt updates that row’s **Stat changes**, the character total, and the paperdoll. A **?** next to the Waist stat changes explains the three-belt choice on hover. Excel shows the class-weighted default and notes that Waist is a personal choice (use the HTML report to compare).
 
-**Raid coins:** each HTML character card has a coin box on the right, labeled with the current expansion’s raid currency (**Forgotten Ruined Coin** for Shattering of Ro). That value is only used for that character. Best in slot rows show a coin after the recommended item (including Evolver slots); hover it for the raid vendor cost — T2 recommendations use the slot’s vendor **ore** (Fractured lining/clasp/fastener); T1 jewelry that is sold on the vendor shows that item’s cost. Enter how many coins you have: the report marks the best affordable upgrade with a **Best Purchase** bubble. If you can afford more than one, it picks the combination that gains the most weighted stats for the coins you have. Evolver slots are not included in those purchase picks.
+**Raid coins:** each HTML character card has a coin box on the right, labeled with the current expansion’s raid currency (**Forgotten Ruined Coin** for Shattering of Ro). That value is only used for that character. Best in slot rows show a coin after the recommended item (including Evolver slots); hover it for the raid vendor cost — T2 recommendations use the slot’s vendor **ore** (Fractured lining/clasp/fastener); T1 jewelry that is sold on the vendor shows that item’s cost. Enter how many coins you have: the report marks the best affordable upgrade with a **Best Purchase** bubble. If you can afford more than one, it picks the combination that gains the most weighted stats for the coins you have, then ranks that set by stats gained per coin: the rows show **1st**, **2nd**, **3rd**, and the coin box lists the same order. Evolver slots are not included in those purchase picks.
 
 **Excel:** a **Raid BiS** sheet with current item, recommended item, tier, vendor cost/item, and stat changes.
 
