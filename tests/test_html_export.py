@@ -485,6 +485,18 @@ def test_embedded_json_row_counts_match_bundle(tmp_path: Path) -> None:
         assert "Copied to clipboard" in out.read_text(encoding="utf-8")
         assert "copy-col-head" in out.read_text(encoding="utf-8")
         assert "Clicking the link copies the name to your clipboard." in out.read_text(encoding="utf-8")
+        html_text = out.read_text(encoding="utf-8")
+        assert "collection-drop" in html_text
+        assert "drop-chip-balloon" in html_text
+        flora = next(
+            row
+            for row in missing["data"]["rows"]
+            if (row[3].get("text") if isinstance(row[3], dict) else row[3])
+            == "Flora of Hodstock Hills"
+        )
+        assert flora[3]["drop"] == (
+            "groundspawn - Typically Found All over, more common near water / trees"
+        )
 
 
 def test_json_for_html_script_blocks_script_breakout() -> None:

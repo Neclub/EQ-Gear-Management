@@ -77,7 +77,7 @@ Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet.
 
 #### Quests & Achievements *(achievement files)*
 
-- **Missing Collections** — incomplete collection items; **Zone** from a `(Zone)` suffix or a `{Zone} Scavenger` grouping; in HTML, click a missing item name to copy it
+- **Missing Collections** — incomplete collection items; **Zone** from a `(Zone)` suffix or a `{Zone} Scavenger` grouping; in HTML, hover a collection name for where it drops, and click a missing item name to copy it
 - **Quests** — unfinished Mercenary and Partisan zone quest lines
 - **Raid Achievements** — incomplete raid event objectives
 - **Hunters** — incomplete zone hunter kill lists

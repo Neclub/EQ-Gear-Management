@@ -14,6 +14,7 @@ from inventory_parser.achievement_parser import (
     expansion_sort_key,
     format_expansion_label,
 )
+from inventory_parser.collection_drops import collection_drop_location
 from inventory_parser.team_report import CharacterGear, TeamGearReport
 from inventory_parser.excel_export import (
     ACHIEVEMENT_SUMMARY_SHEET_NAME,
@@ -136,6 +137,14 @@ def _item_url(item_id: int) -> str | None:
     if item_id > 0:
         return EQRESOURCE_ITEM_URL.format(item_id=item_id)
     return None
+
+
+def _collection_name_cell(name: str) -> str | dict[str, str]:
+    """Collection label, plus a hover chip when a drop location is known."""
+    drop = collection_drop_location(name)
+    if not drop:
+        return name
+    return {"text": name, "drop": drop}
 
 
 def _spell_name_cell(
@@ -608,7 +617,7 @@ def serialize_report(bundle: ExportBundle) -> dict:
                                 row.character,
                                 format_expansion_label(row.expansion),
                                 row.zone,
-                                row.collection,
+                                _collection_name_cell(row.collection),
                                 row.missing_item,
                                 row.progress,
                                 row.char_has,

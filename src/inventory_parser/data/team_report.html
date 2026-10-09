@@ -431,6 +431,21 @@ th.copy-col-head {
   margin-bottom: 2px;
 }
 .copy-balloon-name { font-weight: 650; }
+.collection-drop {
+  cursor: help;
+  text-decoration: underline dotted var(--muted);
+  text-underline-offset: 3px;
+}
+.copy-balloon.drop-chip-balloon {
+  max-width: min(420px, calc(100vw - 16px));
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: #1a2030;
+  color: #9ec4ff;
+  border: 1px solid #3a4a66;
+  white-space: normal;
+}
+.copy-balloon.drop-chip-balloon .copy-balloon-name { font-weight: 650; }
 .char-head {
   display: inline-flex;
   align-items: center;
@@ -2038,6 +2053,7 @@ function cellText(val) {
     const bits = [];
     if (val.text != null) bits.push(String(val.text));
     if (val.chip) bits.push(String(val.chip));
+    if (val.drop) bits.push(String(val.drop));
     return bits.join(" ");
   }
   return String(val);
@@ -2793,10 +2809,10 @@ function hideHeaderTipBalloon() {
   document.getElementById("headerTipBalloon")?.remove();
 }
 
-function showHeaderTipBalloon(anchor, text) {
+function showHeaderTipBalloon(anchor, text, extraClass) {
   hideHeaderTipBalloon();
   if (!anchor || !text) return;
-  const balloon = el("div", "copy-balloon");
+  const balloon = el("div", extraClass ? "copy-balloon " + extraClass : "copy-balloon");
   balloon.id = "headerTipBalloon";
   balloon.appendChild(el("div", "copy-balloon-name", text));
   document.body.appendChild(balloon);
@@ -2863,6 +2879,17 @@ function updateTableContent(content, section) {
           }).catch(() => {});
         });
         td.appendChild(btn);
+        tr.appendChild(td);
+      } else if (val && typeof val === "object" && val.drop) {
+        const td = document.createElement("td");
+        const name = el("span", "collection-drop", cellPlainText(val));
+        const tip = String(val.drop);
+        name.tabIndex = 0;
+        name.addEventListener("mouseenter", () => showHeaderTipBalloon(name, tip, "drop-chip-balloon"));
+        name.addEventListener("mouseleave", hideHeaderTipBalloon);
+        name.addEventListener("focus", () => showHeaderTipBalloon(name, tip, "drop-chip-balloon"));
+        name.addEventListener("blur", hideHeaderTipBalloon);
+        td.appendChild(name);
         tr.appendChild(td);
       } else if (val && typeof val === "object" && (val.chip || val.url)) {
         const td = document.createElement("td");

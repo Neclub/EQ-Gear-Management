@@ -5,6 +5,12 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.17] - 2026-10-09
+
+### Added
+
+- **Missing Collections:** hover a collection name in HTML for a chip with where it drops (dropped or groundspawn).
+
 ## [1.35.16] - 2026-10-04
 
 ### Added

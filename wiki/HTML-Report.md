@@ -40,6 +40,7 @@ Same sections as Excel (omitted when empty, same rules as the workbook), grouped
 | **Achievements** | Toolbar (Heroic AA) | All / Completed / Incomplete |
 | **Sort** | Toolbar (Missing Runes, Missing Ores) | Reorder character columns: roster order, name, class, or most missing (uses the Expansion filter when one is selected on Missing Runes) |
 | **Column headers** | Table | Click to sort |
+| **Collection** | Missing Collections | Hover the name for a chip with where that collection drops |
 | **Missing Item** | Missing Collections | Hover the header for a copy reminder; click an item name to copy it |
 
 Gear-set and tier colors match the Excel theme. Item names, Gear T-Level codes, and Missing Spells / Missing Useful Spells names link to EQ Resource. Hover a Team Gear name or Gear T-Level code for an EQ Resource–style inspect card (icon, flags, stats, augs, effects). The first HTML generate after updating fetches unique equipped item pages; later runs reuse the item cache. Any EQ Resource item page, including an odd Range item or an old augment, is saved after the first lookup and is not downloaded again until **Help → Clear Cache**. Inspect cards omit Power Source.

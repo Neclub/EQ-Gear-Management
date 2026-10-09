@@ -8,7 +8,7 @@ Personas of the same character share one achievement file — rows are once per 
 
 ## Missing Collections
 
-Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from a `(Zone)` suffix on the collection name, or from a `{Zone} Scavenger` grouping), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed. Personas of the same character share one inventory for collections — rows and **Char Has** names are once per character, not per class. **Stalking Fear** (Rain of Fear) is omitted from this list. In HTML, hover **Missing Item** for a reminder that clicking a name copies it; a small balloon confirms it was added to the clipboard.
+Every incomplete collection item under a **Collections** section: character, expansion/category, zone (from a `(Zone)` suffix on the collection name, or from a `{Zone} Scavenger` grouping), collection name, missing item, progress, which team member has the item in inventory (**Char Has**), and total needed. Personas of the same character share one inventory for collections — rows and **Char Has** names are once per character, not per class. **Stalking Fear** (Rain of Fear) is omitted from this list. In HTML, hover **Collection** for a chip with where that collection drops (dropped or groundspawn). Hover **Missing Item** for a reminder that clicking a name copies it; a small balloon confirms it was added to the clipboard.
 
 ---
 
