@@ -1,14 +1,14 @@
 # Scrapes Needed for the Next Expansion
 
-Target: **December 2026** EQ expansion — **Favors of Fortune** (leaked / working name as of 2026-09-01). Codes: **FoF** / **fof** / **FOF**. EQ Gear Management does not scrape at runtime — these are **dev-only** refreshes that produce bundled JSON under [`src/inventory_parser/data/`](../src/inventory_parser/data/).
+Target: **December 2026** EQ expansion — **Favors of Fortune** (official; EQ Resource 33rd expansion). Codes: **FoF** / **fof** / **FOF**. EQ Gear Management does not scrape at runtime — these are **dev-only** refreshes that produce bundled JSON under [`src/inventory_parser/data/`](../src/inventory_parser/data/).
 
 Full phased procedure (gear regex, runes, achievements, tests): [`December-2026-Expansion-Update.md`](December-2026-Expansion-Update.md).
 
-**Status (2026-09-01):** Leaked name **Favors of Fortune**. EQ Resource subdomain [fof.eqresource.com](https://fof.eqresource.com/) has FoF nav; raid vendor pages exist but are **empty**. Spell expansion icon is not confirmed. Run scrapes **1–3** when those pages list real items (launch day or when EQ Resource fills them).
+**Status (2026-10-09):** Logged-in [fof.eqresource.com](https://fof.eqresource.com/) has a live home page and armor matrices. **Raid Vendor `raidvendor.php` is 404.** `raidvendorgood.php` is not in the FoF menu. Spell expansion icon on spells.eqresource.com is not confirmed (item pages already use `expacimages/fof.jpg`). **Do not change production code or run scrapes during beta prep.** Run scrapes **1–3** only when those pages list finished items.
 
-Existing vendor pages were re-scraped successfully (SoR 64, ToB 63, LS 60, NoS 63, ANI27 14). Added SoR skip for `Mirrorshard of Relic` spell runes that appeared on the raid vendor page. New `fof_r1_vendor_items.json` **PAGES** entry and `should_skip()` rules remain blocked until the R1 vendor URL has content (section 1.2).
+Existing vendor pages were re-scraped successfully (SoR 64, ToB 63, LS 60, NoS 63, ANI27 14). Added SoR skip for `Mirrorshard of Relic` spell runes that appeared on the raid vendor page. New `fof_r1_vendor_items.json` **PAGES** entry and `should_skip()` rules remain blocked until `raidvendor.php` lists real items (section 1.2). Armor matrices are the beta keyword source, not this scrape.
 
-Spell catalog re-scraped from cache (1016 Rk. III spells across 16 classes) using current `EXPANSION_BY_IMAGE` (`ls.jpg` / `tob.jpg` / `sor.jpg`). FoF image mapping remains blocked until the EQ Resource icon filename is known (section 1.4; expected `fof.jpg`).
+Spell catalog re-scraped from cache (1016 Rk. III spells across 16 classes) using current `EXPANSION_BY_IMAGE` (`ls.jpg` / `tob.jpg` / `sor.jpg`). FoF spell-image mapping remains blocked until a spell row shows the icon filename (section 1.4; expected `fof.jpg`).
 
 ---
 
@@ -19,7 +19,7 @@ Spell catalog re-scraped from cache (1016 Rk. III spells across 16 classes) usin
 | | |
 |--|--|
 | **Script** | [`scripts/build_vendor_json.py`](../scripts/build_vendor_json.py) |
-| **Source** | Candidate URLs (empty as of 2026-09-01): `https://fof.eqresource.com/raidvendor.php` or `https://fof.eqresource.com/raidvendorgood.php` — confirm which lists finished armor in December plan **1.2** |
+| **Source** | Menu URL `https://fof.eqresource.com/raidvendor.php` (404 as of 2026-10-09). `raidvendorgood.php` is not in the FoF menu — re-check before scraping in case Good/Evil pages appear |
 | **Output** | `fof_r1_vendor_items.json` |
 | **Why** | Exact-name → `FOF-R1` for vendor gear that subtitle regex does not catch |
 
@@ -42,7 +42,7 @@ py -3 scripts/build_vendor_json.py
 Re-scrapes all existing vendor pages too: SoR, ToB, LS, NoS, ANI27.
 
 **Phase 1 record:**
-- R1 vendor URL: `TBD` (candidates empty)
+- R1 vendor URL: `https://fof.eqresource.com/raidvendor.php` (404; content not confirmed)
 - Tier code: `FOF-R1`
 - Skip rules: `TBD`
 
@@ -124,7 +124,7 @@ py -3 scripts/convert_useful_spells.py
 
 | # | What | Pages / fetches | Script | Ready? |
 |---|------|-----------------|--------|--------|
-| 1 | FoF R1 raid vendor | 1 new page (+ re-fetch of 4–5 existing) | `build_vendor_json.py` | Blocked — candidate URLs empty |
+| 1 | FoF R1 raid vendor | 1 new page (+ re-fetch of 4–5 existing) | `build_vendor_json.py` | Blocked — `raidvendor.php` is 404 |
 | 2 | Anniversary raid (optional) | 0 or 1 | `build_vendor_json.py` | Blocked — TBD / N/A |
 | 3 | Spell catalog by class | **16** | `scrape_spell_expansions.py` | Blocked — image map TBD |
 | 4 | Useful spells | 0 (manual xlsx + convert) | `convert_useful_spells.py` | Skip — no FoF xlsx |
@@ -137,13 +137,13 @@ py -3 scripts/convert_useful_spells.py
 
 These are **in-game / EQ Resource inspection**, not scraper runs. See Phase 1 in the December plan:
 
-- **1.1** Identity — Favors of Fortune / FoF / fof / FOF (recorded; confirm official)
+- **1.1** Identity — Favors of Fortune / FoF / fof / FOF (official; site map in the December plan)
 - **1.5** Spell rune turn-in names + level band → rune JSON / [`spell_runes.py`](../src/inventory_parser/spell_runes.py)
-- **1.6** Gear tier subtitle keywords (`FOF-R1`/`R2`/`G1`–`G3`) → [`gear_tiers.py`](../src/inventory_parser/gear_tiers.py)
-- **1.6** Tradeskill exclusion patterns
+- **1.6** Gear tier subtitle keywords — beta candidates recorded; do not edit [`gear_tiers.py`](../src/inventory_parser/gear_tiers.py) yet
+- **1.6** Tradeskill exclusion patterns — still TBD
 - **1.7** Unmade bag mats / containers → [`unmade_gear.py`](../src/inventory_parser/unmade_gear.py)
 - **1.8** Achievement section header → [`achievement_parser.py`](../src/inventory_parser/achievement_parser.py)
-- **1.9–1.13** Colors, Vanquisher, EXPAC maps, Heroic AA, Raid BiS source
+- **1.9–1.13** Colors, Vanquisher, EXPAC maps (`fof` observed, code unchanged), Heroic AA (base `3400`), Raid BiS source
 
 ---
 
@@ -151,9 +151,8 @@ These are **in-game / EQ Resource inspection**, not scraper runs. See Phase 1 in
 
 | When | Action |
 |------|--------|
-| **Now (leak)** | Identity is in the December plan; do not scrape empty FoF vendor pages |
-| **Official announcement** | Confirm 1.1 spelling |
-| **EQ Resource pages have content** | Fill 1.2 / 1.4; then scrapes **1–3** (add PAGES / EXPANSION_BY_IMAGE first) |
+| **Now (beta prep)** | Site map and armor phrases are in the December plan. Do not scrape. Do not edit production code |
+| **EQ Resource vendor page lists finished items** | Fill 1.2 / 1.4; then scrapes **1–3** (add PAGES / EXPANSION_BY_IMAGE first) |
 | **+1–3 days** | Patch skip rules / regex from real bags (re-scrape only if vendor pages change) |
 | **When Raccoo updates** | Convert **4** |
 

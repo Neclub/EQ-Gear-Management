@@ -1,8 +1,8 @@
 # December Expansion Update Plan
 
-Target: **December 2026** EQ expansion — **Favors of Fortune** (leaked / working name). Scrape-only checklist: [`Scrapes-Needed.md`](Scrapes-Needed.md). This repo does not scrape at runtime — it uses **bundled JSON** built from EQ Resource pages plus **regex/name rules** for gear, runes, and craft mats. Every new expansion touches the same pipeline Shattering of Ro (SoR) uses today.
+Target: **December 2026** EQ expansion — **Favors of Fortune**. Scrape-only checklist: [`Scrapes-Needed.md`](Scrapes-Needed.md). This repo does not scrape at runtime — it uses **bundled JSON** built from EQ Resource pages plus **regex/name rules** for gear, runes, and craft mats. Every new expansion touches the same pipeline Shattering of Ro (SoR) uses today.
 
-**Status (2026-09-01):** Name leaked as **Favors of Fortune**. Codes locked for this worksheet: display **FoF**, JSON/scraper key **fof**, tier prefix **FOF**. Not an official Daybreak announcement. USPTO mark FAVORS OF FORTUNE (serial 99718005, filed 2026-03-23). [July 2026 Producer’s Letter](https://www.everquest.com/news/eq-producers-letter-july-2026) teases demiplanes / fate / fortune. EQ Resource subdomain [fof.eqresource.com](https://fof.eqresource.com/) has FoF nav; vendor and zone pages are empty placeholders. Fill remaining Phase 1 blanks from beta dumps and live EQ Resource pages. Do not invent gear keywords, rune names, or skip rules.
+**Status (2026-10-09):** Official name **Favors of Fortune** (EQ Resource: 33rd expansion). Codes for this worksheet: display **FoF**, JSON/scraper key **fof**, tier prefix **FOF**. Daybreak announced it in the [September 2026 Producer’s Letter](https://www.everquest.com/news/eq-producers-letter-september-2026); beta and pre-order opened 2026-10-06. Logged-in [fof.eqresource.com](https://fof.eqresource.com/) shows the home page and armor matrices. Vendor, zone, spell-guide, and Creating Armor URLs are still 404. **Beta prep is documentation only** — do not change production code, scrapers, tests, or bundled JSON until a later implementation pass. Do not invent rune names or skip rules. Gear phrases below are beta candidates from EQ Resource, not in-game dumps.
 
 How to use this file: fill every **Needed information** blank in order. Each section lists when you can fill it, where to look, and which files consume the values. Cursor prompts under a section are optional. Phase 2–4 stay blocked until those blanks are filled.
 
@@ -37,10 +37,9 @@ flowchart LR
 
 | When | Action |
 |------|--------|
-| **Leak / working identity (now)** | Section 1.1 filled. Bookmark [fof.eqresource.com](https://fof.eqresource.com/). |
-| **Official announcement** | Confirm 1.1 spelling against Daybreak; fill any remaining identity blanks. |
-| **Beta / PTR** | Collect sample item names from inventory dumps; fill 1.5–1.7 (runes, tier keywords, unmade mats). |
-| **EQ Resource pages have content** | Confirm 1.2 vendor URL + skip list; 1.4 spell image; 1.11 EXPAC stem. Then run scrapers. |
+| **Official name + logged-in beta skeleton (2026-10-09)** | Section 1.1 and the site map filled. Armor tier phrases recorded as candidates in 1.6. Production code unchanged. |
+| **Beta / PTR** | Confirm 1.6 phrases from inventory dumps once placeholder gear names are gone. Fill 1.5 and 1.7 (runes, unmade mats). |
+| **EQ Resource vendor and spell pages have finished items** | Confirm 1.2 vendor URL + skip list; 1.4 spell image. Then run scrapers. 1.11 `expacimages` stem `fof` is already observed. |
 | **Launch + 1–3 days** | Patch skip rules, tier regex, unmade mat rules from real bag items. Fill 1.8 / 1.10 / 1.12 from dumps. |
 | **Before your guild's next audit** | Full pytest + HTML/Excel export smoke test |
 
@@ -56,9 +55,9 @@ Working placeholders already locked: `Favors of Fortune`, `FoF`, `fof`, `FOF`, `
 
 ### 1.1 Expansion identity (needed everywhere)
 
-**When:** Now (leaked). Re-check on official announcement and first achievement dump.
+**When:** Official (September 2026 Producer’s Letter; beta opened 2026-10-06). Re-check the achievement-dump header in 1.8.
 
-**Where to look:** This worksheet; [fof.eqresource.com](https://fof.eqresource.com/); later a `-Achievements.txt` dump.
+**Where to look:** [Favors of Fortune](https://www.everquest.com/favors-of-fortune); [fof.eqresource.com](https://fof.eqresource.com/); later a `-Achievements.txt` dump.
 
 **Where it goes:** Almost every FoF touch listed below (`gear_tiers.py` codes, JSON filenames, `EXPANSION_BY_IMAGE`, `EXPANSIONS_NEWEST_FIRST`, vendor `PAGES` key).
 
@@ -71,14 +70,48 @@ Working placeholders already locked: `Favors of Fortune`, `FoF`, `fof`, `FOF`, `
 | JSON / scraper key | `fof` |
 | Tier prefix | `FOF` (example: `FOF-R1`) |
 | Release year | `2026` |
+| EQ Resource rank | 33rd expansion |
 | EQ Resource subdomain | `fof` |
-| Official announcement URL | `TBD` |
+| Official page | `https://www.everquest.com/favors-of-fortune` |
+| Announcement | `https://www.everquest.com/news/eq-producers-letter-september-2026` (beta/pre-order 2026-10-06 10:00 a.m. PT; livestream 2026-11-17) |
+| Beta / pre-order news | `https://www.everquest.com/news/eq-fof-beta-and-preorder` |
 | Achievement-dump header (expected) | `Favors of Fortune` — confirm in 1.8 |
 
-**Status:** Working identity recorded 2026-09-01. Confirm spelling on official announcement. Do not treat this as scrape-ready.
+Logged-in home page (anonymous visitors still see the construction card): 6 zones, Dark Elf Bard, Collection Depot. Entry is The Plane of Tranquility. Hub and guild-hall port are Amaranth, Plane of Love. Druid and wizard ports go to Avarice, Plane of Greed and Serendyl, Plane of Luck. A portal from Erudin to Bedlam, Plane of Madness is listed with a `?` quest placeholder. Zone atlas: `expacimages/atlas.jpg`.
 
-**Prompt (if the official name differs):**
-> The new EverQuest expansion is `[OFFICIAL_NAME]` (release 2026). Confirm whether we keep FoF / fof / FOF or must change the short codes.
+**Status:** Spelling confirmed 2026-10-09. Beta notes are in this worksheet. Production code is unchanged. Not scrape-ready.
+
+---
+
+### EQ Resource site map (2026-10-09)
+
+Logged-in sidebar on [fof.eqresource.com](https://fof.eqresource.com/). Same menu shape as Shattering of Ro, with one vendor link (SoR splits Good/Evil) and Creating Armor at `gearoverview.php` (SoR uses `creatingarmor.php`).
+
+| Section | Page | Logged-in state |
+|---------|------|-----------------|
+| Home | `https://fof.eqresource.com/` | Live overview |
+| Information | `maps.php` | 404 |
+| Information | `gearoverview.php` (Creating Armor) | 404 |
+| Information | [achievements `categories.php?id=3400`](https://achievements.eqresource.com/categories.php?id=3400) | Live empty; beta tree is filled (see 1.12) |
+| Information | [factions `category.php?id=34`](https://factions.eqresource.com/category.php?id=34) | Empty when checked anonymously |
+| Spells | `spells.php` | 404. Spell catalog scrape stays on spells.eqresource.com |
+| Group | `grouparmor.php` | Live armor matrix |
+| Group | `groupgear.php` | Live item search; most names are placeholders |
+| Group | `groupvendor.php` | 404 |
+| Raid | `raidarmor.php` | Live armor matrix |
+| Raid | `raidgear.php` | Live item search; most names are placeholders |
+| Raid | `raidvendor.php` | 404. Intended vendor scrape URL (1.2). `raidvendorgood.php` is not in this menu |
+| Raid | `raidloottables.php` | 404 |
+| Augmentations | [Type 5 `searchid=519280`](https://items.eqresource.com/itemsearch.php?searchid=519280) | 21 placeholder rows (1.10) |
+| Augmentations | [Type 7/8 `searchid=519279`](https://items.eqresource.com/itemsearch.php?searchid=519279) | 18 placeholder rows |
+
+**Tier 1 zones:** Amaranth, Plane of Love (`amaranthplaneoflove.php`); Emberheart, Plane of Desire (`emberheartplaneofdesire.php`).
+
+**Tier 2 zones:** Avarice, Plane of Greed (`avariceplaneofgreed.php`); Bedlam, Plane of Madness (`bedlamplaneofmadness.php`); Serendyl, Plane of Luck (`serendylplaneofluck.php`); Averness, Plane of Guile (`avernessplaneofguile.php`).
+
+Zone pages 404 today. When they exist, each zone uses `quests{slug}.php`, `questsnpc{slug}.php`, `name{slug}.php`, and `allname{slug}.php`. Re-check the menu before a future vendor scrape in case EQ Resource adds Good/Evil pages (`raidvendorgood.php` / `raidvendorevil.php`) the way SoR did.
+
+Armor matrices are `.armor-matrix` tables, one per tier: 16 classes by Wrist, Hands, Feet, Head, Arms, Legs, Chest. Cells are icon links (`items.php?id=`). Names are on the item page.
 
 ---
 
@@ -94,8 +127,8 @@ Working placeholders already locked: `Favors of Fortune`, `FoF`, `fof`, `FOF`, `
 
 | Field | Value |
 |-------|--------|
-| Which page lists **finished** R1 armor/weapons | `TBD` — candidates (empty as of 2026-09-01): `https://fof.eqresource.com/raidvendor.php` and `https://fof.eqresource.com/raidvendorgood.php` |
-| Confirmed R1 vendor URL | `TBD` |
+| Which page lists **finished** R1 armor/weapons | Menu “Raid Vendor” is `https://fof.eqresource.com/raidvendor.php` (404 as of 2026-10-09). `raidvendorgood.php` is not in the FoF menu |
+| Confirmed R1 vendor URL | `TBD` — do not scrape until this URL lists `items.php?id=` links. Armor matrices in the site map are the beta keyword source, not the vendor JSON input |
 | Tier code | `FOF-R1` |
 | Skip — tradeskill mat prefix/suffix + 2–3 example names | `TBD` |
 | Skip — spell rune turn-ins + 2–3 example names | `TBD` |
@@ -148,9 +181,9 @@ Do not scrape until the chosen URL lists real items.
 
 | Field | Value |
 |-------|--------|
-| Expansion column image filename | `TBD` — expected `fof.jpg` (confirm from HTML `<img src="images/____">`) |
+| Expansion column image filename | `TBD` — item pages use `expacimages/fof.jpg` (see 1.11). Confirm the spell-row file is `images/fof.jpg` |
 | Canonical expansion name string | `Favors of Fortune` |
-| New `LEVEL_MAX` | `130` (default until confirmed; bump if 131+) |
+| New `LEVEL_MAX` | `130` (sampled FoF armor requires 130; bump only if a spell row is above 130) |
 | Spell level block for FoF | `TBD–TBD` (today 126–130 is SoR-only) |
 | Class URL file needs a new min level? | `TBD` (yes / no) |
 | If yes: 16 class URLs | `TBD` |
@@ -203,27 +236,29 @@ Examples of existing patterns:
 
 ### 1.6 Equipped gear tier keywords (regex classification)
 
-**When:** Beta / launch — from equipped items in inventory dumps.
+**When:** Beta notes recorded 2026-10-09 from logged-in armor matrices. Confirm from an inventory dump before any code change.
 
-**Where to look:** Item names / subtitles on worn gear. Note words that collide with tradeskill mats (SoR: `Fracture` vs `Fractured`).
+**Where to look:** `grouparmor.php` and `raidarmor.php`. Finished armor is `{ClassSet} {piece} of {TierPhrase}`. Non-armor rows on `groupgear.php` / `raidgear.php` are still placeholders (`all back //GT1 ACstrsta`, `petclasses ear //GT1`, `all back //RT1 ACstrsta`).
 
-**Where it goes:** [`src/inventory_parser/gear_tiers.py`](../src/inventory_parser/gear_tiers.py) — new `GearTier` rows at **top** of `_GEAR_TIERS` (newest first). Tradeskill exclusions also go in `_is_tradeskill_item()` and vendor `should_skip()`.
+**Where it goes:** [`src/inventory_parser/gear_tiers.py`](../src/inventory_parser/gear_tiers.py) — new `GearTier` rows at **top** of `_GEAR_TIERS` (newest first). Tradeskill exclusions also go in `_is_tradeskill_item()` and vendor `should_skip()`. **Do not edit that file during beta prep.**
 
-**Needed information:**
+Class set names (same on group and raid): Warrior Legionnaire, Cleric Illuminator, Paladin Exarch, Ranger Natureward, Shadowknight Soulrender, Druid Lifewalker, Monk Soulforge, Bard Loremaster, Rogue Shadowscale, Shaman Spiritwalker, Necromancer Soulslayer, Wizard Frostfire, Mage Flameweaver, Enchanter Mindlock, Beastlord Dragonbrood, Berserker Warmonger.
 
-| Tier code | Keyword(s) in item name | 1–2 real item names | Ambiguous words |
-|-----------|-------------------------|---------------------|-----------------|
-| `FOF-R2` (new current raid) | `TBD` | `TBD` | `TBD` |
-| `FOF-R1` | `TBD` | `TBD` | `TBD` |
-| `FOF-G3` | `TBD` | `TBD` | `TBD` |
-| `FOF-G2` | `TBD` | `TBD` | `TBD` |
-| `FOF-G1` | `TBD` | `TBD` | `TBD` |
+**Needed information** (beta candidates, not implemented):
+
+| Tier code | Keyword(s) in item name | Example | Note |
+|-----------|-------------------------|---------|------|
+| `FOF-R2` | `Gilded Thorns` | Legionnaire Bracer of Gilded Thorns (`178801`) | EQR Raid Tier 2, tagged **Tradeskill**. Wearable armor, req 130 |
+| `FOF-R1` | `Veiled Whispers` | Legionnaire Bracer of Veiled Whispers (`178601`) | EQR Raid Tier 1. Only non-tradeskill raid tier on the page |
+| `FOF-G3` | `Mirrored Coins` | Legionnaire Bracer of Mirrored Coins (`178401`) | EQR Group Tier 3, tagged **Tradeskill**. Wearable armor, req 130 |
+| `FOF-G2` | `the Unraveling Mind` | Legionnaire Bracer of the Unraveling Mind (`178201`) | EQR Group Tier 2 |
+| `FOF-G1` | `Sworn Devotion` | Legionnaire Bracer of Sworn Devotion (`178001`) | EQR Group Tier 1 |
 
 Tradeskill exclusions (must NOT match gear tiers):
 
 | Kind | Pattern | Example names |
 |------|---------|---------------|
-| Prefixes | `TBD` | `TBD` |
+| Prefixes | `TBD` | Placeholder names are not real mats |
 | Suffixes | `TBD` | `TBD` |
 
 **Prompt:**
@@ -305,7 +340,7 @@ Tradeskill exclusions (must NOT match gear tiers):
 
 **When:** When the FoF Vanquisher meta and reward item exist (EQ Resource Type 5 augs / achievements).
 
-**Where to look:** [fof.eqresource.com](https://fof.eqresource.com/) Type 5 Augs; achievements.eqresource.com. SoR template: `Arcane Tome`, item id `153972`, achievement id `33010009`.
+**Where to look:** [Type 5 search `519280`](https://items.eqresource.com/itemsearch.php?searchid=519280); achievements.eqresource.com. SoR template: `Arcane Tome`, item id `153972`, achievement id `33010009`. SoR’s Type 5 catalog remains `searchid=481762`.
 
 **Where it goes:** [`src/inventory_parser/type5_augs/vanquisher.py`](../src/inventory_parser/type5_augs/vanquisher.py) `VANQUISHER_AUGS`
 
@@ -318,6 +353,8 @@ Tradeskill exclusions (must NOT match gear tiers):
 | Achievement id | `TBD` |
 | Expansion string | `Favors of Fortune` |
 | Abbreviation | `FoF` |
+| FoF Type 5 search | `searchid=519280` — 21 placeholder rows as of 2026-10-09 (`all primary secondary range charm aug //GT1`, `//GT2`, `//GTS`, plus a stat). No Vanquisher item. Leave `TYPE5_CATALOG_URL` on `481762` |
+| FoF Type 7/8 search | `searchid=519279` — 18 placeholder rows (`all aug //GT1`, `//GT2`, `//GTS`). No Type 7/8 saved-search scraper today |
 
 ---
 
@@ -335,9 +372,11 @@ Tradeskill exclusions (must NOT match gear tiers):
 
 | Field | Value |
 |-------|--------|
-| `expacimages` stem | `TBD` — expected `fof` |
+| `expacimages` stem | `fof` — observed 2026-10-09 on item pages (`expacimages/fof.jpg`), including `178001` |
 | Maps to display name | `Favors of Fortune` |
 | Maps to tier prefix | `FOF` |
+
+**Status:** Stem observed. Do not edit `eqresource_augs.py` or `eqresource_gear_tier.py` during beta prep.
 
 ---
 
@@ -354,7 +393,7 @@ Tradeskill exclusions (must NOT match gear tiers):
 | Field | Value |
 |-------|--------|
 | Fanra xlsx updated for FoF? | `TBD` (yes / not yet) |
-| EQ Resource category base id | `TBD` (expected `3400` if numbering continues) |
+| EQ Resource category base id | `3400` (SoR is `3300`). Live `categories.php?id=3400` is empty. Beta tree: `categories.php?id=3400&source=beta` — General `3401`, Exploration `3403`, Quests `3404`, Missions `3405`, Raids `3407`, Hunts `3408`, Collections `3409`, Special `3410` (no `3402` or `3406`) |
 | Convert + enrich ran? | no |
 
 ---
@@ -394,7 +433,7 @@ Tradeskill exclusions (must NOT match gear tiers):
 
 ## Phase 2 — Run scrapers and commit data
 
-Blocked until 1.2 has a **content-filled** vendor URL and 1.4 has a confirmed image filename.
+Do not run this phase during beta prep. Blocked until 1.2 has a **content-filled** vendor URL (`raidvendor.php` is 404 as of 2026-10-09) and 1.4 has a confirmed spell-row image filename.
 
 1. **Add vendor page** to [`scripts/build_vendor_json.py`](../scripts/build_vendor_json.py):
    ```python
@@ -474,21 +513,21 @@ py -3 -m pytest
 
 ## Master checklist (copy for tracking)
 
-- [x] **1.1** Expansion name, abbrev, year, subdomain recorded — *Favors of Fortune / FoF / fof / FOF; leaked 2026-09-01, not official*
-- [ ] **1.2** R1 raid vendor URL confirmed with real items; skip rules documented — *candidate URLs empty*
+- [x] **1.1** Expansion name, abbrev, year, subdomain recorded — *Favors of Fortune / FoF / fof / FOF; official 2026-10-09; 33rd expansion. Production code unchanged*
+- [ ] **1.2** R1 raid vendor URL confirmed with real items; skip rules documented — *menu URL `raidvendor.php` is 404; `raidvendorgood.php` is not in the menu*
 - [ ] **1.3** Anniversary raid URL (or marked N/A)
-- [ ] **1.4** Spell expansion image filename confirmed; level range decided — *expected `fof.jpg`; LEVEL_MAX default 130*
+- [ ] **1.4** Spell expansion image filename confirmed; level range decided — *item `expacimages/fof.jpg` observed; spell `images/fof.jpg` still unconfirmed; LEVEL_MAX stays 130*
 - [ ] **1.5** Rune turn-in item naming pattern confirmed; level band assigned
-- [ ] **1.6** Gear tier keywords for FOF-R1/R2/G1–G3 documented; tradeskill exclusions listed
+- [ ] **1.6** Gear tier keywords for FOF-R1/R2/G1–G3 documented; tradeskill exclusions listed — *beta candidates recorded (Veiled Whispers, Gilded Thorns, Sworn Devotion, the Unraveling Mind, Mirrored Coins); exclusions still TBD; not in code*
 - [ ] **1.7** Unmade T1 containers + T2 mat examples collected
 - [ ] **1.8** Achievement dump header string verified
 - [ ] **1.9** Color buckets / gear set keys / legend strings decided
-- [ ] **1.10** Vanquisher Type 5 item name, ids recorded
-- [ ] **1.11** EQ Resource `expacimages` stem confirmed
-- [ ] **1.12** Heroic AA xlsx / category base (or deferred)
+- [ ] **1.10** Vanquisher Type 5 item name, ids recorded — *search `519280` has placeholder rows only*
+- [x] **1.11** EQ Resource `expacimages` stem confirmed — *`fof`; code not updated*
+- [ ] **1.12** Heroic AA xlsx / category base (or deferred) — *base `3400` recorded; beta subcategories `3401`–`3410`; convert not run*
 - [ ] **1.13** raidloot.com source string confirmed
 - [ ] **1.14** Useful-spells xlsx (or skipped)
-- [ ] **2** `build_vendor_json.py` updated; vendor JSON scraped and committed — *blocked until 1.2 content live*
+- [ ] **2** `build_vendor_json.py` updated; vendor JSON scraped and committed — *blocked until 1.2 content live; do not run during beta prep*
 - [ ] **2** `spell_scrape.py` updated; spell catalog scraped and committed — *blocked until 1.4 image known*
 - [ ] **3** gear/rune/achievement/color/aug/raid-bis configs updated
 - [ ] **4** Tests updated; `pytest` green; sample exports reviewed

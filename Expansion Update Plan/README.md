@@ -11,7 +11,7 @@ Maintainer documentation for adding a new EverQuest expansion to EQ Gear Managem
 
 ## When to use
 
-Working identity is **Favors of Fortune** (leaked 2026-09-01; FoF / fof / FOF). Fill remaining Phase 1 blanks in the December plan from beta dumps and live EQ Resource pages. Run scrapers only when vendor/spell pages list real items. Use [Scrapes-Needed.md](Scrapes-Needed.md) as the launch-day scrape checklist.
+Official name is **Favors of Fortune** (FoF / fof / FOF), EQ Resource’s 33rd expansion. Beta notes from the logged-in [fof.eqresource.com](https://fof.eqresource.com/) pages (2026-10-09) are in the December plan. **Do not change production code, scrapers, or bundled JSON during beta prep.** Run scrapers only when the raid vendor and spell pages list finished items. Use [Scrapes-Needed.md](Scrapes-Needed.md) as the launch-day scrape checklist.
 
 ## Quick workflow
 
