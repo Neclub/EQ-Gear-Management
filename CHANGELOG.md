@@ -5,6 +5,16 @@ All notable changes to EQ Gear Management (EQGM) are documented here. Version nu
 
 ## [Unreleased]
 
+## [1.35.18] - 2026-10-10
+
+### Changed
+
+- **Missing Useful Spells:** the rank column is **Current Rank**, the rank already owned. The MissingSpells file lists the next rank to buy: a name with no rank is **Missing**, **Rk. II** means rank 1 is owned, and **Rk. III** means rank 2 is owned. The listed spell follows the log when the curated name is off by a typo, punctuation, or line numeral.
+
+### Fixed
+
+- **Heroic AA:** the left-panel character filter shows that character's Fortitude, Resolution, Vitality, and achievement totals, the same as the Character dropdown on the tab.
+
 ## [1.35.17] - 2026-10-09
 
 ### Added

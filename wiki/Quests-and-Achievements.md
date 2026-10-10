@@ -80,7 +80,7 @@ Ranks of **Hero's Fortitude**, **Hero's Resolution**, and **Hero's Vitality** fr
 
 **Excel columns:** Character · Expansion · Achievement · Fortitude · Resolution · Vitality · Status (`Completed` / `Incomplete`)
 
-**HTML:** a totals banner (Fortitude / Resolution / Vitality / achievements completed) and an expansion-grouped list with F / R / V chips. Hover a total for the AA’s effect; hover **F** / **R** / **V** for Fortitude, Resolution, and Vitality. Click an achievement name to open EQ Resource. **Character**, **Expansion**, and **Achievements** (All / Completed / Incomplete) filters apply. Credit links to Fanra’s wiki.
+**HTML:** a totals banner (Fortitude / Resolution / Vitality / achievements completed) and an expansion-grouped list with F / R / V chips. Hover a total for the AA’s effect; hover **F** / **R** / **V** for Fortitude, Resolution, and Vitality. Click an achievement name to open EQ Resource. The left-panel character filter shows that character's totals banner, the same as the **Character** dropdown. **Expansion** and **Achievements** (All / Completed / Incomplete) filters apply to the list. Credit links to Fanra’s wiki.
 
 ---
 

@@ -66,7 +66,7 @@ Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet.
 
 - **Missing Runes** — Minor / Lesser / Median / Greater / Glowing runes still needed, by spell expansion. HTML can sort columns (roster, name, class, most missing) and filter by expansion
 - **Missing Spells** — missing Rk. III spells at 121–130, including spells that were never purchased; names link to EQ Resource
-- **Missing Useful Spells** — Raccoo’s useful list still in the MissingSpells file (all levels)
+- **Missing Useful Spells** — Raccoo’s useful list still in the MissingSpells file (all levels). **Current Rank** is the rank already owned (the log lists the next rank to buy)
 - **Rune Inventory** — raid runes on hand in bags, bank, and shared bank
 
 #### Augs *(optional; on by default)*
@@ -83,7 +83,7 @@ Choose **Excel**, **HTML**, or **Both**. Excel uses a dark theme on every sheet.
 - **Hunters** — incomplete zone hunter kill lists
 - **Slayer** — Megadeath checklist (A Force of Nature, Highly Decorated, Progressive); completed Megadeath still listed
 - **Tradeskills** — skill levels from completed `Skill (N)` achievements; one card/row per character; Alchemy / Tinkering / Poisonmaking only when present; HTML **Achievements** chip notes levels are not live skill
-- **Heroic AA** — Fortitude / Resolution / Vitality ranks; hover **F** / **R** / **V**; click a name to open EQ Resource
+- **Heroic AA** — Fortitude / Resolution / Vitality ranks; the left-panel character filter shows that character's totals, the same as the Character dropdown; hover **F** / **R** / **V**; click a name to open EQ Resource
 - **Achievement Summary** — completed vs incomplete counts per section
 
 For file naming, Alternate Personas, reading each sheet, and troubleshooting, see the **[Wiki](https://github.com/Neclub/EQ-Gear-Management/wiki)**.
