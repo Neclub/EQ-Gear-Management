@@ -3130,10 +3130,8 @@ function selectedHeroicTotals(section) {
   if (charFilter) {
     return totals.filter((row) => row.character === charFilter);
   }
-  const names = selectedCharacterNames();
-  if (!names) return totals;
-  const wanted = new Set(names);
-  return totals.filter((row) => wanted.has(row.character));
+  // Sidebar chips use the display name; Heroic AA totals are stored by short name.
+  return totals.filter((row) => rowMatchesCharacterFilter(row.character));
 }
 
 function heroicStatCard(label, value, max, description) {

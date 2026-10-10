@@ -140,6 +140,17 @@ def test_colossus_does_not_award_resolution() -> None:
     assert row.status == "Incomplete"
 
 
+def test_html_heroic_totals_follow_sidebar_character_filter() -> None:
+    from inventory_parser.package_data import read_data_text
+
+    html = read_data_text("team_report.html")
+    start = html.index("function selectedHeroicTotals")
+    end = html.index("function heroicStatCard")
+    body = html[start:end]
+    assert "rowMatchesCharacterFilter(row.character)" in body
+    assert "selectedCharacterNames()" not in body
+
+
 def test_html_skips_chips_for_unawarded_ranks() -> None:
     from inventory_parser.package_data import read_data_text
 
