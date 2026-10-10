@@ -38,7 +38,9 @@ Older level bands (111–120) are in config but not shown until enabled in `spel
 
 Useful spells from [Raccoo’s curated list](https://docs.google.com/spreadsheets/d/1ZqUFZ-WTZvfcBfwu5g6GGEQroEwNLSfK1LMOdMHVHcA/htmlview) that still appear in each character’s MissingSpells file — **all levels**, not just 121–130.
 
-**Columns:** Character · Level · Expansion · Spell · Highest RK · Comments
+**Columns:** Character · Level · Expansion · Spell · Current Rank · Comments
+
+**Current Rank** is the rank already owned. The MissingSpells file lists the next rank to buy. A spell listed by name only, with no rank, is **Missing**. **Rk. II** in the log means the current rank is **Rk. I**. **Rk. III** in the log means the current rank is **Rk. II**. Rank III is the maximum, so a finished spell is not in the file.
 
 Matching is by class (worn Chest when known, otherwise the MissingSpells filename) against the bundled useful-spell catalog. Spell names link to EQ Resource the same way as **Missing Spells**. Use Excel auto-filter or the HTML **Character** / **Expansion** dropdowns to focus on one persona. The sheet includes a credit link: **Based on "SOR - Raccoo's list of useful spells"**.
 

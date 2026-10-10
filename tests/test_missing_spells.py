@@ -16,6 +16,7 @@ from inventory_parser.missing_spells import (
     is_missing_rank_iii,
     is_missing_spells_file,
     lacks_rank_suffix,
+    current_rank_from_log,
     normalize_spell_rank_iii,
     parse_missing_spells_file,
     parse_missing_spells_filename,
@@ -103,6 +104,10 @@ def test_rank_ii_detection_and_normalization() -> None:
     assert lacks_rank_suffix("Yaulp XIX") is True
     assert lacks_rank_suffix("Committal Rk. III") is False
     assert lacks_rank_suffix("Concussive Blast XII Rk. II") is False
+    assert current_rank_from_log("Appeasement") == "Missing"
+    assert current_rank_from_log("Yaulp XIX") == "Missing"
+    assert current_rank_from_log("Concussive Blast XII Rk. II") == "Rk. I"
+    assert current_rank_from_log("Committal Rk. III") == "Rk. II"
     assert strip_spell_rank("Concussive Blast XII Rk. II") == "Concussive Blast XII"
     assert strip_spell_rank("Awestruck XVII") == "Awestruck XVII"
     assert strip_spell_rank("Yaulp XIX") == "Yaulp XIX"

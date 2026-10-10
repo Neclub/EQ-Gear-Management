@@ -246,14 +246,14 @@ def _serialize_spell_list(spell_report: SpellRuneReport, characters: list[Charac
 
 
 def _serialize_missing_useful(report: MissingUsefulSpellsReport) -> dict:
-    columns = ["Character", "Level", "Expansion", "Spell", "Highest RK", "Comments"]
+    columns = ["Character", "Level", "Expansion", "Spell", "Current Rank", "Comments"]
     rows = [
         [
             entry.display_name,
             entry.level,
             format_expansion_label(entry.expansion),
             _spell_name_cell(entry.spell_name, entry.eqresource_url),
-            entry.highest_rk,
+            entry.current_rank,
             entry.comments,
         ]
         for entry in report.entries

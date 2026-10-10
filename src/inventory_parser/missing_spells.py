@@ -89,6 +89,20 @@ def lacks_rank_suffix(spell_name: str) -> bool:
     return not counts_as_missing_rk3(spell_name)
 
 
+def current_rank_from_log(spell_name: str) -> str:
+    """Rank the character already has, from a MissingSpells line.
+
+    The file lists the next rank to buy. A bare name means the spell is missing.
+    ``Rk. II`` means rank 1 is owned. ``Rk. III`` means rank 2 is owned.
+    Rank III is the maximum, so a finished spell is absent from the file.
+    """
+    if is_missing_rank_iii(spell_name):
+        return "Rk. II"
+    if is_missing_rank_ii(spell_name):
+        return "Rk. I"
+    return "Missing"
+
+
 def spell_rank_priority(spell_name: str) -> int:
     """Higher wins when the same spell appears at multiple ranks."""
     if is_missing_rank_iii(spell_name):

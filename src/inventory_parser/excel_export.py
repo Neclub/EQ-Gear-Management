@@ -864,7 +864,7 @@ def _write_missing_useful_spells_sheet(
         "Level",
         "Expansion",
         "Spell",
-        "Highest RK",
+        "Current Rank",
         "Comments",
     )
     for col, header in enumerate(detail_headers, start=1):
@@ -889,7 +889,7 @@ def _write_missing_useful_spells_sheet(
             entry.level,
             format_expansion_label(entry.expansion) or None,
             entry.spell_name,
-            entry.highest_rk or None,
+            entry.current_rank,
             entry.comments or None,
         )
         alignments = (
@@ -930,6 +930,9 @@ def _write_missing_useful_spells_sheet(
         row,
         1,
         "Intersection of the curated useful-spell list with each character's MissingSpells file. "
+        "Current Rank is the rank already owned. A spell listed with no rank is Missing. "
+        "Rk. II in the log means rank 1 is owned, and Rk. III means rank 2 is owned. "
+        "Rank III is the maximum, so a finished spell is not in the file. "
         "Filter the Character column to focus on one persona.",
     )
     note.font = FONT_LEGEND
@@ -941,7 +944,7 @@ def _write_missing_useful_spells_sheet(
     ws.column_dimensions["B"].width = _COL_SPELL_LEVEL
     ws.column_dimensions["C"].width = _COL_SPELL_EXPANSION
     ws.column_dimensions["D"].width = _COL_SPELL_NAME
-    ws.column_dimensions["E"].width = 12
+    ws.column_dimensions["E"].width = 14
     ws.column_dimensions["F"].width = 36
     _fill_sheet_padding(
         ws,
